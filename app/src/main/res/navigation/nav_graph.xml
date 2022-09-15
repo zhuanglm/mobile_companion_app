@@ -5,6 +5,8 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/FirstFragment">
 
+    <include app:graph="@navigation/nav_graph_eshare"/>
+
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.esightcorp.mobile.app.companion.FirstFragment"

@@ -14,16 +14,22 @@
         android:theme="@style/Theme.Mobile_companion_app"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".GoNavigationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_go_navigation"
+            android:theme="@style/Theme.Mobile_companion_app" />
+        <activity
+            android:name=".ComposeActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Mobile_companion_app.NoActionBar">
+            android:label="@string/title_activity_compose"
+            android:theme="@style/Theme.Mobile_companion_app">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

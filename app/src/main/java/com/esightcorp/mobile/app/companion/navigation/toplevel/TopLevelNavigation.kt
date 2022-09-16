@@ -1,10 +1,11 @@
-package com.esightcorp.mobile.app.companion.navigation
+package com.esightcorp.mobile.app.companion.navigation.toplevel
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.esightcorp.mobile.app.home.HomeScreen
+import com.esightcorp.mobile.app.companion.navigation.SelectionScreen
+import com.esightcorp.mobile.app.companion.navigation.go.addGoNavigation
 
 @Composable
 fun TopLevelNavigation(){

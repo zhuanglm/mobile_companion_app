@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.companion.navigation
+package com.esightcorp.mobile.app.companion.navigation.go
 
 sealed class GoScreens(val route: String){
     object HomeScreen: GoScreens("home")

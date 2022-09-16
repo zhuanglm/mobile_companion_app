@@ -1,11 +1,29 @@
 package com.esightcorp.mobile.app.home
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 
 
 @Composable
 fun HomeScreen(navController: NavController){
-    Text(text="HomeScreen")
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = { navController.navigate("wificonnection") }) {
+            Text(text = "wifi")
+        }
+        Button(onClick = { navController.navigate("btconnection") }) {
+            Text(text = "bluetooth")
+        }
+        Button(onClick = { navController.navigate("eshare") }) {
+            Text(text = "eshare")
+        }
+
+    }
 }

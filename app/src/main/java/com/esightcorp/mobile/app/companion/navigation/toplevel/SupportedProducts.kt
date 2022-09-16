@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.companion.navigation
+package com.esightcorp.mobile.app.companion.navigation.toplevel
 
 sealed class SupportedProducts(val route:String) {
     object SelectionScreen: SupportedProducts("selectionScreen")

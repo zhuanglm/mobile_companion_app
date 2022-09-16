@@ -13,13 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobile_companion_app"
         tools:targetApi="31">
+
         <activity
-            android:name=".GoNavigationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_go_navigation"
-            android:theme="@style/Theme.Mobile_companion_app" />
-        <activity
-            android:name=".ComposeActivity"
+            android:name=".DelegatorActivity"
             android:exported="true"
             android:label="@string/title_activity_compose"
             android:theme="@style/Theme.Mobile_companion_app">

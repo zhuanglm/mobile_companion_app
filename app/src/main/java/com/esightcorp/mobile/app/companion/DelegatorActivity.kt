@@ -20,22 +20,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.esightcorp.mobile.app.companion.navigation.GoNavigation
+import com.esightcorp.mobile.app.companion.navigation.TopLevelNavigation
 import com.esightcorp.mobile.app.companion.ui.theme.Mobile_companion_appTheme
 
-class ComposeActivity : ComponentActivity() {
+class DelegatorActivity : ComponentActivity() {
     private val modules = arrayListOf("go", "nextgen")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GoCompanionApp(modules = modules)
+            CompanionApp(modules = modules)
         }
     }
 }
 
 @Composable
-fun GoCompanionApp(modules: ArrayList<String>){
+fun CompanionApp(modules: ArrayList<String>){
     Mobile_companion_appTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -44,38 +44,15 @@ fun GoCompanionApp(modules: ArrayList<String>){
         ) {
             Column(verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                 GoNavigation()
+                 TopLevelNavigation()
             }
-//            generateModuleButtons(modules)
         }
     }
 }
-
-
-@Composable
-fun moduleButton(module: String){
-    Button(onClick = {  }) {
-        Text(text = module, color = Color.White)
-    }
-}
-
-@Composable
-fun generateModuleButtons(modules: ArrayList<String>){
-    Column (modifier = Modifier
-        .fillMaxSize(),
-    verticalArrangement = Arrangement.Center) {
-        for (module in modules){
-            moduleButton(module)
-        }
-    }
-}
-
 
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    Mobile_companion_appTheme {
-        generateModuleButtons(arrayListOf<String>("go", "nextgen"))
-    }
+    CompanionApp(arrayListOf("one", "two"))
 }

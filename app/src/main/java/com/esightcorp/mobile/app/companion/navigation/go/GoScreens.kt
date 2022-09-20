@@ -1,8 +1,8 @@
 package com.esightcorp.mobile.app.companion.navigation.go
 
+import com.esightcorp.mobile.app.home.navigation.HomeScreens
+
 sealed class GoScreens(val route: String){
-    object HomeScreen: GoScreens("home")
-    object EshareScreen: GoScreens("eshare")
-    object BtConnectionScreen: GoScreens("btconnection")
-    object WifiConnectionScreen: GoScreens("wificonnection")
+    object HomeScreen: GoScreens(HomeScreens.IncomingNavigationRoute.route)
+
 }

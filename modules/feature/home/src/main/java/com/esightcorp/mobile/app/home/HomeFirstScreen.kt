@@ -9,21 +9,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
+import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
+import com.esightcorp.mobile.app.home.navigation.WifiConnectionScreens
 
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeFirstScreen(navController: NavController){
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate("wificonnection") }) {
+        Button(onClick = { navController.navigate(WifiConnectionScreens.IncomingNavigationRoute.route) }) {
             Text(text = "wifi")
         }
-        Button(onClick = { navController.navigate("btconnection") }) {
+        Button(onClick = { navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route) }) {
             Text(text = "bluetooth")
         }
-        Button(onClick = { navController.navigate("eshare") }) {
+        Button(onClick = { navController.navigate(EshareScreens.IncomingNavigationRoute.route) }) {
             Text(text = "eshare")
         }
 

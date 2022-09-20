@@ -68,5 +68,8 @@ dependencies {
     def nav_version = "2.5.2"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation(project(":modules:feature:eshare"))
+    implementation(project(":modules:feature:btconnection"))
+    implementation(project(":modules:feature:wificonnection"))
 
 }

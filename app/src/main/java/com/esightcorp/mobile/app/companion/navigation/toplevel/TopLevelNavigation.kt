@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.companion.navigation.SelectionScreen
 import com.esightcorp.mobile.app.companion.navigation.go.addGoNavigation
+import com.esightcorp.mobile.app.eshare.navigation.addEshareNavigation
 
 @Composable
 fun TopLevelNavigation(){

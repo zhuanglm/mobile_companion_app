@@ -8,14 +8,19 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
 import com.esightcorp.mobile.app.home.navigation.WifiConnectionScreens
+import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
 
 
 @Composable
-fun HomeFirstScreen(navController: NavController){
+fun HomeFirstScreen(
+    navController: NavController,
+    viewModel: ViewModel = hiltViewModel()){
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally

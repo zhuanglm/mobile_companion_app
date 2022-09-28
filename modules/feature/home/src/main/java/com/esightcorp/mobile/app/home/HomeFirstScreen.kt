@@ -13,14 +13,12 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
-import com.esightcorp.mobile.app.home.navigation.WifiConnectionScreens
-import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 
 
 @Composable
 fun HomeFirstScreen(
-    navController: NavController,
-    viewModel: ViewModel = hiltViewModel()){
+    navController: NavController){
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally

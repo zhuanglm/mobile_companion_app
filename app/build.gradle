@@ -50,50 +50,48 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation "androidx.core:core-ktx:$core_ktx"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "com.google.android.material:material:$material"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
+    testImplementation "junit:junit:$junit_testimpl"
+    androidTestImplementation "androidx.test.ext:junit:$junit_android"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
 
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation "androidx.activity:activity-compose:$activity_compose"
     // Compose Material Design
-    implementation 'androidx.compose.material:material:1.2.1'
+    implementation "androidx.compose.material:material:$compose_material"
     // Animations
-    implementation 'androidx.compose.animation:animation:1.2.1'
+    implementation "androidx.compose.animation:animation:$animations"
     // Tooling support (Previews, etc.)
-    implementation 'androidx.compose.ui:ui-tooling:1.2.1'
+    implementation "androidx.compose.ui:ui-tooling:$ui_tooling"
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
     // UI Tests
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.2.1'
-    debugImplementation "androidx.compose.ui:ui-tooling:1.2.1"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.2.1"
-    def nav_version = "2.5.2"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
+    debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
 
-    implementation('com.google.dagger:hilt-android:2.39')
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    kapt("androix.hilt:hilt-compiler:1.0.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    //hilt dependencies
+    implementation "com.google.dagger:hilt-android:$hilt"
+    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation"androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
 
-
-
+    //compose dependencies
+    implementation "androidx.compose.ui:ui:$compose"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose"
+    implementation "androidx.navigation:navigation-compose:$nav"
 
     //module imports
     implementation(project(":modules:feature:home"))
     implementation(project(":modules:feature:eshare"))
     implementation(project(":modules:feature:btconnection"))
     implementation(project(":modules:feature:wificonnection"))
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
+}
+kapt {
+    correctErrorTypes = true
 }

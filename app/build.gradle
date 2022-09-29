@@ -23,8 +23,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
         }
     }
     compileOptions {
@@ -44,6 +48,13 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    tasks.withType(Test) {
+        testLogging {
+            exceptionFormat "full"
+            events "started", "skipped", "passed", "failed"
+            showStandardStreams true
         }
     }
 }

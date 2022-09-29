@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.home.navigation
+package com.esightcorp.mobile.app.wificonnection
 
 sealed class WifiConnectionScreens(val route: String){
     object WifiConnectionHomeScreen: WifiConnectionScreens("wificonnection_home")

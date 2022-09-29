@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.esightcorp.mobile.app.companion.navigation.toplevel.TopLevelNavigation
 import com.esightcorp.mobile.app.companion.ui.theme.Mobile_companion_appTheme
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
+
 
 class DelegatorActivity : ComponentActivity() {
     private val modules = arrayListOf("go", "nextgen")

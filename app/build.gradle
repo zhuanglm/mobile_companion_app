@@ -25,10 +25,33 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ext.config = getProps('../config/release.properties')
+            ext.config.each{p ->
+                if(p.key == "APP_NAME"){
+                    resValue "string", "app_name", p.value
+                }
+                else if(p.key == "APPLICATION_ID_SUFFIX"){
+                    applicationIdSuffix p.value
+                }
+                else {
+                    buildConfigField 'String', p.key, p.value
+                }
+            }
         }
         debug {
-            applicationIdSuffix ".debug"
             debuggable true
+            ext.config = getProps('../config/debug.properties')
+            ext.config.each{p ->
+                if(p.key == "APP_NAME"){
+                    resValue "string", "app_name", p.value
+                }
+                else if(p.key == "APPLICATION_ID_SUFFIX"){
+                    applicationIdSuffix p.value
+                }
+                else {
+                    buildConfigField 'String', p.key, p.value
+                }
+            }
         }
     }
     compileOptions {
@@ -103,6 +126,12 @@ dependencies {
     implementation(project(":modules:feature:wificonnection"))
 
 }
+def getProps(path){
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props;
+}
+
 kapt {
     correctErrorTypes = true
 }

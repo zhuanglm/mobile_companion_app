@@ -74,7 +74,7 @@ pipelines:
               caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
                 - gradle
               script:
-                - ./gradlew assembleRelease
+                - ./gradlew bundleRelease
               artifacts:
                 - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
     'develop':

@@ -1,6 +1,7 @@
 package com.esightcorp.mobile.app.companion
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -17,28 +18,27 @@ import com.esightcorp.mobile.app.companion.ui.theme.Mobile_companion_appTheme
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class DelegatorActivity : ComponentActivity() {
-    private val modules = arrayListOf("go", "nextgen")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(" ", "onCreate: ")
         setContent {
-            CompanionApp(modules = modules)
+            CompanionApp()
         }
     }
 }
 
 @Composable
-fun CompanionApp(modules: ArrayList<String>){
+fun CompanionApp(){
     Mobile_companion_appTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            Column(verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
+            Column() {
                  TopLevelNavigation()
             }
         }
@@ -49,5 +49,5 @@ fun CompanionApp(modules: ArrayList<String>){
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    CompanionApp(arrayListOf("one", "two"))
+    CompanionApp()
 }

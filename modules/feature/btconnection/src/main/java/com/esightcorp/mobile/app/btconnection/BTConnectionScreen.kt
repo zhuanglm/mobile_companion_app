@@ -8,3 +8,4 @@ import androidx.navigation.NavController
 fun BtConnectionScreen(navController: NavController){
     Text(text = "bluetooth connection")
 }
+

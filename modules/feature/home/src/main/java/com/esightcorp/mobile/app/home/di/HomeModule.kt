@@ -2,6 +2,8 @@ package com.esightcorp.mobile.app.home.di
 
 import android.content.Context
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
+import com.esightcorp.mobile.app.home.repositories.IHomeRepository
+import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

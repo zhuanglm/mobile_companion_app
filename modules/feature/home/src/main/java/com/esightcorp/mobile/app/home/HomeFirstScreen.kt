@@ -23,26 +23,30 @@ import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 @Composable
 fun HomeFirstScreen(
     navController: NavController,
-    vm: HomeViewModel = hiltViewModel<HomeViewModel>()){
+    vm: HomeViewModel = hiltViewModel()){
     Log.d("TAG", "HomeFirstScreen: ")
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(modifier = Modifier.fillMaxWidth(),
+        Row(modifier = Modifier.fillMaxWidth(.80f),
             horizontalArrangement = Arrangement.SpaceEvenly) {
-            Text(text = "Good evening ## TIME", style = MaterialTheme.typography.h2)
-            Text(text = "You are not connected to an eSight #### BLUETOOTH PERMISSIONS", style = MaterialTheme.typography.caption)
-        }
-        Row() {
-            Button(onClick = { navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route) },
-                Modifier
-                    .padding(20.dp, 5.dp)
-                    .fillMaxWidth(0.75f)
-            ) {
-                Text(text = "Connect to a bluetooth device")
+            Column(modifier = Modifier.wrapContentHeight()) {
+                Text(text = "Good evening ## TIME", style = MaterialTheme.typography.h2)
+                Text(
+                    text = "You are not connected to an eSight #### BLUETOOTH PERMISSIONS",
+                    style = MaterialTheme.typography.caption
+                )
             }
         }
+        Button(onClick = { navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route) },
+            Modifier
+                .padding(20.dp, 5.dp)
+                .fillMaxWidth(0.75f)
+        ) {
+            Text(text = "Connect to a bluetooth device")
+        }
+
 
         Button(onClick = { navController.navigate(WifiConnectionScreens.IncomingNavigationRoute.route) }) {
             Text(text = "wifi")

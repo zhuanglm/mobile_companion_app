@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdk 28
@@ -37,4 +37,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:$activity_compose"
+    implementation 'androidx.activity:activity-ktx:1.6.0'
 }

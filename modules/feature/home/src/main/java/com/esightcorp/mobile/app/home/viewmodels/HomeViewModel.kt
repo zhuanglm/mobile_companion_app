@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
+import com.esightcorp.mobile.app.home.repositories.IHomeRepository
 import com.esightcorp.mobile.app.home.state.HomeUiEvent
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

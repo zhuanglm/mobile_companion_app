@@ -28,6 +28,7 @@ class DelegatorActivity : ComponentActivity() {
             CompanionApp()
         }
     }
+    
 }
 
 @Composable

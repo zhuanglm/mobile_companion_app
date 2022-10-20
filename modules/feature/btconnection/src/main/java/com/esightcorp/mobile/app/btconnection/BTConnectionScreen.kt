@@ -8,21 +8,25 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiEvent
+import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
 import com.google.accompanist.permissions.*
+import kotlinx.coroutines.CoroutineScope
 import kotlin.contracts.contract
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -31,37 +35,56 @@ fun BtConnectionScreen(
     navController: NavController,
     vm: BtConnectionViewModel = hiltViewModel()){
     val bluetoothPermissionState = rememberMultiplePermissionsState(permissions = vm.getBluetoothPermissionsList())
-    val state = vm.uiState.value
     val context = LocalContext.current
-
+    val btUiState by vm.uiState.collectAsState()
 
     if(bluetoothPermissionState.allPermissionsGranted){
-        vm.onEvent(BluetoothUiEvent.PermissionsGranted(areGranted = true))
-        isBluetoothEnabled(vm)
+        vm.updatePermissionsState(true)
+        vm.getDevicesToDisplay()
+        IsBluetoothEnabled(vm)
     }else{
+        vm.updatePermissionsState(false)
         RequestPermissions(permissionList = bluetoothPermissionState)
     }
 }
 
 @Composable
-fun isBluetoothEnabled( vm: BtConnectionViewModel){
-    val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(), onResult = {
-        Log.d("TAG", "isBluetoothEnabled: ${it}")
-        if(it.resultCode != Activity.RESULT_OK){
-            vm.onEvent(BluetoothUiEvent.BluetoothEnabled(false))
-            Log.d("TAG", "isBluetoothEnabled: false ")
-        }else{
-            vm.onEvent(BluetoothUiEvent.BluetoothEnabled(true))
-            Log.d("TAG", "isBluetoothEnabled: true ")
-            vm.onEvent(BluetoothUiEvent.BluetoothReadyToGo(true))
-            vm.getBtConnectionState()
-
-        }
-    })
-    SideEffect {
-        if(!vm.uiState.value.isBluetoothEnabled){
+fun IsBluetoothEnabled(
+    vm: BtConnectionViewModel){
+    val uiState by vm.uiState.collectAsState()
+    if(!uiState.isBtEnabled){
+        val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(), onResult = {
+            Log.d("TAG", "isBluetoothEnabled: $it")
+            if(it.resultCode != Activity.RESULT_OK){
+                vm.updateBtEnabledState(false)
+                Log.d("TAG", "isBluetoothEnabled: false ")
+            }else{
+                vm.updateBtEnabledState(true)
+                Log.d("TAG", "isBluetoothEnabled: true ")
+            }
+        })
+        SideEffect {
             launcher.launch(intent)
+        }
+    }else{
+        vm.getDevicesToDisplay()
+        DisplayDevices(vm = vm, deviceList = uiState.listOfAvailableDevices )
+    }
+
+
+}
+
+@Composable
+fun DisplayDevices(
+    vm: BtConnectionViewModel,
+    deviceList: List<String>){
+
+    Column(verticalArrangement = Arrangement.SpaceBetween) {
+        Log.d("TAG", "DisplayDevices: ${deviceList}")
+        deviceList.forEach{ device ->
+            Spacer(modifier = Modifier.height(20.dp))
+            ExtendedFloatingActionButton(text = { Text(text = device)}, onClick = {vm.connectToDevice(device)})
         }
     }
 
@@ -80,7 +103,7 @@ fun RequestPermissions(permissionList: MultiplePermissionsState) {
     }
 }
 
-
+//TODO:move with the REQUEST_PERMISSION composable
 //@OptIn(ExperimentalPermissionsApi::class)
 //private fun getTextToShowGivenPermissions(
 //    permissions: List<PermissionState>,

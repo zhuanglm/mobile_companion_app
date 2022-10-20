@@ -1,18 +1,19 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
-import android.Manifest
-import android.Manifest.permission.BLUETOOTH
+
 import android.app.Application
 import android.os.Build
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.state.BluetoothUiEvent
+import com.esightcorp.mobile.app.btconnection.repositories.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,37 +22,46 @@ class BtConnectionViewModel @Inject constructor(
     val btConnectionRepository: BtConnectionRepository
 ): AndroidViewModel(application) {
 
-    private var _uiState = mutableStateOf(BluetoothUiState())
-    val uiState: State<BluetoothUiState> = _uiState
+    private var _uiState = MutableStateFlow(BluetoothUiState())
+    val uiState: StateFlow<BluetoothUiState> = _uiState.asStateFlow()
+    val btRepositoryListener = object : IBtConnectionRepository{
+        override fun scanStatus(isScanning: ScanningStatus) {
+            Log.d("", "scanStatus: $isScanning")
+            _uiState.update { currentState ->
+                currentState.copy(isScanning = isScanning)
+            }
+            when(isScanning){
+                ScanningStatus.Failed -> {
+                    Log.d("TAG", "scanStatus: failed")
 
+                }
+                ScanningStatus.InProgress -> {
+                    Log.d("TAG", "scanStatus: in progress")
 
-    fun onEvent(event: BluetoothUiEvent){
-        when (event){
-            is BluetoothUiEvent.BluetoothConnected -> {
-                _uiState.value.copy(
-                    isBluetoothConnected = event.isConnected
-                )
-            }
-            is BluetoothUiEvent.BluetoothEnabled -> {
-                _uiState.value.copy(
-                    isBluetoothEnabled = event.isEnabled
-                )
-            }
-            is BluetoothUiEvent.PermissionsGranted -> {
-                _uiState.value.copy(
-                    arePermissionsGranted = event.areGranted
-                )
-            }
-            is BluetoothUiEvent.BluetoothScanResponse -> {
-                _uiState.value.copy(
-                    listOfAvailableDevices = event.bluetoothDeviceList
-                )
-            }
-            is BluetoothUiEvent.BluetoothReadyToGo -> {
-                btConnectionRepository.getListOfDevices()
+                }
+                ScanningStatus.Success -> {
+                    Log.d("TAG", "scanStatus: success")
+                    getDevicesToDisplay()}
+                ScanningStatus.Unknown -> {
+                    Log.d("TAG", "scanStatus: unknown")
+
+                    getDevicesToDisplay()}
             }
         }
+
+        override fun deviceListReady(deviceList: HashMap<String, Boolean>) {
+            Log.d("TAG", "deviceListReady: $deviceList")
+            _uiState.update{currentState ->
+                currentState.copy(deviceMapCache = deviceList)
+            }
+        }
+
     }
+
+    init {
+        btConnectionRepository.registerListener(btRepositoryListener)
+    }
+
 
     fun getBluetoothPermissionsList(): List<String>{
         val PERMISSIONS:List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -68,11 +78,61 @@ class BtConnectionViewModel @Inject constructor(
         return PERMISSIONS
     }
 
-    fun getBtConnectionState(){
-        btConnectionRepository.checkBtConnectionState()
+    fun connectToDevice(device: String){
+        btConnectionRepository.connectToDevice(device)
     }
 
+    fun updatePermissionsState(state: Boolean){
+        _uiState.update { currentState ->
+            currentState.copy(arePermissionsGranted = state)
+        }
+    }
+    fun updateBtEnabledState(state: Boolean){
+        _uiState.update { currentState ->
+            currentState.copy(isBtEnabled = state)
+        }
+    }
 
+    private fun updateConnectionStatus(){
+        val areWeConnected = btConnectionRepository.checkBtConnectionState()
+        _uiState.update { currentState ->
+            currentState.copy(btConnectionStatus = areWeConnected)
+        }
+    }
+    fun getDevicesToDisplay(){
+        val uiDeviceList: MutableList<String> = mutableListOf()
+        val deviceMap = _uiState.value.deviceMapCache
+        updateConnectionStatus()
 
+        when(uiState.value.isScanning){
+            ScanningStatus.Success -> {
+                if(uiState.value.isBtEnabled){
+                    deviceMap.forEach {
+                        Log.d("TAG", "getDevicesToDisplay: ${deviceMap.keys}")
+                        uiDeviceList.add(it.key)
+                    }
+                }else{
+                    uiDeviceList.add("Bluetooth needs to be enabled")
+                }
+                _uiState.update { currentState ->
+                    currentState.copy(listOfAvailableDevices = uiDeviceList)
+                }
+
+            }
+            ScanningStatus.Failed -> {
+                uiDeviceList.add("ERROR SCAN FAILED ERROR ")
+                _uiState.update { currentState ->
+                    currentState.copy(listOfAvailableDevices = uiDeviceList)
+                }
+            }
+            ScanningStatus.InProgress -> {
+
+            }
+            ScanningStatus.Unknown -> {
+
+            }
+        }
+
+    }
 
 }

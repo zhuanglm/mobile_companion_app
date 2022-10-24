@@ -4,65 +4,109 @@ import android.annotation.SuppressLint
 import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
-import android.content.Context
+import android.content.*
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import kotlinx.coroutines.runInterruptible
 import java.lang.reflect.Method
+import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
+
+private const val TAG = "BluetoothModel"
 
 class BluetoothModel constructor(
     val context: Context
-) : IBluetoothModel {
+){
 
-    val bluetoothManager: BluetoothManager =
+    private val bluetoothManager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    val bluetoothAdapter: BluetoothAdapter = bluetoothManager.adapter
-
-    @SuppressLint("MissingPermission")
-    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter.bondedDevices
+    private val bluetoothAdapter: BluetoothAdapter = bluetoothManager.adapter
+    private var bleService: BleService? = null
+    private var connected = false
     val connectionStatusMap = hashMapOf<BluetoothDevice, Boolean>()
     val bleScanResult = mutableListOf<BluetoothDevice>()
     private val bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
     private var scanning = false
     private val handler = Handler(Looper.getMainLooper())
     private val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4
-    lateinit var iBluetoothModel: IBluetoothModel
+    lateinit var bluetoothModelListener: BluetoothModelListener
 
-    @SuppressLint("MissingPermission")
-    override fun getPairedDevicesAndConnectionStatus(): HashMap<BluetoothDevice, Boolean> {
+
+    /**
+     * Service lifecycle callback
+     */
+    private val serviceConnection: ServiceConnection = object : ServiceConnection{
+        override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
+            bleService = (service as LocalBinder).getService()
+            bleService?.let {bluetooth ->
+                if(!bluetooth.initialize()){
+                    Log.e(TAG, "onServiceConnected: Unable to initialize bluetooth" )
+                }
+                //perform device connection
+                Log.d(TAG, "onServiceConnected: Perform device connection")
+            }
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            bleService = null
+            context.unregisterReceiver(gattUpdateReceiver)
+        }
+    }
+
+    /**
+     * receiver to capture changes to the connection state
+     */
+    private val gattUpdateReceiver: BroadcastReceiver = object: BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent) {
+            when (intent.action){
+                BleService.ACTION_GATT_CONNECTED -> {
+                    connected = true
+                    Log.e(TAG, "onReceive: CONNECTED" )
+                }
+                BleService.ACTION_GATT_DISCONNECTED -> {
+                    connected = false
+                    Log.e(TAG, "onReceive: DISCONNECTED" )
+                }
+            }
+
+        }
+    }
+
+    init {
+        val gattServiceIntent = Intent(context, BleService::class.java)
+        context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+    }
+
+    /**
+     * Listener coming in from view model, should be used to send data back to respository
+     */
+    fun registerListener(btModelInterface: BluetoothModelListener) {
+        this.bluetoothModelListener = btModelInterface
+
+    }
+
+    /**
+     * Scan and then trigger callback to repository when ready
+     */
+    fun triggerBleScan(){
         scanLeDevices()
+        mapBleScanResultToDeviceAndConnectionStatus()
+    }
+
+
+    /**
+     * Takes the result of the ble scan [bleScanResult] and adds the current connection status to it for the ui
+     */
+    @SuppressLint("MissingPermission")
+    private fun mapBleScanResultToDeviceAndConnectionStatus(){
         bleScanResult.forEach { device ->
             Log.d("TAG", "logPairedDevices: Device name: ${device.name} ")
             Log.d("TAG", "logPairedDevices: hardware address ${device.address}")
             val pair = isConnected(device)
             connectionStatusMap[pair.first] = pair.second
         }
-        Log.d("TAG", "getPairedDevicesAndConnectionStatus: $connectionStatusMap")
-        return connectionStatusMap
-    }
-
-
-    fun registerListener(btModelInterface: IBluetoothModel) {
-        this.iBluetoothModel = btModelInterface
-
-    }
-
-    override fun onBleDeviceFound(result: ScanResult) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onBatchScanResults(results: List<ScanResult>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onScanFailed(error: Int) {
-    }
-
-    override fun onScanStarted() {
-    }
-
-    override fun onScanFinished() {
+        bluetoothModelListener.mapOfDevicesReady(connectionStatusMap)
     }
 
     private fun isConnected(device: BluetoothDevice): Pair<BluetoothDevice, Boolean> {
@@ -76,28 +120,36 @@ class BluetoothModel constructor(
         return Pair(device, connectionStatus)
     }
 
+
+    /**
+     * Used to scan for ble devices
+     * uses the 'scanning' boolean
+     */
     @SuppressLint("MissingPermission")
     private fun scanLeDevices() {
         if (!scanning) {
             handler.postDelayed({
                 scanning = false
                 bluetoothLeScanner.stopScan(leScanCallback)
-                iBluetoothModel.onScanFinished()
+                bluetoothModelListener.onScanFinished()
             }, SCAN_PERIOD)
             scanning = true
-            iBluetoothModel.onScanStarted()
+            bluetoothModelListener.onScanStarted()
             bluetoothLeScanner.startScan(leScanCallback)
         } else {
-            onScanFailed(-1)
+            bluetoothModelListener.onScanFailed(-1)
             scanning = false
             bluetoothLeScanner.stopScan(leScanCallback)
         }
     }
 
+    /**
+     * Callback for Ble Scan, this will trigger flows based on what it finds
+     */
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            iBluetoothModel.onScanFailed(errorCode)
+            bluetoothModelListener.onScanFailed(errorCode)
         }
 
         @SuppressLint("MissingPermission")
@@ -109,7 +161,7 @@ class BluetoothModel constructor(
                         //TODO: Add check for eSight specific ble device
                         Log.d("TAG", "onScanResult: ${result.device}")
                         bleScanResult.add(result.device)
-                        iBluetoothModel.onBleDeviceFound(result)
+                        bluetoothModelListener.onBleDeviceFound(result)
                     }
                 }
             }
@@ -118,45 +170,20 @@ class BluetoothModel constructor(
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
             if (results != null) {
-                iBluetoothModel.onBatchScanResults(results)
+                bluetoothModelListener.onBatchScanResults(results)
             }
         }
 
     }
 
-    @SuppressLint("MissingPermission")
     fun connectToDevice(device: BluetoothDevice){
-        device.connectGatt(context, true, gattCallback)
+        bleService?.connect(device.address)
     }
 
-    val gattCallback= object: BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-            Log.d("TAG", "onConnectionStateChange: gatt: $gatt, $status, $newState")
+    private fun makeGattUpdateIntentFilter(): IntentFilter?{
+        return IntentFilter().apply {
+            addAction(BleService.ACTION_GATT_CONNECTED)
+            addAction(BleService.ACTION_GATT_DISCONNECTED)
         }
     }
-
-
-    //      TODO: Figure out if we need this method call
-    @SuppressLint("MissingPermission")
-    override fun isBluetoothCurrentlyConnected(): Boolean {
-        //var boolLogic = false
-        val stateList = listOf<Int>(
-            BluetoothProfile.A2DP,
-            BluetoothProfile.GATT,
-            BluetoothProfile.GATT_SERVER,
-            BluetoothProfile.HID_DEVICE,
-            BluetoothProfile.HAP_CLIENT
-        )
-        stateList.forEach { profile ->
-            val state = bluetoothAdapter.getProfileConnectionState(profile)
-            Log.d("TAG", "isBluetoothCurrentlyConnected: State: ${profile} : ${state}")
-
-        }
-
-
-        return false
-    }
-
-
 }

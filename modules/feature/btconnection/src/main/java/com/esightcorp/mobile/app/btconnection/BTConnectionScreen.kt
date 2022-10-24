@@ -40,7 +40,6 @@ fun BtConnectionScreen(
 
     if(bluetoothPermissionState.allPermissionsGranted){
         vm.updatePermissionsState(true)
-        vm.getDevicesToDisplay()
         IsBluetoothEnabled(vm)
     }else{
         vm.updatePermissionsState(false)
@@ -68,7 +67,6 @@ fun IsBluetoothEnabled(
             launcher.launch(intent)
         }
     }else{
-        vm.getDevicesToDisplay()
         DisplayDevices(vm = vm, deviceList = uiState.listOfAvailableDevices )
     }
 

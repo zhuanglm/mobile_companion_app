@@ -90,6 +90,7 @@ dependencies {
     implementation(project(":modules:feature:eshare"))
     implementation(project(":modules:feature:btconnection"))
     implementation(project(":modules:feature:wificonnection"))
+    implementation(project(":modules:core:bluetooth"))
 
 }
 kapt {

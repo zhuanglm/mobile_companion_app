@@ -65,18 +65,23 @@ class BtConnectionRepository @Inject constructor(
     init {
         bluetoothModel = BluetoothModel(context)
         bluetoothModel.registerListener(bluetoothModelListener)
-        updateDeviceMap()
     }
 
 
     /**
-     * Gets a list of paired bt devices from the bluetoothModel object, and includes if that device is connected or not
-     * Hashmap of [BluetoothDevice, connectionStatus]
+     * Triggers the BLE scan on the backend
+     *
      */
-    fun updateDeviceMap(){
+    fun triggerBleScan(){
         Log.d(TAG, "updateDeviceMap: ")
         bluetoothModel.triggerBleScan()
     }
+
+    fun updateDeviceMap(){
+        bluetoothModel.mapBleScanResultToDeviceAndConnectionStatus()
+    }
+
+
 
 
     /**

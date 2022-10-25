@@ -34,14 +34,23 @@ class BleService : Service(){
             }
         }
 
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            if(status == BluetoothGatt.GATT_SUCCESS){
+                broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
+            }else{
+                Log.w(TAG, "onServicesDiscovered received $status" )
+            }
+        }
+
         override fun onCharacteristicRead(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
             status: Int
         ) {
-            super.onCharacteristicRead(gatt, characteristic, value, status)
-            Log.d(TAG, "onCharacteristicRead: ${characteristic.toString()}" )
+            if(status == BluetoothGatt.GATT_SUCCESS){
+                broadcastUpdate(BleService.ACTION_DATA_AVAILABLE, characteristic)
+            }
         }
     }
 
@@ -59,7 +68,8 @@ class BleService : Service(){
         bluetoothAdapter?.let { adapter ->
             try {
                 val device = adapter.getRemoteDevice(address)
-                bluetoothGatt = device.connectGatt(baseContext, true, bluetoothGattCallback)
+                Log.d(TAG, "connect: $address")
+                bluetoothGatt = device.connectGatt(baseContext, false, bluetoothGattCallback)
             }catch (exception: IllegalArgumentException){
                 Log.w(TAG, "connect: Device not found with provided address.")
                 return false
@@ -68,7 +78,7 @@ class BleService : Service(){
             Log.w(TAG, "connect: Bluetooth Adapter not initialized")
             return false
         }
-        return false
+        return true
     }
 
 
@@ -91,12 +101,61 @@ class BleService : Service(){
         val intent = Intent(action)
         sendBroadcast(intent)
     }
+    
+    private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic){
+        val intent = Intent(action)
+        when(characteristic.uuid){
+            else -> {
+                val data: ByteArray? = characteristic.value
+                if(data?.isNotEmpty() == true){
+                    val hexString: String = data.joinToString(separator = " ") {
+                        String.format("%02X", it)
+                    }
+                    intent.putExtra(EXTRA_DATA, "$data\n$hexString")
+                }
+                Log.d(TAG, "broadcastUpdate: ${characteristic.toString()}")
+            }
+        }
+        sendBroadcast(intent)
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        close()
+        return super.onUnbind(intent)
+    }
+
+    fun getSupportedGattServices(): List<BluetoothGattService?>?{
+        return bluetoothGatt?.services
+    }
+    @SuppressLint("MissingPermission")
+    fun readCharacteristic(characteristic: BluetoothGattCharacteristic){
+        bluetoothGatt?.let{ gatt ->
+            gatt.readCharacteristic(characteristic)
+        }?: run{
+            Log.w(TAG, "readCharacteristic: BluetoothGatt not initialized")
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun close(){
+        bluetoothGatt?.let{ gatt ->
+            gatt.close()
+            bluetoothGatt = null
+        }
+    }
 
     companion object{
         const val ACTION_GATT_CONNECTED =
             "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED =
             "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
+        const val ACTION_GATT_SERVICES_DISCOVERED =
+            "com.esightcorp.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
+        const val ACTION_DATA_AVAILABLE =
+            "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
+        const val EXTRA_DATA =
+            "com.esightcorp.bluetooth.le.EXTRA_DATA"
+
         private const val STATE_DISCONNECTED = 0
         private const val STATE_CONNECTED = 2
     }

@@ -47,6 +47,9 @@ class BtConnectionViewModel @Inject constructor(
 
 
     fun updateBtEnabledState(state: Boolean){
+        if(state){
+            btConnectionRepository.triggerBleScan()
+        }
         _uiState.update { currentState ->
             currentState.copy(isBtEnabled = state)
         }
@@ -166,7 +169,7 @@ class BtConnectionViewModel @Inject constructor(
 
     //TODO: Need this to happen when the user swipes down on list
     fun refreshUiDeviceList(){
-        btConnectionRepository.updateDeviceMap()
+        btConnectionRepository.triggerBleScan()
     }
 
 

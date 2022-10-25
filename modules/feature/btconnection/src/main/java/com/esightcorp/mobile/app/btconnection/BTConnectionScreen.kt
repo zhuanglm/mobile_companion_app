@@ -29,6 +29,8 @@ import com.google.accompanist.permissions.*
 import kotlinx.coroutines.CoroutineScope
 import kotlin.contracts.contract
 
+const val TAG = "BtConnectionScreen"
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BtConnectionScreen(
@@ -38,6 +40,7 @@ fun BtConnectionScreen(
     val context = LocalContext.current
     val btUiState by vm.uiState.collectAsState()
 
+    Log.d(TAG, "BtConnectionScreen: ${bluetoothPermissionState.permissions}")
     if(bluetoothPermissionState.allPermissionsGranted){
         vm.updatePermissionsState(true)
         IsBluetoothEnabled(vm)
@@ -77,7 +80,9 @@ fun IsBluetoothEnabled(
 fun DisplayDevices(
     vm: BtConnectionViewModel,
     deviceList: List<String>){
-
+    LaunchedEffect(Unit){
+        vm.refreshUiDeviceList()
+    }
     Column(verticalArrangement = Arrangement.SpaceBetween) {
         Log.d("TAG", "DisplayDevices: ${deviceList}")
         deviceList.forEach{ device ->

@@ -17,7 +17,6 @@ private const val TAG = "BluetoothModel"
 class BluetoothModel constructor(
     val context: Context
 ){
-
     private val bluetoothManager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter = bluetoothManager.adapter
@@ -67,6 +66,9 @@ class BluetoothModel constructor(
                     connected = false
                     Log.e(TAG, "onReceive: DISCONNECTED" )
                 }
+                BleService.ACTION_GATT_SERVICES_DISCOVERED -> {
+                    Log.d(TAG, "onReceive: ${bleService?.getSupportedGattServices().toString()}")
+                }
             }
 
         }
@@ -99,7 +101,7 @@ class BluetoothModel constructor(
      * Takes the result of the ble scan [bleScanResult] and adds the current connection status to it for the ui
      */
     @SuppressLint("MissingPermission")
-    private fun mapBleScanResultToDeviceAndConnectionStatus(){
+    fun mapBleScanResultToDeviceAndConnectionStatus(){
         bleScanResult.forEach { device ->
             Log.d("TAG", "logPairedDevices: Device name: ${device.name} ")
             Log.d("TAG", "logPairedDevices: hardware address ${device.address}")
@@ -184,6 +186,9 @@ class BluetoothModel constructor(
         return IntentFilter().apply {
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
+            addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
         }
     }
+
+
 }

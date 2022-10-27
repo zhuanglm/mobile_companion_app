@@ -10,6 +10,9 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import java.lang.IllegalArgumentException
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 private const val TAG = "BleService"
 
@@ -25,6 +28,7 @@ class BleService : Service(){
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             if(newState == BluetoothProfile.STATE_CONNECTED){
                 Log.d(TAG, "onConnectionStateChange: state connected")
+                bluetoothGatt = gatt
                 connectionState = STATE_CONNECTED
                 broadcastUpdate(ACTION_GATT_CONNECTED)
             }else if(newState == BluetoothProfile.STATE_DISCONNECTED){
@@ -37,6 +41,8 @@ class BleService : Service(){
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             if(status == BluetoothGatt.GATT_SUCCESS){
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
+                Log.d(TAG, "onServicesDiscovered: ${gatt?.services.toString()}")
+                logGattServices(gatt?.services)
             }else{
                 Log.w(TAG, "onServicesDiscovered received $status" )
             }
@@ -49,9 +55,38 @@ class BleService : Service(){
             status: Int
         ) {
             if(status == BluetoothGatt.GATT_SUCCESS){
-                broadcastUpdate(BleService.ACTION_DATA_AVAILABLE, characteristic)
+                Log.e(TAG, "onCharacteristicRead: ${characteristic.value}" )
+                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun setCharacteristicNotification(
+        characteristic: BluetoothGattCharacteristic,
+        enabled: Boolean ){
+        bluetoothGatt?.let { gatt ->
+            gatt.setCharacteristicNotification(characteristic, enabled)
+
+            if(CHARACTERISTIC_BUTTON_PRESSED == characteristic.uuid ||
+                CHARACTERISTIC_PERFORM_ACTION == characteristic.uuid ||
+                CHARACTERISTIC_TOUCH_EVENT == characteristic.uuid){
+                val descriptor = characteristic.getDescriptor(PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID)
+                descriptor?.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                if(descriptor != null){
+                    gatt.writeDescriptor(descriptor)
+                }
+            }
+        }?:  run{
+            Log.w(TAG, "setCharacteristicNotification: BluetoothGatt is not initialized", )
+        }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    fun writeCharacteristic(){
+        bluetoothGatt?.let { gatt ->
+            gatt.writeCharacteristic()        }
     }
 
     fun initialize():Boolean{
@@ -124,9 +159,17 @@ class BleService : Service(){
         return super.onUnbind(intent)
     }
 
-    fun getSupportedGattServices(): List<BluetoothGattService?>?{
+    @SuppressLint("MissingPermission")
+    fun getSupportedGattServices(): List<BluetoothGattService>? {
+        Log.e(TAG, "getSupportedGattServices: " )
         return bluetoothGatt?.services
     }
+
+    @SuppressLint("MissingPermission")
+    fun discoverServices(): Boolean{
+        return bluetoothGatt?.discoverServices() ?: false
+    }
+
     @SuppressLint("MissingPermission")
     fun readCharacteristic(characteristic: BluetoothGattCharacteristic){
         bluetoothGatt?.let{ gatt ->
@@ -144,6 +187,39 @@ class BleService : Service(){
         }
     }
 
+    private fun logGattServices(gattServices: List<BluetoothGattService>?){
+        if(gattServices == null) return
+        val NAME = "NAME"
+        val LIST_UUID = "UUID"
+        var uuid: String?
+        val gattServiceData: MutableList<HashMap<String, String>> = mutableListOf()
+        val gattCharacteristicData: MutableList<ArrayList<HashMap<String, String>>> = mutableListOf()
+
+        gattServices.forEach { gattService ->
+            val currentServiceData = hashMapOf<String, String>()
+            uuid = gattService.uuid.toString()
+            currentServiceData[NAME] = "unknown"
+            currentServiceData[LIST_UUID] = uuid!!
+            gattServiceData += currentServiceData
+
+            val gattCharacteristicGroupData: ArrayList<HashMap<String, String>> = arrayListOf()
+            val gattCharacteristics = gattService.characteristics
+            val charas: MutableList<BluetoothGattCharacteristic> = mutableListOf()
+            gattCharacteristics.forEach{ gattCharacteristic ->
+                charas += gattCharacteristic
+                val currentCharaData: HashMap<String, String> = hashMapOf()
+                uuid = gattCharacteristic.uuid.toString()
+                currentCharaData[NAME] = "characteristic"
+                currentCharaData[LIST_UUID] = uuid!!
+                gattCharacteristicGroupData += currentCharaData
+                gattCharacteristicData += gattCharacteristicGroupData
+
+                setCharacteristicNotification(gattCharacteristic, true)
+            }
+        }
+        Log.d(TAG, "logGattServices: CHARACTERISTIC DATA ${gattCharacteristicData.toString()}")
+    }
+
     companion object{
         const val ACTION_GATT_CONNECTED =
             "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
@@ -158,5 +234,17 @@ class BleService : Service(){
 
         private const val STATE_DISCONNECTED = 0
         private const val STATE_CONNECTED = 2
+
+        val SERVICE_UUID =
+            UUID.fromString("1706BBC0-88AB-4B8D-877E-2237916EE929")
+        val CHARACTERISTIC_BUTTON_PRESSED =
+            UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
+        val CHARACTERISTIC_TOUCH_EVENT =
+            UUID.fromString("84f6e3ed-d348-4925-8bea-d7009a0e490a")
+        val CHARACTERISTIC_PERFORM_ACTION =
+            UUID.fromString("07fb80d6-6d0b-4253-9f8f-9dd13ad56aff")
+        val PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID =
+            UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
+
 }

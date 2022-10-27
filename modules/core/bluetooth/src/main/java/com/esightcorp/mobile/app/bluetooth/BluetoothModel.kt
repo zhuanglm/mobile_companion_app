@@ -11,6 +11,7 @@ import android.os.Looper
 import android.util.Log
 import java.lang.reflect.Method
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
+import java.util.*
 
 private const val TAG = "BluetoothModel"
 
@@ -45,7 +46,6 @@ class BluetoothModel constructor(
                 Log.d(TAG, "onServiceConnected: Perform device connection")
             }
         }
-
         override fun onServiceDisconnected(p0: ComponentName?) {
             bleService = null
             context.unregisterReceiver(gattUpdateReceiver)
@@ -61,13 +61,21 @@ class BluetoothModel constructor(
                 BleService.ACTION_GATT_CONNECTED -> {
                     connected = true
                     Log.e(TAG, "onReceive: CONNECTED" )
+                    bleService?.discoverServices()
+
                 }
                 BleService.ACTION_GATT_DISCONNECTED -> {
                     connected = false
                     Log.e(TAG, "onReceive: DISCONNECTED" )
                 }
                 BleService.ACTION_GATT_SERVICES_DISCOVERED -> {
-                    Log.d(TAG, "onReceive: ${bleService?.getSupportedGattServices().toString()}")
+                    bleService?.getSupportedGattServices()?.forEach {
+                        Log.d(TAG, "onReceive: ${it.uuid}")
+                    }
+                    
+                }
+                BleService.ACTION_DATA_AVAILABLE -> {
+                    Log.d(TAG, "onReceive DATA AVAILABLE: ${intent.extras}")
                 }
             }
 
@@ -112,7 +120,7 @@ class BluetoothModel constructor(
     }
 
     private fun isConnected(device: BluetoothDevice): Pair<BluetoothDevice, Boolean> {
-        var connectionStatus = false
+        var connectionStatus:Boolean
         try {
             val m: Method = device.javaClass.getMethod("isConnected")
             connectionStatus = m.invoke(device) as Boolean
@@ -188,6 +196,19 @@ class BluetoothModel constructor(
             addAction(BleService.ACTION_GATT_DISCONNECTED)
             addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
         }
+    }
+
+    companion object{
+        val SERVICE_UUID =
+            UUID.fromString("1706BBC0-88AB-4B8D-877E-2237916EE929")
+        val CHARACTERISTIC_BUTTON_PRESSED =
+            UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
+        val CHARACTERISTIC_TOUCH_EVENT =
+            UUID.fromString("84f6e3ed-d348-4925-8bea-d7009a0e490a")
+        val CHARACTERISTIC_PERFORM_ACTION =
+            UUID.fromString("07fb80d6-6d0b-4253-9f8f-9dd13ad56aff")
+        val PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID =
+            UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
 

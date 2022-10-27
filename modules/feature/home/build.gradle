@@ -1,0 +1,76 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 28
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+        compose true
+    }
+    composeOptions{
+        kotlinCompilerExtensionVersion '1.3.0'
+    }
+}
+
+dependencies {
+
+    implementation "androidx.core:core-ktx:$core_ktx"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "com.google.android.material:material:$material"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_ui_ktx"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
+    implementation "androidx.compose.ui:ui:$compose"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
+    testImplementation "junit:junit:$junit_testimpl"
+    androidTestImplementation "androidx.test.ext:junit:$junit_android"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+
+// Integration with activities
+    implementation "androidx.activity:activity-compose:$activity_compose"
+// Compose Material Design
+    implementation "androidx.compose.material:material:$compose_material"
+// Animations
+    implementation "androidx.compose.animation:animation:$animations"
+// Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$ui_tooling"
+// Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
+// UI Tests
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
+    debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+
+
+    implementation("androidx.navigation:navigation-compose:$nav")
+    implementation(project(":modules:feature:eshare"))
+    implementation(project(":modules:feature:btconnection"))
+    implementation(project(":modules:feature:wificonnection"))
+
+}

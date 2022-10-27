@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -14,12 +16,42 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ext.config = getProps('../config/release.properties')
+            ext.config.each{p ->
+                if(p.key == "APP_NAME"){
+                    resValue "string", "app_name", p.value
+                }
+                else if(p.key == "APPLICATION_ID_SUFFIX"){
+                    applicationIdSuffix p.value
+                }
+                else {
+                    buildConfigField 'String', p.key, p.value
+                }
+            }
+        }
+        debug {
+            debuggable true
+            ext.config = getProps('../config/debug.properties')
+            ext.config.each{p ->
+                if(p.key == "APP_NAME"){
+                    resValue "string", "app_name", p.value
+                }
+                else if(p.key == "APPLICATION_ID_SUFFIX"){
+                    applicationIdSuffix p.value
+                }
+                else {
+                    buildConfigField 'String', p.key, p.value
+                }
+            }
         }
     }
     compileOptions {
@@ -31,18 +63,75 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+    composeOptions{
+        kotlinCompilerExtensionVersion '1.3.0'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    tasks.withType(Test) {
+        testLogging {
+            exceptionFormat "full"
+            events "started", "skipped", "passed", "failed"
+            showStandardStreams true
+        }
     }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation "androidx.core:core-ktx:$core_ktx"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "com.google.android.material:material:$material"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
+    testImplementation "junit:junit:$junit_testimpl"
+    androidTestImplementation "androidx.test.ext:junit:$junit_android"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:$activity_compose"
+    // Compose Material Design
+    implementation "androidx.compose.material:material:$compose_material"
+    // Animations
+    implementation "androidx.compose.animation:animation:$animations"
+    // Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$ui_tooling"
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
+    // UI Tests
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
+    debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
+
+    //hilt dependencies
+    implementation "com.google.dagger:hilt-android:$hilt"
+    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation"androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+
+    //compose dependencies
+    implementation "androidx.compose.ui:ui:$compose"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose"
+    implementation "androidx.navigation:navigation-compose:$nav"
+
+    //module imports
+    implementation(project(":modules:feature:home"))
+    implementation(project(":modules:feature:eshare"))
+    implementation(project(":modules:feature:btconnection"))
+    implementation(project(":modules:feature:wificonnection"))
+
+}
+def getProps(path){
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props;
+}
+
+kapt {
+    correctErrorTypes = true
 }

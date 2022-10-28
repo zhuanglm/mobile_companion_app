@@ -8,5 +8,4 @@ sealed class BluetoothUiEvent {
     data class BluetoothEnabled(val isEnabled: Boolean): BluetoothUiEvent()
     data class BluetoothConnected(val isConnected: Boolean, val currentDevice: BluetoothDevice): BluetoothUiEvent()
     data class BluetoothScanResponse(val bluetoothDeviceList: List<BluetoothDevice>) : BluetoothUiEvent()
-    data class BluetoothReadyToGo(val checksPassed: Boolean): BluetoothUiEvent()
 }

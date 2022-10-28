@@ -199,14 +199,6 @@ class BluetoothModel constructor(
     }
 
     companion object{
-        val SERVICE_UUID =
-            UUID.fromString("1706BBC0-88AB-4B8D-877E-2237916EE929")
-        val CHARACTERISTIC_BUTTON_PRESSED =
-            UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
-        val CHARACTERISTIC_TOUCH_EVENT =
-            UUID.fromString("84f6e3ed-d348-4925-8bea-d7009a0e490a")
-        val CHARACTERISTIC_PERFORM_ACTION =
-            UUID.fromString("07fb80d6-6d0b-4253-9f8f-9dd13ad56aff")
         val PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID =
             UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }

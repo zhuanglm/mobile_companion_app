@@ -58,13 +58,7 @@ fun IsBluetoothEnabled(
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(), onResult = {
             Log.d("TAG", "isBluetoothEnabled: $it")
-            if(it.resultCode != Activity.RESULT_OK){
-                vm.updateBtEnabledState(false)
-                Log.d("TAG", "isBluetoothEnabled: false ")
-            }else{
-                vm.updateBtEnabledState(true)
-                Log.d("TAG", "isBluetoothEnabled: true ")
-            }
+            vm.updateBtEnabledState(it.resultCode == Activity.RESULT_OK)
         })
         SideEffect {
             launcher.launch(intent)

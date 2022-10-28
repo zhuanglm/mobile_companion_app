@@ -73,7 +73,6 @@ class BtConnectionRepository @Inject constructor(
      *
      */
     fun triggerBleScan(){
-        Log.d(TAG, "updateDeviceMap: ")
         bluetoothModel.triggerBleScan()
     }
 

@@ -1,10 +1,12 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdk 28
@@ -66,6 +68,10 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+    //hilt dependencies
+    implementation "com.google.dagger:hilt-android:$hilt"
+    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation"androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
 
 
     implementation("androidx.navigation:navigation-compose:$nav")

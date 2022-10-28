@@ -165,6 +165,11 @@ class BleService : Service(){
         }
     }
 
+    /**
+     * Broadcast update methods
+     *
+     * multiple overloads on this one
+     */
     private fun broadcastUpdate(action: String){
         val intent = Intent(action)
         sendBroadcast(intent)
@@ -184,6 +189,12 @@ class BleService : Service(){
                 Log.d(TAG, "broadcastUpdate: ${characteristic.toString()}")
             }
         }
+        sendBroadcast(intent)
+    }
+
+    private fun broadcastUpdate(action: String, device: String){
+        val intent = Intent(action)
+        intent.putExtra(DEVICE, device)
         sendBroadcast(intent)
     }
 
@@ -335,6 +346,8 @@ class BleService : Service(){
             "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
         const val EXTRA_DATA =
             "com.esightcorp.bluetooth.le.EXTRA_DATA"
+        const val DEVICE =
+            "com.esightcorp.bluetooth.le.DEVICE"
 
         private const val STATE_DISCONNECTED = 0
         private const val STATE_CONNECTED = 2

@@ -52,6 +52,8 @@ dependencies {
     testImplementation "junit:junit:$junit_testimpl"
     androidTestImplementation "androidx.test.ext:junit:$junit_android"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+// to make preview behave properly
+    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
 
 // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"

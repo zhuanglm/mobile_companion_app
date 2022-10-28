@@ -16,7 +16,7 @@ class BtConnectionRepository @Inject constructor(
     @ApplicationContext context: Context
 ){
 
-    lateinit var deviceMap: HashMap<BluetoothDevice, Boolean>
+    lateinit var deviceList: MutableList<BluetoothDevice>
     val bluetoothModel: BluetoothModel
     var bluetoothConnectionState = false
     lateinit var iBtConnectionRepository: IBtConnectionRepository
@@ -29,8 +29,8 @@ class BtConnectionRepository @Inject constructor(
         override fun isBluetoothCurrentlyConnected(): Boolean {
             TODO("Not yet implemented")
         }
-        override fun mapOfDevicesReady(map: HashMap<BluetoothDevice, Boolean>) {
-            deviceMap = map
+        override fun listOfDevicesReady(list: MutableList <BluetoothDevice>) {
+            deviceList = list
         }
         @SuppressLint("MissingPermission")
         override fun onBleDeviceFound(result: ScanResult) {
@@ -55,6 +55,12 @@ class BtConnectionRepository @Inject constructor(
 
         override fun onScanFinished() {
             scanStatus(ScanningStatus.Success)
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onDeviceConnected(device: BluetoothDevice) {
+            Log.d(TAG, "onDeviceConnected: ${device.name}")
+            deviceConnected(device)
         }
 
     }
@@ -90,21 +96,21 @@ class BtConnectionRepository @Inject constructor(
      */
     @SuppressLint("MissingPermission")
     fun getMapOfDevices(){
-        val strippedMap = hashMapOf<String, Boolean>()
-        deviceMap.forEach {
-            strippedMap[it.key.name] = it.value
+        val strippedList = mutableListOf<String>()
+        for (bluetoothDevice in deviceList) {
+            strippedList.add(bluetoothDevice.name)
         }
-        iBtConnectionRepository.deviceListReady(strippedMap)
+        iBtConnectionRepository.deviceListReady(strippedList)
     }
 
     /**
      * Checks if there is a device currently connected or not, if yes, return true
      */
 
-    fun checkBtConnectionState(): Boolean {
-        bluetoothConnectionState = deviceMap.containsValue(true)
-        return bluetoothConnectionState
-    }
+//    fun checkBtConnectionState(): Boolean {
+//        bluetoothConnectionState = deviceMap.containsValue(true)
+//        return bluetoothConnectionState
+//    }
 
     /**
      * how we communicate between repo and viewmodel
@@ -119,7 +125,7 @@ class BtConnectionRepository @Inject constructor(
      */
     @SuppressLint("MissingPermission")
     fun connectToDevice(device: String){
-        deviceMap.keys.forEach { key ->
+        deviceList.forEach { key ->
             if(key.name.equals(device)){
                 bluetoothModel.connectToDevice(key)
             }
@@ -130,7 +136,7 @@ class BtConnectionRepository @Inject constructor(
      * Overridden here to be able to call from within the interface
      * gets map of devices once scanning is done
      */
-    fun scanStatus(isScanning: ScanningStatus) {
+    private fun scanStatus(isScanning: ScanningStatus) {
         Log.d("TAG", "scanStatus: $isScanning")
         if(isScanning == ScanningStatus.Success){
             getMapOfDevices()
@@ -139,10 +145,11 @@ class BtConnectionRepository @Inject constructor(
             iBtConnectionRepository.scanStatus(isScanning)
         }
     }
-
-    fun deviceListReady(deviceList: HashMap<String, Boolean>) {
+    @SuppressLint("MissingPermission")
+    private fun deviceConnected(device: BluetoothDevice){
+        Log.d(TAG, "onDeviceConnected: ${device.name}")
         if(this::iBtConnectionRepository.isInitialized){
-            iBtConnectionRepository.deviceListReady(deviceList)
+            iBtConnectionRepository.onDeviceConnected(device)
         }
     }
 

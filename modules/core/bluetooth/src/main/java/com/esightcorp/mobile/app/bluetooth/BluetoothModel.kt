@@ -15,6 +15,7 @@ import java.util.*
 
 private const val TAG = "BluetoothModel"
 
+@SuppressLint("MissingPermission")
 class BluetoothModel constructor(
     val context: Context
 ){
@@ -23,7 +24,7 @@ class BluetoothModel constructor(
     private val bluetoothAdapter: BluetoothAdapter = bluetoothManager.adapter
     private var bleService: BleService? = null
     private var connected = false
-    val connectionStatusMap = hashMapOf<BluetoothDevice, Boolean>()
+    private lateinit var connectedDevice: BluetoothDevice
     val bleScanResult = mutableListOf<BluetoothDevice>()
     private val bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
     private var scanning = false
@@ -61,6 +62,7 @@ class BluetoothModel constructor(
                 BleService.ACTION_GATT_CONNECTED -> {
                     connected = true
                     Log.e(TAG, "onReceive: CONNECTED" )
+                    bluetoothModelListener.onDeviceConnected(connectedDevice)
                     bleService?.discoverServices()
 
                 }
@@ -86,6 +88,14 @@ class BluetoothModel constructor(
         val gattServiceIntent = Intent(context, BleService::class.java)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        val connectedDeviceList = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT_SERVER)
+        Log.d(TAG, "INIT BLUETOOTH MODEL: ${connectedDeviceList.toString()} ")
+        if(connectedDeviceList.isNotEmpty()){
+            Log.d(TAG, "EMPTY CONNECTED DEVICE LIST ")
+            connectedDevice = connectedDeviceList.get(0)
+            connected = true
+            bluetoothModelListener.onDeviceConnected(connectedDevice)
+        }
     }
 
     /**
@@ -110,24 +120,13 @@ class BluetoothModel constructor(
      */
     @SuppressLint("MissingPermission")
     fun mapBleScanResultToDeviceAndConnectionStatus(){
-        bleScanResult.forEach { device ->
-            Log.d("TAG", "logPairedDevices: Device name: ${device.name} ")
-            Log.d("TAG", "logPairedDevices: hardware address ${device.address}")
-            val pair = isConnected(device)
-            connectionStatusMap[pair.first] = pair.second
-        }
-        bluetoothModelListener.mapOfDevicesReady(connectionStatusMap)
-    }
-
-    private fun isConnected(device: BluetoothDevice): Pair<BluetoothDevice, Boolean> {
-        var connectionStatus:Boolean
-        try {
-            val m: Method = device.javaClass.getMethod("isConnected")
-            connectionStatus = m.invoke(device) as Boolean
-        } catch (e: Exception) {
-            throw IllegalStateException(e)
-        }
-        return Pair(device, connectionStatus)
+//        bleScanResult.forEach { device ->
+//            Log.d("TAG", "logPairedDevices: Device name: ${device.name} ")
+//            Log.d("TAG", "logPairedDevices: hardware address ${device.address}")
+//            val pair = isConnected(device)
+//            deviceList[pair.first] = pair.second
+//        }
+        bluetoothModelListener.listOfDevicesReady(bleScanResult)
     }
 
 
@@ -187,7 +186,10 @@ class BluetoothModel constructor(
     }
 
     fun connectToDevice(device: BluetoothDevice){
-        bleService?.connect(device.address)
+        val result = bleService?.connect(device.address)
+        if(result == true){
+            connectedDevice = device
+        }
     }
 
     private fun makeGattUpdateIntentFilter(): IntentFilter?{

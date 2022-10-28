@@ -1,7 +1,9 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.bluetooth.BluetoothDevice
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -55,10 +57,9 @@ class BtConnectionViewModel @Inject constructor(
         }
     }
 
-    private fun updateConnectionStatus(){
-        val areWeConnected = btConnectionRepository.checkBtConnectionState()
+    private fun updateConnectionStatus(state: Boolean){
         _uiState.update { currentState ->
-            currentState.copy(btConnectionStatus = areWeConnected)
+            currentState.copy(btConnectionStatus = state)
         }
     }
 
@@ -87,11 +88,21 @@ class BtConnectionViewModel @Inject constructor(
             }
         }
 
-        override fun deviceListReady(deviceList: HashMap<String, Boolean>) {
+        override fun deviceListReady(deviceList: MutableList<String>) {
             Log.d("TAG", "deviceListReady: $deviceList")
             _uiState.update{currentState ->
                 currentState.copy(deviceMapCache = deviceList)
             }
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onDeviceConnected(device: BluetoothDevice) {
+            Log.d(TAG, "onDeviceConnected: ${device.name}")
+            _uiState.update { currentState ->
+                currentState.copy(getConnectedDevice = device.name)
+                currentState.copy(btConnectionStatus = true)
+            }
+
         }
 
     }
@@ -129,14 +140,13 @@ class BtConnectionViewModel @Inject constructor(
 
     fun uiDeviceList(){
         val uiDeviceList: MutableList<String> = mutableListOf()
-        val deviceMap = _uiState.value.deviceMapCache
-        updateConnectionStatus()
+        val deviceList = _uiState.value.deviceMapCache
         when(uiState.value.isScanning){
             ScanningStatus.Success -> {
                 if(uiState.value.isBtEnabled){
-                    deviceMap.forEach {
-                        Log.d("TAG", "getDevicesToDisplay: ${deviceMap.keys}")
-                        uiDeviceList.add(it.key)
+                    deviceList.forEach {
+                        Log.d("TAG", "getDevicesToDisplay: ${it}")
+                        uiDeviceList.add(it)
                     }
                 }else{
                     uiDeviceList.add("Bluetooth needs to be enabled")

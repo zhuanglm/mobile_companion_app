@@ -9,7 +9,7 @@ data class BluetoothUiState(
     val arePermissionsGranted: Boolean = false,
     val getConnectedDevice:String = "",
     val listOfAvailableDevices: List<String> = mutableListOf(),
-    val deviceMapCache: HashMap<String, Boolean> = hashMapOf(),
+    val deviceMapCache: List<String> = mutableListOf(),
     val isScanning: ScanningStatus = ScanningStatus.Unknown
 
 ) {

@@ -8,20 +8,24 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.repositories.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiEvent
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
@@ -40,19 +44,119 @@ fun BtConnectionScreen(
     val context = LocalContext.current
     val btUiState by vm.uiState.collectAsState()
 
-    Log.d(TAG, "BtConnectionScreen: ${bluetoothPermissionState.permissions}")
-    if(bluetoothPermissionState.allPermissionsGranted){
-        vm.updatePermissionsState(true)
-        IsBluetoothEnabled(vm)
+    if(btUiState.btConnectionStatus){
+        Log.d(TAG, "BtConnectionScreen: CONNECTED")
+        Text(text = btUiState.getConnectedDevice)
+        BluetoothDevicePage(vm = vm, btUiState = btUiState)
     }else{
-        vm.updatePermissionsState(false)
-        RequestPermissions(permissionList = bluetoothPermissionState)
+        BluetoothLandingPage(vm = vm, permissionList = bluetoothPermissionState, btUiState = btUiState)
+    }
+    Log.d(TAG, "BtConnectionScreen: ${bluetoothPermissionState.permissions}")
+
+}
+@Composable
+fun BluetoothDevicePage(vm: BtConnectionViewModel,
+                        btUiState: BluetoothUiState
+){
+    val scaffoldState = rememberScaffoldState()
+
+    MaterialTheme{
+        Scaffold (
+            scaffoldState = scaffoldState,
+            topBar = {
+                TopAppBar(
+                    elevation = 4.dp,
+                    content = {
+                        Text(text = btUiState.getConnectedDevice)
+                    })
+            },
+            snackbarHost = {
+
+            }){ contentPadding ->
+            Column(modifier = Modifier
+                .padding(contentPadding)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color.Green),
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                //Lazy Column content
+                Text(text = "What would you like to do")
+
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun BluetoothLandingPage(
+    vm: BtConnectionViewModel,
+    permissionList: MultiplePermissionsState,
+    btUiState: BluetoothUiState
+){
+    val scaffoldState = rememberScaffoldState()
+
+    MaterialTheme{
+        Scaffold (
+            scaffoldState = scaffoldState,
+            topBar = {
+                TopAppBar(
+                    elevation = 4.dp, 
+                    content = {
+                        Text(text = "Ble Devices")
+                    })
+            },
+            snackbarHost = {
+
+            }){ contentPadding ->
+            Column(modifier = Modifier
+                .padding(contentPadding)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color.Green),
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                //Lazy Column content
+                if(permissionList.allPermissionsGranted){
+                    if(btUiState.isBtEnabled){
+                        Log.d(TAG, "BluetoothLandingPage: DISPLAY DEVICES")
+                        DisplayDevices(vm = vm, deviceList = btUiState.listOfAvailableDevices )
+                    }else{
+                        Log.d(TAG, "BluetoothLandingPage: BLUETOOTH ENABLED")
+                        IsBluetoothEnabled(vm)
+                    }
+                }else{
+                    Log.d(TAG, "BluetoothLandingPage: NEED PERMISSIONS")
+                    vm.updatePermissionsState(false)
+                    RequestPermissions(permissionList = permissionList)
+                }
+
+                when(btUiState.isScanning){
+                    ScanningStatus.Success -> {
+
+                    }
+                    ScanningStatus.Failed -> {
+                        Text(text = "Scanning has failed! OH NO!")}
+                    else -> {
+                        CircularProgressIndicator()
+                    }
+                }
+
+            }
+        }
     }
 }
 
 @Composable
 fun IsBluetoothEnabled(
     vm: BtConnectionViewModel){
+    /**
+     * No real UI here, we're calling the system UI to turn on bluetooth
+     */
     val uiState by vm.uiState.collectAsState()
     if(!uiState.isBtEnabled){
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
@@ -63,11 +167,7 @@ fun IsBluetoothEnabled(
         SideEffect {
             launcher.launch(intent)
         }
-    }else{
-        DisplayDevices(vm = vm, deviceList = uiState.listOfAvailableDevices )
     }
-
-
 }
 
 @Composable
@@ -77,14 +177,30 @@ fun DisplayDevices(
     LaunchedEffect(Unit){
         vm.refreshUiDeviceList()
     }
-    Column(verticalArrangement = Arrangement.SpaceBetween) {
-        Log.d("TAG", "DisplayDevices: ${deviceList}")
-        deviceList.forEach{ device ->
-            Spacer(modifier = Modifier.height(20.dp))
-            ExtendedFloatingActionButton(text = { Text(text = device)}, onClick = {vm.connectToDevice(device)})
+    deviceList.forEach { device ->
+        Card(modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth(0.8f),
+            shape = MaterialTheme.shapes.medium,
+            backgroundColor = MaterialTheme.colors.surface,
+            contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.surface),
+            elevation = 20.dp
+        ) {
+            Column(verticalArrangement = Arrangement.SpaceEvenly) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = device, modifier = Modifier.padding(20.dp, 0.dp),
+                    fontWeight = FontWeight.Bold)
+                Button(modifier = Modifier
+                    .padding(20.dp),
+                    onClick = {vm.connectToDevice(device)},
+                    shape = MaterialTheme.shapes.medium,
+                    content = {
+                        Text(text = "Connect to $device")
+                    })
+            }
+
         }
     }
-
 }
 
 
@@ -92,13 +208,30 @@ fun DisplayDevices(
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RequestPermissions(permissionList: MultiplePermissionsState) {
-    Column() {
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { permissionList.launchMultiplePermissionRequest()}) {
-            Text(text = "Request Permissions")
+    Card(modifier = Modifier
+        .wrapContentHeight()
+        .fillMaxWidth(0.8f),
+        shape = MaterialTheme.shapes.medium,
+        backgroundColor = MaterialTheme.colors.surface,
+        contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.surface),
+        elevation = 20.dp
+    ) {
+        Column(verticalArrangement = Arrangement.SpaceEvenly) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "You have not given us permissions. You need to.", modifier = Modifier.padding(20.dp, 0.dp))
+            OutlinedButton(modifier = Modifier.padding(20.dp),
+                onClick = {},
+                content = {
+                    Text(text = "Into the void")
+                })
         }
     }
 }
+
+
+
+
+
 
 //TODO:move with the REQUEST_PERMISSION composable
 //@OptIn(ExperimentalPermissionsApi::class)

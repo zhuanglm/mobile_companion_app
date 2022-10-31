@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.esightcorp.mobile.app.companion"
@@ -124,6 +124,7 @@ dependencies {
     implementation(project(":modules:feature:eshare"))
     implementation(project(":modules:feature:btconnection"))
     implementation(project(":modules:feature:wificonnection"))
+    implementation(project(":modules:core:bluetooth"))
 
 }
 def getProps(path){

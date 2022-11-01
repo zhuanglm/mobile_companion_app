@@ -83,6 +83,7 @@ dependencies {
 
     //module imports
     implementation(project(":modules:core:bluetooth"))
+    implementation(project(":modules:feature:wificonnection"))
 
 
 

@@ -9,11 +9,13 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,10 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiEvent
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.google.accompanist.permissions.*
 import kotlinx.coroutines.CoroutineScope
 import kotlin.contracts.contract
@@ -47,7 +51,7 @@ fun BtConnectionScreen(
     if(btUiState.btConnectionStatus){
         Log.d(TAG, "BtConnectionScreen: CONNECTED")
         Text(text = btUiState.getConnectedDevice)
-        BluetoothDevicePage(vm = vm, btUiState = btUiState)
+        BluetoothDevicePage(vm = vm, btUiState = btUiState, navController = navController)
     }else{
         BluetoothLandingPage(vm = vm, permissionList = bluetoothPermissionState, btUiState = btUiState)
     }
@@ -56,7 +60,8 @@ fun BtConnectionScreen(
 }
 @Composable
 fun BluetoothDevicePage(vm: BtConnectionViewModel,
-                        btUiState: BluetoothUiState
+                        btUiState: BluetoothUiState,
+                        navController: NavController
 ){
     val scaffoldState = rememberScaffoldState()
 
@@ -67,6 +72,7 @@ fun BluetoothDevicePage(vm: BtConnectionViewModel,
                 TopAppBar(
                     elevation = 4.dp,
                     content = {
+                        Log.d(TAG, "BluetoothDevicePage: ${btUiState.getConnectedDevice}")
                         Text(text = btUiState.getConnectedDevice)
                     })
             },
@@ -81,8 +87,10 @@ fun BluetoothDevicePage(vm: BtConnectionViewModel,
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //Lazy Column content
-                Text(text = "What would you like to do")
+                //Column content
+                Button(onClick = { navController.navigate(WifiConnectionScreens.IncomingNavigationRoute.route)}) {
+                    Text(text = "Send over wifi credentials")
+                }
 
             }
         }
@@ -137,7 +145,6 @@ fun BluetoothLandingPage(
 
                 when(btUiState.isScanning){
                     ScanningStatus.Success -> {
-
                     }
                     ScanningStatus.Failed -> {
                         Text(text = "Scanning has failed! OH NO!")}
@@ -186,7 +193,9 @@ fun DisplayDevices(
             contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.surface),
             elevation = 20.dp
         ) {
-            Column(verticalArrangement = Arrangement.SpaceEvenly) {
+            Column(verticalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.verticalScroll(
+                ScrollState(0)
+            )) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = device, modifier = Modifier.padding(20.dp, 0.dp),
                     fontWeight = FontWeight.Bold)

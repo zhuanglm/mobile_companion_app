@@ -99,9 +99,9 @@ class BtConnectionViewModel @Inject constructor(
         override fun onDeviceConnected(device: BluetoothDevice) {
             Log.d(TAG, "onDeviceConnected: ${device.name}")
             _uiState.update { currentState ->
-                currentState.copy(getConnectedDevice = device.name)
-                currentState.copy(btConnectionStatus = true)
+                currentState.copy(getConnectedDevice = device.name, btConnectionStatus = true)
             }
+            Log.e(TAG, "onDeviceConnected: ${_uiState.value.getConnectedDevice}" )
 
         }
 

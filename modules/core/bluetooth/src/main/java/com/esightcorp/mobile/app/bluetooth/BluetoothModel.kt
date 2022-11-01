@@ -88,14 +88,7 @@ class BluetoothModel constructor(
         val gattServiceIntent = Intent(context, BleService::class.java)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
-        val connectedDeviceList = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT_SERVER)
-        Log.d(TAG, "INIT BLUETOOTH MODEL: ${connectedDeviceList.toString()} ")
-        if(connectedDeviceList.isNotEmpty()){
-            Log.d(TAG, "EMPTY CONNECTED DEVICE LIST ")
-            connectedDevice = connectedDeviceList.get(0)
-            connected = true
-            bluetoothModelListener.onDeviceConnected(connectedDevice)
-        }
+
     }
 
     /**
@@ -103,6 +96,14 @@ class BluetoothModel constructor(
      */
     fun registerListener(btModelInterface: BluetoothModelListener) {
         this.bluetoothModelListener = btModelInterface
+        val connectedDeviceList = bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
+        Log.d(TAG, "INIT BLUETOOTH MODEL: ${connectedDeviceList.toString()} ")
+        if(connectedDeviceList.isNotEmpty()){
+            Log.d(TAG, "Non-empty CONNECTED DEVICE LIST ")
+            connectedDevice = connectedDeviceList.get(0)
+            connected = true
+            bluetoothModelListener.onDeviceConnected(connectedDevice)
+        }
 
     }
 

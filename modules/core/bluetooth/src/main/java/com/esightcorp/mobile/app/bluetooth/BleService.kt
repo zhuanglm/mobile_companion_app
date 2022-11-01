@@ -73,8 +73,6 @@ class BleService : Service(){
             status: Int
         ) {
             super.onDescriptorWrite(gatt, descriptor, status)
-            sendMessage(MAG_BLE_PERFORM_ACTION_Characteristic, 0x0200, "8888", "127.0.0.1")
-
         }
 
         override fun onCharacteristicRead(
@@ -237,18 +235,8 @@ class BleService : Service(){
         return result
     }
 
-    @RequiresApi(33)
     @SuppressLint("MissingPermission")
-    private fun sendMessage(characteristic: BluetoothGattCharacteristic, byteArray: ByteArray): Int{
-        var result = -1
-        bluetoothGatt?.let { gatt ->
-            result = gatt.writeCharacteristic(characteristic, byteArray, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
-        }
-        return result
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun sendMessage(characteristic: BluetoothGattCharacteristic, hexMessage: Int, port: String, ipAddress: String){
+    private fun sendPortAndIpAddress(characteristic: BluetoothGattCharacteristic, hexMessage: Int, port: String, ipAddress: String){
         Log.d(TAG, "sendMessage: ${port}")
         var result = -1
         val value = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(hexMessage)
@@ -260,18 +248,28 @@ class BleService : Service(){
         writeValue += value
         writeValue += port
         writeValue += ipAddress
-        bluetoothGatt?.let { gatt ->
-            if (Build.VERSION.SDK_INT >= 33) {
-                result = gatt.writeCharacteristic(characteristic, writeValue, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
-            }else{
-                characteristic.value = writeValue
-                gatt.writeCharacteristic(characteristic)
-            }
-        }
+        sendMessage(characteristic, writeValue)
 
     }
 
-    private fun decodeSendMessageResult(result: Int){
+    @SuppressLint("MissingPermission")
+    private fun sendMessage(characteristic: BluetoothGattCharacteristic, byteArray: ByteArray): Boolean{
+        var intResult = -1
+        var boolResult = false
+
+        bluetoothGatt?.let{gatt ->
+            if(Build.VERSION.SDK_INT >= 33){
+                intResult = gatt.writeCharacteristic(characteristic, byteArray, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
+                boolResult = decodeSendMessageResult(intResult)
+            }else{
+                characteristic.value = byteArray
+                boolResult = gatt.writeCharacteristic(characteristic)
+            }
+        }
+        return boolResult
+    }
+
+    private fun decodeSendMessageResult(result: Int): Boolean{
         when(result){
             BluetoothStatusCodes.SUCCESS -> {
 
@@ -298,6 +296,7 @@ class BleService : Service(){
 
             }
         }
+        return false
     }
 
 

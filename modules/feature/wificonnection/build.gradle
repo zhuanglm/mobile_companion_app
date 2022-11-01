@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -66,8 +68,16 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
 
-    implementation "com.google.dagger:hilt-android:$hilt"
-    implementation"androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+    // to make preview behave properly
+    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
+
+    //hilt dependencies
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
 
     implementation "androidx.navigation:navigation-compose:$nav"
+
+    //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.26.5-rc"
 }

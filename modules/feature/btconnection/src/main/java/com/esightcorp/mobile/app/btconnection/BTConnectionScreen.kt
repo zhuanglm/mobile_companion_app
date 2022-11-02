@@ -15,12 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.repositories.ScanningStatus
+import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
@@ -132,9 +131,9 @@ fun BluetoothLandingPage(
                 }
 
                 when(btUiState.isScanning){
-                    ScanningStatus.Success -> {
+                    com.esightcorp.mobile.app.utils.ScanningStatus.Success -> {
                     }
-                    ScanningStatus.Failed -> {
+                    com.esightcorp.mobile.app.utils.ScanningStatus.Failed -> {
                         Text(text = "Scanning has failed! OH NO!")}
                     else -> {
                         CircularProgressIndicator()

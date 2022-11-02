@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
@@ -29,9 +30,24 @@ class WifiConnectionViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiConnectionUiState())
     val uiState: StateFlow<WifiConnectionUiState> = _uiState.asStateFlow()
 
-    init {
-        Log.d(TAG, "Init call ")
+
+    fun updateSsid(ssid: String){
+        _uiState.update { state ->
+            state.copy(ssid = ssid)
+        }
     }
+
+    fun updatePassword(password:String){
+        _uiState.update { state ->
+            state.copy(password = password)
+        }
+    }
+
+    fun sendWifiCredsViaBluetooth(){
+
+    }
+
+
 
 
 

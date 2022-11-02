@@ -113,13 +113,6 @@ class BleService : Service(){
     }
 
 
-    @SuppressLint("MissingPermission")
-    fun writeCharacteristic(){
-        bluetoothGatt?.let { gatt ->
-//            gatt.writeCharacteristic()
-        }
-    }
-
     fun initialize():Boolean{
         bluetoothAdapter = (baseContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
         if(bluetoothAdapter == null){
@@ -228,28 +221,34 @@ class BleService : Service(){
             bluetoothGatt = null
         }
     }
+//
+//    private fun sendMessage(characteristic: BluetoothGattCharacteristic, hexMessage: Int):Int{
+//        var result = -1
+//
+//        return result
+//    }
+//    @SuppressLint("MissingPermission")
+//    private fun sendPortAndIpAddress(characteristic: BluetoothGattCharacteristic, hexMessage: Int, port: String, ipAddress: String){
+//        Log.d(TAG, "sendMessage: ${port}")
+//        var result = -1
+//        val value = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(hexMessage)
+//            .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
+//        val port = port.encodeToByteArray()
+//        val ipAddress = ipAddress.encodeToByteArray()
+//        var writeValue = byteArrayOf()
+//        writeValue += value
+//        writeValue += port
+//        writeValue += ipAddress
+//        sendMessage(characteristic, writeValue)
+//
+//    }
 
-    private fun sendMessage(characteristic: BluetoothGattCharacteristic, hexMessage: Int):Int{
-        var result = -1
-
-        return result
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun sendPortAndIpAddress(characteristic: BluetoothGattCharacteristic, hexMessage: Int, port: String, ipAddress: String){
-        Log.d(TAG, "sendMessage: ${port}")
-        var result = -1
-        val value = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(hexMessage)
-            .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
-        val port = port.encodeToByteArray()
-        val ipAddress = ipAddress.encodeToByteArray()
-        var writeValue = byteArrayOf()
-        var i = 0
-        writeValue += value
-        writeValue += port
-        writeValue += ipAddress
-        sendMessage(characteristic, writeValue)
-
+    fun sendIpAndPort(ip: String, port: String){
+        sendMessage(MAG_BLE_PERFORM_ACTION_Characteristic, BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT)
+            .port(port)
+            .ipAddress(ip)
+            .build()
+            .getByteArrayBlePayload())
     }
 
     @SuppressLint("MissingPermission")

@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +27,10 @@ fun WifiConnectionScreen(
     val wifiPermissionState = rememberPermissionState(permission = android.Manifest.permission.CHANGE_WIFI_STATE)
     val wifiUiState by vm.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
+    var ssid by remember{ mutableStateOf("")}
+    var password by remember{ mutableStateOf("")}
+    var wifiType by remember{ mutableStateOf("")}
+
 
     MaterialTheme{
         Scaffold (
@@ -45,13 +48,25 @@ fun WifiConnectionScreen(
             Column(modifier = Modifier
                 .padding(contentPadding)
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .background(Color.Green),
+                .fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 //Column content
-                Button(onClick = { }) {
+                OutlinedTextField(value = wifiUiState.ssid,
+                    onValueChange = { vm.updateSsid(it)},
+                    label = {Text("SSID")}
+                )
+                OutlinedTextField(value = wifiUiState.password,
+                    onValueChange = { vm.updatePassword(it)},
+                    label = {Text("PASSWORD")}
+                )
+                OutlinedTextField(value = wifiType,
+                    onValueChange = { wifiType = it},
+                    label = {Text("Wifi Type")}
+                )
+
+                Button(onClick = {Log.e(TAG, "WifiConnectionScreen: SSID = ${wifiUiState.ssid}, Password = ${wifiUiState.password}, Wifi Type = $wifiType" ) }) {
                     Text(text = "Blah")
                 }
 

@@ -80,4 +80,8 @@ dependencies {
 
     //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
     implementation "com.google.accompanist:accompanist-permissions:0.26.5-rc"
+
+    implementation(project(":modules:core:utils"))
+    implementation(project(":modules:core:bluetooth"))
+
 }

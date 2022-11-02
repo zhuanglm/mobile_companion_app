@@ -45,16 +45,16 @@ class BtConnectionRepository @Inject constructor(
         }
 
         override fun onScanFailed(error: Int) {
-            scanStatus(ScanningStatus.Failed)
+            scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Failed)
 
         }
 
         override fun onScanStarted() {
-            scanStatus(ScanningStatus.InProgress)
+            scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.InProgress)
         }
 
         override fun onScanFinished() {
-            scanStatus(ScanningStatus.Success)
+            scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Success)
         }
 
         @SuppressLint("MissingPermission")
@@ -83,7 +83,7 @@ class BtConnectionRepository @Inject constructor(
     }
 
     fun updateDeviceMap(){
-        bluetoothModel.mapBleScanResultToDeviceAndConnectionStatus()
+        bluetoothModel.getDeviceList()
     }
 
 
@@ -136,9 +136,9 @@ class BtConnectionRepository @Inject constructor(
      * Overridden here to be able to call from within the interface
      * gets map of devices once scanning is done
      */
-    private fun scanStatus(isScanning: ScanningStatus) {
+    private fun scanStatus(isScanning: com.esightcorp.mobile.app.utils.ScanningStatus) {
         Log.d("TAG", "scanStatus: $isScanning")
-        if(isScanning == ScanningStatus.Success){
+        if(isScanning == com.esightcorp.mobile.app.utils.ScanningStatus.Success){
             getMapOfDevices()
         }
         if(this::iBtConnectionRepository.isInitialized){

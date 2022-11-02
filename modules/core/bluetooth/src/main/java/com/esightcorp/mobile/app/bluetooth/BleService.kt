@@ -251,6 +251,15 @@ class BleService : Service(){
             .getByteArrayBlePayload())
     }
 
+    fun sendWifiCreds(ssid: String, pwd: String, type: String){
+        Log.i(TAG, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
+        sendMessage(MAG_BLE_PERFORM_ACTION_Characteristic, BluetoothPayload.Builder(BluetoothPayload.BleCodes.WIFI_CREDS)
+            .ssid(ssid)
+            .wifiPwd(pwd)
+            .wifiType(type)
+            .build().getByteArrayBlePayload())
+    }
+
     @SuppressLint("MissingPermission")
     private fun sendMessage(characteristic: BluetoothGattCharacteristic, byteArray: ByteArray): Boolean{
         var intResult = -1

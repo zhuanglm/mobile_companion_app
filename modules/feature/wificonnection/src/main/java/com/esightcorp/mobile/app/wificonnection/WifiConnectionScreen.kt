@@ -27,9 +27,7 @@ fun WifiConnectionScreen(
     val wifiPermissionState = rememberPermissionState(permission = android.Manifest.permission.CHANGE_WIFI_STATE)
     val wifiUiState by vm.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
-    var ssid by remember{ mutableStateOf("")}
-    var password by remember{ mutableStateOf("")}
-    var wifiType by remember{ mutableStateOf("")}
+
 
 
     MaterialTheme{
@@ -61,12 +59,15 @@ fun WifiConnectionScreen(
                     onValueChange = { vm.updatePassword(it)},
                     label = {Text("PASSWORD")}
                 )
-                OutlinedTextField(value = wifiType,
-                    onValueChange = { wifiType = it},
+                OutlinedTextField(value = wifiUiState.wifiType,
+                    onValueChange = { vm.updatePassword(it)},
                     label = {Text("Wifi Type")}
                 )
 
-                Button(onClick = {Log.e(TAG, "WifiConnectionScreen: SSID = ${wifiUiState.ssid}, Password = ${wifiUiState.password}, Wifi Type = $wifiType" ) }) {
+                Button(onClick = {
+                    Log.e(TAG, "WifiConnectionScreen: SSID = ${wifiUiState.ssid}, Password = ${wifiUiState.password}, Wifi Type = ${wifiUiState.wifiType}" )
+                    vm.sendWifiCredsViaBluetooth()
+                }) {
                     Text(text = "Blah")
                 }
 

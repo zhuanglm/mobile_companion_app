@@ -20,7 +20,7 @@ private const val TAG  = "WifiConnectionViewModel"
 @HiltViewModel
 class WifiConnectionViewModel @Inject constructor(
     application: Application,
-    wifiConnectionRepository: WifiConnectionRepository
+  val wifiConnectionRepository: WifiConnectionRepository
 ): AndroidViewModel(application) {
 
 
@@ -43,8 +43,15 @@ class WifiConnectionViewModel @Inject constructor(
         }
     }
 
-    fun sendWifiCredsViaBluetooth(){
+    fun updateWifiType(type:String){
+        _uiState.update { state ->
+            state.copy(wifiType = type)
+        }
+    }
 
+    fun sendWifiCredsViaBluetooth(){
+        TODO("Validate the inputs at this level")
+        wifiConnectionRepository.sendWifiCreds(_uiState.value.ssid, _uiState.value.password, _uiState.value.wifiType)
     }
 
 

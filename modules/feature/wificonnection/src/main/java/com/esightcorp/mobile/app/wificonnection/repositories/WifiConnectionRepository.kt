@@ -15,6 +15,15 @@ class WifiConnectionRepository @Inject constructor(
         Log.e(TAG, "Init - is bluetooth currently connected? $isBluetoothConnected" )
     }
 
+    fun sendWifiCreds(ssid: String, pwd: String, type: String){
+        try{
+            eSightBleManager.getBleService()?.sendWifiCreds(ssid, pwd, type)
+        }catch (exception:NullPointerException){
+            Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
+        }
+
+    }
+
 
 
 }

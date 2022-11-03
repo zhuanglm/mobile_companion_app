@@ -41,6 +41,9 @@ class BtConnectionViewModel @Inject constructor(
         _uiState.update { currentState ->
             currentState.copy(arePermissionsGranted = state)
         }
+        if(state){
+            btConnectionRepository.setupBtModelListener()
+        }
     }
 
     fun connectToDevice(device: String){

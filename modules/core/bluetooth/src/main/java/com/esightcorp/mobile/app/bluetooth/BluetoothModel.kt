@@ -18,7 +18,6 @@ private const val TAG = "BluetoothModel"
 class BluetoothModel constructor(
     val context: Context
 ){
-//    private var bleService: BleService? = null
     val bleScanResult = mutableListOf<BluetoothDevice>()
     private var scanning = false
     private val handler = Handler(Looper.getMainLooper())

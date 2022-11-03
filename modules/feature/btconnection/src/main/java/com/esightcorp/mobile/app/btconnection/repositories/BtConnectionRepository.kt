@@ -70,6 +70,10 @@ class BtConnectionRepository @Inject constructor(
      */
     init {
         bluetoothModel = BluetoothModel(context)
+
+    }
+
+    fun setupBtModelListener(){
         bluetoothModel.registerListener(bluetoothModelListener)
     }
 

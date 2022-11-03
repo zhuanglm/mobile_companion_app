@@ -1,13 +1,13 @@
 package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import com.esightcorp.mobile.app.wificonnection.repositories.IWifiConnectionRespository
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +29,16 @@ class WifiConnectionViewModel @Inject constructor(
      */
     private var _uiState = MutableStateFlow(WifiConnectionUiState())
     val uiState: StateFlow<WifiConnectionUiState> = _uiState.asStateFlow()
+    private val wifiRepoListener = object : WifiConnectionRepoListener{
+        override fun onBluetoothNotConnected() {
+            Log.e(TAG, "onBluetoothNotConnected: Bluetooth needs to be connected to send a message " )
+        }
+
+    }
+
+    init {
+        wifiConnectionRepository.registerListener(wifiRepoListener)
+    }
 
 
     fun updateSsid(ssid: String){
@@ -49,9 +59,32 @@ class WifiConnectionViewModel @Inject constructor(
         }
     }
 
+    fun updatePermissionsGranted(boolean: Boolean){
+        _uiState.update { state ->
+            state.copy(arePermissionsGranted = boolean)
+        }
+    }
+
     fun sendWifiCredsViaBluetooth(){
-        TODO("Validate the inputs at this level")
+//        TODO:Validate the inputs at this level
         wifiConnectionRepository.sendWifiCreds(_uiState.value.ssid, _uiState.value.password, _uiState.value.wifiType)
+    }
+
+    fun getWifiPermissionList(): List<String>{
+        val PERMISSIONS:List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        } else {
+            listOf(
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        }
+        Log.d("TAG", "getWifiPermissionsList: ${PERMISSIONS.first()} ")
+        return PERMISSIONS
+
     }
 
 

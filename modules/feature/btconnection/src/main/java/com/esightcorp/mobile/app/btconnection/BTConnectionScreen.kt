@@ -115,8 +115,9 @@ fun BluetoothLandingPage(
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //Lazy Column content
+                //Column content
                 if(permissionList.allPermissionsGranted){
+                    vm.updatePermissionsState(state = true)
                     if(btUiState.isBtEnabled){
                         Log.d(TAG, "BluetoothLandingPage: DISPLAY DEVICES")
                         DisplayDevices(vm = vm, deviceList = btUiState.listOfAvailableDevices )
@@ -131,9 +132,9 @@ fun BluetoothLandingPage(
                 }
 
                 when(btUiState.isScanning){
-                    com.esightcorp.mobile.app.utils.ScanningStatus.Success -> {
+                    ScanningStatus.Success -> {
                     }
-                    com.esightcorp.mobile.app.utils.ScanningStatus.Failed -> {
+                    ScanningStatus.Failed -> {
                         Text(text = "Scanning has failed! OH NO!")}
                     else -> {
                         CircularProgressIndicator()
@@ -216,7 +217,7 @@ fun RequestPermissions(permissionList: MultiplePermissionsState) {
             Spacer(modifier = Modifier.height(10.dp))
             Text(text = "You have not given us permissions. You need to.", modifier = Modifier.padding(20.dp, 0.dp))
             OutlinedButton(modifier = Modifier.padding(20.dp),
-                onClick = {},
+                onClick = {permissionList.launchMultiplePermissionRequest()},
                 content = {
                     Text(text = "Into the void")
                 })

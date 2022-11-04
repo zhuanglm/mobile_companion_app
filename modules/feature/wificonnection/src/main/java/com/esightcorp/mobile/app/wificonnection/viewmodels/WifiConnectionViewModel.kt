@@ -1,6 +1,7 @@
 package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
+import android.net.wifi.ScanResult
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -32,12 +33,26 @@ class WifiConnectionViewModel @Inject constructor(
     private val wifiRepoListener = object : WifiConnectionRepoListener{
         override fun onBluetoothNotConnected() {
             Log.e(TAG, "onBluetoothNotConnected: Bluetooth needs to be connected to send a message " )
+            updateQrCodeButtonVisibility(true)
         }
+
+        override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
+            _uiState.update { state ->
+                state.copy(networkList = list)
+            }
+        }
+
 
     }
 
     init {
         wifiConnectionRepository.registerListener(wifiRepoListener)
+    }
+
+    fun updateCurrentSelectedNetwork(result: ScanResult){
+        _uiState.update { state ->
+            state.copy(currentSelectedNetwork = result)
+        }
     }
 
 
@@ -59,14 +74,26 @@ class WifiConnectionViewModel @Inject constructor(
         }
     }
 
+    fun updateQrCodeButtonVisibility(boolean: Boolean){
+        _uiState.update { state ->
+            state.copy(qrCodeButtonVisibility = boolean)
+        }
+    }
+
     fun updatePermissionsGranted(boolean: Boolean){
         _uiState.update { state ->
             state.copy(arePermissionsGranted = boolean)
         }
+
+    }
+
+    fun startWifiScan(){
+        wifiConnectionRepository.startWifiScan()
     }
 
     fun sendWifiCredsViaBluetooth(){
 //        TODO:Validate the inputs at this level
+        Log.d(TAG, "sendWifiCredsViaBluetooth: ")
         wifiConnectionRepository.sendWifiCreds(_uiState.value.ssid, _uiState.value.password, _uiState.value.wifiType)
     }
 

@@ -11,7 +11,7 @@ import android.util.Log
 private const val TAG = "WifiModel"
 
 class WifiModel(
-    val context: Context
+    context: Context
 ) {
 
     val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -28,6 +28,7 @@ class WifiModel(
     val makeWifiIntentFilter: IntentFilter = IntentFilter().apply {
         this.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
     }
+    private var listener: WifiModelListener? = null
 
     init {
         context.registerReceiver(wifiScanReceiver, makeWifiIntentFilter)
@@ -44,13 +45,20 @@ class WifiModel(
     private fun scanSuccess(){
         val results = wifiManager.scanResults
         for (result in results) {
-            Log.d(TAG, "scanSuccess: ${result.BSSID}")
+            if(result.SSID != "" && (result.frequency in 2201..2499)){
+                Log.d(TAG, "scanSuccess: ${result.SSID}")
+                Log.i(TAG, "scanSuccess: ${result.frequency}")
+                listener?.onWifiNetworkFound(result)
+            }
         }
+    }
+
+    fun registerListener(listener: WifiModelListener){
+        this.listener = listener
     }
 
     private fun scanFailure(){
         Log.e(TAG, "scanFailure: " )
-
     }
 
 

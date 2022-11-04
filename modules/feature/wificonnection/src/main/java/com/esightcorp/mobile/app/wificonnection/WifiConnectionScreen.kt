@@ -1,9 +1,13 @@
 package com.esightcorp.mobile.app.wificonnection
 
 import android.Manifest
+import android.net.Network
+import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -11,16 +15,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectionViewModel
 import com.google.accompanist.permissions.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import org.intellij.lang.annotations.JdkConstants
 
 
 private const val TAG = "WifiConnectionScreen"
@@ -37,20 +44,7 @@ fun WifiConnectionScreen(
     })
     val wifiUiState by vm.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
-    val lifecycleOwner = LocalLifecycleOwner.current
-//    DisposableEffect(key1 = lifecycleOwner, effect = {
-//        val observer = LifecycleEventObserver{ _, event ->
-//            if(event == Lifecycle.Event.ON_START){
-//                Log.d(TAG, "WifiConnectionScreen: LAUNCH THE REQUEST")
-//                wifiPermissionState.launchMultiplePermissionRequest()
-//            }
-//        }
-//        lifecycleOwner.lifecycle.addObserver(observer)
-//        onDispose {
-//            lifecycleOwner.lifecycle.removeObserver(observer)
-//        }
-//
-//    })
+
     Log.d(TAG, "WifiConnectionScreen: ${vm.getWifiPermissionList().toString()}")
 
     MaterialTheme{
@@ -77,106 +71,124 @@ fun WifiConnectionScreen(
                 Log.d(TAG, "WifiConnectionScreen: ${wifiPermissionState.permissions.toString()}")
                 Log.d(TAG, "WifiConnectionScreen: ${wifiPermissionState.allPermissionsGranted}")
 
-//                /**
-//                 * Permission state code
-//                 */
-//                wifiPermissionState.permissions.forEach { perm ->
-//                    when(perm.permission){
-//                        Manifest.permission.ACCESS_COARSE_LOCATION -> {
-//                            when{
-//                                perm.status.isGranted -> {
-//                                    Log.i(TAG, "WifiConnectionScreen: COARSE LOCATION PERMISSIONS ACCEPTED")
-//                                }
-//                                perm.status.shouldShowRationale ->{
-//                                    Log.e(TAG, "WifiConnectionScreen: COARSE LOCATION SHOW RATIONALE PERMISSIONS " )
-//                                }
-//                                perm.status.isPermanentlyDenied() -> {//This should be turning it off fully?
-//                                    Log.e(TAG, "WifiConnectionScreen:COARSE LOCATION PERMANENTLY DENIED " )
-//
-//                                }
-//                            }
-//                        }
-//                        Manifest.permission.ACCESS_FINE_LOCATION -> {
-//                            when{
-//                                perm.status.isGranted -> {
-//                                    Log.i(TAG, "WifiConnectionScreen:FINE LOCATION PERMISSIONS ACCEPTED")
-//                                }
-//                                perm.status.shouldShowRationale ->{
-//                                    Log.e(TAG, "WifiConnectionScreen:FINE LOCATION SHOW RATIONALE PERMISSIONS " )
-//                                }
-//                                perm.status.isPermanentlyDenied() -> {//This should be turning it off fully?
-//                                    Log.e(TAG, "WifiConnectionScreen:FINE LOCATION PERMANENTLY DENIED " )
-//
-//                                }
-//                            }
-//                        }
-//                        Manifest.permission.ACCESS_BACKGROUND_LOCATION-> {
-//                            when{
-//                                perm.status.isGranted -> {
-//                                    Log.i(TAG, "WifiConnectionScreen:BACKGROUND LOCATION PERMISSIONS ACCEPTED")
-//                                }
-//                                perm.status.shouldShowRationale ->{
-//                                    Log.e(TAG, "WifiConnectionScreen:BACKGROUND LOCATION SHOW RATIONALE PERMISSIONS " )
-//                                }
-//                                perm.status.isPermanentlyDenied() -> {//This should be turning it off fully?
-//                                    Log.e(TAG, "WifiConnectionScreen: BACKGROUND LOCATION PERMANENTLY DENIED " )
-//
-//                                }
-//                            }
-//                        }
-//                        Manifest.permission.CHANGE_WIFI_STATE -> {
-//                            when{
-//                                perm.status.isGranted -> {
-//                                    Log.i(TAG, "WifiConnectionScreen: CHANGE_WIFI_STATE PERMISSIONS ACCEPTED")
-//                                }
-//                                perm.status.shouldShowRationale ->{
-//                                    Log.e(TAG, "WifiConnectionScreen: CHANGE_WIFI_STATE SHOW RATIONALE PERMISSIONS " )
-//                                }
-//                                perm.status.isPermanentlyDenied() -> {//This should be turning it off fully?
-//                                    Log.e(TAG, "WifiConnectionScreen: CHANGE_WIFI_STATE PERMANENTLY DENIED " )
-//
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
 
-                /**
-                 * end of permission state code
-                 */
                 if(wifiPermissionState.allPermissionsGranted){
                     vm.updatePermissionsGranted(true)
-                    OutlinedTextField(value = wifiUiState.ssid,
-                        onValueChange = { vm.updateSsid(it)},
-                        label = {Text("SSID")}
-                    )
-                    OutlinedTextField(value = wifiUiState.password,
-                        onValueChange = { vm.updatePassword(it)},
-                        label = {Text("PASSWORD")}
-                    )
-                    OutlinedTextField(value = wifiUiState.wifiType,
-                        onValueChange = { vm.updateWifiType(it)},
-                        label = {Text("Wifi Type")}
-                    )
-
-                    Button(onClick = {
-                        Log.e(TAG, "WifiConnectionScreen: SSID = ${wifiUiState.ssid}, Password = ${wifiUiState.password}, Wifi Type = ${wifiUiState.wifiType}" )
-                        vm.sendWifiCredsViaBluetooth()
-                    }) {
-                        Text(text = "Blah")
+                    if(wifiUiState.currentSelectedNetwork != null){
+                        //TODO: Need something here to show the currently selected network
+                        NetworkSelected(wifiUiState = wifiUiState, vm = vm)
+                    }else{
+                        NetworkList(networks = wifiUiState.networkList, wifiUiState = wifiUiState, vm = vm)
                     }
                 }else if(!wifiPermissionState.allPermissionsGranted){
                     vm.updatePermissionsGranted(false)
                     RequestPermissions(permissionList = wifiPermissionState)
 
                 }
-
-
             }
         }
     }
 }
 
+@Composable
+fun NetworkSelected(
+    wifiUiState: WifiConnectionUiState,
+    vm: WifiConnectionViewModel
+){
+    var expanded by remember{mutableStateOf(false)}
+    var selectedIndex by remember{ mutableStateOf(0)}
+    val wifiTypes = listOf("WPA-2/WPA", "WEP", "None")
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+            .background(Color.Black),
+        elevation = 20.dp
+    ) {
+        Column(verticalArrangement = Arrangement.SpaceAround, horizontalAlignment = Alignment.CenterHorizontally) {
+            wifiUiState.currentSelectedNetwork?.SSID?.let { ssid ->
+                Text(text = ssid,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Magenta)
+            }
+            OutlinedTextField(value = wifiUiState.password,
+                onValueChange = { vm.updatePassword(it)},
+                label = {Text("Password")}
+            )
+            Box(modifier = Modifier
+                .fillMaxSize(0.8f)
+                .wrapContentSize(Alignment.TopStart)){
+                Text(wifiTypes[selectedIndex],
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp)
+                        .clickable { expanded = true }
+                        )
+                DropdownMenu(expanded = expanded,
+                    onDismissRequest = {expanded = false},
+                    modifier = Modifier.background(Color.Green)) {
+                    wifiTypes.forEachIndexed{ index, s ->
+                        DropdownMenuItem(onClick = {
+                            selectedIndex = index
+                            vm.updateWifiType(s)
+                        }) {
+                            Text(text = s, modifier = Modifier.padding(15.dp))
+                        }
+                    }
+                }
+
+            }
+            Button(onClick = { vm.sendWifiCredsViaBluetooth() }) {
+                Text(text = "Send the creds over bt")
+            }
+
+            Row() {
+
+            }
+            Row() {
+
+
+            }
+        }
+
+    }
+}
+
+
+@Composable
+fun NetworkList(
+    networks: List<ScanResult>,
+    wifiUiState: WifiConnectionUiState,
+    vm: WifiConnectionViewModel){
+    if(networks.isNotEmpty()){
+        LazyColumn{
+            items(networks.size){ index ->
+                NetworkRow(networks[index], vm = vm)
+            }
+        }
+    }else{
+        CircularProgressIndicator()
+        Button(onClick = {
+            Log.e(TAG, "WifiConnectionScreen: SSID = ${wifiUiState.ssid}, Password = ${wifiUiState.password}, Wifi Type = ${wifiUiState.wifiType}" )
+            vm.startWifiScan()
+        }) {
+            Text(text = "get networks")
+        }
+    }
+
+}
+
+@Composable
+fun NetworkRow(
+    network: ScanResult,
+    vm: WifiConnectionViewModel){
+    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+        Button(onClick = { vm.updateCurrentSelectedNetwork(network)}) {
+            Text(text = network.SSID)
+        }
+    }
+}
 
 
 //TODO: REQUEST_PERMISSION composable -> move this to somewhere reusable, preferrably somewhere in a lib module
@@ -204,3 +216,4 @@ fun RequestPermissions(permissionList: MultiplePermissionsState) {
         }
     }
 }
+

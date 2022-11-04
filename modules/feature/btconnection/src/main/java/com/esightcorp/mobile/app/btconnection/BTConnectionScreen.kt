@@ -117,6 +117,15 @@ fun BluetoothLandingPage(
             ) {
                 //Column content
                 if(permissionList.allPermissionsGranted){
+                    when(btUiState.isScanning){
+                        ScanningStatus.Success -> {
+                        }
+                        ScanningStatus.Failed -> {
+                            Text(text = "Scanning has failed! OH NO!")}
+                        else -> {
+                            CircularProgressIndicator()
+                        }
+                    }
                     vm.updatePermissionsState(state = true)
                     if(btUiState.isBtEnabled){
                         Log.d(TAG, "BluetoothLandingPage: DISPLAY DEVICES")
@@ -130,17 +139,6 @@ fun BluetoothLandingPage(
                     vm.updatePermissionsState(false)
                     RequestPermissions(permissionList = permissionList)
                 }
-
-                when(btUiState.isScanning){
-                    ScanningStatus.Success -> {
-                    }
-                    ScanningStatus.Failed -> {
-                        Text(text = "Scanning has failed! OH NO!")}
-                    else -> {
-                        CircularProgressIndicator()
-                    }
-                }
-
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.btconnection.repositories
+package com.esightcorp.mobile.app.utils
 
 sealed class ScanningStatus{
     object Failed : ScanningStatus()

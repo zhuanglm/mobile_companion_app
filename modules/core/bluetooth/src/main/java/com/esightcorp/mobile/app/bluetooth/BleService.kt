@@ -280,28 +280,28 @@ class BleService : Service(){
     private fun decodeSendMessageResult(result: Int): Boolean{
         when(result){
             BluetoothStatusCodes.SUCCESS -> {
-
+                Log.d(TAG, "decodeSendMessageResult: SUCCESS")
             }
             BluetoothStatusCodes.ERROR_BLUETOOTH_NOT_ALLOWED -> {
-
+                Log.d(TAG, "decodeSendMessageResult: BLUETOOTH NOT ALLOWED ")
             }
             BluetoothStatusCodes.ERROR_BLUETOOTH_NOT_ENABLED -> {
-
+                Log.d(TAG, "decodeSendMessageResult: BLUETOOTH NOT ENABLED")
             }
             BluetoothStatusCodes.ERROR_DEVICE_NOT_BONDED -> {
-
+                Log.d(TAG, "decodeSendMessageResult: NOT BONDED ")
             }
             BluetoothStatusCodes.ERROR_GATT_WRITE_NOT_ALLOWED -> {
-
+                Log.d(TAG, "decodeSendMessageResult:  WRITE NOT ALLOWED")
             }
             BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY -> {
-
+                Log.d(TAG, "decodeSendMessageResult: WRITE BUSY")
             }
             BluetoothStatusCodes.ERROR_UNKNOWN ->{
-
+                Log.d(TAG, "decodeSendMessageResult: UNKNOWN")
             }
             else -> {
-
+                Log.d(TAG, "decodeSendMessageResult: UNKNOWN ELSE")
             }
         }
         return false

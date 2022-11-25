@@ -1,9 +1,8 @@
 package com.esightcorp.mobile.app.bluetooth
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.util.*
+import android.util.Log
 
+private const val TAG = "BluetoothPayload"
 class BluetoothPayload private constructor(
     val bleCode: BleCodes,
     val SSID: String?,
@@ -30,44 +29,52 @@ class BluetoothPayload private constructor(
         fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port)
     }
 
-    enum class BleCodes(val code: Int){
-        STREAM_OUT(0x02),
-        STREAM_OUT_SHUTDOWN(0x0203),
-        HOTSPOT_CREDS(0x03),
-        WIFI_CREDS(0x11)
+    enum class BleCodes(val code: String){
+        STREAM_OUT("0x02"),
+        STREAM_OUT_SHUTDOWN("0x0203"),
+        HOTSPOT_CREDS("0x03"),
+        WIFI_CREDS("0x11")
         //TODO: make this enum class its own file
     }
 
     fun getByteArrayBlePayload(): ByteArray{
         var byteArray = byteArrayOf()
+        val charset = Charsets.UTF_8
+        val delimiter = "$"
         when(bleCode){
             BleCodes.STREAM_OUT -> {
-                val code = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(BleCodes.STREAM_OUT.code)
-                    .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
+                val code = BleCodes.STREAM_OUT.code.plus(delimiter).toByteArray(charset)
                 byteArray += code
                 if(port != null && ipAddress != null){
-                    val port = port.encodeToByteArray()
+                    val port = port.plus(delimiter).toByteArray(charset)
                     byteArray += port
-                    val ip = ipAddress.encodeToByteArray()
+                    val ip = ipAddress.plus(delimiter).toByteArray(charset)
                     byteArray += ip
                 }
             }
             BleCodes.STREAM_OUT_SHUTDOWN -> {
-                val code = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(BleCodes.STREAM_OUT_SHUTDOWN.code)
-                    .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
+                val code = BleCodes.STREAM_OUT_SHUTDOWN.code.toByteArray(charset)
                 byteArray += code
             }
             BleCodes.HOTSPOT_CREDS -> {
-                val code = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(BleCodes.HOTSPOT_CREDS.code)
-                    .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
+                val code = BleCodes.HOTSPOT_CREDS.code.toByteArray(charset)
                 byteArray += code
             }
             BleCodes.WIFI_CREDS -> {
-                val code = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(BleCodes.WIFI_CREDS.code)
-                    .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
+                val code = BleCodes.WIFI_CREDS.code.plus(delimiter).toByteArray(charset)
                 byteArray += code
+                if(SSID != null && wifiPwd != null && wifiType != null){
+                    val ssid = SSID.plus(delimiter).toByteArray(charset)
+                    val pwd = wifiPwd.plus(delimiter).toByteArray(charset)
+                    val type = wifiType.plus(delimiter).toByteArray(charset)
+                    byteArray += ssid
+                    byteArray += pwd
+                    byteArray += type
+
+                }
             }
         }
+        Log.d(TAG, "getByteArrayBlePayload: ${String(byteArray, charset)}" )
         return byteArray
     }
 

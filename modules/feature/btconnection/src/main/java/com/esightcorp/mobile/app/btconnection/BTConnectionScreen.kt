@@ -7,21 +7,17 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -29,34 +25,30 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.google.accompanist.permissions.*
 import java.time.LocalDateTime
 
 const val TAG = "BtConnectionScreen"
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BtConnectionScreen(
     navController: NavController,
     vm: BtConnectionViewModel = hiltViewModel()){
-    val bluetoothPermissionState = rememberMultiplePermissionsState(permissions = vm.getBluetoothPermissionsList())
     val btUiState by vm.uiState.collectAsState()
 
-    if(btUiState.btConnectionStatus){
-        Log.d(TAG, "BtConnectionScreen: CONNECTED")
-        Text(text = btUiState.getConnectedDevice)
-        BluetoothDevicePage(vm = vm, btUiState = btUiState, navController = navController)
-    }else{
-        BluetoothLandingPage(vm = vm, permissionList = bluetoothPermissionState, btUiState = btUiState)
+    IsBluetoothEnabled(vm = vm)
+    if(btUiState.isBtEnabled && !btUiState.btConnectionStatus){
+        BaseBtScreen(vm = vm, btUiState = btUiState, navController = navController)
+    } else if (btUiState.btConnectionStatus){
+       NavigateHome(navController = navController, btUiState = btUiState)
     }
-    Log.d(TAG, "BtConnectionScreen: ${bluetoothPermissionState.permissions}")
 
 }
-@Composable
+/*@Composable
 fun BluetoothDevicePage(vm: BtConnectionViewModel,
                         btUiState: BluetoothUiState,
                         navController: NavController
@@ -93,64 +85,14 @@ fun BluetoothDevicePage(vm: BtConnectionViewModel,
             }
         }
     }
-}
-
-
-@OptIn(ExperimentalPermissionsApi::class)
+}*/
 @Composable
-fun BluetoothLandingPage(
-    vm: BtConnectionViewModel,
-    permissionList: MultiplePermissionsState,
-    btUiState: BluetoothUiState
-){
-    val scaffoldState = rememberScaffoldState()
-
-    MaterialTheme{
-        Scaffold (
-            scaffoldState = scaffoldState,
-            topBar = {
-                TopAppBar(
-                    elevation = 4.dp, 
-                    content = {
-                        Text(text = "Ble Devices")
-                    })
-            },
-            snackbarHost = {
-
-            }){ contentPadding ->
-            Column(modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(Color.Green),
-            verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                //Column content
-                if(permissionList.allPermissionsGranted){
-                    when(btUiState.isScanning){
-                        ScanningStatus.Success -> {
-                        }
-                        ScanningStatus.Failed -> {
-                            Text(text = "Scanning has failed! OH NO!")}
-                        else -> {
-                            CircularProgressIndicator()
-                        }
-                    }
-                    vm.updatePermissionsState(state = true)
-                    if(btUiState.isBtEnabled){
-                        Log.d(TAG, "BluetoothLandingPage: DISPLAY DEVICES")
-                        DisplayDevices(vm = vm, deviceList = btUiState.listOfAvailableDevices )
-                    }else{
-                        Log.d(TAG, "BluetoothLandingPage: BLUETOOTH ENABLED")
-                        IsBluetoothEnabled(vm)
-                    }
-                }else{
-                    Log.d(TAG, "BluetoothLandingPage: NEED PERMISSIONS")
-                    vm.updatePermissionsState(false)
-                }
-            }
-        }
+fun NavigateHome(
+    navController: NavController,
+    btUiState: BluetoothUiState){
+    LaunchedEffect(Unit){
+        Log.d(TAG, "BtConnectionScreen: ")
+        navController.navigate("home_first/{${btUiState.getConnectedDevice}}")
     }
 }
 
@@ -173,71 +115,58 @@ fun IsBluetoothEnabled(
     }
 }
 
-@Composable
-fun DisplayDevices(
-    vm: BtConnectionViewModel,
-    deviceList: List<String>){
-    LaunchedEffect(Unit){
-        vm.refreshUiDeviceList()
-    }
-    deviceList.forEach { device ->
-        Card(modifier = Modifier
-            .wrapContentHeight()
-            .fillMaxWidth(0.8f),
-            shape = MaterialTheme.shapes.medium,
-            backgroundColor = MaterialTheme.colors.surface,
-            contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.surface),
-            elevation = 20.dp
-        ) {
-            Column(verticalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.verticalScroll(
-                ScrollState(0)
-            )) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(text = device, modifier = Modifier.padding(20.dp, 0.dp),
-                    fontWeight = FontWeight.Bold)
-                Button(modifier = Modifier
-                    .padding(20.dp),
-                    onClick = {vm.connectToDevice(device)},
-                    shape = MaterialTheme.shapes.medium,
-                    content = {
-                        Text(text = "Connect to $device")
-                    })
-            }
 
-        }
-    }
-}
 
 @Composable
-fun baseHomeScreen(){
+fun BaseBtScreen(vm: BtConnectionViewModel,
+                   btUiState: BluetoothUiState,
+                   navController: NavController){
     Surface(color = Color(0x004c4c)) {
         ConstraintLayout(modifier = Modifier
             .fillMaxSize()
         ) {
-            val (settingsRow, personalGreeting, connectToDeviceButton) = createRefs()
-            settingsRow(Modifier.constrainAs(settingsRow){
+            val (settingsRow, personalGreeting, connectToDeviceButton, progress) = createRefs()
+            SettingsRow(Modifier.constrainAs(settingsRow){
                 top.linkTo(parent.top, margin = 16.dp)
                 end.linkTo(parent.end, margin = 32.dp)
             })
-            personalGreeting(Modifier.constrainAs(personalGreeting){
+            PersonalGreeting(Modifier.constrainAs(personalGreeting){
                 top.linkTo(settingsRow.bottom, margin = 32.dp)
                 start.linkTo(parent.start, margin = 32.dp)
-            })
-            connectToDeviceButton(modifier = Modifier.constrainAs(connectToDeviceButton){
-                top.linkTo(personalGreeting.bottom, margin = 32.dp)
-                start.linkTo(parent.start, margin = 32.dp)
-            })
-
-
-
-
+            }, btUiState)
+            if(!btUiState.btConnectionStatus){
+                ConnectToDeviceButton(modifier = Modifier.constrainAs(connectToDeviceButton){
+                    top.linkTo(personalGreeting.bottom, margin = 32.dp)
+                    start.linkTo(parent.start, margin = 32.dp)
+                }, navController = navController)
+                /*when(btUiState.isScanning){
+                    ScanningStatus.Success -> {
+                    }
+                    ScanningStatus.Failed -> {
+                        Text(text = "Scanning has failed! OH NO!")}
+                    ScanningStatus.InProgress ->{
+                        CircularProgressIndicator(Modifier.constrainAs(progress){
+                            top.linkTo(connectToDeviceButton.bottom)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        })
+                    }
+                    else -> {
+                        Log.d(TAG, "BaseHomeScreen: Unknown scanning status for BLE")
+                    }
+                }*/
+            }else{
+                LaunchedEffect(Unit){
+                    navController.navigate("home_first/{${btUiState.getConnectedDevice}}")
+                }
+            }
         }
     }
-
 }
 
 @Composable
-fun settingsRow(modifier: Modifier) {
+fun SettingsRow(modifier: Modifier) {
     IconButton(onClick = { Log.d(TAG, "settingsRow: Open settings here") }, modifier) {
         Icon(Icons.Filled.Settings,"Settings")
     }
@@ -247,7 +176,8 @@ fun settingsRow(modifier: Modifier) {
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
-fun personalGreeting(modifier: Modifier){
+fun PersonalGreeting(modifier: Modifier,
+ btUiState: BluetoothUiState){
     Box(modifier = modifier){
         ConstraintLayout(
             modifier =
@@ -284,21 +214,22 @@ fun personalGreeting(modifier: Modifier){
                         })
                 }
             }
-            Text(text = "Connection status to an esight",
+            Text(text = "You are not connected to an eSight Go",
                 modifier = Modifier.constrainAs(connectionStatus){
                     top.linkTo(greeting.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
                 })
+
         }
     }
 
 }
 
 @Composable
-fun connectToDeviceButton(
-    modifier: Modifier
-){
-    Button(onClick = { /*TODO*/ },
+fun ConnectToDeviceButton(
+    modifier: Modifier,
+    navController: NavController){
+    Button(onClick = {navController.navigate(BtConnectionScreens.BtDevicesScreen.route) },
         shape = RoundedCornerShape(10.dp),
         modifier = modifier) {
         ConstraintLayout() {
@@ -322,11 +253,6 @@ fun connectToDeviceButton(
 }
 
 
-@Composable
-@Preview
-fun preview(){
-    baseHomeScreen()
-}
 
 
 

@@ -37,15 +37,9 @@ private const val TAG = "WifiConnectionScreen"
 fun WifiConnectionScreen(
     navController: NavController,
     vm : WifiConnectionViewModel = hiltViewModel()){
-    var wifiPermissionState: MultiplePermissionsState = rememberMultiplePermissionsState(permissions = vm.getWifiPermissionList(), onPermissionsResult = { result ->
-       result.keys.forEach{ key ->
-           Log.e(TAG, "WifiConnectionScreen: ${key}, ${result[key]}", )
-       }
-    })
     val wifiUiState by vm.uiState.collectAsState()
     val scaffoldState = rememberScaffoldState()
 
-    Log.d(TAG, "WifiConnectionScreen: ${vm.getWifiPermissionList().toString()}")
 
     MaterialTheme{
         Scaffold (
@@ -68,11 +62,8 @@ fun WifiConnectionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 //Column content
-                Log.d(TAG, "WifiConnectionScreen: ${wifiPermissionState.permissions.toString()}")
-                Log.d(TAG, "WifiConnectionScreen: ${wifiPermissionState.allPermissionsGranted}")
 
-
-                if(wifiPermissionState.allPermissionsGranted){
+                if(true){
                     vm.updatePermissionsGranted(true)
                     if(wifiUiState.currentSelectedNetwork != null){
                         //TODO: Need something here to show the currently selected network
@@ -80,9 +71,8 @@ fun WifiConnectionScreen(
                     }else{
                         NetworkList(networks = wifiUiState.networkList, wifiUiState = wifiUiState, vm = vm)
                     }
-                }else if(!wifiPermissionState.allPermissionsGranted){
+                }else if(!true){
                     vm.updatePermissionsGranted(false)
-                    RequestPermissions(permissionList = wifiPermissionState)
 
                 }
             }

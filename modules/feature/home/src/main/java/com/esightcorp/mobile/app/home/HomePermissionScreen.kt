@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.home.viewmodels.PermissionViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
@@ -34,7 +35,7 @@ fun BasePermissionScreen(
     val permissionsState = rememberMultiplePermissionsState(permissions = vm.getPermissionList())
     if(permissionsState.allPermissionsGranted){
         LaunchedEffect(Unit){
-            navController.navigate("home_first")
+            navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route)
         }
 
     }else{

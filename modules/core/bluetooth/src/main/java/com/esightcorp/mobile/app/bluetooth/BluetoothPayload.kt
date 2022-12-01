@@ -12,6 +12,9 @@ class BluetoothPayload private constructor(
     val port: String?
 ){
 
+    val delimiter = "$"
+    val startAndEnd = "*"
+
     data class Builder(
         private var bleCode: BleCodes,
         private var SSID: String? = null,
@@ -37,23 +40,32 @@ class BluetoothPayload private constructor(
         //TODO: make this enum class its own file
     }
 
+    /**
+     * For the payload to work properly:
+     * there is a character at the beginning [startAndEnd]
+     * there is a character between each piece of data [delimiter]
+     * and there is a character at the end [startAndEnd]
+     *
+     * Order is very important here, as it needs to be decoded properly on the glasses
+     *
+     */
+
     fun getByteArrayBlePayload(): ByteArray{
         var byteArray = byteArrayOf()
         val charset = Charsets.UTF_8
-        val delimiter = "$"
         when(bleCode){
             BleCodes.STREAM_OUT -> {
-                val code = BleCodes.STREAM_OUT.code.plus(delimiter).toByteArray(charset)
+                val code = startAndEnd.plus(BleCodes.STREAM_OUT.code).plus(delimiter).toByteArray(charset)
                 byteArray += code
                 if(port != null && ipAddress != null){
                     val port = port.plus(delimiter).toByteArray(charset)
                     byteArray += port
-                    val ip = ipAddress.plus(delimiter).toByteArray(charset)
+                    val ip = ipAddress.plus(startAndEnd).toByteArray(charset)
                     byteArray += ip
                 }
             }
             BleCodes.STREAM_OUT_SHUTDOWN -> {
-                val code = BleCodes.STREAM_OUT_SHUTDOWN.code.toByteArray(charset)
+                val code = startAndEnd.plus(BleCodes.STREAM_OUT_SHUTDOWN.code).toByteArray(charset)
                 byteArray += code
             }
             BleCodes.HOTSPOT_CREDS -> {
@@ -61,12 +73,12 @@ class BluetoothPayload private constructor(
                 byteArray += code
             }
             BleCodes.WIFI_CREDS -> {
-                val code = BleCodes.WIFI_CREDS.code.plus(delimiter).toByteArray(charset)
+                val code = startAndEnd.plus(BleCodes.WIFI_CREDS.code).plus(delimiter).toByteArray(charset)
                 byteArray += code
                 if(SSID != null && wifiPwd != null && wifiType != null){
                     val ssid = SSID.plus(delimiter).toByteArray(charset)
                     val pwd = wifiPwd.plus(delimiter).toByteArray(charset)
-                    val type = wifiType.plus(delimiter).toByteArray(charset)
+                    val type = wifiType.plus(startAndEnd).toByteArray(charset)
                     byteArray += ssid
                     byteArray += pwd
                     byteArray += type

@@ -44,7 +44,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_ui_ktx"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
     implementation "androidx.compose.ui:ui:$compose"
@@ -63,6 +63,9 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$ui_tooling"
 // Integration with ViewModels
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
+
+    //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.27.0"
 // UI Tests
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
@@ -72,6 +75,8 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt"
     kapt 'com.google.dagger:hilt-android-compiler:2.42'
     implementation"androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+
+
 
 
     implementation("androidx.navigation:navigation-compose:$nav")

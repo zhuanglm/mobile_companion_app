@@ -6,17 +6,27 @@ import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -24,6 +34,7 @@ import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.google.accompanist.permissions.*
+import java.time.LocalDateTime
 
 const val TAG = "BtConnectionScreen"
 
@@ -137,7 +148,6 @@ fun BluetoothLandingPage(
                 }else{
                     Log.d(TAG, "BluetoothLandingPage: NEED PERMISSIONS")
                     vm.updatePermissionsState(false)
-                    RequestPermissions(permissionList = permissionList)
                 }
             }
         }
@@ -198,30 +208,126 @@ fun DisplayDevices(
     }
 }
 
-
-//TODO: REQUEST_PERMISSION composable -> move this to somewhere reusable, preferrably somewhere in a lib module
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RequestPermissions(permissionList: MultiplePermissionsState) {
-    Card(modifier = Modifier
-        .wrapContentHeight()
-        .fillMaxWidth(0.8f),
-        shape = MaterialTheme.shapes.medium,
-        backgroundColor = MaterialTheme.colors.surface,
-        contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.surface),
-        elevation = 20.dp
-    ) {
-        Column(verticalArrangement = Arrangement.SpaceEvenly) {
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "You have not given us permissions. You need to.", modifier = Modifier.padding(20.dp, 0.dp))
-            OutlinedButton(modifier = Modifier.padding(20.dp),
-                onClick = {permissionList.launchMultiplePermissionRequest()},
-                content = {
-                    Text(text = "Into the void")
+fun baseHomeScreen(){
+    Surface(color = Color(0x004c4c)) {
+        ConstraintLayout(modifier = Modifier
+            .fillMaxSize()
+        ) {
+            val (settingsRow, personalGreeting, connectToDeviceButton) = createRefs()
+            settingsRow(Modifier.constrainAs(settingsRow){
+                top.linkTo(parent.top, margin = 16.dp)
+                end.linkTo(parent.end, margin = 32.dp)
+            })
+            personalGreeting(Modifier.constrainAs(personalGreeting){
+                top.linkTo(settingsRow.bottom, margin = 32.dp)
+                start.linkTo(parent.start, margin = 32.dp)
+            })
+            connectToDeviceButton(modifier = Modifier.constrainAs(connectToDeviceButton){
+                top.linkTo(personalGreeting.bottom, margin = 32.dp)
+                start.linkTo(parent.start, margin = 32.dp)
+            })
+
+
+
+
+        }
+    }
+
+}
+
+@Composable
+fun settingsRow(modifier: Modifier) {
+    IconButton(onClick = { Log.d(TAG, "settingsRow: Open settings here") }, modifier) {
+        Icon(Icons.Filled.Settings,"Settings")
+    }
+
+}
+
+
+@OptIn(ExperimentalUnitApi::class)
+@Composable
+fun personalGreeting(modifier: Modifier){
+    Box(modifier = modifier){
+        ConstraintLayout(
+            modifier =
+            Modifier
+                .fillMaxWidth(0.8f)
+                .wrapContentHeight()) {
+            val (greeting, connectionStatus) = createRefs()
+            when(LocalDateTime.now().hour){
+                in 0..12 -> {
+                    Text(text = "Good Morning",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = TextUnit(20f, TextUnitType.Sp),
+                        modifier = Modifier.constrainAs(greeting){
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        })
+                }
+                in 12..16 -> {
+                    Text(text = "Good Afternoon",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = TextUnit(20f, TextUnitType.Sp),
+                        modifier = Modifier.constrainAs(greeting){
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        })
+                }
+                else -> {
+                    Text(text = "Good Evening",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = TextUnit(20f, TextUnitType.Sp),
+                        modifier = Modifier.constrainAs(greeting){
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        })
+                }
+            }
+            Text(text = "Connection status to an esight",
+                modifier = Modifier.constrainAs(connectionStatus){
+                    top.linkTo(greeting.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
                 })
         }
     }
+
 }
+
+@Composable
+fun connectToDeviceButton(
+    modifier: Modifier
+){
+    Button(onClick = { /*TODO*/ },
+        shape = RoundedCornerShape(10.dp),
+        modifier = modifier) {
+        ConstraintLayout() {
+            val (icon, text) = createRefs()
+            Image(
+                Icons.Filled.Add,
+                contentDescription = "Connect to an eSight",
+                modifier = Modifier.constrainAs(icon){
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                })
+            Text(text = "Connect to an eSight", modifier = Modifier.constrainAs(text){
+                start.linkTo(icon.end, margin = 8.dp)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            })
+        }
+
+    }
+}
+
+
+@Composable
+@Preview
+fun preview(){
+    baseHomeScreen()
+}
+
 
 
 

@@ -98,6 +98,7 @@ fun NetworkSelected(
     var expanded by remember{mutableStateOf(false)}
     var selectedIndex by remember{ mutableStateOf(0)}
     val wifiTypes = listOf("WPA-2/WPA", "WEP", "None")
+    vm.updateWifiType(wifiTypes[0])
 
     Card(
         modifier = Modifier
@@ -108,6 +109,7 @@ fun NetworkSelected(
     ) {
         Column(verticalArrangement = Arrangement.SpaceAround, horizontalAlignment = Alignment.CenterHorizontally) {
             wifiUiState.currentSelectedNetwork?.SSID?.let { ssid ->
+                vm.updateSsid(ssid)
                 Text(text = ssid,
                     fontWeight = FontWeight.Bold,
                     color = Color.Magenta)

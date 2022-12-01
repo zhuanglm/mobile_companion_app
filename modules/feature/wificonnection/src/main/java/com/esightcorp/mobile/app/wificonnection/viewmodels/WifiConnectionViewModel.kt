@@ -97,22 +97,7 @@ class WifiConnectionViewModel @Inject constructor(
         wifiConnectionRepository.sendWifiCreds(_uiState.value.ssid, _uiState.value.password, _uiState.value.wifiType)
     }
 
-    fun getWifiPermissionList(): List<String>{
-        val PERMISSIONS:List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            listOf(
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        } else {
-            listOf(
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        }
-        Log.d("TAG", "getWifiPermissionsList: ${PERMISSIONS.first()} ")
-        return PERMISSIONS
 
-    }
 
 
 

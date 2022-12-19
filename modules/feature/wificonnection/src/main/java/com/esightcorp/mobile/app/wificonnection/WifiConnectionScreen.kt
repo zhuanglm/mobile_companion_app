@@ -1,83 +1,43 @@
 package com.esightcorp.mobile.app.wificonnection
 
-import android.Manifest
-import android.net.Network
 import android.net.wifi.ScanResult
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectionViewModel
-import com.google.accompanist.permissions.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import org.intellij.lang.annotations.JdkConstants
-
 
 private const val TAG = "WifiConnectionScreen"
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WifiConnectionScreen(
     navController: NavController,
     vm : WifiConnectionViewModel = hiltViewModel()){
     val wifiUiState by vm.uiState.collectAsState()
-    val scaffoldState = rememberScaffoldState()
-
-
-    MaterialTheme{
-        Scaffold (
-            scaffoldState = scaffoldState,
-            topBar = {
-                TopAppBar(
-                    elevation = 4.dp,
-                    content = {
-                        Text(text = "Wifi connection screen")
-                    })
-            },
-            snackbarHost = {
-
-            }){ contentPadding ->
-            Column(modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxWidth()
-                .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                //Column content
-
-                if(true){
-                    vm.updatePermissionsGranted(true)
-                    if(wifiUiState.currentSelectedNetwork != null){
-                        //TODO: Need something here to show the currently selected network
-                        NetworkSelected(wifiUiState = wifiUiState, vm = vm)
-                    }else{
-                        NetworkList(networks = wifiUiState.networkList, wifiUiState = wifiUiState, vm = vm)
-                    }
-                }else if(!true){
-                    vm.updatePermissionsGranted(false)
-
-                }
-            }
-        }
-    }
+    BaseWifiScreen(
+        networks = wifiUiState.networkList,
+        vm = vm,
+        navController = navController)
 }
 
 @Composable
@@ -129,82 +89,88 @@ fun NetworkSelected(
                         }
                     }
                 }
-
             }
             Button(onClick = { vm.sendWifiCredsViaBluetooth() }) {
                 Text(text = "Send the creds over bt")
             }
-
-            Row() {
-
-            }
-            Row() {
-
-
-            }
         }
-
     }
 }
 
 
+@OptIn(ExperimentalUnitApi::class)
 @Composable
-fun NetworkList(
+fun BaseWifiScreen(
     networks: List<ScanResult>,
-    wifiUiState: WifiConnectionUiState,
-    vm: WifiConnectionViewModel){
-    if(networks.isNotEmpty()){
-        LazyColumn{
-            items(networks.size){ index ->
-                NetworkRow(networks[index], vm = vm)
+    vm: WifiConnectionViewModel,
+    navController: NavController){
+    Surface(color = Color.Black) {
+        ConstraintLayout(Modifier.fillMaxSize()) {
+            val (header, wifiList, spinner) = createRefs()
+            Text(text = "Select Wifi Network",
+                fontSize = TextUnit(20f, TextUnitType.Sp),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.constrainAs(header){
+                    top.linkTo(parent.top, margin = 32.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+            if(networks.isNotEmpty()){
+                LazyColumn(modifier = Modifier
+                    .constrainAs(wifiList) {
+                        top.linkTo(header.bottom, margin = 16.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    items(networks.size){ index ->
+                        WifiButton(Modifier, networks[index], navController = navController, updateCurrentSelectedNetwork = vm::updateCurrentSelectedNetwork )
+                    }
+                }
+            }else{
+                vm.startWifiScan()
+                CircularProgressIndicator(modifier = Modifier
+                    .constrainAs(spinner) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(header.bottom)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .fillMaxSize(0.8f))
             }
         }
-    }else{
-        CircularProgressIndicator()
-        Button(onClick = {
-            Log.e(TAG, "WifiConnectionScreen: SSID = ${wifiUiState.ssid}, Password = ${wifiUiState.password}, Wifi Type = ${wifiUiState.wifiType}" )
-            vm.startWifiScan()
-        }) {
-            Text(text = "get networks")
-        }
-    }
-
-}
-
-@Composable
-fun NetworkRow(
-    network: ScanResult,
-    vm: WifiConnectionViewModel){
-    Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-        Button(onClick = { vm.updateCurrentSelectedNetwork(network)}) {
-            Text(text = network.SSID)
-        }
     }
 }
 
-
-//TODO: REQUEST_PERMISSION composable -> move this to somewhere reusable, preferrably somewhere in a lib module
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RequestPermissions(permissionList: MultiplePermissionsState) {
-    Card(modifier = Modifier
-        .wrapContentHeight()
-        .fillMaxWidth(0.8f),
-        shape = MaterialTheme.shapes.medium,
-        backgroundColor = MaterialTheme.colors.surface,
-        contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.surface),
-        elevation = 20.dp
+fun WifiButton(modifier: Modifier,
+               network: ScanResult,
+               navController: NavController,
+               updateCurrentSelectedNetwork: (ScanResult) -> Unit){
+    Button(onClick = {
+        updateCurrentSelectedNetwork(network)
+        navController.navigate(WifiConnectionScreens.WifiCredentialsScreen.route)
+                     }, modifier = modifier
+        .fillMaxWidth(0.8f)
+        .wrapContentHeight(),
+        shape = RoundedCornerShape(10.dp)
     ) {
-        Column(verticalArrangement = Arrangement.SpaceEvenly) {
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "You have not given us permissions. You need to.", modifier = Modifier.padding(20.dp, 0.dp))
-            Button(modifier = Modifier.padding(20.dp),
-                onClick = {
-                    permissionList.launchMultiplePermissionRequest()
-                          },
-                content = {
-                    Text(text = "Into the void")
-                })
+        ConstraintLayout(Modifier.wrapContentHeight().fillMaxWidth()) {
+            val (icon, text) = createRefs()
+            Text(text = network.SSID, modifier = Modifier.constrainAs(text){
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            })
+            //todo: check if the lock is actually valid for the network
+            Image(Icons.Filled.Lock, contentDescription = "Network has a password on it", modifier = Modifier.constrainAs(icon){
+                end.linkTo(parent.end)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            })
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.home.navigation
 
+import android.util.Log
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.esightcorp.mobile.app.home.HomeFirstScreen
@@ -21,6 +22,7 @@ fun NavGraphBuilder.addHomeNavigation(navController: NavController) {
             })
         ){ navBackStackEntry ->
             val device = navBackStackEntry.arguments?.getString(deviceArg)
+            Log.d("TAG", "addHomeNavigation: $device")
             device?.let { HomeFirstScreen(navController = navController, it) }
 
         }

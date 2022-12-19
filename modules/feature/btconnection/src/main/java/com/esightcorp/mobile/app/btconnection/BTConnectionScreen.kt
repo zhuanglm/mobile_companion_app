@@ -48,44 +48,7 @@ fun BtConnectionScreen(
     }
 
 }
-/*@Composable
-fun BluetoothDevicePage(vm: BtConnectionViewModel,
-                        btUiState: BluetoothUiState,
-                        navController: NavController
-){
-    val scaffoldState = rememberScaffoldState()
 
-    MaterialTheme{
-        Scaffold (
-            scaffoldState = scaffoldState,
-            topBar = {
-                TopAppBar(
-                    elevation = 4.dp,
-                    content = {
-                        Log.d(TAG, "BluetoothDevicePage: ${btUiState.getConnectedDevice}")
-                        Text(text = btUiState.getConnectedDevice)
-                    })
-            },
-            snackbarHost = {
-
-            }){ contentPadding ->
-            Column(modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(Color.Green),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                //Column content
-                Button(onClick = { navController.navigate(WifiConnectionScreens.IncomingNavigationRoute.route)}) {
-                    Text(text = "Send over wifi credentials")
-                }
-
-            }
-        }
-    }
-}*/
 @Composable
 fun NavigateHome(
     navController: NavController,

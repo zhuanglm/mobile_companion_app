@@ -8,7 +8,9 @@ data class WifiConnectionUiState(
     val arePermissionsGranted: Boolean = false,
     val ssid: String = "",
     val password: String = "",
-    val wifiType: String ="",
+    val passwordSubmitted: Boolean = false,
+    val wifiType: String ="WPA/WPA2",
+    val wifiTypeSubmitted: Boolean = false,
     val qrCodeButtonVisibility: Boolean = false,
     val currentSelectedNetwork: ScanResult? = null,
     val networkList: List<ScanResult> = mutableListOf())

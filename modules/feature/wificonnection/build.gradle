@@ -44,7 +44,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_ui_ktx"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
     implementation "androidx.compose.ui:ui:$compose"
@@ -68,6 +68,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
 
+    implementation 'com.google.zxing:core:3.3.3'
     // to make preview behave properly
     debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
 

@@ -21,11 +21,6 @@ object eSightBleManager {
     private var scanningStatus: ScanningStatus = ScanningStatus.Unknown
 
 
-    init{
-
-    }
-
-
     fun setupBluetoothManager(context: Context){
         this.bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         this.bluetoothAdapter = bluetoothManager.adapter

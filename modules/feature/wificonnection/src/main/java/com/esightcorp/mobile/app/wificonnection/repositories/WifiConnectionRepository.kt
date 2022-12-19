@@ -16,6 +16,7 @@ class WifiConnectionRepository @Inject constructor(
     private lateinit var wifiRepoListener: WifiConnectionRepoListener
     private val wifiModel = WifiModel(context)
     private val networkList: MutableList<ScanResult> = mutableListOf()
+    private lateinit var selectedNetwork: ScanResult
     private val wifiModelListener = object: WifiModelListener{
         override fun onWifiNetworkFound(result: ScanResult) {
             Log.e(TAG, "onWifiNetworkFound: ${result.SSID}")
@@ -59,6 +60,14 @@ class WifiConnectionRepository @Inject constructor(
 
     private fun setupWifiModelListener(){
         wifiModel.registerListener(wifiModelListener)
+    }
+
+    fun setSelectedNetwork(network: ScanResult){
+        WifiCredentials.setNetwork(network)
+    }
+
+    fun getSelectedNetwork():ScanResult{
+        return WifiCredentials.getNetwork()
     }
 
     fun registerListener(listener: WifiConnectionRepoListener){

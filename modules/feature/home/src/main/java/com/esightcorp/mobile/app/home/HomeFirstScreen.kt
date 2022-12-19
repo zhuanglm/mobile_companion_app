@@ -1,11 +1,12 @@
 package com.esightcorp.mobile.app.home
 
-import android.service.autofill.UserData
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -25,6 +27,7 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import java.time.LocalDateTime
 
 private const val TAG = "Home Screen"
@@ -84,11 +87,11 @@ fun BaseHomeScreen(vm: HomeViewModel,
             ConstraintLayout(modifier = Modifier
                 .fillMaxSize()
             ) {
-                val (settingsRow, personalGreeting, deviceCard, appHeader, wifi, eshare) = createRefs()
+                val (settingsRow, personalGreeting, deviceCard, appContainer) = createRefs()
                 SettingsRow(Modifier.constrainAs(settingsRow){
                     top.linkTo(parent.top, margin = 16.dp)
                     end.linkTo(parent.end, margin = 32.dp)
-                })
+                }, navController)
                 PersonalGreeting(Modifier.constrainAs(personalGreeting){
                     top.linkTo(settingsRow.bottom, margin = 32.dp)
                     start.linkTo(parent.start, margin = 32.dp)
@@ -97,6 +100,11 @@ fun BaseHomeScreen(vm: HomeViewModel,
                     top.linkTo(personalGreeting.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 32.dp)
                 })
+                AppContainer(modifier = Modifier.constrainAs(appContainer){
+                    top.linkTo(deviceCard.bottom, margin = 32.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }, navController )
             }
         }
     }
@@ -110,11 +118,11 @@ fun navigateToBtHomeScreen(navController: NavController){
 }
 
 @Composable
-fun SettingsRow(modifier: Modifier) {
-    IconButton(onClick = { Log.d(com.esightcorp.mobile.app.btconnection.TAG, "settingsRow: Open settings here") }, modifier) {
+fun SettingsRow(modifier: Modifier,
+    navController: NavController) {
+    IconButton(onClick = { navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route) }, modifier) {
         Icon(Icons.Filled.Settings,"Settings")
     }
-
 }
 
 
@@ -197,6 +205,58 @@ fun ConnectedToBar(
                     bottom.linkTo(parent.bottom, margin = 8.dp)
                     start.linkTo(icon.end, margin = 8.dp)
             })
+        }
+    }
+}
+
+@OptIn(ExperimentalUnitApi::class)
+@Composable
+fun AppContainer(modifier : Modifier,
+navController: NavController){
+    ConstraintLayout(modifier = modifier.wrapContentHeight().fillMaxWidth(0.8f)) {
+     val (header, wifiOverBt, wifiQr, eShare) = createRefs()
+        Text(text = "Apps",
+            fontWeight = FontWeight.Bold,
+            fontSize = TextUnit(20f, TextUnitType.Sp),
+            modifier = Modifier.constrainAs(header){
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+            })
+        Button(onClick = {  navController.navigate(WifiConnectionScreens.IncomingNavigationRoute.route )}, modifier = Modifier.constrainAs(wifiOverBt) {
+            start.linkTo(parent.start)
+            top.linkTo(header.bottom, margin = 16.dp)
+        }.fillMaxWidth(0.5f)) {
+            ConstraintLayout {
+                val (icon, text) = createRefs()
+                Image(Icons.Filled.AccountBox, contentDescription = "Icon", modifier = Modifier.constrainAs(icon){
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                })
+                Text(text = "Wifi over Bt", modifier = Modifier.constrainAs(text) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(icon.bottom)
+                })
+            }
+        }
+        Button(onClick = { /*TODO*/ }, modifier = Modifier.constrainAs(wifiQr) {
+            start.linkTo(wifiOverBt.end, margin = 8.dp)
+            top.linkTo(header.bottom, margin = 16.dp)
+        }.fillMaxWidth(0.5f)) {
+            ConstraintLayout {
+                val (icon, text) = createRefs()
+                Image(Icons.Filled.Build, contentDescription = "Icon", modifier = Modifier.constrainAs(icon){
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                })
+                Text(text = "Wifi QR", modifier = Modifier.constrainAs(text) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(icon.bottom)
+                })
+            }
         }
     }
 }

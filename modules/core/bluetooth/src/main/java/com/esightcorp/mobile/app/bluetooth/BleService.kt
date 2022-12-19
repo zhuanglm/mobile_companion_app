@@ -274,6 +274,7 @@ class BleService : Service(){
                 boolResult = gatt.writeCharacteristic(characteristic)
             }
         }
+        Log.d(TAG, "sendMessage: ${intResult}, $boolResult")
         return boolResult
     }
 

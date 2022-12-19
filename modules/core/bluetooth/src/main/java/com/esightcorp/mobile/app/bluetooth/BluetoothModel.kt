@@ -66,7 +66,7 @@ class BluetoothModel constructor(
                     bleManager.getBleService()?.getSupportedGattServices()?.forEach {
                         Log.d(TAG, "onReceive: ${it.uuid}")
                     }
-                    bleManager.getBleService()?.sendIpAndPort("192.168.0.1", "8889")
+//                    bleManager.getBleService()?.sendIpAndPort("192.168.0.1", "8889")
                     
                 }
                 BleService.ACTION_DATA_AVAILABLE -> {

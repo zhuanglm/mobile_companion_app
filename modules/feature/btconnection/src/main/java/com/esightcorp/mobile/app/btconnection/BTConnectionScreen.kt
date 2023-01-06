@@ -102,23 +102,6 @@ fun BaseBtScreen(vm: BtConnectionViewModel,
                     top.linkTo(personalGreeting.bottom, margin = 32.dp)
                     start.linkTo(parent.start, margin = 32.dp)
                 }, navController = navController)
-                /*when(btUiState.isScanning){
-                    ScanningStatus.Success -> {
-                    }
-                    ScanningStatus.Failed -> {
-                        Text(text = "Scanning has failed! OH NO!")}
-                    ScanningStatus.InProgress ->{
-                        CircularProgressIndicator(Modifier.constrainAs(progress){
-                            top.linkTo(connectToDeviceButton.bottom)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        })
-                    }
-                    else -> {
-                        Log.d(TAG, "BaseHomeScreen: Unknown scanning status for BLE")
-                    }
-                }*/
             }else{
                 LaunchedEffect(Unit){
                     navController.navigate("home_first/{${btUiState.getConnectedDevice}}")

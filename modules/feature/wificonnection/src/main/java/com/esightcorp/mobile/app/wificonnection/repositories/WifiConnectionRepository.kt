@@ -31,11 +31,10 @@ class WifiConnectionRepository @Inject constructor(
         override fun onScanFailed() {
             TODO("Not yet implemented")
         }
-
     }
 
     init {
-        Log.e(TAG, "Init - is bluetooth currently connected? $isBluetoothConnected" )
+
     }
 
 
@@ -45,11 +44,13 @@ class WifiConnectionRepository @Inject constructor(
                 eSightBleManager.getBleService()?.sendWifiCreds(ssid, pwd, type)
             }catch (exception:NullPointerException){
                 Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
+            }catch (exception:UninitializedPropertyAccessException){
+                Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
             }
         }
         else{
             Log.d(TAG, "sendWifiCreds: No bt connection")
-            wifiRepoListener.onBluetoothNotConnected()
+            wifiRepoListener.onBluetoothStatusUpdate(isBluetoothConnected)
         }
 
     }
@@ -72,6 +73,10 @@ class WifiConnectionRepository @Inject constructor(
 
     fun registerListener(listener: WifiConnectionRepoListener){
         wifiRepoListener = listener
+        if(!isBluetoothConnected){
+            Log.e(TAG, "Bluetooth is not currently connected." )
+            wifiRepoListener.onBluetoothStatusUpdate(isBluetoothConnected)
+        }
         setupWifiModelListener()
     }
 

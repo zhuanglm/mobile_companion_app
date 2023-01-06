@@ -10,13 +10,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.getSystemService
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel.Companion.PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID
-import com.juul.kable.State
-import kotlinx.coroutines.CoroutineScope
 import java.lang.IllegalArgumentException
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -38,7 +33,7 @@ class BleService : Service(){
     private val bluetoothGattCallback = object : BluetoothGattCallback(){
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             if(newState == BluetoothProfile.STATE_CONNECTED){
-                Log.d(TAG, "onConnectionStateChange: state connected")
+                Log.d(TAG, "onConnectionStateChange: State connected")
                 bluetoothGatt = gatt
                 connectionState = STATE_CONNECTED
                 broadcastUpdate(ACTION_GATT_CONNECTED)
@@ -73,6 +68,7 @@ class BleService : Service(){
             status: Int
         ) {
             super.onDescriptorWrite(gatt, descriptor, status)
+            Log.d(TAG, "onDescriptorWrite: $status")
         }
 
         override fun onCharacteristicRead(
@@ -96,7 +92,6 @@ class BleService : Service(){
         }
     }
 
-    @RequiresApi(33)
     @SuppressLint("MissingPermission")
     private fun setCharacteristicNotification(){
         bluetoothGatt?.let { gatt ->
@@ -108,7 +103,7 @@ class BleService : Service(){
             }
             Log.w(TAG, "setCharacteristicNotification: SET the characteristic notification" )
         }?:  run{
-            Log.w(TAG, "setCharacteristicNotification: BluetoothGatt is not initialized", )
+            Log.w(TAG, "setCharacteristicNotification: BluetoothGatt is not initialized" )
         }
     }
 

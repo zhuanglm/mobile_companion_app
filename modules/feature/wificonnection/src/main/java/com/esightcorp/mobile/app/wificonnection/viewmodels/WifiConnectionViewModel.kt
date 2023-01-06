@@ -6,6 +6,7 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
@@ -33,9 +34,12 @@ class WifiConnectionViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiConnectionUiState())
     val uiState: StateFlow<WifiConnectionUiState> = _uiState.asStateFlow()
     private val wifiRepoListener = object : WifiConnectionRepoListener{
-        override fun onBluetoothNotConnected() {
+        override fun onBluetoothStatusUpdate(status: Boolean) {
             Log.e(TAG, "onBluetoothNotConnected: Bluetooth needs to be connected to send a message " )
             updateQrCodeButtonVisibility(true)
+            _uiState.update { state ->
+                state.copy(bluetoothConnected = status)
+            }
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {

@@ -41,38 +41,6 @@ fun HomeFirstScreen(
     val homeUiState by vm.uiState.collectAsState()
 
     BaseHomeScreen(vm = vm, homeUiState = homeUiState, navController = navController, device = device)
-//    Column(modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.SpaceBetween,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Row(modifier = Modifier.fillMaxWidth(.80f),
-//            horizontalArrangement = Arrangement.SpaceEvenly) {
-//            Column(modifier = Modifier.wrapContentHeight()) {
-//                Text(text = "Good evening ## TIME", style = MaterialTheme.typography.h2)
-//                Text(
-//                    text = "You are not connected to an eSight #### BLUETOOTH PERMISSIONS",
-//                    style = MaterialTheme.typography.caption
-//                )
-//            }
-//        }
-//        Button(onClick = { navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route) },
-//            Modifier
-//                .padding(20.dp, 5.dp)
-//                .fillMaxWidth(0.75f)
-//        ) {
-//            Text(text = "Connect to a bluetooth device")
-//        }
-//
-//
-//        Button(onClick = { navController.navigate(WifiConnectionScreens.IncomingNavigationRoute.route) }) {
-//            Text(text = "wifi")
-//        }
-//
-//        Button(onClick = { navController.navigate(EshareScreens.IncomingNavigationRoute.route) }) {
-//            Text(text = "eshare")
-//        }
-//
-//    }
 }
 @Composable
 fun BaseHomeScreen(vm: HomeViewModel,
@@ -214,7 +182,7 @@ fun ConnectedToBar(
 fun AppContainer(modifier : Modifier,
 navController: NavController){
     ConstraintLayout(modifier = modifier.wrapContentHeight().fillMaxWidth(0.8f)) {
-     val (header, wifiOverBt, wifiQr, eShare) = createRefs()
+        val (header, wifiOverBt, wifiQr, eShare) = createRefs()
         Text(text = "Apps",
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(20f, TextUnitType.Sp),

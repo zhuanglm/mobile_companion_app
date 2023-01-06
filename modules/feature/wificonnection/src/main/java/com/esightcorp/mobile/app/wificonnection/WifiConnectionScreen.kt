@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.wificonnection
 
 import android.net.wifi.ScanResult
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,13 +35,15 @@ fun WifiConnectionScreen(
     navController: NavController,
     vm : WifiConnectionViewModel = hiltViewModel()){
     val wifiUiState by vm.uiState.collectAsState()
+    Log.d(TAG, "WifiConnectionScreen: ${wifiUiState.bluetoothConnected}")
     BaseWifiScreen(
         networks = wifiUiState.networkList,
         vm = vm,
         navController = navController)
+
 }
 
-@Composable
+/*@Composable
 fun NetworkSelected(
     wifiUiState: WifiConnectionUiState,
     vm: WifiConnectionViewModel
@@ -95,7 +98,7 @@ fun NetworkSelected(
             }
         }
     }
-}
+}*/
 
 
 @OptIn(ExperimentalUnitApi::class)
@@ -152,13 +155,16 @@ fun WifiButton(modifier: Modifier,
                updateCurrentSelectedNetwork: (ScanResult) -> Unit){
     Button(onClick = {
         updateCurrentSelectedNetwork(network)
-        navController.navigate(WifiConnectionScreens.WifiCredentialsScreen.route)
-                     }, modifier = modifier
-        .fillMaxWidth(0.8f)
-        .wrapContentHeight(),
+        navController.navigate("${WifiConnectionScreens.WifiCredentialsScreen.route}/{${network.SSID}}")},
+        modifier = modifier
+            .fillMaxWidth(0.8f)
+            .wrapContentHeight(),
         shape = RoundedCornerShape(10.dp)
     ) {
-        ConstraintLayout(Modifier.wrapContentHeight().fillMaxWidth()) {
+        ConstraintLayout(
+            Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()) {
             val (icon, text) = createRefs()
             Text(text = network.SSID, modifier = Modifier.constrainAs(text){
                 start.linkTo(parent.start)

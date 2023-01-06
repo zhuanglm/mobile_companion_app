@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.wificonnection
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,13 +19,17 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectionViewModel
 
+private const val TAG = "WifiCredentialsRoute"
 
 @Composable
 internal fun WifiCredentialsRoute(
     navController: NavController,
+    ssid: String,
     viewModel: WifiConnectionViewModel = hiltViewModel()
 ){
+    Log.d(TAG, "WifiCredentialsRoute: $ssid")
     val wifiUiState by viewModel.uiState.collectAsState()
+    viewModel.updateSsid(ssid)
     WifiCredentialsScreen(
         onPasswordSubmitted = viewModel::wifiPasswordSubmitted,
         onPasswordUpdated = viewModel::updatePassword,
@@ -33,7 +38,6 @@ internal fun WifiCredentialsRoute(
         onWifiNetworkSelected = viewModel::updateSsid,
         wifiUiState = wifiUiState,
         navController = navController,
-        sendWifiCredsViaBluetooth = viewModel::sendWifiCredsViaBluetooth
     )
 }
 
@@ -49,7 +53,6 @@ internal fun WifiCredentialsScreen(
     wifiUiState: WifiConnectionUiState,
     navController: NavController,
     modifier: Modifier = Modifier,
-    sendWifiCredsViaBluetooth: () -> Unit
 ){
     Surface(modifier.fillMaxSize()) {
         ConstraintLayout {
@@ -63,7 +66,7 @@ internal fun WifiCredentialsScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                    onWifiTypeUpdated = onWifiTypeUpdated)
+                    onWifiTypeUpdated = onWifiTypeUpdated, navController = navController)
             }else{
                 PasswordField(
                     onPasswordSubmitted = onPasswordSubmitted,
@@ -93,7 +96,11 @@ private fun PasswordField(
     //textfield
     OutlinedTextField(value = wifiUiState.password,
         onValueChange = onPasswordUpdated,
-        label = { Text("Password") }
+        label = { Text("Type your password here") },
+        modifier = Modifier
+            .fillMaxWidth(0.8f)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .wrapContentHeight(Alignment.CenterVertically)
     )
     SubmitButton(modifier = modifier, action = onPasswordSubmitted)
 }
@@ -102,85 +109,64 @@ private fun PasswordField(
 private fun WifiTypeField(
     onWifiTypeSubmitted: () -> Unit,
     onWifiTypeUpdated: (String) -> Unit,
-    modifier: Modifier){
+    modifier: Modifier,
+    navController: NavController){
+
+    ConstraintLayout(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight()
+    ){
+        val (outlinedButton, submit, dropDown) =  createRefs()
+        BoxedDropdownMenu(
+            modifier = modifier.constrainAs(dropDown){
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }, onWifiTypeUpdated = onWifiTypeUpdated)
+
+        SubmitButton(
+            modifier = Modifier.constrainAs(submit){
+                top.linkTo(dropDown.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
+            action = { onWifiTypeSubmitted()
+                navController.navigate("home")})
+    }
+}
+
+@Composable
+private fun BoxedDropdownMenu(
+    modifier: Modifier,
+    onWifiTypeUpdated: (String) -> Unit
+){
     val wifiTypes = listOf("WPA-2/WPA", "WEP", "None")
     var expanded by remember{ mutableStateOf(true)}
     var selectedIndex by remember{ mutableStateOf(0)}
 
-    ConstraintLayout(modifier = Modifier.fillMaxWidth().fillMaxHeight().border(4.dp, Color.Red)){
-        val (outlinedButton, submit, dropDown) =  createRefs()
-        OutlinedButton(onClick = { expanded = true }, modifier = Modifier.constrainAs(outlinedButton){
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            top.linkTo(parent.top)
-        }) {
+    Box(modifier = modifier
+        .wrapContentSize(Alignment.Center)
+    ){
+        OutlinedButton(onClick = { expanded = true }, modifier = modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally)) {
             Text(text = wifiTypes[selectedIndex])
             onWifiTypeUpdated(wifiTypes[selectedIndex])
         }
         DropdownMenu(expanded = expanded,
             onDismissRequest = { expanded = false},
-            modifier = Modifier.constrainAs(dropDown){
-                top.linkTo(outlinedButton.bottom)
-                start.linkTo(outlinedButton.start)
-                end.linkTo(outlinedButton.end)
-            }) {
-            wifiTypes.forEach { item ->
-                DropdownMenuItem(onClick = {onWifiTypeUpdated(item)}) {
+            modifier = modifier.fillMaxWidth()) {
+            wifiTypes.forEachIndexed { index, item ->
+                DropdownMenuItem(onClick = {
+                    onWifiTypeUpdated(item)
+                    selectedIndex = index
+                }) {
                     Text(text = item)
                 }
             }
         }
-        SubmitButton(
-            modifier = Modifier.constrainAs(submit){
-                top.linkTo(outlinedButton.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
-            action = onWifiTypeSubmitted)
     }
-    
-   /* Box(modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()
-        .padding(top = 10.dp)
-        .border(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
-        .clickable(
-            onClick = { expanded = true }
-        )
-    ){
-        ConstraintLayout(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .border(2.dp, Color.Red)) {
-
-            val(label) = createRefs()
-            Text(text = "WPA/WPA2",
-            modifier = Modifier.padding(16.dp)
-                .constrainAs(label) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            color = Color.Green)
-            //dropdown menu
-            DropdownMenu(expanded = expanded,
-                onDismissRequest = {expanded = false},
-                modifier = Modifier.background(Color.Green)) {
-                wifiTypes.forEachIndexed{ index, s ->
-                    DropdownMenuItem(onClick = {
-                        selectedIndex = index
-                        onWifiTypeUpdated
-                    }) {
-                        Text(text = s, modifier = Modifier.padding(15.dp))
-                    }
-                }
-            }
-            SubmitButton(modifier = modifier, action = onWifiTypeSubmitted)
-
-       }
-    }*/
-
 }
 
 @Composable
@@ -193,12 +179,26 @@ private fun SubmitButton(
         Text(text = "Submit")
     }
 }
-
+@Preview(showBackground = true)
 @Composable
-@Preview
-fun preview(){
-
+fun Preview(){
+    //textfield
+    OutlinedTextField("String",
+        onValueChange = { stubStringFunction("testing") },
+        label = { Text("Type your password here") },
+        modifier = Modifier
+    )
+    SubmitButton(modifier = Modifier, action = { stubFunction() })
 }
 
+fun stubFunction(){
+    //use this to stub out your preview functions
+    Log.d(TAG, "stubFunction: ")
+}
+
+fun stubStringFunction(value: String){
+    //use this to stub out your preview functions
+    Log.d(TAG, "stubStringFunction: ")
+}
 
 

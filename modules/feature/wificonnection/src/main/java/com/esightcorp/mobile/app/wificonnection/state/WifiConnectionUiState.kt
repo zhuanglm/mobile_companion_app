@@ -13,4 +13,5 @@ data class WifiConnectionUiState(
     val wifiTypeSubmitted: Boolean = false,
     val qrCodeButtonVisibility: Boolean = false,
     val currentSelectedNetwork: ScanResult? = null,
-    val networkList: List<ScanResult> = mutableListOf())
+    val networkList: List<ScanResult> = mutableListOf(),
+    val bluetoothConnected: Boolean = false)

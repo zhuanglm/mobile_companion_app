@@ -7,5 +7,4 @@ interface WifiModelListener {
     fun onWifiNetworkFound(result: ScanResult): Unit
     fun onNetworkConnected(): Unit
     fun onScanFailed():Unit
-
 }

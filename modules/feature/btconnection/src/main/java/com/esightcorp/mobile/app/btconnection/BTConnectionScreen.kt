@@ -29,6 +29,8 @@ import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
+import com.esightcorp.mobile.app.ui.AddDeviceButton
+import com.esightcorp.mobile.app.ui.CustomTopAppBar
 import com.google.accompanist.permissions.*
 import java.time.LocalDateTime
 
@@ -89,19 +91,17 @@ fun BaseBtScreen(vm: BtConnectionViewModel,
             .fillMaxSize()
         ) {
             val (settingsRow, personalGreeting, connectToDeviceButton, progress) = createRefs()
-            SettingsRow(Modifier.constrainAs(settingsRow){
-                top.linkTo(parent.top, margin = 16.dp)
-                end.linkTo(parent.end, margin = 32.dp)
+            CustomTopAppBar(showBackButton = false, showSettingsButton = true, modifier = Modifier.constrainAs(settingsRow){
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
             })
             PersonalGreeting(Modifier.constrainAs(personalGreeting){
                 top.linkTo(settingsRow.bottom, margin = 32.dp)
                 start.linkTo(parent.start, margin = 32.dp)
             }, btUiState)
             if(!btUiState.btConnectionStatus){
-                ConnectToDeviceButton(modifier = Modifier.constrainAs(connectToDeviceButton){
-                    top.linkTo(personalGreeting.bottom, margin = 32.dp)
-                    start.linkTo(parent.start, margin = 32.dp)
-                }, navController = navController)
+                AddDeviceButton()
             }else{
                 LaunchedEffect(Unit){
                     navController.navigate("home_first/{${btUiState.getConnectedDevice}}")

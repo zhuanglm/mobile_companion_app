@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AddDeviceButton(
-    onClick: @Composable () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier
 ){
     ElevatedButton(
-        onClick = { onClick },
+        onClick = onClick,
         modifier = modifier.fillMaxWidth().wrapContentHeight(),
         enabled = true,
         colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),

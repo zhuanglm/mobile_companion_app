@@ -10,6 +10,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -32,7 +33,8 @@ fun Header1Text(
 fun Header2Text(
     text: String,
     modifier: Modifier,
-    color: Color = Color.White
+    color: Color = Color.White,
+    textAlign: TextAlign? = TextAlign.Justify
 ){
     Text(
         text = text,
@@ -40,6 +42,7 @@ fun Header2Text(
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
         fontFamily = FontFamily.SansSerif,
+        textAlign = textAlign
     )
 }
 @Composable

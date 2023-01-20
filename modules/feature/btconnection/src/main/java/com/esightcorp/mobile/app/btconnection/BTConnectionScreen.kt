@@ -95,7 +95,7 @@ internal fun NoDeviceConnectedScreen(
                 })
 
             AddDeviceButton(
-                onClick = { /*check permissions, then navigate out*/ Unit },
+                onClick = {navController.navigate(BtConnectionScreens.BtDisabledScreen.route)},
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {
@@ -110,11 +110,11 @@ internal fun NoDeviceConnectedScreen(
                 onPrivacyPolicyInvoked = { onPrivacyPolicyPressed },
                 modifier = modifier
                     .padding(15.dp, 0.dp, 15.dp, 0.dp)
-                    .constrainAs(terms){
+                    .constrainAs(terms) {
                         bottom.linkTo(feedback.top, margin = 25.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                }
+                    }
             )
 
             FeedbackButton(onClick = { Unit },
@@ -141,6 +141,16 @@ fun NavigateHome(
 }
 
 @Composable
+fun NavigateBluetoothDisabled(
+    navController: NavController,
+){
+    LaunchedEffect(Unit){
+        Log.d(TAG, "NavigateBluetoothDisabled: ")
+        navController.navigate(BtConnectionScreens.BtDisabledScreen.route)
+    }
+}
+
+@Composable
 fun IsBluetoothEnabled(
     vm: BtConnectionViewModel){
     /**
@@ -159,31 +169,6 @@ fun IsBluetoothEnabled(
     }
 }
 
-
-
-@Composable
-fun BaseBtScreen(vm: BtConnectionViewModel,
-                   btUiState: BluetoothUiState,
-                   navController: NavController){
-    Surface(color = Color(0x004c4c)) {
-        ConstraintLayout(modifier = Modifier
-            .fillMaxSize()
-        ) {
-            val (settingsRow, personalGreeting, connectToDeviceButton, progress) = createRefs()
-//            PersonalGreeting(Modifier.constrainAs(personalGreeting){
-//                top.linkTo(settingsRow.bottom, margin = 32.dp)
-//                start.linkTo(parent.start, margin = 32.dp)
-//            }, btUiState)
-            if(!btUiState.btConnectionStatus){
-
-            }else{
-                LaunchedEffect(Unit){
-                    navController.navigate("home_first/{${btUiState.getConnectedDevice}}")
-                }
-            }
-        }
-    }
-}
 
 //TODO:move with the REQUEST_PERMISSION composable
 //@OptIn(ExperimentalPermissionsApi::class)

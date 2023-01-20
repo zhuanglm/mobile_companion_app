@@ -1,8 +1,6 @@
 package com.esightcorp.mobile.app.ui.components
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -32,15 +30,15 @@ fun AddDeviceButton(
 ){
     ElevatedButton(
         onClick = { onClick },
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth().wrapContentHeight(),
         enabled = true,
         colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
-        Icon(Icons.Rounded.Add, contentDescription = "Add something new", modifier.padding(15.dp, 0.dp))
-        ButtonText("Connect to eSight Go", modifier = modifier.weight(1f).offset(x= 12.dp))
+//        Icon(Icons.Rounded.Add, contentDescription = "Add something new", modifier.padding(15.dp, 0.dp))
+        ButtonText("Connect to eSight", modifier = modifier.weight(1f))
     }
 }
 

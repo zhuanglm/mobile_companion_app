@@ -29,8 +29,7 @@ import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
-import com.esightcorp.mobile.app.ui.AddDeviceButton
-import com.esightcorp.mobile.app.ui.CustomTopAppBar
+import com.esightcorp.mobile.app.ui.components.*
 import com.google.accompanist.permissions.*
 import java.time.LocalDateTime
 
@@ -40,16 +39,96 @@ const val TAG = "BtConnectionScreen"
 fun BtConnectionScreen(
     navController: NavController,
     vm: BtConnectionViewModel = hiltViewModel()){
+    Log.d(TAG, "BtConnectionScreen: ")
     val btUiState by vm.uiState.collectAsState()
+    NoDeviceConnectedScreen(
+        onSettingsButtonPressed = { Unit },
+        onFeedbackButtonPressed = { Unit },
+        onConnectToDeviceButtonPressed = { Unit},
+        onTermsAndConditionsPressed = { Unit },
+        onPrivacyPolicyPressed = { Unit },
+        btUiState = btUiState,
+        navController = navController
+    )
 
-    IsBluetoothEnabled(vm = vm)
+   /* IsBluetoothEnabled(vm = vm)
     if(btUiState.isBtEnabled && !btUiState.btConnectionStatus){
         BaseBtScreen(vm = vm, btUiState = btUiState, navController = navController)
     } else if (btUiState.btConnectionStatus){
        NavigateHome(navController = navController, btUiState = btUiState)
     }
-
+*/
 }
+
+@Composable
+internal fun NoDeviceConnectedScreen(
+    onSettingsButtonPressed: () -> Unit,
+    onFeedbackButtonPressed: () -> Unit,
+    onConnectToDeviceButtonPressed: () -> Unit,
+    onTermsAndConditionsPressed: () -> Unit,
+    onPrivacyPolicyPressed: () -> Unit,
+    btUiState: BluetoothUiState,
+    navController: NavController,
+    modifier: Modifier = Modifier
+){
+    Surface(modifier.fillMaxSize(), color = Color.Black) {
+        ConstraintLayout {
+            val (topBar, greeting, deviceButton, terms, feedback) = createRefs()
+            ESightTopAppBar(
+                showBackButton = false,
+                showSettingsButton = true,
+                onBackButtonInvoked = { /*Unused*/ Unit },
+                onSettingsButtonInvoked = {onSettingsButtonPressed},
+                modifier = modifier.constrainAs(topBar){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+
+            PersonalGreeting(modifier = modifier
+                .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                .constrainAs(greeting) {
+                    top.linkTo(topBar.bottom, margin = 50.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
+
+            AddDeviceButton(
+                onClick = { /*check permissions, then navigate out*/ Unit },
+                modifier = modifier
+                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(deviceButton) {
+                        top.linkTo(greeting.bottom, margin = 35.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
+
+            //Need to verify whats going on with this padding, 15.dp seems better than 25.dp which would match everything else
+            TermsAndPolicy(
+                onTermsInvoked = { onTermsAndConditionsPressed },
+                onPrivacyPolicyInvoked = { onPrivacyPolicyPressed },
+                modifier = modifier
+                    .padding(15.dp, 0.dp, 15.dp, 0.dp)
+                    .constrainAs(terms){
+                        bottom.linkTo(feedback.top, margin = 25.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                }
+            )
+
+            FeedbackButton(onClick = { Unit },
+                modifier = modifier.constrainAs(feedback){
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+
+        }
+    }
+}
+
 
 @Composable
 fun NavigateHome(
@@ -91,17 +170,12 @@ fun BaseBtScreen(vm: BtConnectionViewModel,
             .fillMaxSize()
         ) {
             val (settingsRow, personalGreeting, connectToDeviceButton, progress) = createRefs()
-            CustomTopAppBar(showBackButton = false, showSettingsButton = true, modifier = Modifier.constrainAs(settingsRow){
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
-            PersonalGreeting(Modifier.constrainAs(personalGreeting){
-                top.linkTo(settingsRow.bottom, margin = 32.dp)
-                start.linkTo(parent.start, margin = 32.dp)
-            }, btUiState)
+//            PersonalGreeting(Modifier.constrainAs(personalGreeting){
+//                top.linkTo(settingsRow.bottom, margin = 32.dp)
+//                start.linkTo(parent.start, margin = 32.dp)
+//            }, btUiState)
             if(!btUiState.btConnectionStatus){
-                AddDeviceButton()
+
             }else{
                 LaunchedEffect(Unit){
                     navController.navigate("home_first/{${btUiState.getConnectedDevice}}")
@@ -110,101 +184,6 @@ fun BaseBtScreen(vm: BtConnectionViewModel,
         }
     }
 }
-
-@Composable
-fun SettingsRow(modifier: Modifier) {
-    IconButton(onClick = { Log.d(TAG, "settingsRow: Open settings here") }, modifier) {
-        Icon(Icons.Filled.Settings,"Settings")
-    }
-
-}
-
-
-@OptIn(ExperimentalUnitApi::class)
-@Composable
-fun PersonalGreeting(modifier: Modifier,
- btUiState: BluetoothUiState){
-    Box(modifier = modifier){
-        ConstraintLayout(
-            modifier =
-            Modifier
-                .fillMaxWidth(0.8f)
-                .wrapContentHeight()) {
-            val (greeting, connectionStatus) = createRefs()
-            when(LocalDateTime.now().hour){
-                in 0..12 -> {
-                    Text(text = "Good Morning",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = TextUnit(20f, TextUnitType.Sp),
-                        modifier = Modifier.constrainAs(greeting){
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        })
-                }
-                in 12..16 -> {
-                    Text(text = "Good Afternoon",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = TextUnit(20f, TextUnitType.Sp),
-                        modifier = Modifier.constrainAs(greeting){
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        })
-                }
-                else -> {
-                    Text(text = "Good Evening",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = TextUnit(20f, TextUnitType.Sp),
-                        modifier = Modifier.constrainAs(greeting){
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        })
-                }
-            }
-            Text(text = "You are not connected to an eSight Go",
-                modifier = Modifier.constrainAs(connectionStatus){
-                    top.linkTo(greeting.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                })
-
-        }
-    }
-
-}
-
-@Composable
-fun ConnectToDeviceButton(
-    modifier: Modifier,
-    navController: NavController){
-    Button(onClick = {navController.navigate(BtConnectionScreens.BtDevicesScreen.route) },
-        shape = RoundedCornerShape(10.dp),
-        modifier = modifier) {
-        ConstraintLayout() {
-            val (icon, text) = createRefs()
-            Image(
-                Icons.Filled.Add,
-                contentDescription = "Connect to an eSight",
-                modifier = Modifier.constrainAs(icon){
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                })
-            Text(text = "Connect to an eSight", modifier = Modifier.constrainAs(text){
-                start.linkTo(icon.end, margin = 8.dp)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            })
-        }
-
-    }
-}
-
-
-
-
-
-
-
-
 
 //TODO:move with the REQUEST_PERMISSION composable
 //@OptIn(ExperimentalPermissionsApi::class)

@@ -1,6 +1,7 @@
 package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 
 //TODO: Update the content descriptions to use resources
@@ -26,7 +28,7 @@ import com.esightcorp.mobile.app.ui.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-public fun CustomTopAppBar(
+public fun ESightTopAppBar(
     showBackButton: Boolean,
     showSettingsButton: Boolean,
     onBackButtonInvoked: @Composable () -> Unit,
@@ -51,7 +53,7 @@ public fun CustomTopAppBar(
 
 @Composable
 private fun TopAppBarTitle(){
-    Image(painter = painterResource(id = R.drawable.logo), contentDescription = "eSight Logo")
+    Image(painter = painterResource(id = R.drawable.logo), contentDescription = "eSight Logo", modifier = Modifier.size(25.dp))
 
 }
 
@@ -83,6 +85,6 @@ fun TopAppBarSettingsIconButton(
         shape = IconButtonDefaults.filledShape,
         colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
     ) {
-        Icon(Icons.Rounded.Settings, contentDescription = "Back button")
+        Icon(Icons.Rounded.Settings, contentDescription = "Settings button", modifier = modifier.size(30.dp))
     }
 }

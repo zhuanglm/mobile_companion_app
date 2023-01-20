@@ -21,16 +21,16 @@ import androidx.compose.ui.unit.dp
 //TODO: Create previews for everything
 
 
-
-
 @Composable
 fun AddDeviceButton(
     onClick: () -> Unit,
     modifier: Modifier
-){
+) {
     ElevatedButton(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth().wrapContentHeight(),
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
         enabled = true,
         colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
         elevation = ButtonDefaults.elevatedButtonElevation(),
@@ -44,6 +44,6 @@ fun AddDeviceButton(
 
 @Preview
 @Composable
-fun AddDeviceButtonPreview(){
-    AddDeviceButton(onClick = { Unit }, modifier = Modifier)
+fun AddDeviceButtonPreview() {
+    AddDeviceButton(onClick = { }, modifier = Modifier)
 }

@@ -1,4 +1,3 @@
 package com.esightcorp.mobile.app.wificonnection
 
-class WifiQrScreen {
-}
+class WifiQrScreen

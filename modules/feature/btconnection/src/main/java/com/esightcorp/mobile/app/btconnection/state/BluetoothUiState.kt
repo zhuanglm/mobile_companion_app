@@ -10,5 +10,4 @@ data class BluetoothUiState(
     val deviceMapCache: List<String> = mutableListOf(),
     val isScanning: ScanningStatus = ScanningStatus.Unknown
 
-) {
-}
+)

@@ -90,7 +90,6 @@ class BluetoothPayload private constructor(
         return byteArray
     }
 
-    companion object {
-    }
+    companion object
 
 }

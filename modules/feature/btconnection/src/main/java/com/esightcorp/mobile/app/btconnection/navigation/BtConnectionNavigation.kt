@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.esightcorp.mobile.app.btconnection.BtConnectionScreen
 import com.esightcorp.mobile.app.btconnection.BtDevicesScreen
 import com.esightcorp.mobile.app.btconnection.BtDisabledScreen
+import com.esightcorp.mobile.app.btconnection.BtSearchingRoute
 
 fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
     navigation(startDestination = BtConnectionScreens.BtConnectionHomeScreen.route, route= BtConnectionScreens.IncomingNavigationRoute.route){
@@ -18,6 +19,9 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         }
         composable(BtConnectionScreens.BtDisabledScreen.route){
             BtDisabledScreen(navController = navController)
+        }
+        composable(BtConnectionScreens.BtSearchingRoute.route){
+            BtSearchingRoute(navController = navController)
         }
 
     }

@@ -24,10 +24,12 @@ fun IconAndTextRectangularButton(
     icon: ImageVector,
     iconContextDescription: String? = null,
     text: String,
-){
+) {
     ElevatedButton(
         onClick = { onClick },
-        modifier = modifier.fillMaxWidth().padding(25.dp, 20.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(25.dp, 20.dp),
         enabled = true,
         colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
         elevation = ButtonDefaults.elevatedButtonElevation(),
@@ -35,12 +37,19 @@ fun IconAndTextRectangularButton(
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         Icon(icon, contentDescription = iconContextDescription)
-        ButtonText(text = text, modifier = modifier.weight(1f).offset(x= 12.dp))
+        ButtonText(text = text, modifier = modifier
+            .weight(1f)
+            .offset(x = 12.dp))
     }
 }
 
 @Preview
 @Composable
-fun IconAndTextRectangularButtonPreview(){
-    IconAndTextRectangularButton(onClick = { Unit }, modifier = Modifier, icon = Icons.Default.Star, text = "Preview")
+fun IconAndTextRectangularButtonPreview() {
+    IconAndTextRectangularButton(
+        onClick = { },
+        modifier = Modifier,
+        icon = Icons.Default.Star,
+        text = "Preview"
+    )
 }

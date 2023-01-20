@@ -52,9 +52,9 @@ class BleService : Service(){
                 val service = gatt?.getService(SERVICE_UUID)
                 MAG_BLE_BUTTON_PRESS_Characteristic = service?.getCharacteristic(
                     UUID_CHARACTERISTIC_BUTTON_PRESSED)!!
-                MAG_BLE_PERFORM_ACTION_Characteristic = service?.getCharacteristic(
+                MAG_BLE_PERFORM_ACTION_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_PERFORM_ACTION)!!
-                MAG_BLE_TOUCH_EVENT_Characteristic = service?.getCharacteristic(
+                MAG_BLE_TOUCH_EVENT_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_TOUCH_EVENT)!!
                 setCharacteristicNotification()
             }else{
@@ -88,7 +88,7 @@ class BleService : Service(){
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray
         ) {
-            Log.d(TAG, "onCharacteristicChanged: ${value.toString()}")
+            Log.d(TAG, "onCharacteristicChanged: $value")
         }
     }
 
@@ -172,7 +172,7 @@ class BleService : Service(){
                     }
                     intent.putExtra(EXTRA_DATA, "$data\n$hexString")
                 }
-                Log.d(TAG, "broadcastUpdate: ${characteristic.toString()}")
+                Log.d(TAG, "broadcastUpdate: $characteristic")
             }
         }
         sendBroadcast(intent)
@@ -335,7 +335,7 @@ class BleService : Service(){
 //                setCharacteristicNotification(gattCharacteristic, true)
             }
         }
-        Log.d(TAG, "logGattServices: CHARACTERISTIC DATA ${gattCharacteristicData.toString()}")
+        Log.d(TAG, "logGattServices: CHARACTERISTIC DATA $gattCharacteristicData")
     }
 
     companion object{

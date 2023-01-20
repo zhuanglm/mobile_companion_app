@@ -28,21 +28,29 @@ import com.esightcorp.mobile.app.ui.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-public fun ESightTopAppBar(
+fun ESightTopAppBar(
     showBackButton: Boolean,
     showSettingsButton: Boolean,
     onBackButtonInvoked: @Composable () -> Unit,
     onSettingsButtonInvoked: @Composable () -> Unit,
     modifier: Modifier
 
-){
+) {
 
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = { TopAppBarTitle() },
-        navigationIcon = { if(showBackButton) TopAppBarNavIconButton(onClick = onBackButtonInvoked, modifier = modifier) },
+        navigationIcon = {
+            if (showBackButton) TopAppBarNavIconButton(
+                onClick = onBackButtonInvoked,
+                modifier = modifier
+            )
+        },
         actions = {
-            if(showSettingsButton) TopAppBarSettingsIconButton(onClick = onSettingsButtonInvoked, modifier = modifier)
+            if (showSettingsButton) TopAppBarSettingsIconButton(
+                onClick = onSettingsButtonInvoked,
+                modifier = modifier
+            )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Black
@@ -52,8 +60,12 @@ public fun ESightTopAppBar(
 }
 
 @Composable
-private fun TopAppBarTitle(){
-    Image(painter = painterResource(id = R.drawable.logo), contentDescription = "eSight Logo", modifier = Modifier.size(25.dp))
+private fun TopAppBarTitle() {
+    Image(
+        painter = painterResource(id = R.drawable.logo),
+        contentDescription = "eSight Logo",
+        modifier = Modifier.size(25.dp)
+    )
 
 }
 
@@ -61,7 +73,7 @@ private fun TopAppBarTitle(){
 fun TopAppBarNavIconButton(
     modifier: Modifier,
     onClick: @Composable () -> Unit
-){
+) {
     FilledIconButton(
         onClick = { onClick },
         modifier = modifier,
@@ -77,7 +89,7 @@ fun TopAppBarNavIconButton(
 fun TopAppBarSettingsIconButton(
     modifier: Modifier,
     onClick: @Composable () -> Unit
-){
+) {
     FilledIconButton(
         onClick = { onClick },
         modifier = modifier,
@@ -85,6 +97,10 @@ fun TopAppBarSettingsIconButton(
         shape = IconButtonDefaults.filledShape,
         colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
     ) {
-        Icon(Icons.Rounded.Settings, contentDescription = "Settings button", modifier = modifier.size(30.dp))
+        Icon(
+            Icons.Rounded.Settings,
+            contentDescription = "Settings button",
+            modifier = modifier.size(30.dp)
+        )
     }
 }

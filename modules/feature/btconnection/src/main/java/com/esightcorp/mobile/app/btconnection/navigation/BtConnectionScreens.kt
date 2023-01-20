@@ -5,5 +5,6 @@ sealed class BtConnectionScreens(val route: String){
     object IncomingNavigationRoute: BtConnectionScreens("btconnection")
     object BtDevicesScreen: BtConnectionScreens("bt_devices")
     object BtDisabledScreen: BtConnectionScreens("bt_disabled")
+    object BtSearchingRoute: BtConnectionScreens("bt_searching")
 
 }

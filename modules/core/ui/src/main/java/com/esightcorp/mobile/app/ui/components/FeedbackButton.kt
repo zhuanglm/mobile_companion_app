@@ -20,21 +20,22 @@ import com.esightcorp.mobile.app.ui.R
 fun FeedbackButton(
     onClick: () -> Unit,
     modifier: Modifier
-){
+) {
     ExtendedFloatingActionButton(
         text = { BodyText(text = "Feedback", modifier = Modifier) },
-        icon =  { FeedbackIcon(onClick = { Unit }, modifier = Modifier) },
+        icon = { FeedbackIcon(onClick = { }, modifier = Modifier) },
         onClick = { onClick },
         containerColor = Color.Black,
         contentColor = Color.White,
-        modifier = modifier)
+        modifier = modifier
+    )
 }
 
 @Composable
 private fun FeedbackIcon(
     onClick: @Composable () -> Unit,
     modifier: Modifier
-){
+) {
     FilledIconButton(
         onClick = { onClick },
         modifier = modifier,
@@ -42,6 +43,10 @@ private fun FeedbackIcon(
         shape = IconButtonDefaults.filledShape,
         colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
     ) {
-        Icon(painter = painterResource(id = R.drawable.round_feedback_20), contentDescription = "Feedback", modifier = Modifier.size(30.dp))
+        Icon(
+            painter = painterResource(id = R.drawable.round_feedback_20),
+            contentDescription = "Feedback",
+            modifier = Modifier.size(30.dp)
+        )
     }
 }

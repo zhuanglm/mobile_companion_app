@@ -42,11 +42,11 @@ fun BtConnectionScreen(
     Log.d(TAG, "BtConnectionScreen: ")
     val btUiState by vm.uiState.collectAsState()
     NoDeviceConnectedScreen(
-        onSettingsButtonPressed = { Unit },
-        onFeedbackButtonPressed = { Unit },
-        onConnectToDeviceButtonPressed = { Unit},
-        onTermsAndConditionsPressed = { Unit },
-        onPrivacyPolicyPressed = { Unit },
+        onSettingsButtonPressed = { },
+        onFeedbackButtonPressed = { },
+        onConnectToDeviceButtonPressed = { },
+        onTermsAndConditionsPressed = { },
+        onPrivacyPolicyPressed = { },
         btUiState = btUiState,
         navController = navController
     )
@@ -77,7 +77,7 @@ internal fun NoDeviceConnectedScreen(
             ESightTopAppBar(
                 showBackButton = false,
                 showSettingsButton = true,
-                onBackButtonInvoked = { /*Unused*/ Unit },
+                onBackButtonInvoked = { /*Unused*/ },
                 onSettingsButtonInvoked = {onSettingsButtonPressed},
                 modifier = modifier.constrainAs(topBar){
                     top.linkTo(parent.top)
@@ -95,7 +95,7 @@ internal fun NoDeviceConnectedScreen(
                 })
 
             AddDeviceButton(
-                onClick = {navController.navigate(BtConnectionScreens.BtDisabledScreen.route)},
+                onClick = {navController.navigate(BtConnectionScreens.BtSearchingRoute.route)},
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {
@@ -117,7 +117,7 @@ internal fun NoDeviceConnectedScreen(
                     }
             )
 
-            FeedbackButton(onClick = { Unit },
+            FeedbackButton(onClick = { },
                 modifier = modifier.constrainAs(feedback){
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)

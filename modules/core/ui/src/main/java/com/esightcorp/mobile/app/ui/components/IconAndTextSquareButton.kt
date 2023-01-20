@@ -22,7 +22,7 @@ fun IconAndTextSquareButton(
     icon: ImageVector,
     iconContextDescription: String? = null,
     text: String,
-){
+) {
     ElevatedButton(
         onClick = { onClick },
         modifier = modifier
@@ -50,6 +50,11 @@ fun IconAndTextSquareButton(
 
 @Preview
 @Composable
-fun IconAndTextSquareButtonPreview(){
-    IconAndTextSquareButton(onClick = { Unit }, modifier = Modifier, icon = Icons.Default.Star, text = "Connect to Wifi")
+fun IconAndTextSquareButtonPreview() {
+    IconAndTextSquareButton(
+        onClick = { },
+        modifier = Modifier,
+        icon = Icons.Default.Star,
+        text = "Connect to Wifi"
+    )
 }

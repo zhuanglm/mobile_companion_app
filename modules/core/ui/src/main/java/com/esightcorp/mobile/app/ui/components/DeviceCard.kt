@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceCard(
@@ -28,7 +27,7 @@ fun DeviceCard(
     borderColor: Color = Color.Yellow,
     border: Boolean = true
 
-){
+) {
     val borderStroke = BorderStroke(6.dp, borderColor)
     OutlinedCard(
         modifier = Modifier
@@ -38,18 +37,21 @@ fun DeviceCard(
         enabled = border,
         border = borderStroke,
         shape = RoundedCornerShape(18.dp),
-        onClick = { Unit },
+        onClick = { },
         elevation = CardDefaults.cardElevation(3.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically) {
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             ImageForDeviceCard(Modifier.weight(1F))
-            Column(modifier = Modifier
-                .padding(20.dp)
-                .weight(1F), horizontalAlignment = Alignment.Start) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(1F), horizontalAlignment = Alignment.Start
+            ) {
                 ButtonText(text = deviceModel, modifier = Modifier)
                 Button2Text(text = "S/N: $serialNumber", modifier = Modifier)
             }
@@ -60,28 +62,30 @@ fun DeviceCard(
 }
 
 @Composable
-fun YellowDeviceCard(){
+fun YellowDeviceCard() {
     DeviceCard(
         deviceModel = "eSight Go",
         serialNumber = "YELLOW",
         border = false,
         containerColor = Color.Yellow
-        )
+    )
 }
 
 @Composable
-fun  ImageForDeviceCard(
+fun ImageForDeviceCard(
     modifier: Modifier
-){
-    Image(painter = painterResource(id = R.drawable.gboy),
+) {
+    Image(
+        painter = painterResource(id = R.drawable.gboy),
         contentDescription = "Temporary image for the eSight Go",
-        modifier = modifier.size(76.dp))
+        modifier = modifier.size(76.dp)
+    )
 }
 
 @Preview
 @Composable
-fun ConnectedDeviceCardPreview(){
+fun ConnectedDeviceCardPreview() {
 //ImageForDeviceCard()
 //    DeviceCard()
-YellowDeviceCard()
+    YellowDeviceCard()
 }

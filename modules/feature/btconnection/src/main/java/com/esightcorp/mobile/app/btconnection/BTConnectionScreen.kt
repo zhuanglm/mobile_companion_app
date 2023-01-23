@@ -20,6 +20,7 @@ import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
 import com.esightcorp.mobile.app.ui.components.*
+import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
 const val TAG = "BtConnectionScreen"
 

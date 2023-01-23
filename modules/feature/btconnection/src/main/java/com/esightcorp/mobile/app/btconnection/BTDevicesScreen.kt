@@ -21,12 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
+import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 
 @Composable
 fun BtDevicesScreen(
@@ -87,6 +89,9 @@ internal fun BtDevicesScreen(
                     top.linkTo(header.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
+                    bottom.linkTo(help.top)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
                 }) {
                 items(dummyDeviceList) { device ->
                     val deviceModel = device.substringBeforeLast('-')
@@ -94,11 +99,18 @@ internal fun BtDevicesScreen(
                     YellowDeviceCard(
                         deviceModel = deviceModel,
                         serialNumber = serialNumber,
-                        modifier = modifier.padding(25.dp)
+                        modifier = modifier.padding(12.dp)
                     )
                 }
 
             }
+            CantFindDeviceButton(modifier = modifier.padding(0.dp, 15.dp, 0.dp, 0.dp)
+                .constrainAs(help){
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }) {}
+
         }
     }
 }

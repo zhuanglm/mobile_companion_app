@@ -4,10 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.esightcorp.mobile.app.btconnection.BtConnectionScreen
-import com.esightcorp.mobile.app.btconnection.BtDevicesScreen
-import com.esightcorp.mobile.app.btconnection.BtDisabledScreen
-import com.esightcorp.mobile.app.btconnection.BtSearchingRoute
+import com.esightcorp.mobile.app.btconnection.*
 
 fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
     navigation(startDestination = BtConnectionScreens.BtConnectionHomeScreen.route, route= BtConnectionScreens.IncomingNavigationRoute.route){
@@ -22,6 +19,12 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         }
         composable(BtConnectionScreens.BtSearchingRoute.route){
             BtSearchingRoute(navController = navController)
+        }
+        composable(BtConnectionScreens.BTConnectingRoute.route){
+            BtConnectingRoute(navController = navController)
+        }
+        composable(BtConnectionScreens.BtConnectedRoute.route){
+            BtConnectedRoute(navController = navController)
         }
 
     }

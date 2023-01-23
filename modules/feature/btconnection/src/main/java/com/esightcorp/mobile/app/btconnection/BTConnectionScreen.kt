@@ -20,6 +20,7 @@ import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
 import com.esightcorp.mobile.app.ui.components.*
+import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
 const val TAG = "BtConnectionScreen"
@@ -85,7 +86,7 @@ internal fun NoDeviceConnectedScreen(
                 })
 
             AddDeviceButton(
-                onClick = { navController.navigate(BtConnectionScreens.BtDevicesScreen.route) },
+                onClick = { navController.navigate(BtConnectionScreens.BtConnectedRoute.route) },
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {
@@ -107,7 +108,7 @@ internal fun NoDeviceConnectedScreen(
                     }
             )
 
-            SupportButtonTemplate(onClick = { },
+            FeedbackButton(onFeedbackClick = { },
                 modifier = modifier.constrainAs(feedback) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)

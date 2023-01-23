@@ -81,7 +81,11 @@ fun TopAppBarNavIconButton(
         shape = IconButtonDefaults.filledShape,
         colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
     ) {
-        Icon(Icons.Rounded.ArrowBack, contentDescription = "Back button")
+        Icon(
+            Icons.Rounded.ArrowBack,
+            contentDescription = "Back button",
+            modifier = modifier.size(30.dp)
+        )
     }
 }
 

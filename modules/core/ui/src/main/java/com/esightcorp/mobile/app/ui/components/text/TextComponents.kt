@@ -5,7 +5,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -99,8 +98,9 @@ fun ButtonText(
 
 @Composable
 fun Button2Text(
-    text: String,
-    modifier: Modifier
+    text: String = "Text goes here",
+    modifier: Modifier = Modifier,
+    color: Color = Color.Black
 ){
     Text(
         text = text,
@@ -108,6 +108,7 @@ fun Button2Text(
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
         fontFamily = FontFamily.SansSerif,
-        maxLines = 1
+        maxLines = 1,
+        color = color
     )
 }

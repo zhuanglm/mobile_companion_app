@@ -14,42 +14,53 @@ import java.time.LocalDateTime
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
-fun PersonalGreeting(modifier: Modifier){
-    Box(modifier = modifier.fillMaxWidth()){
+fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
+    Box(modifier = modifier.fillMaxWidth()) {
         ConstraintLayout(
             modifier =
             Modifier
                 .fillMaxWidth(0.8f)
-                .wrapContentHeight()) {
+                .wrapContentHeight()
+        ) {
             val (greeting, connectionStatus) = createRefs()
-            when(LocalDateTime.now().hour){
+            when (LocalDateTime.now().hour) {
                 in 0..12 -> {
                     Header1Text(text = "Good Morning",
-                        modifier = Modifier.constrainAs(greeting){
+                        modifier = Modifier.constrainAs(greeting) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                         })
                 }
                 in 12..16 -> {
                     Header1Text(text = "Good Afternoon",
-                        modifier = Modifier.constrainAs(greeting){
+                        modifier = Modifier.constrainAs(greeting) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                         })
                 }
                 else -> {
                     Header1Text(text = "Good Evening",
-                        modifier = Modifier.constrainAs(greeting){
+                        modifier = Modifier.constrainAs(greeting) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                         })
                 }
             }
-            Header2Text(text = "You are not connected to an eSight",
-                modifier = Modifier.constrainAs(connectionStatus){
-                    top.linkTo(greeting.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                })
+            if (!connected) {
+                Header2Text(text = "You are not connected to an eSight",
+                    modifier = Modifier.constrainAs(connectionStatus) {
+                        top.linkTo(greeting.bottom, margin = 8.dp)
+                        start.linkTo(parent.start)
+                    })
+            } else {
+                Header2Text(
+                    text = "You are connected to",
+                    modifier = Modifier.constrainAs(connectionStatus) {
+                        top.linkTo(greeting.bottom, margin = 8.dp)
+                        start.linkTo(parent.start)
+                    })
+            }
+
 
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -109,6 +110,24 @@ fun Button2Text(
         fontSize = 18.sp,
         fontFamily = FontFamily.SansSerif,
         maxLines = 1,
-        color = color
+        color = color,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun WrappableButton2Text(
+    text: String = "Text goes here",
+    modifier: Modifier = Modifier,
+    color: Color = Color.Black
+){
+    Text(
+        text = text,
+        modifier = modifier,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        fontFamily = FontFamily.SansSerif,
+        color = color,
+        textAlign = TextAlign.Center
     )
 }

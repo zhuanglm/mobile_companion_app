@@ -62,6 +62,11 @@ internal fun NoDeviceConnectedScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    /**
+     * Dummy data used here
+     */
+    val dummyDevice = "123456"
+
     Surface(modifier.fillMaxSize(), color = Color.Black) {
         ConstraintLayout {
             val (topBar, greeting, deviceButton, terms, feedback) = createRefs()
@@ -77,16 +82,19 @@ internal fun NoDeviceConnectedScreen(
                 }
             )
 
-            PersonalGreeting(modifier = modifier
-                .padding(25.dp, 0.dp, 25.dp, 0.dp)
-                .constrainAs(greeting) {
-                    top.linkTo(topBar.bottom, margin = 50.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
+            PersonalGreeting(
+                modifier = modifier
+                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(greeting) {
+                        top.linkTo(topBar.bottom, margin = 50.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                connected = false,
+            )
 
             AddDeviceButton(
-                onClick = { navController.navigate(BtConnectionScreens.BtConnectedRoute.route) },
+                onClick = { navController.navigate("home_first/{${dummyDevice}}") },
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {
@@ -124,11 +132,11 @@ internal fun NoDeviceConnectedScreen(
 @Composable
 fun NavigateHome(
     navController: NavController,
-    btUiState: BluetoothUiState
+    device: String
 ) {
     LaunchedEffect(Unit) {
         Log.d(TAG, "BtConnectionScreen: ")
-        navController.navigate("home_first/{${btUiState.getConnectedDevice}}")
+        navController.navigate("home_first/{${device}}")
     }
 }
 

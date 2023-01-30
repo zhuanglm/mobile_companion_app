@@ -45,7 +45,7 @@ fun DeviceCard(
                 .fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ImageForDeviceCard(Modifier.weight(1F))
+            ImageForDeviceCard(Modifier.weight(0.7F))
             Column(
                 modifier = Modifier
                     .padding(20.dp)

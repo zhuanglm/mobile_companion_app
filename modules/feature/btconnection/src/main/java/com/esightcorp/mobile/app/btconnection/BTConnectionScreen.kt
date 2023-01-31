@@ -94,7 +94,7 @@ internal fun NoDeviceConnectedScreen(
             )
 
             AddDeviceButton(
-                onClick = { navController.navigate("home_first/{${dummyDevice}}") },
+                onClick = { navController.navigate("select_network") },
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {

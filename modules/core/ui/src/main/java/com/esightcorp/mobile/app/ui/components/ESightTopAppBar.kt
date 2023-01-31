@@ -31,7 +31,7 @@ import com.esightcorp.mobile.app.ui.R
 fun ESightTopAppBar(
     showBackButton: Boolean,
     showSettingsButton: Boolean,
-    onBackButtonInvoked: @Composable () -> Unit,
+    onBackButtonInvoked: () -> Unit,
     onSettingsButtonInvoked: @Composable () -> Unit,
     modifier: Modifier
 
@@ -72,7 +72,7 @@ private fun TopAppBarTitle() {
 @Composable
 fun TopAppBarNavIconButton(
     modifier: Modifier,
-    onClick: @Composable () -> Unit
+    onClick: () -> Unit
 ) {
     FilledIconButton(
         onClick = { onClick },

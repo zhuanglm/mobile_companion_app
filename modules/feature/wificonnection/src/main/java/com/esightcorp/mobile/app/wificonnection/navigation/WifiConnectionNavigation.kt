@@ -6,8 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreen
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
+import com.esightcorp.mobile.app.wificonnection.*
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens.WifiCredentialsScreen.ssidArg
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens.WifiCredentialsScreen.arguments
 import com.esightcorp.mobile.app.wificonnection.WifiCredentialsRoute
@@ -27,6 +26,12 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
             val ssid = navBackStackEntry.arguments?.getString(ssidArg)
             Log.d("TAG", "addWifiConnectionNavigation: $ssid")
             ssid?.let { WifiCredentialsRoute(navController = navController, ssid = it) }
+        }
+        composable(WifiConnectionScreens.SearchingForNetworkRoute.route){
+            SearchingForNetworksRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.SelectNetworkRoute.route){
+            SelectNetworkRoute(navController = navController)
         }
     }
 }

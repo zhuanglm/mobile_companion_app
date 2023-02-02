@@ -85,5 +85,6 @@ dependencies {
     implementation(project(":modules:core:utils"))
     implementation(project(":modules:core:bluetooth"))
     implementation(project(":modules:core:networking"))
+    implementation(project(":modules:core:ui"))
 
 }

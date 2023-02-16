@@ -20,13 +20,12 @@ private const val TAG = "BtSearchingScreen"
 
 @HiltViewModel
 class BtSearchingViewModel @Inject constructor(
-    application: Application,
-    val btConnectionRepository: BtConnectionRepository
-): AndroidViewModel(application){
+    application: Application, val btConnectionRepository: BtConnectionRepository
+) : AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(BtSearchingUiState())
     val uiState: StateFlow<BtSearchingUiState> = _uiState.asStateFlow()
-    private val btRepositoryListener = object : IBtConnectionRepository{
+    private val btRepositoryListener = object : IBtConnectionRepository {
         override fun scanStatus(isScanning: ScanningStatus) {
             Log.i(TAG, "Scan status received from Bluetooth Repository")
             updateBtSearchingState(isScanning)
@@ -40,6 +39,7 @@ class BtSearchingViewModel @Inject constructor(
 
         }
     }
+
     init {
         Log.d(TAG, "Init: register listener")
         btConnectionRepository.registerListener(btRepositoryListener)
@@ -47,15 +47,13 @@ class BtSearchingViewModel @Inject constructor(
     }
 
 
-
-
-    fun triggerScan(){
+    fun triggerScan() {
         Log.d(TAG, "triggerScan: ")
         btConnectionRepository.triggerBleScan()
     }
 
-    fun updateBtSearchingState(status: ScanningStatus){
-        when(status){
+    fun updateBtSearchingState(status: ScanningStatus) {
+        when (status) {
             ScanningStatus.Failed -> {
                 Log.d(TAG, "updateBtSearchingState: ${ScanningStatus.Failed}")
             }

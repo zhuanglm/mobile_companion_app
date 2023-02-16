@@ -32,7 +32,7 @@ fun ESightTopAppBar(
     showBackButton: Boolean,
     showSettingsButton: Boolean,
     onBackButtonInvoked: () -> Unit,
-    onSettingsButtonInvoked: @Composable () -> Unit,
+    onSettingsButtonInvoked: () -> Unit,
     modifier: Modifier
 
 ) {
@@ -75,7 +75,7 @@ fun TopAppBarNavIconButton(
     onClick: () -> Unit
 ) {
     FilledIconButton(
-        onClick = { onClick },
+        onClick = onClick,
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
@@ -92,10 +92,10 @@ fun TopAppBarNavIconButton(
 @Composable
 fun TopAppBarSettingsIconButton(
     modifier: Modifier,
-    onClick: @Composable () -> Unit
+    onClick: () -> Unit
 ) {
     FilledIconButton(
-        onClick = { onClick },
+        onClick = onClick,
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,

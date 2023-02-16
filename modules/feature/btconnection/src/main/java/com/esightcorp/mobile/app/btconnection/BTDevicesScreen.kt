@@ -31,9 +31,10 @@ fun BtDevicesRoute(
     BtDevicesScreen(
         navController = navController,
         onBackButtonPressed = {
-            vm.navigateToNoDeviceConnectedScreen(navController)
+
         },
-        uiState = uiState
+        uiState = uiState,
+        vm = vm
     )
 }
 
@@ -43,8 +44,9 @@ internal fun BtDevicesScreen(
     modifier: Modifier = Modifier,
     onBackButtonPressed: () -> Unit,
     uiState: BtDevicesUiState,
+    vm: BtDevicesViewModel
 ) {
-    /**
+    /*
      * Dummy data
      */
     val dummyDeviceList = listOf<String>(
@@ -65,7 +67,7 @@ internal fun BtDevicesScreen(
             ESightTopAppBar(
                 showBackButton = true,
                 showSettingsButton = false,
-                onBackButtonInvoked = { onBackButtonPressed },
+                onBackButtonInvoked = { vm.navigateToNoDeviceConnectedScreen(navController)},
                 onSettingsButtonInvoked = { /*Unused*/ Unit },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)

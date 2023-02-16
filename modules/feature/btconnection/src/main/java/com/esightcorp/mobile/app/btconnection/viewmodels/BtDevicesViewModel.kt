@@ -23,13 +23,13 @@ private const val TAG = "BtDevicesViewModel"
 class BtDevicesViewModel @Inject constructor(
     application: Application,
     val btConnectionRepository: BtConnectionRepository
-): AndroidViewModel(application){
+) : AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(BtDevicesUiState())
     val uiState: StateFlow<BtDevicesUiState> = _uiState.asStateFlow()
-    val btRepoListener = object:IBtConnectionRepository{
+    val btRepoListener = object : IBtConnectionRepository {
         override fun scanStatus(isScanning: ScanningStatus) {
-            Log.d(TAG, "scanStatus: ${isScanning.toString()}")
+            Log.d(TAG, "scanStatus: $isScanning")
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
@@ -41,23 +41,24 @@ class BtDevicesViewModel @Inject constructor(
             TODO("Not yet implemented")
         }
     }
+
     init {
         btConnectionRepository.registerListener(btRepoListener)
         btConnectionRepository.setupBtModelListener()
     }
 
-    fun updateDeviceList(devices: List<String>){
-        _uiState.update {state ->
+    fun updateDeviceList(devices: List<String>) {
+        _uiState.update { state ->
             state.copy(listOfAvailableDevices = devices)
         }
     }
 
-    fun getDeviceList(){
+    fun getDeviceList() {
         Log.i(TAG, "getDeviceList: ")
         btConnectionRepository.getMapOfDevices()
     }
 
-    fun navigateToNoDeviceConnectedScreen(navController: NavController){
+    fun navigateToNoDeviceConnectedScreen(navController: NavController) {
         Log.d(TAG, "navigateToNoDeviceConnectedScreen: ")
         navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route)
     }

@@ -1,10 +1,13 @@
 package com.esightcorp.mobile.app.btconnection
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -99,14 +102,19 @@ internal fun BtDevicesScreen(
                         YellowDeviceCard(
                             deviceModel = deviceModel,
                             serialNumber = serialNumber,
-                            modifier = modifier.padding(12.dp)
+                            modifier = modifier.padding(12.dp),
+                            onClick = {
+                                Log.d(TAG, "BtDevicesScreen: ")
+                                vm.navigateToBtConnectingScreen(navController, device)
+                            }
                         )
                     }else{
                         val serialNumber = "00001"
                         YellowDeviceCard(
                             deviceModel = device,
                             serialNumber = serialNumber,
-                            modifier = modifier.padding(12.dp)
+                            modifier = modifier.padding(12.dp),
+                            onClick = { Log.e(TAG, "This device is not an eSight device")}
                         )
                     }
 
@@ -124,3 +132,4 @@ internal fun BtDevicesScreen(
         }
     }
 }
+

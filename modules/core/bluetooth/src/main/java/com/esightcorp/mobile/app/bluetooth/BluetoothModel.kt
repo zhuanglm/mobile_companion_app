@@ -164,7 +164,7 @@ class BluetoothModel constructor(
     fun connectToDevice(device: BluetoothDevice){
         val result = bleManager.getBleService()?.connect(device.address)
         if(result == true){
-            bleManager.setConnectedDevice(device, false)
+            bleManager.setConnectedDevice(device, status = true)
         }
     }
 

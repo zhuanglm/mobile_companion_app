@@ -87,7 +87,7 @@ internal fun BaseHomeScreen(
                         top.linkTo(personalGreeting.bottom, margin = 25.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
+                    }, onClick = {Unit})
                 AppContainer(modifier = modifier.constrainAs(appContainer) {
                     top.linkTo(deviceCard.bottom)
                     start.linkTo(parent.start)

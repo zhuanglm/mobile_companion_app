@@ -4,13 +4,12 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothDevice
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
-import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
+import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,9 +21,8 @@ private const val TAG = "BtConnectionViewModel"
 
 @HiltViewModel
 class BtConnectionViewModel @Inject constructor(
-    application: Application,
-    val btConnectionRepository: BtConnectionRepository
-): AndroidViewModel(application) {
+    application: Application, val btConnectionRepository: BtConnectionRepository
+) : AndroidViewModel(application) {
 
 
     /**
@@ -38,13 +36,13 @@ class BtConnectionViewModel @Inject constructor(
      */
 
 
-    fun connectToDevice(device: String){
+    fun connectToDevice(device: String) {
         btConnectionRepository.connectToDevice(device)
     }
 
 
-    fun updateBtEnabledState(state: Boolean){
-        if(state){
+    fun updateBtEnabledState(state: Boolean) {
+        if (state) {
             btConnectionRepository.triggerBleScan()
         }
         _uiState.update { currentState ->
@@ -56,13 +54,13 @@ class BtConnectionViewModel @Inject constructor(
     /**
      * Interface to receive callbacks from the bluetooth repository
      */
-    val btRepositoryListener = object : IBtConnectionRepository{
+    val btRepositoryListener = object : IBtConnectionRepository {
         override fun scanStatus(isScanning: ScanningStatus) {
-            Log.d("", "scanStatus: $isScanning")
+            /*Log.d("", "scanStatus: $isScanning")
             _uiState.update { currentState ->
                 currentState.copy(isScanning = isScanning)
             }
-            when(isScanning){
+            when (isScanning) {
                 ScanningStatus.Failed -> {
                     Log.d("TAG", "scanStatus: failed")
                 }
@@ -71,27 +69,31 @@ class BtConnectionViewModel @Inject constructor(
                 }
                 ScanningStatus.Success -> {
                     Log.d("TAG", "scanStatus: success")
-                    uiDeviceList()}
+                    uiDeviceList()
+                }
                 ScanningStatus.Unknown -> {
                     Log.d("TAG", "scanStatus: unknown")
-                    uiDeviceList()}
-            }
+                    uiDeviceList()
+                }
+            }*/
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-            Log.d("TAG", "deviceListReady: $deviceList")
-            _uiState.update{currentState ->
+           /* Log.d("TAG", "deviceListReady: $deviceList")
+            _uiState.update { currentState ->
                 currentState.copy(deviceMapCache = deviceList)
-            }
+            }*/
         }
 
         @SuppressLint("MissingPermission")
         override fun onDeviceConnected(device: BluetoothDevice) {
             Log.d(TAG, "onDeviceConnected: ${device.name}")
             _uiState.update { currentState ->
-                currentState.copy(getConnectedDevice = device.name.trim(), btConnectionStatus = true)
+                currentState.copy(
+                    getConnectedDevice = device.name.trim(), btConnectionStatus = true
+                )
             }
-            Log.e(TAG, "onDeviceConnected: ${_uiState.value.getConnectedDevice}" )
+            Log.e(TAG, "onDeviceConnected: ${_uiState.value.getConnectedDevice}")
 
         }
 
@@ -111,17 +113,17 @@ class BtConnectionViewModel @Inject constructor(
      * Generate list of ble devices to show to the user
      */
 
-    fun uiDeviceList(){
+  /*  fun uiDeviceList() {
         val uiDeviceList: MutableList<String> = mutableListOf()
         val deviceList = _uiState.value.deviceMapCache
-        when(uiState.value.isScanning){
+        when (uiState.value.isScanning) {
             ScanningStatus.Success -> {
-                if(uiState.value.isBtEnabled){
+                if (uiState.value.isBtEnabled) {
                     deviceList.forEach {
                         Log.d("TAG", "getDevicesToDisplay: ${it}")
                         uiDeviceList.add(it)
                     }
-                }else{
+                } else {
                     uiDeviceList.add("Bluetooth needs to be enabled")
                 }
                 _uiState.update { currentState ->
@@ -143,7 +145,7 @@ class BtConnectionViewModel @Inject constructor(
             }
         }
 
-    }
+    }*/
 
 
     /**
@@ -151,10 +153,9 @@ class BtConnectionViewModel @Inject constructor(
      */
 
     //TODO: Need this to happen when the user swipes down on list
-    fun refreshUiDeviceList(){
+    fun refreshUiDeviceList() {
         btConnectionRepository.triggerBleScan()
     }
-
 
 
 }

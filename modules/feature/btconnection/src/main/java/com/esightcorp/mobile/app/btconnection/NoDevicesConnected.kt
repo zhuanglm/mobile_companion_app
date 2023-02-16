@@ -26,7 +26,7 @@ import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 const val TAG = "BtConnectionScreen"
 
 @Composable
-fun BtConnectionScreen(
+fun NoDeviceConnectedRoute(
     navController: NavController,
     vm: BtConnectionViewModel = hiltViewModel()
 ) {
@@ -94,7 +94,7 @@ internal fun NoDeviceConnectedScreen(
             )
 
             AddDeviceButton(
-                onClick = { navController.navigate("select_network") },
+                onClick = { navController.navigate(BtConnectionScreens.BtSearchingRoute.route) },
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {

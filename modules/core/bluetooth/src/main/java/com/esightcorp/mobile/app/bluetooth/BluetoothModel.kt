@@ -123,6 +123,7 @@ class BluetoothModel constructor(
      */
     @SuppressLint("MissingPermission")
     private fun scanLeDevices() {
+        Log.d(TAG, "scanLeDevices: ")
         if (!scanning) {
             handler.postDelayed({
                 scanning = false

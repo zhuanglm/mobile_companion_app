@@ -6,8 +6,16 @@ data class BluetoothUiState(
     val btConnectionStatus: Boolean = false,
     val isBtEnabled: Boolean = false,
     val getConnectedDevice:String = "",
-    val listOfAvailableDevices: List<String> = mutableListOf(),
-    val deviceMapCache: List<String> = mutableListOf(),
-    val isScanning: ScanningStatus = ScanningStatus.Unknown
 
+)
+
+data class BtSearchingUiState(
+    val isScanning: ScanningStatus = ScanningStatus.Unknown,
+    val isBtEnabled: Boolean = false,
+)
+
+data class BtDevicesUiState(
+    val listOfAvailableDevices: List<String> = mutableListOf(),
+    val isBtEnabled: Boolean = false,
+    val deviceMapCache: List<String> = mutableListOf()
 )

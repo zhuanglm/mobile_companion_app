@@ -9,7 +9,7 @@ import com.esightcorp.mobile.app.btconnection.*
 fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
     navigation(startDestination = BtConnectionScreens.BtConnectionHomeScreen.route, route= BtConnectionScreens.IncomingNavigationRoute.route){
         composable(BtConnectionScreens.BtConnectionHomeScreen.route){
-            BtConnectionScreen(navController = navController)
+            NoDeviceConnectedRoute(navController = navController)
         }
         composable(BtConnectionScreens.BtDevicesScreen.route){
             BtDevicesScreen(navController = navController)

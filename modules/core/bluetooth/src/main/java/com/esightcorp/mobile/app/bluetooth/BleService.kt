@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.esightcorp.mobile.app.bluetooth.BluetoothModel.Companion.PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -95,12 +94,12 @@ class BleService : Service(){
     @SuppressLint("MissingPermission")
     private fun setCharacteristicNotification(){
         bluetoothGatt?.let { gatt ->
-            gatt.setCharacteristicNotification(MAG_BLE_PERFORM_ACTION_Characteristic, true)
+            /*gatt.setCharacteristicNotification(MAG_BLE_PERFORM_ACTION_Characteristic, true)
             val descriptor = MAG_BLE_PERFORM_ACTION_Characteristic.getDescriptor(PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID)
             descriptor?.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
             if(descriptor != null){
                 gatt.writeDescriptor(descriptor)
-            }
+            }*/
             Log.w(TAG, "setCharacteristicNotification: SET the characteristic notification" )
         }?:  run{
             Log.w(TAG, "setCharacteristicNotification: BluetoothGatt is not initialized" )

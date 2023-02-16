@@ -1,22 +1,12 @@
 package com.esightcorp.mobile.app.btconnection
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.SpaceEvenly
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -24,21 +14,27 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
+import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
+import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 
 @Composable
-fun BtDevicesScreen(
+fun BtDevicesRoute(
     navController: NavController,
-    vm: BtConnectionViewModel = hiltViewModel()
+    vm: BtDevicesViewModel = hiltViewModel()
 ) {
-//    BaseDevicesScreen(vm = vm, navController = navController)
-    BtDevicesScreen(navController = navController) {
-
-    }
+    vm.getDeviceList()
+    val uiState by vm.uiState.collectAsState()
+    BtDevicesScreen(
+        navController = navController,
+        onBackButtonPressed = {
+            vm.navigateToNoDeviceConnectedScreen(navController)
+        },
+        uiState = uiState
+    )
 }
 
 @Composable
@@ -46,6 +42,7 @@ internal fun BtDevicesScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     onBackButtonPressed: () -> Unit,
+    uiState: BtDevicesUiState,
 ) {
     /**
      * Dummy data
@@ -93,23 +90,34 @@ internal fun BtDevicesScreen(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 }) {
-                items(dummyDeviceList) { device ->
-                    val deviceModel = device.substringBeforeLast('-')
-                    val serialNumber = device.substringAfterLast('-')
-                    YellowDeviceCard(
-                        deviceModel = deviceModel,
-                        serialNumber = serialNumber,
-                        modifier = modifier.padding(12.dp)
-                    )
+                items(uiState.listOfAvailableDevices) { device ->
+                    if(device.contains('-')){
+                        val deviceModel = device.substringBeforeLast('-')
+                        val serialNumber = device.substringAfterLast('-')
+                        YellowDeviceCard(
+                            deviceModel = deviceModel,
+                            serialNumber = serialNumber,
+                            modifier = modifier.padding(12.dp)
+                        )
+                    }else{
+                        val serialNumber = "00001"
+                        YellowDeviceCard(
+                            deviceModel = device,
+                            serialNumber = serialNumber,
+                            modifier = modifier.padding(12.dp)
+                        )
+                    }
+
                 }
 
             }
-            CantFindDeviceButton(modifier = modifier.padding(0.dp, 15.dp, 0.dp, 0.dp)
-                .constrainAs(help){
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }) {}
+            CantFindDeviceButton(modifier = modifier
+                .padding(0.dp, 15.dp, 0.dp, 0.dp)
+                .constrainAs(help) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }) {}
 
         }
     }

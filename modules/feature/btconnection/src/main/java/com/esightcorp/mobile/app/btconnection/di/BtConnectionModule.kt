@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
@@ -14,7 +15,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 object BtConnectionModule {
 
     @Provides
-    @ViewModelScoped
+    @ActivityRetainedScoped
     fun provideBluetoothRepository(@ApplicationContext context: Context): BtConnectionRepository{
         return BtConnectionRepository(context)
     }

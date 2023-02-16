@@ -18,7 +18,6 @@ private const val TAG = "BluetoothModel"
 class BluetoothModel constructor(
     val context: Context
 ){
-    val bleScanResult = mutableListOf<BluetoothDevice>()
     private var scanning = false
     private val handler = Handler(Looper.getMainLooper())
     lateinit var bluetoothModelListener: BluetoothModelListener
@@ -82,7 +81,6 @@ class BluetoothModel constructor(
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
-
     }
 
     /**
@@ -96,7 +94,6 @@ class BluetoothModel constructor(
             bleManager.setConnectedDevice(connectedDeviceList[0], true)
             bluetoothModelListener.onDeviceConnected(bleManager.getConnectedDevice()!!)
         }
-
     }
 
     /**
@@ -104,17 +101,8 @@ class BluetoothModel constructor(
      */
     fun triggerBleScan(){
         scanLeDevices()
-        getDeviceList()
     }
 
-
-    /**
-     * Takes the result of the ble scan [bleScanResult] and adds the current connection status to it for the ui
-     */
-    @SuppressLint("MissingPermission")
-    fun getDeviceList(){
-        bluetoothModelListener.listOfDevicesReady(bleScanResult)
-    }
 
 
     /**
@@ -153,12 +141,12 @@ class BluetoothModel constructor(
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
             if (result != null) {
-                if ((result.device != null) && !bleScanResult.contains(result.device)) {
+                if ((result.device != null)) {
                     if(result.device.name != null){
-                        //TODO: Add check for eSight specific ble device
-                        Log.d("TAG", "onScanResult: ${result.device}")
-                        bleScanResult.add(result.device)
-                        bluetoothModelListener.onBleDeviceFound(result)
+                        if(bleManager.addToBleDeviceList(result.device)){
+                            Log.d(TAG, "onScanResult: ${result.device.name}")
+                            bluetoothModelListener.listOfDevicesUpdated()
+                        }
                     }
                 }
             }
@@ -189,10 +177,7 @@ class BluetoothModel constructor(
     }
 
     companion object{
-        val PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID =
-            UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4
-
     }
 
 

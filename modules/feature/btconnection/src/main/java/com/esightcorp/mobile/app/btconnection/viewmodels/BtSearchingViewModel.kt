@@ -33,7 +33,7 @@ class BtSearchingViewModel @Inject constructor(
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-
+            Log.d(TAG, "deviceListReady: ")
         }
 
         override fun onDeviceConnected(device: BluetoothDevice) {

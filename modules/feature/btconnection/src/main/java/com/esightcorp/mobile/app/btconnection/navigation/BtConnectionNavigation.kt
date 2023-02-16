@@ -12,7 +12,7 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
             NoDeviceConnectedRoute(navController = navController)
         }
         composable(BtConnectionScreens.BtDevicesScreen.route){
-            BtDevicesScreen(navController = navController)
+            BtDevicesRoute(navController = navController)
         }
         composable(BtConnectionScreens.BtDisabledScreen.route){
             BtDisabledScreen(navController = navController)

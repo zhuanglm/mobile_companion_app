@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
 import com.esightcorp.mobile.app.home.repositories.IHomeRepository
@@ -34,6 +35,10 @@ class HomeViewModel @Inject constructor(
         _uiState.update { currentState ->
             currentState.copy(connectedDevice = device, isBluetoothConnected = true)
         }
+    }
+
+    fun navigateToWifiCredsOverBt(navController: NavController){
+        navController.navigate("wificonnection_home")
     }
 
 }

@@ -4,15 +4,17 @@ import android.content.Context
 import android.net.wifi.ScanResult
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
+import com.esightcorp.mobile.app.networking.WifiCache
+import com.esightcorp.mobile.app.networking.WifiCredentials
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
+import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 private const val TAG = "WifiConnectionRepository"
 class WifiConnectionRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
-    var isBluetoothConnected = eSightBleManager.checkIfConnected()
     private lateinit var wifiRepoListener: WifiConnectionRepoListener
     private val wifiModel = WifiModel(context)
     private val networkList: MutableList<ScanResult> = mutableListOf()
@@ -31,6 +33,10 @@ class WifiConnectionRepository @Inject constructor(
         override fun onScanFailed() {
             TODO("Not yet implemented")
         }
+
+        override fun onScanStatusUpdated(status: ScanningStatus) {
+            wifiRepoListener.onScanStatusUpdated(status)
+        }
     }
 
     init {
@@ -38,10 +44,10 @@ class WifiConnectionRepository @Inject constructor(
     }
 
 
-    fun sendWifiCreds(ssid: String, pwd: String, type: String){
-        if(isBluetoothConnected){
+    fun sendWifiCreds(pwd: String, type: String){
+        if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.sendWifiCreds(ssid, pwd, type)
+                eSightBleManager.getBleService()?.sendWifiCreds(WifiCache.credentials.getNetwork().toString(), pwd, type)
             }catch (exception:NullPointerException){
                 Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
             }catch (exception:UninitializedPropertyAccessException){
@@ -50,7 +56,7 @@ class WifiConnectionRepository @Inject constructor(
         }
         else{
             Log.d(TAG, "sendWifiCreds: No bt connection")
-            wifiRepoListener.onBluetoothStatusUpdate(isBluetoothConnected)
+            wifiRepoListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
         }
 
     }
@@ -63,19 +69,23 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.registerListener(wifiModelListener)
     }
 
+    fun getCachedWifiList(){
+        wifiRepoListener.onNetworkListUpdated(WifiCache.getNetworkList())
+    }
+
     fun setSelectedNetwork(network: ScanResult){
-        WifiCredentials.setNetwork(network)
+        WifiCache.selectNetwork(network)
     }
 
     fun getSelectedNetwork():ScanResult{
-        return WifiCredentials.getNetwork()
+        return WifiCache.credentials.getNetwork()
     }
 
     fun registerListener(listener: WifiConnectionRepoListener){
         wifiRepoListener = listener
-        if(!isBluetoothConnected){
+        if(!eSightBleManager.checkIfConnected()){
             Log.e(TAG, "Bluetooth is not currently connected." )
-            wifiRepoListener.onBluetoothStatusUpdate(isBluetoothConnected)
+            wifiRepoListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
         }
         setupWifiModelListener()
     }

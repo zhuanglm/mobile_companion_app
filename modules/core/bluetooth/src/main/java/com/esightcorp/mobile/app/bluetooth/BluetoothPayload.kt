@@ -12,8 +12,7 @@ class BluetoothPayload private constructor(
     val port: String?
 ){
 
-    val delimiter = "$"
-    val startAndEnd = "*"
+    val delimiter = ":::"
 
     data class Builder(
         private var bleCode: BleCodes,
@@ -55,17 +54,17 @@ class BluetoothPayload private constructor(
         val charset = Charsets.UTF_8
         when(bleCode){
             BleCodes.STREAM_OUT -> {
-                val code = startAndEnd.plus(BleCodes.STREAM_OUT.code).plus(delimiter).toByteArray(charset)
+                val code = (BleCodes.STREAM_OUT.code).plus(delimiter).toByteArray(charset)
                 byteArray += code
                 if(port != null && ipAddress != null){
                     val port = port.plus(delimiter).toByteArray(charset)
                     byteArray += port
-                    val ip = ipAddress.plus(startAndEnd).toByteArray(charset)
+                    val ip = ipAddress.toByteArray(charset)
                     byteArray += ip
                 }
             }
             BleCodes.STREAM_OUT_SHUTDOWN -> {
-                val code = startAndEnd.plus(BleCodes.STREAM_OUT_SHUTDOWN.code).toByteArray(charset)
+                val code = (BleCodes.STREAM_OUT_SHUTDOWN.code).toByteArray(charset)
                 byteArray += code
             }
             BleCodes.HOTSPOT_CREDS -> {
@@ -73,12 +72,12 @@ class BluetoothPayload private constructor(
                 byteArray += code
             }
             BleCodes.WIFI_CREDS -> {
-                val code = startAndEnd.plus(BleCodes.WIFI_CREDS.code).plus(delimiter).toByteArray(charset)
+                val code = (BleCodes.WIFI_CREDS.code).plus(delimiter).toByteArray(charset)
                 byteArray += code
                 if(SSID != null && wifiPwd != null && wifiType != null){
                     val ssid = SSID.plus(delimiter).toByteArray(charset)
                     val pwd = wifiPwd.plus(delimiter).toByteArray(charset)
-                    val type = wifiType.plus(startAndEnd).toByteArray(charset)
+                    val type = wifiType.toByteArray(charset)
                     byteArray += ssid
                     byteArray += pwd
                     byteArray += type

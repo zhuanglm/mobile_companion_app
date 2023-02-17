@@ -100,7 +100,7 @@ internal fun BaseHomeScreen(
                     bottom.linkTo(feedback.top)
                     height = Dimension.fillToConstraints
                     width = Dimension.fillToConstraints
-                }, navController)
+                }, navController, vm = vm)
                 FeedbackButton(modifier = modifier.constrainAs(feedback){
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
@@ -123,7 +123,8 @@ fun navigateToBtHomeScreen(navController: NavController) {
 @Composable
 fun AppContainer(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    vm: HomeViewModel
 ) {
     Column(
         modifier = modifier,
@@ -134,7 +135,9 @@ fun AppContainer(
             .height(IntrinsicSize.Min)
             .fillMaxWidth()) {
             IconAndTextSquareButton(
-                onClick = { Unit },
+                onClick = {
+                  vm.navigateToWifiCredsOverBt(navController)
+                },
                 modifier = Modifier
                     .wrapContentHeight()
                     .wrapContentWidth()

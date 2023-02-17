@@ -134,15 +134,10 @@ fun BaseWifiScreen(
                     }
                 }
             }else{
-                vm.startWifiScan()
-                CircularProgressIndicator(modifier = Modifier
-                    .constrainAs(spinner) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        top.linkTo(header.bottom)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .fillMaxSize(0.8f))
+                LaunchedEffect(Unit ){
+                    navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route)
+                }
+
             }
         }
     }

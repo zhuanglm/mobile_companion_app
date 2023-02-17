@@ -18,14 +18,14 @@ import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun IconAndTextSquareButton(
-    onClick: @Composable () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     painter: Painter = painterResource(id = R.drawable.glasses),
     iconContextDescription: String? = null,
     text: String = "Defaults",
 ) {
     ElevatedButton(
-        onClick = { onClick },
+        onClick = onClick ,
         modifier = modifier
             .padding(25.dp, 20.dp).defaultMinSize(100.dp, 100.dp) ,
         enabled = true,

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
+import java.nio.charset.StandardCharsets
 import java.util.*
 
 private const val TAG = "BleService"
@@ -44,25 +45,37 @@ class BleService : Service() {
         }
 
         @SuppressLint("MissingPermission")
-        @RequiresApi(33)
-        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            Log.i(TAG, "onServicesDiscovered: device ${gatt.device.name} and status is success? ${status == BluetoothGatt.GATT_SUCCESS}")
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
-                Log.d(TAG, "onServicesDiscovered: ${gatt?.services.toString()}")
-                val service = gatt?.getService(SERVICE_UUID)
-                MAG_BLE_BUTTON_PRESS_Characteristic = service?.getCharacteristic(
-                    UUID_CHARACTERISTIC_BUTTON_PRESSED
-                )!!
+                gatt.services.forEach { service ->
+                    val characteristicsTable = service.characteristics.joinToString(
+                        separator = "\n|--",
+                        prefix = "|--"
+                    ) { it.uuid.toString() }
+                    Log.i("printGattTable", "\nService ${service.uuid}\nCharacteristics:\n$characteristicsTable"
+                    )
+
+                }
+                val service = gatt.getService(SERVICE_UUID)
+                Log.d(TAG, "onServicesDiscovered: ${service.uuid}")
+                MAG_BLE_BUTTON_PRESS_Characteristic = service.getCharacteristic(
+                        UUID_CHARACTERISTIC_BUTTON_PRESSED
+                )
                 MAG_BLE_WIFI_INFO_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_WIFI_INFO
-                )!!
+                )
                 MAG_BLE_ERROR_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_ERROR
-                )!!
+                )
+
             } else {
                 Log.w(TAG, "onServicesDiscovered received $status")
             }
         }
+
+    
 
         override fun onDescriptorWrite(
             gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int
@@ -86,30 +99,19 @@ class BleService : Service() {
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray
         ) {
-            Log.d(TAG, "onCharacteristicChanged: $value")
+            val incoming = String(value, StandardCharsets.UTF_8)
+            Log.d(TAG, "onCharacteristicChanged: ${gatt?.device?.name}, ${characteristic.uuid}, $incoming" )
         }
 
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?,
-            status: Int
-        ) {
-            super.onCharacteristicRead(gatt, characteristic, status)
-        }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?
-        ) {
-            super.onCharacteristicChanged(gatt, characteristic)
-        }
 
         override fun onCharacteristicWrite(
             gatt: BluetoothGatt?,
             characteristic: BluetoothGattCharacteristic?,
             status: Int
         ) {
+
             super.onCharacteristicWrite(gatt, characteristic, status)
+            Log.d(TAG, "onCharacteristicWrite: ${gatt?.device?.name}, ${characteristic?.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} ")
         }
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
@@ -118,13 +120,11 @@ class BleService : Service() {
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
             super.onMtuChanged(gatt, mtu, status)
-            Log.d(TAG, "onMtuChanged: ${mtu}")
+            Log.d(TAG, "onMtuChanged: ${gatt?.device?.name}  ${mtu}")
             broadcastUpdate(ACTION_GATT_CONNECTED)
         }
 
-        override fun onServiceChanged(gatt: BluetoothGatt) {
-            super.onServiceChanged(gatt)
-        }
+
     }
 
 
@@ -375,7 +375,7 @@ class BleService : Service() {
         private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
         private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
 
-        val SERVICE_UUID = UUID.fromString("1706BBC0-88AB-4B8D-877E-2237916EE929")
+        val SERVICE_UUID = UUID.fromString("0000b81d-0000-1000-8000-00805f9b34fb")
         val UUID_CHARACTERISTIC_BUTTON_PRESSED =
             UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
         val UUID_CHARACTERISTIC_WIFI_INFO = UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")

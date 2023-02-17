@@ -65,7 +65,6 @@ class BluetoothModel constructor(
                 }
                 BleService.ACTION_GATT_SERVICES_DISCOVERED -> {
                     bleManager.getBleService()?.getSupportedGattServices()?.forEach {
-                        Log.d(TAG, "onReceive: ${it.uuid}")
                     }
                 }
                 BleService.ACTION_DATA_AVAILABLE -> {

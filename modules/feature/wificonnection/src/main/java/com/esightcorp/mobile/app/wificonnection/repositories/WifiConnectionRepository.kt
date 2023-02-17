@@ -47,7 +47,7 @@ class WifiConnectionRepository @Inject constructor(
     fun sendWifiCreds(pwd: String, type: String){
         if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.sendWifiCreds(WifiCache.credentials.getNetwork().toString(), pwd, type)
+                eSightBleManager.getBleService()?.sendWifiCreds(WifiCache.credentials.getNetwork().SSID.toString(), pwd, type)
             }catch (exception:NullPointerException){
                 Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
             }catch (exception:UninitializedPropertyAccessException){

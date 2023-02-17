@@ -55,7 +55,9 @@ internal fun BaseHomeScreen(
 ) {
     vm.updateConnectedDevice(device)
     if (!homeUiState.isBluetoothConnected) {
+/*
         navigateToBtHomeScreen(navController = navController)
+*/
     } else {
         Surface(color = Color.Black ){
             ConstraintLayout(
@@ -87,7 +89,10 @@ internal fun BaseHomeScreen(
                         top.linkTo(personalGreeting.bottom, margin = 25.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }, onClick = {Unit})
+                    },
+                    onClick = {Unit},
+                    deviceModel = device.substring(2, device.length -2).substringBeforeLast('-'),
+                    serialNumber = device.substring(2, device.length -2).substringAfterLast('-'))
                 AppContainer(modifier = modifier.constrainAs(appContainer) {
                     top.linkTo(deviceCard.bottom)
                     start.linkTo(parent.start)
@@ -108,12 +113,12 @@ internal fun BaseHomeScreen(
     }
 }
 
-@Composable
+/*@Composable
 fun navigateToBtHomeScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route)
     }
-}
+}*/
 
 @Composable
 fun AppContainer(

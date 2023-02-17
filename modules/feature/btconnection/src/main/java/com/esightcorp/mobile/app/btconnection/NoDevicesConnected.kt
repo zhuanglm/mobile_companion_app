@@ -23,8 +23,7 @@ import com.esightcorp.mobile.app.ui.components.*
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
-const val TAG = "BtConnectionScreen"
-
+private const val TAG = "BluetoothScreens"
 @Composable
 fun NoDeviceConnectedRoute(
     navController: NavController,

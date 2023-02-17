@@ -36,6 +36,8 @@ internal fun BtSearchingScreen(
     uiState: BtSearchingUiState,
     vm: BtSearchingViewModel
 ) {
+    val TAG = "BtSearchingScreen"
+
     when(uiState.isScanning){
         ScanningStatus.Failed -> {
             Log.i(TAG, "Bluetooth Scanning has failed. Show the error screen")
@@ -50,7 +52,7 @@ internal fun BtSearchingScreen(
                 loadingText = "Searching for eSight devices",
                 modifier = modifier
             )
-            if (uiState.isScanning.equals(ScanningStatus.Unknown)){
+            if (uiState.isScanning == ScanningStatus.Unknown){
                 vm.triggerScan()
             }
         }

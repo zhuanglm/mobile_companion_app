@@ -10,6 +10,7 @@ import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.util.Log
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.juul.kable.State
 
 private const val TAG = "eSightBleManager"
 object eSightBleManager {
@@ -23,16 +24,32 @@ object eSightBleManager {
     private var connectedDevice: BluetoothDevice? = null
     private var scanningStatus: ScanningStatus = ScanningStatus.Unknown
     private var bleDeviceList: MutableList<BluetoothDevice> = mutableListOf()
+    private var modelListener: BluetoothModelListener? = null
 
 
     fun setupBluetoothManager(context: Context){
-        this.bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        this.bluetoothAdapter = bluetoothManager.adapter
-        this.bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
+        if(!this::bluetoothManager.isInitialized){
+            this.bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        }
+        if(!this::bluetoothAdapter.isInitialized){
+            this.bluetoothAdapter = bluetoothManager.adapter
+
+        }
+        if(!this::bluetoothLeScanner.isInitialized){
+            this.bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
+        }
     }
 
     fun setScanningStatus(status: ScanningStatus){
         this.scanningStatus = status
+    }
+
+    fun setModelListener(listener: BluetoothModelListener){
+        this.modelListener = listener
+    }
+
+    fun getModelListener(): BluetoothModelListener?{
+        return modelListener
     }
 
     fun setBleDeviceList(devices: MutableList<BluetoothDevice>){
@@ -65,6 +82,10 @@ object eSightBleManager {
         return this.bleDeviceList
     }
 
+    /*
+    Currently we set status to false when we try to connect to the device passed.
+    Once we ACTUALLY connect, it flips to true.
+     */
     fun setConnectedDevice(device: BluetoothDevice, status: Boolean){
         this.connectedDevice = device
         this.bleConnectionStatus = status

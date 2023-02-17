@@ -12,7 +12,7 @@ interface BluetoothModelListener {
     fun onScanFailed(error: Int): Unit
     fun onScanStarted():Unit
     fun onScanFinished():Unit
-    fun onDeviceConnected(device: BluetoothDevice): Unit
+    fun onDeviceConnected(device: BluetoothDevice, connected: Boolean): Unit
 
 
 }

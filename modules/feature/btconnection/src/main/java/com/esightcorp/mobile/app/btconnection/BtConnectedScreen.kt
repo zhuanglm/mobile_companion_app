@@ -7,15 +7,19 @@ import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 
 @Composable
 fun BtConnectedRoute(
-    navController: NavController
+    navController: NavController,
+    deviceName: String?,
+    deviceAddress: String?
 ){
-    BtConnectedScreen(navController = navController, modifier = Modifier)
+    BtConnectedScreen(navController = navController, modifier = Modifier, deviceAddress = deviceAddress, deviceName = deviceName)
 }
 
 @Composable
 internal fun BtConnectedScreen(
     navController: NavController,
-    modifier: Modifier
+    modifier: Modifier,
+    deviceAddress: String?,
+    deviceName: String?
 ){
-    LoadingScreenWithIcon(modifier = modifier, loadingText = "Connected to eSight")
+    LoadingScreenWithIcon(modifier = modifier, loadingText = "Connected to ${deviceName}\nAddress: $deviceAddress")
 }

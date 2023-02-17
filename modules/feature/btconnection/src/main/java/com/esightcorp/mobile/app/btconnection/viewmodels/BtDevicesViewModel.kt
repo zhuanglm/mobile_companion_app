@@ -17,13 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-private const val TAG = "BtDevicesViewModel"
 
 @HiltViewModel
 class BtDevicesViewModel @Inject constructor(
     application: Application,
     val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
+    private val TAG = "BtDevicesViewModel"
 
     private var _uiState = MutableStateFlow(BtDevicesUiState())
     val uiState: StateFlow<BtDevicesUiState> = _uiState.asStateFlow()
@@ -37,7 +37,7 @@ class BtDevicesViewModel @Inject constructor(
             updateDeviceList(deviceList)
         }
 
-        override fun onDeviceConnected(device: BluetoothDevice) {
+        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
             Log.d(TAG, "onDeviceConnected: ")
         }
     }

@@ -14,15 +14,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import javax.net.ssl.SSLEngineResult.Status
 
 
-private const val TAG = "BtSearchingScreen"
 
 @HiltViewModel
 class BtSearchingViewModel @Inject constructor(
     application: Application, val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
-
+    private val TAG = "BtSearchingViewModel"
     private var _uiState = MutableStateFlow(BtSearchingUiState())
     val uiState: StateFlow<BtSearchingUiState> = _uiState.asStateFlow()
     private val btRepositoryListener = object : IBtConnectionRepository {
@@ -33,9 +33,10 @@ class BtSearchingViewModel @Inject constructor(
 
         override fun deviceListReady(deviceList: MutableList<String>) {
             Log.d(TAG, "deviceListReady: ")
+            updateBtSearchingState(ScanningStatus.Success)
         }
 
-        override fun onDeviceConnected(device: BluetoothDevice) {
+        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
 
         }
     }

@@ -25,6 +25,7 @@ fun BtDisabledScreen(
     navController: NavController,
     vm: BtDisabledViewModel = hiltViewModel()
 ) {
+    val TAG = "BtDisabledScreen"
     Log.d(TAG, "BtDisabledScreen: ")
     BtDisabledScreen(onBackPressed = { }, modifier = Modifier)
 

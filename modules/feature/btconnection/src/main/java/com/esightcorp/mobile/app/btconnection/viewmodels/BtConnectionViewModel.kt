@@ -17,14 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-private const val TAG = "BtConnectionViewModel"
 
 @HiltViewModel
 class BtConnectionViewModel @Inject constructor(
     application: Application, val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
 
-
+    private val TAG = "BtConnectionViewModel"
     /**
      * Object which is used by the compose UI to track UI State
      */
@@ -86,16 +85,7 @@ class BtConnectionViewModel @Inject constructor(
         }
 
         @SuppressLint("MissingPermission")
-        override fun onDeviceConnected(device: BluetoothDevice) {
-            Log.d(TAG, "onDeviceConnected: ${device.name}")
-            _uiState.update { currentState ->
-                currentState.copy(
-                    getConnectedDevice = device.name.trim(), btConnectionStatus = true
-                )
-            }
-            Log.e(TAG, "onDeviceConnected: ${_uiState.value.getConnectedDevice}")
-
-        }
+        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {}
 
     }
 

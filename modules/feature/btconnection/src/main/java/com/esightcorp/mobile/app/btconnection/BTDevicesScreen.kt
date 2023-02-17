@@ -62,7 +62,7 @@ internal fun BtDevicesScreen(
         "eSight-Go-8764756",
         "eSight-Go-2546765"
     )
-
+    val TAG = "BtDevicesScreen"
 
     Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
         ConstraintLayout {

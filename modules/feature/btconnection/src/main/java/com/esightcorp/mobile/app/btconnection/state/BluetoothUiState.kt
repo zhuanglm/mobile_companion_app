@@ -19,3 +19,11 @@ data class BtDevicesUiState(
     val isBtEnabled: Boolean = false,
     val deviceMapCache: List<String> = mutableListOf()
 )
+
+data class BtConnectingUiState(
+    val didDeviceConnect: Boolean = false,
+    val deviceName: String? = null,
+    val deviceAddress: String? = null
+    )
+
+

@@ -51,9 +51,9 @@ class BtConnectionRepository @Inject constructor(
         }
 
         @SuppressLint("MissingPermission")
-        override fun onDeviceConnected(device: BluetoothDevice) {
+        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
             Log.d(TAG, "onDeviceConnected: ${device.name}")
-            deviceConnected(device)
+            deviceConnected(device, connected)
         }
 
     }
@@ -65,8 +65,10 @@ class BtConnectionRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
     }
 
+
+
     fun setupBtModelListener(){
-        bluetoothModel.registerListener(bluetoothModelListener)
+        eSightBleManager.setModelListener(bluetoothModelListener)
     }
 
 
@@ -90,7 +92,6 @@ class BtConnectionRepository @Inject constructor(
         for (bluetoothDevice in eSightBleManager.getBleDeviceList()) {
             strippedList.add(bluetoothDevice.name)
         }
-        Log.d(TAG, "getMapOfDevices: at this point we should call the listener")
         iBtConnectionRepository.deviceListReady(strippedList)
     }
 
@@ -107,6 +108,7 @@ class BtConnectionRepository @Inject constructor(
      * how we communicate between repo and viewmodel
      */
     fun registerListener(listener: IBtConnectionRepository){
+        Log.d(TAG, "registerListener: ")
         this.iBtConnectionRepository = listener
     }
 
@@ -139,10 +141,10 @@ class BtConnectionRepository @Inject constructor(
         }
     }
     @SuppressLint("MissingPermission")
-    private fun deviceConnected(device: BluetoothDevice){
+    private fun deviceConnected(device: BluetoothDevice, connected: Boolean){
         Log.d(TAG, "onDeviceConnected: ${device.name}")
         if(this::iBtConnectionRepository.isInitialized){
-            iBtConnectionRepository.onDeviceConnected(device)
+            iBtConnectionRepository.onDeviceConnected(device, connected)
         }
     }
 

@@ -7,5 +7,4 @@ import javax.inject.Inject
 @HiltViewModel
 class EshareViewModel @Inject constructor(
     eshareRepository: IEshareRepository
-) {
-}
+)

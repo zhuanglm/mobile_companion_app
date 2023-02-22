@@ -66,7 +66,7 @@ class BluetoothModel constructor(
                     bleManager.getBleService()?.getSupportedGattServices()?.forEach {
                         Log.d(TAG, "onReceive: ${it.uuid}")
                     }
-                    bleManager.getBleService()?.sendIpAndPort("192.168.0.1", "8889")
+//                    bleManager.getBleService()?.sendIpAndPort("192.168.0.1", "8889")
                     
                 }
                 BleService.ACTION_DATA_AVAILABLE -> {
@@ -91,7 +91,7 @@ class BluetoothModel constructor(
     fun registerListener(btModelInterface: BluetoothModelListener) {
         this.bluetoothModelListener = btModelInterface
         val connectedDeviceList = bleManager.bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
-        Log.d(TAG, "INIT BLUETOOTH MODEL: ${connectedDeviceList.toString()} ")
+        Log.d(TAG, "INIT BLUETOOTH MODEL: $connectedDeviceList ")
         if(connectedDeviceList.isNotEmpty()){
             bleManager.setConnectedDevice(connectedDeviceList[0], true)
             bluetoothModelListener.onDeviceConnected(bleManager.getConnectedDevice()!!)

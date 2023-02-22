@@ -16,6 +16,7 @@ class WifiConnectionRepository @Inject constructor(
     private lateinit var wifiRepoListener: WifiConnectionRepoListener
     private val wifiModel = WifiModel(context)
     private val networkList: MutableList<ScanResult> = mutableListOf()
+    private lateinit var selectedNetwork: ScanResult
     private val wifiModelListener = object: WifiModelListener{
         override fun onWifiNetworkFound(result: ScanResult) {
             Log.e(TAG, "onWifiNetworkFound: ${result.SSID}")
@@ -30,11 +31,10 @@ class WifiConnectionRepository @Inject constructor(
         override fun onScanFailed() {
             TODO("Not yet implemented")
         }
-
     }
 
     init {
-        Log.e(TAG, "Init - is bluetooth currently connected? $isBluetoothConnected" )
+
     }
 
 
@@ -44,11 +44,13 @@ class WifiConnectionRepository @Inject constructor(
                 eSightBleManager.getBleService()?.sendWifiCreds(ssid, pwd, type)
             }catch (exception:NullPointerException){
                 Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
+            }catch (exception:UninitializedPropertyAccessException){
+                Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
             }
         }
         else{
             Log.d(TAG, "sendWifiCreds: No bt connection")
-            wifiRepoListener.onBluetoothNotConnected()
+            wifiRepoListener.onBluetoothStatusUpdate(isBluetoothConnected)
         }
 
     }
@@ -61,8 +63,20 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.registerListener(wifiModelListener)
     }
 
+    fun setSelectedNetwork(network: ScanResult){
+        WifiCredentials.setNetwork(network)
+    }
+
+    fun getSelectedNetwork():ScanResult{
+        return WifiCredentials.getNetwork()
+    }
+
     fun registerListener(listener: WifiConnectionRepoListener){
         wifiRepoListener = listener
+        if(!isBluetoothConnected){
+            Log.e(TAG, "Bluetooth is not currently connected." )
+            wifiRepoListener.onBluetoothStatusUpdate(isBluetoothConnected)
+        }
         setupWifiModelListener()
     }
 

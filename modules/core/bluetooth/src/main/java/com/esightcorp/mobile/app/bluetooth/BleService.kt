@@ -10,13 +10,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.getSystemService
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel.Companion.PERFORM_ACTION_CONFIG_DESCRIPTOR_UUID
-import com.juul.kable.State
-import kotlinx.coroutines.CoroutineScope
 import java.lang.IllegalArgumentException
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -38,7 +33,7 @@ class BleService : Service(){
     private val bluetoothGattCallback = object : BluetoothGattCallback(){
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             if(newState == BluetoothProfile.STATE_CONNECTED){
-                Log.d(TAG, "onConnectionStateChange: state connected")
+                Log.d(TAG, "onConnectionStateChange: State connected")
                 bluetoothGatt = gatt
                 connectionState = STATE_CONNECTED
                 broadcastUpdate(ACTION_GATT_CONNECTED)
@@ -57,9 +52,9 @@ class BleService : Service(){
                 val service = gatt?.getService(SERVICE_UUID)
                 MAG_BLE_BUTTON_PRESS_Characteristic = service?.getCharacteristic(
                     UUID_CHARACTERISTIC_BUTTON_PRESSED)!!
-                MAG_BLE_PERFORM_ACTION_Characteristic = service?.getCharacteristic(
+                MAG_BLE_PERFORM_ACTION_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_PERFORM_ACTION)!!
-                MAG_BLE_TOUCH_EVENT_Characteristic = service?.getCharacteristic(
+                MAG_BLE_TOUCH_EVENT_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_TOUCH_EVENT)!!
                 setCharacteristicNotification()
             }else{
@@ -73,6 +68,7 @@ class BleService : Service(){
             status: Int
         ) {
             super.onDescriptorWrite(gatt, descriptor, status)
+            Log.d(TAG, "onDescriptorWrite: $status")
         }
 
         override fun onCharacteristicRead(
@@ -92,11 +88,10 @@ class BleService : Service(){
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray
         ) {
-            Log.d(TAG, "onCharacteristicChanged: ${value.toString()}")
+            Log.d(TAG, "onCharacteristicChanged: $value")
         }
     }
 
-    @RequiresApi(33)
     @SuppressLint("MissingPermission")
     private fun setCharacteristicNotification(){
         bluetoothGatt?.let { gatt ->
@@ -108,7 +103,7 @@ class BleService : Service(){
             }
             Log.w(TAG, "setCharacteristicNotification: SET the characteristic notification" )
         }?:  run{
-            Log.w(TAG, "setCharacteristicNotification: BluetoothGatt is not initialized", )
+            Log.w(TAG, "setCharacteristicNotification: BluetoothGatt is not initialized" )
         }
     }
 
@@ -177,7 +172,7 @@ class BleService : Service(){
                     }
                     intent.putExtra(EXTRA_DATA, "$data\n$hexString")
                 }
-                Log.d(TAG, "broadcastUpdate: ${characteristic.toString()}")
+                Log.d(TAG, "broadcastUpdate: $characteristic")
             }
         }
         sendBroadcast(intent)
@@ -274,34 +269,35 @@ class BleService : Service(){
                 boolResult = gatt.writeCharacteristic(characteristic)
             }
         }
+        Log.d(TAG, "sendMessage: ${intResult}, $boolResult")
         return boolResult
     }
 
     private fun decodeSendMessageResult(result: Int): Boolean{
         when(result){
             BluetoothStatusCodes.SUCCESS -> {
-
+                Log.d(TAG, "decodeSendMessageResult: SUCCESS")
             }
             BluetoothStatusCodes.ERROR_BLUETOOTH_NOT_ALLOWED -> {
-
+                Log.d(TAG, "decodeSendMessageResult: BLUETOOTH NOT ALLOWED ")
             }
             BluetoothStatusCodes.ERROR_BLUETOOTH_NOT_ENABLED -> {
-
+                Log.d(TAG, "decodeSendMessageResult: BLUETOOTH NOT ENABLED")
             }
             BluetoothStatusCodes.ERROR_DEVICE_NOT_BONDED -> {
-
+                Log.d(TAG, "decodeSendMessageResult: NOT BONDED ")
             }
             BluetoothStatusCodes.ERROR_GATT_WRITE_NOT_ALLOWED -> {
-
+                Log.d(TAG, "decodeSendMessageResult:  WRITE NOT ALLOWED")
             }
             BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY -> {
-
+                Log.d(TAG, "decodeSendMessageResult: WRITE BUSY")
             }
             BluetoothStatusCodes.ERROR_UNKNOWN ->{
-
+                Log.d(TAG, "decodeSendMessageResult: UNKNOWN")
             }
             else -> {
-
+                Log.d(TAG, "decodeSendMessageResult: UNKNOWN ELSE")
             }
         }
         return false
@@ -339,7 +335,7 @@ class BleService : Service(){
 //                setCharacteristicNotification(gattCharacteristic, true)
             }
         }
-        Log.d(TAG, "logGattServices: CHARACTERISTIC DATA ${gattCharacteristicData.toString()}")
+        Log.d(TAG, "logGattServices: CHARACTERISTIC DATA $gattCharacteristicData")
     }
 
     companion object{

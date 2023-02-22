@@ -133,7 +133,7 @@ dependencies {
 def getProps(path){
     Properties props = new Properties()
     props.load(new FileInputStream(file(path)))
-    return props;
+    return props
 }
 
 kapt {

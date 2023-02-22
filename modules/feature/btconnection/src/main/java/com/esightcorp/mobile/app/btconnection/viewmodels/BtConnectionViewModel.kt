@@ -37,14 +37,6 @@ class BtConnectionViewModel @Inject constructor(
      * Methods to interact with the UI state StateFlow object
      */
 
-    fun updatePermissionsState(state: Boolean){
-        _uiState.update { currentState ->
-            currentState.copy(arePermissionsGranted = state)
-        }
-        if(state){
-            btConnectionRepository.setupBtModelListener()
-        }
-    }
 
     fun connectToDevice(device: String){
         btConnectionRepository.connectToDevice(device)
@@ -60,32 +52,27 @@ class BtConnectionViewModel @Inject constructor(
         }
     }
 
-    private fun updateConnectionStatus(state: Boolean){
-        _uiState.update { currentState ->
-            currentState.copy(btConnectionStatus = state)
-        }
-    }
 
     /**
      * Interface to receive callbacks from the bluetooth repository
      */
     val btRepositoryListener = object : IBtConnectionRepository{
-        override fun scanStatus(isScanning: com.esightcorp.mobile.app.utils.ScanningStatus) {
+        override fun scanStatus(isScanning: ScanningStatus) {
             Log.d("", "scanStatus: $isScanning")
             _uiState.update { currentState ->
                 currentState.copy(isScanning = isScanning)
             }
             when(isScanning){
-                com.esightcorp.mobile.app.utils.ScanningStatus.Failed -> {
+                ScanningStatus.Failed -> {
                     Log.d("TAG", "scanStatus: failed")
                 }
-                com.esightcorp.mobile.app.utils.ScanningStatus.InProgress -> {
+                ScanningStatus.InProgress -> {
                     Log.d("TAG", "scanStatus: in progress")
                 }
-                com.esightcorp.mobile.app.utils.ScanningStatus.Success -> {
+                ScanningStatus.Success -> {
                     Log.d("TAG", "scanStatus: success")
                     uiDeviceList()}
-                com.esightcorp.mobile.app.utils.ScanningStatus.Unknown -> {
+                ScanningStatus.Unknown -> {
                     Log.d("TAG", "scanStatus: unknown")
                     uiDeviceList()}
             }
@@ -102,7 +89,7 @@ class BtConnectionViewModel @Inject constructor(
         override fun onDeviceConnected(device: BluetoothDevice) {
             Log.d(TAG, "onDeviceConnected: ${device.name}")
             _uiState.update { currentState ->
-                currentState.copy(getConnectedDevice = device.name, btConnectionStatus = true)
+                currentState.copy(getConnectedDevice = device.name.trim(), btConnectionStatus = true)
             }
             Log.e(TAG, "onDeviceConnected: ${_uiState.value.getConnectedDevice}" )
 
@@ -116,26 +103,9 @@ class BtConnectionViewModel @Inject constructor(
 
     init {
         btConnectionRepository.registerListener(btRepositoryListener)
+        btConnectionRepository.setupBtModelListener()
     }
 
-    /**
-     * Permissions management
-     */
-
-    fun getBluetoothPermissionsList(): List<String>{
-        val PERMISSIONS:List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            listOf(
-                android.Manifest.permission.BLUETOOTH_SCAN,
-                android.Manifest.permission.BLUETOOTH_CONNECT
-            )
-        } else {
-            listOf(
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN)
-        }
-        Log.d("TAG", "getBluetoothPermissionsList: ${PERMISSIONS.first()} ")
-        return PERMISSIONS
-    }
 
     /**
      * Generate list of ble devices to show to the user
@@ -145,7 +115,7 @@ class BtConnectionViewModel @Inject constructor(
         val uiDeviceList: MutableList<String> = mutableListOf()
         val deviceList = _uiState.value.deviceMapCache
         when(uiState.value.isScanning){
-            com.esightcorp.mobile.app.utils.ScanningStatus.Success -> {
+            ScanningStatus.Success -> {
                 if(uiState.value.isBtEnabled){
                     deviceList.forEach {
                         Log.d("TAG", "getDevicesToDisplay: ${it}")
@@ -159,16 +129,16 @@ class BtConnectionViewModel @Inject constructor(
                 }
 
             }
-            com.esightcorp.mobile.app.utils.ScanningStatus.Failed -> {
+            ScanningStatus.Failed -> {
                 uiDeviceList.add("ERROR SCAN FAILED ERROR ")
                 _uiState.update { currentState ->
                     currentState.copy(listOfAvailableDevices = uiDeviceList)
                 }
             }
-            com.esightcorp.mobile.app.utils.ScanningStatus.InProgress -> {
+            ScanningStatus.InProgress -> {
                 Log.d(TAG, "getDevicesToDisplay: Scan in progress")
             }
-            com.esightcorp.mobile.app.utils.ScanningStatus.Unknown -> {
+            ScanningStatus.Unknown -> {
                 Log.d(TAG, "getDevicesToDisplay: Scan status UNKNOWN")
             }
         }

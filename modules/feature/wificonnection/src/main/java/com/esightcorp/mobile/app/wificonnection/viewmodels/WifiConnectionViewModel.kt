@@ -43,6 +43,10 @@ class WifiConnectionViewModel @Inject constructor(
             }
         }
 
+        override fun onWifiConnected(success: Boolean) {
+            TODO("Not yet implemented")
+        }
+
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             _uiState.update { state ->
                 state.copy(networkList = list)

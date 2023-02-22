@@ -27,3 +27,8 @@ data class WifiCredentialsUiState(
     val wifiType: String ="WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
 )
+
+data class WifiConnectingUiState(
+    val connectionWasSuccess: Boolean = false,
+    val ssid: String = ""
+)

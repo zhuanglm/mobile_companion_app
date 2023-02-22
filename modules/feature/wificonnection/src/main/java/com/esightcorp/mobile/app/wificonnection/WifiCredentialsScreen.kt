@@ -61,24 +61,6 @@ internal fun WifiCredentialsScreen(
         onPasswordUpdated = onPasswordUpdated,
         wifiUiState = wifiUiState
     )
-    /*Surface(modifier.fillMaxSize()) {
-        ConstraintLayout {
-            val (type, pwd) = createRefs()
-            if(wifiUiState.passwordSubmitted){
-                WifiTypeField(
-                    onWifiTypeSubmitted = onWifiTypeSubmitted,
-                    modifier = modifier.constrainAs(type){
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                    onWifiTypeUpdated = onWifiTypeUpdated, navController = navController)
-            }else{
-
-            }
-        }
-    }*/
 
 }
 

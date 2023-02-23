@@ -1,18 +1,18 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,18 +26,12 @@ import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDev
 
 @Composable
 fun BtDevicesRoute(
-    navController: NavController,
-    vm: BtDevicesViewModel = hiltViewModel()
+    navController: NavController, vm: BtDevicesViewModel = hiltViewModel()
 ) {
     vm.getDeviceList()
     val uiState by vm.uiState.collectAsState()
     BtDevicesScreen(
-        navController = navController,
-        onBackButtonPressed = {
-
-        },
-        uiState = uiState,
-        vm = vm
+        navController = navController, uiState = uiState, vm = vm
     )
 }
 
@@ -45,7 +39,6 @@ fun BtDevicesRoute(
 internal fun BtDevicesScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onBackButtonPressed: () -> Unit,
     uiState: BtDevicesUiState,
     vm: BtDevicesViewModel
 ) {
@@ -64,31 +57,42 @@ internal fun BtDevicesScreen(
     )
     val TAG = "BtDevicesScreen"
 
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topBar, header, deviceContainer, help) = createRefs()
-            ESightTopAppBar(
-                showBackButton = true,
+            ESightTopAppBar(showBackButton = true,
                 showSettingsButton = false,
-                onBackButtonInvoked = { vm.navigateToNoDeviceConnectedScreen(navController)},
+                onBackButtonInvoked = { vm.navigateToNoDeviceConnectedScreen(navController = navController) },
                 onSettingsButtonInvoked = { /*Unused*/ Unit },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }
-            )
-            Header1Text(
-                text = "Select your eSight",
+                })
+
+            /*
+            Have to bring the margins in as vals since the margin function in .constrainAs
+            does not accept a @Composable function, but does accept a value
+             */
+            val headerMargin = dimensionResource(id = R.dimen.header_margin)
+            val lazyColTopMargin = dimensionResource(id = R.dimen.lazy_col_top_margin)
+
+            Header1Text(text = stringResource(id = R.string.select_your_esight),
                 modifier = modifier
-                    .padding(25.dp, 0.dp)
+                    .padding(
+                        dimensionResource(id = R.dimen.header_horizontal_padding),
+                        dimensionResource(
+                            id = R.dimen.header_vertical_padding
+                        )
+                    )
                     .constrainAs(header) {
-                        top.linkTo(topBar.bottom, margin = 50.dp)
+                        top.linkTo(
+                            topBar.bottom, margin = headerMargin
+                        )
                         start.linkTo(parent.start)
                     })
-            LazyColumn(modifier = modifier
-                .constrainAs(deviceContainer) {
-                    top.linkTo(header.bottom, margin = 35.dp)
+            LazyColumn(modifier = modifier.constrainAs(deviceContainer) {
+                    top.linkTo(header.bottom, margin = lazyColTopMargin)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(help.top)
@@ -96,33 +100,36 @@ internal fun BtDevicesScreen(
                     height = Dimension.fillToConstraints
                 }) {
                 items(uiState.listOfAvailableDevices) { device ->
-                    if(device.contains('-')){
-                        val deviceModel = device.substringBeforeLast('-')
-                        val serialNumber = device.substringAfterLast('-')
-                        YellowDeviceCard(
-                            deviceModel = deviceModel,
+                    if (device.contains('-')) {
+                        val deviceModel =
+                            device.substringBeforeLast(stringResource(id = R.string.hyphen))
+                        val serialNumber =
+                            device.substringAfterLast(stringResource(id = R.string.hyphen))
+                        YellowDeviceCard(deviceModel = deviceModel,
                             serialNumber = serialNumber,
-                            modifier = modifier.padding(12.dp),
+                            modifier = modifier.padding(dimensionResource(id = R.dimen.yellow_device_card_padding)),
                             onClick = {
-                                Log.d(TAG, "BtDevicesScreen: ")
+                                Log.i(TAG, "$device was selected. Trying to connect...")
                                 vm.navigateToBtConnectingScreen(navController, device)
-                            }
-                        )
-                    }else{
-                        val serialNumber = "00001"
-                        YellowDeviceCard(
-                            deviceModel = device,
+                            })
+                    } else {
+                        val serialNumber = stringResource(id = R.string.default_serial_number)
+                        YellowDeviceCard(deviceModel = device,
                             serialNumber = serialNumber,
-                            modifier = modifier.padding(12.dp),
-                            onClick = { Log.e(TAG, "This device is not an eSight device")}
-                        )
+                            modifier = modifier.padding(dimensionResource(id = R.dimen.yellow_device_card_padding)),
+                            onClick = { Log.e(TAG, "This device is not an eSight device") })
                     }
 
                 }
 
             }
             CantFindDeviceButton(modifier = modifier
-                .padding(0.dp, 15.dp, 0.dp, 0.dp)
+                .padding(
+                    dimensionResource(id = R.dimen.zero),
+                    dimensionResource(id = R.dimen.bottom_button_top_padding),
+                    dimensionResource(id = R.dimen.zero),
+                    dimensionResource(id = R.dimen.zero)
+                )
                 .constrainAs(help) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
@@ -132,4 +139,6 @@ internal fun BtDevicesScreen(
         }
     }
 }
+
+
 

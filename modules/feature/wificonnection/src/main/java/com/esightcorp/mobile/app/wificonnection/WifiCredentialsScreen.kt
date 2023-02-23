@@ -1,11 +1,9 @@
 package com.esightcorp.mobile.app.wificonnection
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,12 +13,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.text.EEditText
-import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
-import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectionViewModel
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiCredentialsViewModel
 
 private const val TAG = "WifiCredentialsRoute"

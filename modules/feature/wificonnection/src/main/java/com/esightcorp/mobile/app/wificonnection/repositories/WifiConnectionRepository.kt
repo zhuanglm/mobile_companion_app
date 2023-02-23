@@ -5,7 +5,6 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.WifiCache
-import com.esightcorp.mobile.app.networking.WifiCredentials
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
 import com.esightcorp.mobile.app.utils.ScanningStatus

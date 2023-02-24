@@ -1,12 +1,15 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="header_margin">50dp</dimen>
+    <dimen name="bt_devices_header_margin">50dp</dimen>
     <dimen name="yellow_device_card_padding">12dp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="bottom_button_top_padding">15dp</dimen>
     <dimen name="lazy_col_top_margin">35dp</dimen>
     <dimen name="header_horizontal_padding">25dp</dimen>
     <dimen name="header_vertical_padding">0dp</dimen>
+    <dimen name="bt_disabled_header_top_margin">25dp</dimen>
+    <dimen name="bt_disabled_body_top_margin">15dp</dimen>
+    <dimen name="bt_disabled_horizontal_padding">35dp</dimen>
 
 
 </resources>

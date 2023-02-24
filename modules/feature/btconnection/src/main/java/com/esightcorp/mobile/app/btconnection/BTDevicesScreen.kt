@@ -45,7 +45,7 @@ internal fun BtDevicesScreen(
     /*
      * Dummy data
      */
-    val dummyDeviceList = listOf<String>(
+    val dummyDeviceList = listOf(
         "eSight-Go-3141592",
         "eSight-Go-2340923",
         "eSight-Go-3049534",
@@ -63,7 +63,7 @@ internal fun BtDevicesScreen(
             ESightTopAppBar(showBackButton = true,
                 showSettingsButton = false,
                 onBackButtonInvoked = { vm.navigateToNoDeviceConnectedScreen(navController = navController) },
-                onSettingsButtonInvoked = { /*Unused*/ Unit },
+                onSettingsButtonInvoked = { /*Unused*/ },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -74,7 +74,7 @@ internal fun BtDevicesScreen(
             Have to bring the margins in as vals since the margin function in .constrainAs
             does not accept a @Composable function, but does accept a value
              */
-            val headerMargin = dimensionResource(id = R.dimen.header_margin)
+            val headerMargin = dimensionResource(id = R.dimen.bt_devices_header_margin)
             val lazyColTopMargin = dimensionResource(id = R.dimen.lazy_col_top_margin)
 
             Header1Text(text = stringResource(id = R.string.select_your_esight),

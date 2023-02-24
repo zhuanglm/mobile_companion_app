@@ -21,12 +21,12 @@ import javax.inject.Inject
 @HiltViewModel
 class BtConnectingViewModel @Inject constructor(
     application: Application,
-    val btConnectionRepository: BtConnectionRepository
+    btConnectionRepository: BtConnectionRepository
 ): AndroidViewModel(application) {
     private val TAG = "BtConnectingViewModel"
     private var _uiState = MutableStateFlow(BtConnectingUiState())
     val uiState: StateFlow<BtConnectingUiState> = _uiState.asStateFlow()
-    val listener = object : IBtConnectionRepository{
+    private val listener = object : IBtConnectionRepository{
         override fun scanStatus(isScanning: ScanningStatus) {
         }
 

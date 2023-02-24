@@ -21,19 +21,17 @@ import javax.inject.Inject
 @HiltViewModel
 class BtDevicesViewModel @Inject constructor(
     application: Application,
-    val btConnectionRepository: BtConnectionRepository
+    private val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
     private val TAG = "BtDevicesViewModel"
 
     private var _uiState = MutableStateFlow(BtDevicesUiState())
     val uiState: StateFlow<BtDevicesUiState> = _uiState.asStateFlow()
-    val btRepoListener = object : IBtConnectionRepository {
+    private val btRepoListener = object : IBtConnectionRepository {
         override fun scanStatus(isScanning: ScanningStatus) {
-            Log.d(TAG, "scanStatus: $isScanning")
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-            Log.d(TAG, "deviceListReady: ")
             updateDeviceList(deviceList)
         }
 
@@ -54,17 +52,14 @@ class BtDevicesViewModel @Inject constructor(
     }
 
     fun getDeviceList() {
-        Log.i(TAG, "getDeviceList: ")
         btConnectionRepository.getMapOfDevices()
     }
 
     fun navigateToNoDeviceConnectedScreen(navController: NavController) {
-        Log.d(TAG, "navigateToNoDeviceConnectedScreen: ")
         navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route)
     }
 
     fun navigateToBtConnectingScreen(navController: NavController, device: String){
-        Log.d(TAG, "navigateToBtConnectingScreen: ")
         btConnectionRepository.connectToDevice(device)
         navController.navigate(BtConnectionScreens.BTConnectingRoute.route)
     }

@@ -14,13 +14,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
-import javax.net.ssl.SSLEngineResult.Status
-
 
 
 @HiltViewModel
 class BtSearchingViewModel @Inject constructor(
-    application: Application, val btConnectionRepository: BtConnectionRepository
+    application: Application, private val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
     private val TAG = "BtSearchingViewModel"
     private var _uiState = MutableStateFlow(BtSearchingUiState())
@@ -32,24 +30,25 @@ class BtSearchingViewModel @Inject constructor(
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-            Log.d(TAG, "deviceListReady: ")
+            Log.i(TAG, "deviceListReady: ")
+            /*
+            TODO: Verify that we should be showing the list once we have at least 1 device, with Nadim
+             */
             updateBtSearchingState(ScanningStatus.Success)
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-
+            Log.i(TAG, "onDeviceConnected: ")
         }
     }
 
     init {
-        Log.d(TAG, "Init: register listener")
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
     }
 
 
     fun triggerScan() {
-        Log.d(TAG, "triggerScan: ")
         btConnectionRepository.triggerBleScan()
     }
 

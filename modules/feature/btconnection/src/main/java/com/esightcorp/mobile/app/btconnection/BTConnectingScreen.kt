@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
@@ -32,16 +33,18 @@ internal fun BtConnectingScreen(
     val TAG = "BtConnectingScreen"
     if (uiState.deviceAddress != null && uiState.deviceName != null) {
         if (uiState.didDeviceConnect) {
-            LaunchedEffect(Unit){
-                Log.i(TAG, "BtConnectingScreen: ${uiState.deviceName} is connected")
-                vm.navigateToConnectedScreen(navController, uiState.deviceName, uiState.deviceAddress)
+            LaunchedEffect(Unit) {
+                Log.i(TAG, "${uiState.deviceName} is connected")
+                vm.navigateToConnectedScreen(
+                    navController, uiState.deviceName, uiState.deviceAddress
+                )
             }
         } else {
             Log.e(TAG, "BtConnectingScreen: Send me to the error page, we did not connect")
         }
     } else {
         LoadingScreenWithSpinner(
-            loadingText = "Connecting to eSight", modifier = modifier
+            loadingText = stringResource(id = R.string.connecting_to_esight), modifier = modifier
         )
     }
 

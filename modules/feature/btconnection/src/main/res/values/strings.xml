@@ -5,6 +5,16 @@
     <string name="select_your_esight" translatable="true">Select your eSight</string>
     <string name="default_serial_number" translatable="false">1000101</string>
     <string name="hyphen" translatable="false">-</string>
+    <string name="navigate_to_home" translatable="false">home_first/</string>
+    <string name="connected_to" translatable="true">Connected to </string>
+    <string name="something_went_wrong" translatable="true">Something went horribly wrong!</string>
+    <string name="connecting_to_esight" translatable="true">Connecting to eSight</string>
+
+    <string name="content_desc_bt_icon" translatable="true">Bluetooth Icon</string>
+    <string name="bt_disabled_header" translatable="true">Turn on Bluetooth</string>
+    <string name="bt_disabled_body" translatable="true">Open Settings on your phone, and turn on Bluetooth to connect</string>
+
+    <string name="bt_searching_text" translatable="true">Searching for eSight devices</string>
 
 
 

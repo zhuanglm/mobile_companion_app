@@ -85,7 +85,7 @@ class BluetoothModel constructor(
     /**
      * Listener coming in from view model, should be used to send data back to respository
      */
-    fun registerListener() {
+    fun checkForConnection() {
         val connectedDeviceList = bleManager.bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
         Log.d(TAG, "Are there any connected devices?  $connectedDeviceList ")
         if(connectedDeviceList.isNotEmpty()){
@@ -100,7 +100,6 @@ class BluetoothModel constructor(
     fun triggerBleScan(){
         scanLeDevices()
     }
-
 
 
     /**
@@ -124,6 +123,12 @@ class BluetoothModel constructor(
             scanning = false
             bleManager.bluetoothLeScanner.stopScan(leScanCallback)
         }
+    }
+
+    private fun stopScan(){
+        bleManager.bluetoothLeScanner.stopScan(leScanCallback)
+        scanning = false
+        bleManager.getModelListener()?.onScanFinished()
     }
 
     /**
@@ -163,6 +168,7 @@ class BluetoothModel constructor(
         val result = bleManager.getBleService()?.connect(device.address)
         if(result == true){
             bleManager.setConnectedDevice(device, status = false)
+            stopScan()
         }
     }
 
@@ -173,7 +179,6 @@ class BluetoothModel constructor(
             addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
         }
     }
-
     companion object{
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4
     }

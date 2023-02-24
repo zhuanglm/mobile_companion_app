@@ -16,17 +16,14 @@ private const val TAG = "BtConnectionRepository"
 class BtConnectionRepository @Inject constructor(
     @ApplicationContext context: Context
 ){
-    val bluetoothModel: BluetoothModel
-    lateinit var iBtConnectionRepository: IBtConnectionRepository
+    private val bluetoothModel: BluetoothModel
+    private lateinit var iBtConnectionRepository: IBtConnectionRepository
 
 
     /**
      * Interface to receive callbacks from BluetoothModel
      */
-    val bluetoothModelListener = object : BluetoothModelListener {
-        override fun isBluetoothCurrentlyConnected(): Boolean {
-            TODO("Not yet implemented")
-        }
+    private val bluetoothModelListener = object : BluetoothModelListener {
 
         override fun listOfDevicesUpdated() {
             Log.d(TAG, "listOfDevicesUpdated: ")
@@ -65,16 +62,14 @@ class BtConnectionRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
     }
 
-
-
     fun setupBtModelListener(){
         eSightBleManager.setModelListener(bluetoothModelListener)
+        bluetoothModel.checkForConnection()
     }
 
 
     /**
      * Triggers the BLE scan on the backend
-     *
      */
     fun triggerBleScan(){
         bluetoothModel.triggerBleScan()
@@ -82,12 +77,9 @@ class BtConnectionRepository @Inject constructor(
 
     /**
      * Strips out the bluetoothDevice object, and passes a map of <String, Boolean>
-     *
-     *     This needs to change, need the bt address when the user selects the device, can we do that at this level?
      */
     @SuppressLint("MissingPermission")
     fun getMapOfDevices(){
-        Log.d(TAG, "getMapOfDevices: ")
         val strippedList = mutableListOf<String>()
         for (bluetoothDevice in eSightBleManager.getBleDeviceList()) {
             strippedList.add(bluetoothDevice.name)
@@ -95,14 +87,6 @@ class BtConnectionRepository @Inject constructor(
         iBtConnectionRepository.deviceListReady(strippedList)
     }
 
-    /**
-     * Checks if there is a device currently connected or not, if yes, return true
-     */
-
-//    fun checkBtConnectionState(): Boolean {
-//        bluetoothConnectionState = deviceMap.containsValue(true)
-//        return bluetoothConnectionState
-//    }
 
     /**
      * how we communicate between repo and viewmodel
@@ -130,16 +114,14 @@ class BtConnectionRepository @Inject constructor(
      * gets map of devices once scanning is done
      */
     private fun scanStatus(isScanning: com.esightcorp.mobile.app.utils.ScanningStatus) {
-        Log.d("TAG", "scanStatus: $isScanning")
         if(isScanning == com.esightcorp.mobile.app.utils.ScanningStatus.Success){
-            Log.d(TAG, "scanStatus: GET MAP OF DEVICES")
             getMapOfDevices()
         }
         if(this::iBtConnectionRepository.isInitialized){
-            Log.d(TAG, "scanStatus: IS INITIALIZEd")
             iBtConnectionRepository.scanStatus(isScanning)
         }
     }
+
     @SuppressLint("MissingPermission")
     private fun deviceConnected(device: BluetoothDevice, connected: Boolean){
         Log.d(TAG, "onDeviceConnected: ${device.name}")

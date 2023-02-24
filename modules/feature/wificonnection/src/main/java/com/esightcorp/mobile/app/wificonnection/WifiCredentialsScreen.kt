@@ -21,7 +21,7 @@ import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiCredentialsViewMo
 private const val TAG = "WifiCredentialsRoute"
 
 @Composable
-internal fun WifiCredentialsRoute(
+fun WifiCredentialsRoute(
     navController: NavController,
     /*ssid: String,*/
     viewModel: WifiCredentialsViewModel = hiltViewModel()

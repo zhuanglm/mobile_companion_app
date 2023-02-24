@@ -12,8 +12,6 @@ class BluetoothPayload private constructor(
     val port: String?
 ){
 
-    val delimiter = ":::"
-
     data class Builder(
         private var bleCode: BleCodes,
         private var SSID: String? = null,
@@ -89,6 +87,8 @@ class BluetoothPayload private constructor(
         return byteArray
     }
 
-    companion object
+    companion object{
+        const val delimiter = ":::"
+    }
 
 }

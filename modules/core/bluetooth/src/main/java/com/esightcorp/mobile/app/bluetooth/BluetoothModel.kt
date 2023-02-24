@@ -22,9 +22,6 @@ class BluetoothModel constructor(
     private val handler = Handler(Looper.getMainLooper())
     private val bleManager = eSightBleManager
 
-
-
-
     /**
      * Service lifecycle callback
      */

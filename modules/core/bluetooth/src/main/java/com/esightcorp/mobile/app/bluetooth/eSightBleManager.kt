@@ -22,7 +22,6 @@ object eSightBleManager {
     private var bleService: BleService? = null
     private var bleConnectionStatus = false
     private var connectedDevice: BluetoothDevice? = null
-    private var scanningStatus: ScanningStatus = ScanningStatus.Unknown
     private var bleDeviceList: MutableList<BluetoothDevice> = mutableListOf()
     private var modelListener: BluetoothModelListener? = null
 
@@ -40,20 +39,12 @@ object eSightBleManager {
         }
     }
 
-    fun setScanningStatus(status: ScanningStatus){
-        this.scanningStatus = status
-    }
-
     fun setModelListener(listener: BluetoothModelListener){
         this.modelListener = listener
     }
 
     fun getModelListener(): BluetoothModelListener?{
         return modelListener
-    }
-
-    fun setBleDeviceList(devices: MutableList<BluetoothDevice>){
-        this.bleDeviceList = devices
     }
 
 

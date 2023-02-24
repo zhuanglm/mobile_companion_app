@@ -9,7 +9,6 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.annotation.RequiresApi
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -36,32 +35,26 @@ class BleService : Service() {
                 Log.d(TAG, "onConnectionStateChange: State connected")
                 bluetoothGatt = gatt
                 connectionState = STATE_CONNECTED
-                gatt?.requestMtu(512)
+                gatt?.requestMtu(REQUEST_MTU_SIZE)
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.d(TAG, "onConnectionStateChange: State disconnected")
                 connectionState = STATE_DISCONNECTED
+                bluetoothGatt = null
                 broadcastUpdate(ACTION_GATT_DISCONNECTED)
             }
         }
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            Log.i(TAG, "onServicesDiscovered: device ${gatt.device.name} and status is success? ${status == BluetoothGatt.GATT_SUCCESS}")
+            Log.i(
+                TAG,
+                "onServicesDiscovered: device ${gatt.device.name} and status is success? ${status == BluetoothGatt.GATT_SUCCESS}"
+            )
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
-                gatt.services.forEach { service ->
-                    val characteristicsTable = service.characteristics.joinToString(
-                        separator = "\n|--",
-                        prefix = "|--"
-                    ) { it.uuid.toString() }
-                    Log.i("printGattTable", "\nService ${service.uuid}\nCharacteristics:\n$characteristicsTable"
-                    )
-
-                }
                 val service = gatt.getService(SERVICE_UUID)
-                Log.d(TAG, "onServicesDiscovered: ${service.uuid}")
                 MAG_BLE_BUTTON_PRESS_Characteristic = service.getCharacteristic(
-                        UUID_CHARACTERISTIC_BUTTON_PRESSED
+                    UUID_CHARACTERISTIC_BUTTON_PRESSED
                 )
                 MAG_BLE_WIFI_INFO_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_WIFI_INFO
@@ -71,17 +64,11 @@ class BleService : Service() {
                 )
 
             } else {
-                Log.w(TAG, "onServicesDiscovered received $status")
+                Log.e(
+                    TAG,
+                    "onServicesDiscovered received GATT_FAILURE ? ${status == BluetoothGatt.GATT_FAILURE}"
+                )
             }
-        }
-
-    
-
-        override fun onDescriptorWrite(
-            gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int
-        ) {
-            super.onDescriptorWrite(gatt, descriptor, status)
-            Log.d(TAG, "onDescriptorWrite: $status")
         }
 
         override fun onCharacteristicRead(
@@ -100,22 +87,21 @@ class BleService : Service() {
             gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray
         ) {
             val incoming = String(value, StandardCharsets.UTF_8)
-            Log.d(TAG, "onCharacteristicChanged: ${gatt?.device?.name}, ${characteristic.uuid}, $incoming" )
+            Log.d(
+                TAG,
+                "onCharacteristicChanged: ${gatt.device?.name}, ${characteristic.uuid}, $incoming"
+            )
         }
 
 
         override fun onCharacteristicWrite(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?,
-            status: Int
+            gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int
         ) {
-
             super.onCharacteristicWrite(gatt, characteristic, status)
-            Log.d(TAG, "onCharacteristicWrite: ${gatt?.device?.name}, ${characteristic?.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} ")
-        }
-
-        override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
-            super.onReadRemoteRssi(gatt, rssi, status)
+            Log.d(
+                TAG,
+                "onCharacteristicWrite: ${gatt?.device?.name}, ${characteristic?.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} "
+            )
         }
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
@@ -132,7 +118,7 @@ class BleService : Service() {
         bluetoothAdapter =
             (baseContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
         if (bluetoothAdapter == null) {
-            Log.e(TAG, "initialize: Unable to obtain a BluetoothAdapter. ")
+            Log.e(TAG, "initialize: Unable to obtain a BluetoothAdapter.")
             return false
         }
         return true
@@ -144,7 +130,7 @@ class BleService : Service() {
             try {
                 val device = adapter.getRemoteDevice(address)
                 Log.d(TAG, "connect: $address")
-                bluetoothGatt = device.connectGatt(baseContext, false, bluetoothGattCallback)
+                bluetoothGatt = device.connectGatt(baseContext, true, bluetoothGattCallback)
             } catch (exception: IllegalArgumentException) {
                 Log.w(TAG, "connect: Device not found with provided address.")
                 return false
@@ -162,7 +148,6 @@ class BleService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        Log.d(TAG, "onBind: ")
         return binder
     }
 
@@ -199,12 +184,6 @@ class BleService : Service() {
         sendBroadcast(intent)
     }
 
-    private fun broadcastUpdate(action: String, device: String) {
-        val intent = Intent(action)
-        intent.putExtra(DEVICE, device)
-        sendBroadcast(intent)
-    }
-
     override fun onUnbind(intent: Intent?): Boolean {
         close()
         return super.onUnbind(intent)
@@ -236,35 +215,6 @@ class BleService : Service() {
             bluetoothGatt = null
         }
     }
-//
-//    private fun sendMessage(characteristic: BluetoothGattCharacteristic, hexMessage: Int):Int{
-//        var result = -1
-//
-//        return result
-//    }
-//    @SuppressLint("MissingPermission")
-//    private fun sendPortAndIpAddress(characteristic: BluetoothGattCharacteristic, hexMessage: Int, port: String, ipAddress: String){
-//        Log.d(TAG, "sendMessage: ${port}")
-//        var result = -1
-//        val value = Arrays.copyOfRange(ByteBuffer.allocate(4).putInt(hexMessage)
-//            .order(ByteOrder.LITTLE_ENDIAN).array(), 2, 4)
-//        val port = port.encodeToByteArray()
-//        val ipAddress = ipAddress.encodeToByteArray()
-//        var writeValue = byteArrayOf()
-//        writeValue += value
-//        writeValue += port
-//        writeValue += ipAddress
-//        sendMessage(characteristic, writeValue)
-//
-//    }
-
-/*    fun sendIpAndPort(ip: String, port: String){
-        sendMessage(MAG_BLE_PERFORM_ACTION_Characteristic, BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT)
-            .port(port)
-            .ipAddress(ip)
-            .build()
-            .getByteArrayBlePayload())
-    }*/
 
     fun sendWifiCreds(ssid: String, pwd: String, type: String) {
         Log.i(TAG, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
@@ -327,42 +277,6 @@ class BleService : Service() {
         return false
     }
 
-
-    //TODO: remove for production, currently only used for debugging
-    private fun logGattServices(gattServices: List<BluetoothGattService>?) {
-        if (gattServices == null) return
-        val NAME = "NAME"
-        val LIST_UUID = "UUID"
-        var uuid: String?
-        val gattServiceData: MutableList<HashMap<String, String>> = mutableListOf()
-        val gattCharacteristicData: MutableList<ArrayList<HashMap<String, String>>> =
-            mutableListOf()
-
-        gattServices.forEach { gattService ->
-            val currentServiceData = hashMapOf<String, String>()
-            uuid = gattService.uuid.toString()
-            currentServiceData[NAME] = "unknown"
-            currentServiceData[LIST_UUID] = uuid!!
-            gattServiceData += currentServiceData
-
-            val gattCharacteristicGroupData: ArrayList<HashMap<String, String>> = arrayListOf()
-            val gattCharacteristics = gattService.characteristics
-            val charas: MutableList<BluetoothGattCharacteristic> = mutableListOf()
-            gattCharacteristics.forEach { gattCharacteristic ->
-                charas += gattCharacteristic
-                val currentCharaData: HashMap<String, String> = hashMapOf()
-                uuid = gattCharacteristic.uuid.toString()
-                currentCharaData[NAME] = "characteristic"
-                currentCharaData[LIST_UUID] = uuid!!
-                gattCharacteristicGroupData += currentCharaData
-                gattCharacteristicData += gattCharacteristicGroupData
-
-//                setCharacteristicNotification(gattCharacteristic, true)
-            }
-        }
-        Log.d(TAG, "logGattServices: CHARACTERISTIC DATA $gattCharacteristicData")
-    }
-
     companion object {
         const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
@@ -371,6 +285,8 @@ class BleService : Service() {
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
         const val EXTRA_DATA = "com.esightcorp.bluetooth.le.EXTRA_DATA"
         const val DEVICE = "com.esightcorp.bluetooth.le.DEVICE"
+        const val REQUEST_MTU_SIZE = 200
+
 
         private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
         private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
@@ -380,7 +296,6 @@ class BleService : Service() {
             UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
         val UUID_CHARACTERISTIC_WIFI_INFO = UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
         val UUID_CHARACTERISTIC_ERROR = UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
-
 
     }
 

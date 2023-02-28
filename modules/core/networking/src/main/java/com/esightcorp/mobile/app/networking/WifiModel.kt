@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.util.Log
+import com.esightcorp.mobile.app.utils.ScanningStatus
 
 private const val TAG = "WifiModel"
 
@@ -36,6 +37,7 @@ class WifiModel(
 
     fun startWifiScan(){
         val success = wifiManager.startScan()
+        listener?.onScanStatusUpdated(ScanningStatus.InProgress)
         if(!success){
             scanFailure()
         }
@@ -44,10 +46,12 @@ class WifiModel(
     @SuppressLint("MissingPermission")
     private fun scanSuccess(){
         val results = wifiManager.scanResults
+        listener?.onScanStatusUpdated(ScanningStatus.Success)
         for (result in results) {
             if(result.SSID != "" && (result.frequency in 2201..2499)){
                 Log.d(TAG, "scanSuccess: ${result.SSID}")
                 Log.i(TAG, "scanSuccess: ${result.frequency}")
+                WifiCache.addNetworkToNetworkList(result)
                 listener?.onWifiNetworkFound(result)
             }
         }
@@ -59,6 +63,7 @@ class WifiModel(
 
     private fun scanFailure(){
         Log.e(TAG, "scanFailure: " )
+        listener?.onScanStatusUpdated(ScanningStatus.Failed)
     }
 
 

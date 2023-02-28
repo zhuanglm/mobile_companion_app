@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
 
 //TODO: Update the content descriptions to use resources
@@ -32,7 +33,7 @@ fun ESightTopAppBar(
     showBackButton: Boolean,
     showSettingsButton: Boolean,
     onBackButtonInvoked: () -> Unit,
-    onSettingsButtonInvoked: @Composable () -> Unit,
+    onSettingsButtonInvoked: () -> Unit,
     modifier: Modifier
 
 ) {
@@ -75,7 +76,7 @@ fun TopAppBarNavIconButton(
     onClick: () -> Unit
 ) {
     FilledIconButton(
-        onClick = { onClick },
+        onClick = onClick,
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
@@ -92,10 +93,10 @@ fun TopAppBarNavIconButton(
 @Composable
 fun TopAppBarSettingsIconButton(
     modifier: Modifier,
-    onClick: @Composable () -> Unit
+    onClick: () -> Unit
 ) {
     FilledIconButton(
-        onClick = { onClick },
+        onClick = onClick,
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,

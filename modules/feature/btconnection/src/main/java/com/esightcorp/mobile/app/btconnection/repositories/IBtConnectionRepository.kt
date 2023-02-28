@@ -5,5 +5,5 @@ import android.bluetooth.BluetoothDevice
 interface IBtConnectionRepository {
     fun scanStatus(isScanning: com.esightcorp.mobile.app.utils.ScanningStatus)
     fun deviceListReady(deviceList: MutableList<String>)
-    fun onDeviceConnected(device: BluetoothDevice)
+    fun onDeviceConnected(device: BluetoothDevice, connected: Boolean)
 }

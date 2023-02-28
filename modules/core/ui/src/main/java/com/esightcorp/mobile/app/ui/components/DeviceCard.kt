@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -25,7 +26,8 @@ fun DeviceCard(
     containerColor: Color = Color.White,
     borderColor: Color = Color.Yellow,
     border: Boolean = true,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick : () -> Unit
 ) {
     val borderStroke = BorderStroke(6.dp, borderColor)
     OutlinedCard(
@@ -33,10 +35,10 @@ fun DeviceCard(
             .fillMaxWidth()
             .height(100.dp), //TODO: need to swap this to take up width
         colors = CardDefaults.outlinedCardColors(containerColor),
-        enabled = border,
+        enabled = true,
         border = borderStroke,
         shape = RoundedCornerShape(18.dp),
-        onClick = { },
+        onClick = onClick,
         elevation = CardDefaults.cardElevation(3.dp)
     ) {
         Row(
@@ -64,14 +66,16 @@ fun DeviceCard(
 fun YellowDeviceCard(
     deviceModel: String = "eSight Go",
     serialNumber: String = "####$$$$",
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     DeviceCard(
         deviceModel = deviceModel,
         serialNumber = serialNumber,
         border = false,
         containerColor = Color.Yellow,
-        modifier = modifier
+        modifier = modifier,
+        onClick = onClick
     )
 }
 

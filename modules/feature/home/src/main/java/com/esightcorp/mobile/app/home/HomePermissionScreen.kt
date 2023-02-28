@@ -19,7 +19,6 @@ import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomePermissionScreen(navController: NavController){
     BasePermissionScreen(navController = navController)
@@ -39,7 +38,7 @@ fun BasePermissionScreen(
         }
 
     }else{
-        Surface(color = Color(0x004c4c)) {
+        Surface(color = Color(0xff004c4c)) {
             Rationale(permissionsState = permissionsState)
         }
     }

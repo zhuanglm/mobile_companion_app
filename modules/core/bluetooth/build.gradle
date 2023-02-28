@@ -44,4 +44,7 @@ dependencies {
     // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"
     implementation 'androidx.activity:activity-ktx:1.6.0'
+
+    //json lib
+    implementation 'com.google.code.gson:gson:2.10'
 }

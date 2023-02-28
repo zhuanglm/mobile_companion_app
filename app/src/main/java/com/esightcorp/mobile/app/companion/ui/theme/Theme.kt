@@ -6,17 +6,20 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.esightcorp.mobile.app.companion.ui.theme.*
 
 private val DarkColorPalette = darkColors(
-    primary = Color.Red,
-    primaryVariant = Color.Red,
-    secondary = Teal200
+    primary = Yellow,
+    primaryVariant = YellowVariant,
+    secondary = Color.White,
+    surface = DarkGrey
 )
 
 private val LightColorPalette = lightColors(
-    primary = Color.Yellow,
-    primaryVariant = Color.Yellow,
-    secondary = Teal200
+    primary = Green,
+    primaryVariant = GreenVariant,
+    secondary = Color.Black,
+    surface = Color.White
 
     /* Other default colors to override
     background = Color.White,

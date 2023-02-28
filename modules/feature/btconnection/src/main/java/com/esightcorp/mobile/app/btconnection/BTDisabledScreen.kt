@@ -3,18 +3,20 @@ package com.esightcorp.mobile.app.btconnection
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDisabledViewModel
-import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.R as uiR
+import com.esightcorp.mobile.app.btconnection.R as btR
 import com.esightcorp.mobile.app.ui.components.BigIcon
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
@@ -25,9 +27,10 @@ fun BtDisabledScreen(
     navController: NavController,
     vm: BtDisabledViewModel = hiltViewModel()
 ) {
+    val TAG = "BtDisabledScreen"
     Log.d(TAG, "BtDisabledScreen: ")
-    BtDisabledScreen(onBackPressed = { }, modifier = Modifier)
-
+    BtDisabledScreen(onBackPressed = {}, modifier = Modifier)
+    // TODO: Pick up as part of the ticket EG-1025 - Edge cases for bluetooth
 
 }
 
@@ -36,13 +39,19 @@ internal fun BtDisabledScreen(
     onBackPressed: () -> Unit,
     modifier: Modifier
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    /*
+    Importing these are variables since the margin function does not accept @Composables
+     */
+    val headerTopMargin = dimensionResource(id = btR.dimen.bt_disabled_header_top_margin)
+    val bodyTopMargin = dimensionResource(id = btR.dimen.bt_disabled_body_top_margin)
+
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topBar, bigIcon, headerText, header2Text) = createRefs()
             ESightTopAppBar(
                 showBackButton = true,
                 showSettingsButton = false,
-                onBackButtonInvoked = { onBackPressed },
+                onBackButtonInvoked = onBackPressed ,
                 onSettingsButtonInvoked = {/*Unused*/ },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
@@ -52,8 +61,8 @@ internal fun BtDisabledScreen(
             )
 
             BigIcon(
-                painter = painterResource(id = R.drawable.baseline_bluetooth_24),
-                contentDescription = "Bluetooth Icon",
+                painter = painterResource(id = uiR.drawable.baseline_bluetooth_24),
+                contentDescription = stringResource(btR.string.content_desc_bt_icon),
                 modifier = modifier.constrainAs(bigIcon) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -62,19 +71,24 @@ internal fun BtDisabledScreen(
                 })
 
             Header1Text(
-                text = "Turn on Bluetooth",
+                text = stringResource(id = btR.string.bt_disabled_header),
                 modifier = modifier.constrainAs(headerText) {
-                    top.linkTo(bigIcon.bottom, margin = 25.dp)
+                    top.linkTo(bigIcon.bottom, margin = headerTopMargin)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 })
 
             Header2Text(
-                text = "Open Settings on your phone, and turn on Bluetooth to connect",
+                text = stringResource(id = btR.string.bt_disabled_body),
                 modifier = modifier
-                    .padding(35.dp, 0.dp)
+                    .padding(
+                        dimensionResource(id = btR.dimen.bt_disabled_horizontal_padding),
+                        dimensionResource(
+                            id = btR.dimen.zero
+                        )
+                    )
                     .constrainAs(header2Text) {
-                        top.linkTo(headerText.bottom, margin = 15.dp)
+                        top.linkTo(headerText.bottom, margin = bodyTopMargin)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },

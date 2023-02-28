@@ -40,6 +40,10 @@ class WifiCredentialsViewModel @Inject constructor(
         }
     }
 
+    init {
+        repository.registerListener(repoListener)
+    }
+
     fun updatePassword(password:String){
         Log.d("WifiCredentialsViewModel", "updatePassword: $password")
         _uiState.update { state ->

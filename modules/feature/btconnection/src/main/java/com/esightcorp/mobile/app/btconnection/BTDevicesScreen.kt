@@ -100,7 +100,7 @@ internal fun BtDevicesScreen(
                     height = Dimension.fillToConstraints
                 }) {
                 items(uiState.listOfAvailableDevices) { device ->
-                    if (device.contains('-')) {
+                    if (device.contains(stringResource(id = R.string.hyphen))) {
                         val deviceModel =
                             device.substringBeforeLast(stringResource(id = R.string.hyphen))
                         val serialNumber =

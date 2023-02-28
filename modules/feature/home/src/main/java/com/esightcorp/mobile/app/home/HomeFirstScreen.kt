@@ -88,6 +88,11 @@ internal fun BaseHomeScreen(
                         end.linkTo(parent.end)
                     },
                     onClick = {Unit},
+                    /*
+                    currently we need to strip off the first two and last two characters due to a bug where
+                    the curly braces are passed through in jetpack navigation.
+                    TODO: Fix the curly brace nav argument bug
+                     */
                     deviceModel = device.substring(2, device.length -2).substringBeforeLast('-'),
                     serialNumber = device.substring(2, device.length -2).substringAfterLast('-'))
                 AppContainer(modifier = modifier.constrainAs(appContainer) {

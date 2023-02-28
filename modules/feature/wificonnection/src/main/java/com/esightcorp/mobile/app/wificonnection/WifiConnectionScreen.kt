@@ -1,6 +1,7 @@
 package com.esightcorp.mobile.app.wificonnection
 
 import android.net.wifi.ScanResult
+import android.net.wifi.WifiInfo
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -90,6 +91,7 @@ fun WifiButton(
     navController: NavController,
     updateCurrentSelectedNetwork: (ScanResult) -> Unit
 ) {
+    Log.i(TAG, "WifiButton: ${network.capabilities.toString()}")
     Button(
         onClick = {
             updateCurrentSelectedNetwork(network)

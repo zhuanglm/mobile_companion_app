@@ -130,7 +130,7 @@ class BleService : Service() {
             try {
                 val device = adapter.getRemoteDevice(address)
                 Log.d(TAG, "connect: $address")
-                bluetoothGatt = device.connectGatt(baseContext, true, bluetoothGattCallback)
+                bluetoothGatt = device.connectGatt(baseContext, false, bluetoothGattCallback)
             } catch (exception: IllegalArgumentException) {
                 Log.w(TAG, "connect: Device not found with provided address.")
                 return false

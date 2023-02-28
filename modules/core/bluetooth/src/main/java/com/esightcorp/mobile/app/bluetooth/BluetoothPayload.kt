@@ -1,8 +1,11 @@
 package com.esightcorp.mobile.app.bluetooth
 
 import android.util.Log
+import org.json.JSONObject
+import java.nio.charset.StandardCharsets
 
 private const val TAG = "BluetoothPayload"
+
 class BluetoothPayload private constructor(
     val bleCode: BleCodes,
     val SSID: String?,
@@ -10,7 +13,7 @@ class BluetoothPayload private constructor(
     val wifiType: String?,
     val ipAddress: String?,
     val port: String?
-){
+) {
 
     data class Builder(
         private var bleCode: BleCodes,
@@ -19,17 +22,17 @@ class BluetoothPayload private constructor(
         private var wifiType: String? = null,
         private var ipAddress: String? = null,
         private var port: String? = null
-    ){
-//        fun bleCode(bleCode: BleCodes) = apply { this.bleCode = bleCode }
+    ) {
+        //        fun bleCode(bleCode: BleCodes) = apply { this.bleCode = bleCode }
         fun ssid(ssid: String) = apply { this.SSID = ssid }
         fun wifiPwd(password: String) = apply { this.wifiPwd = password }
         fun wifiType(type: String) = apply { this.wifiType = type }
         fun ipAddress(address: String) = apply { this.ipAddress = address }
-        fun port(port:String) = apply { this.port = port }
+        fun port(port: String) = apply { this.port = port }
         fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port)
     }
 
-    enum class BleCodes(val code: String){
+    enum class BleCodes(val code: String) {
         STREAM_OUT("0x02"),
         STREAM_OUT_SHUTDOWN("0x0203"),
         HOTSPOT_CREDS("0x03"),
@@ -47,14 +50,14 @@ class BluetoothPayload private constructor(
      *
      */
 
-    fun getByteArrayBlePayload(): ByteArray{
+    fun getByteArrayBlePayload(): ByteArray {
         var byteArray = byteArrayOf()
         val charset = Charsets.UTF_8
-        when(bleCode){
+        when (bleCode) {
             BleCodes.STREAM_OUT -> {
                 val code = (BleCodes.STREAM_OUT.code).plus(delimiter).toByteArray(charset)
                 byteArray += code
-                if(port != null && ipAddress != null){
+                if (port != null && ipAddress != null) {
                     val port = port.plus(delimiter).toByteArray(charset)
                     byteArray += port
                     val ip = ipAddress.toByteArray(charset)
@@ -70,25 +73,28 @@ class BluetoothPayload private constructor(
                 byteArray += code
             }
             BleCodes.WIFI_CREDS -> {
-                val code = (BleCodes.WIFI_CREDS.code).plus(delimiter).toByteArray(charset)
-                byteArray += code
-                if(SSID != null && wifiPwd != null && wifiType != null){
-                    val ssid = SSID.plus(delimiter).toByteArray(charset)
-                    val pwd = wifiPwd.plus(delimiter).toByteArray(charset)
-                    val type = wifiType.toByteArray(charset)
-                    byteArray += ssid
-                    byteArray += pwd
-                    byteArray += type
-
+                if (SSID != null && wifiPwd != null && wifiType != null) {
+                    val outgoingJson =
+                        JSONObject()
+                            .put(code, BleCodes.WIFI_CREDS.code)
+                            .put(ssid, SSID)
+                            .put(pwd, wifiPwd)
+                            .put(type, wifiType)
+                    byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
+                    Log.i(TAG, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
                 }
             }
         }
-        Log.d(TAG, "getByteArrayBlePayload: ${String(byteArray, charset)}" )
+        Log.d(TAG, "getByteArrayBlePayload: ${String(byteArray, charset)}")
         return byteArray
     }
 
-    companion object{
+    companion object {
         const val delimiter = ":::"
+        const val ssid: String = "ssid"
+        const val pwd: String = "pwd"
+        const val type: String = "type"
+        const val code: String = "code"
     }
 
 }

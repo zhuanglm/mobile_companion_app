@@ -78,11 +78,13 @@ object eSightBleManager {
     Once we ACTUALLY connect, it flips to true.
      */
     fun setConnectedDevice(device: BluetoothDevice, status: Boolean){
+        Log.d(TAG, "setConnectedDevice: $status")
         this.connectedDevice = device
         this.bleConnectionStatus = status
     }
 
     fun resetConnectedDevice() {
+        Log.d(TAG, "resetConnectedDevice: ")
         this.connectedDevice = null
         this.bleConnectionStatus = false
     }
@@ -104,13 +106,13 @@ object eSightBleManager {
     }
 
     fun checkIfConnected():Boolean{
+        Log.d(TAG, "checkIfConnected: $bleConnectionStatus")
         return bleConnectionStatus
     }
 
     fun discoverServices(){
         bleService?.discoverServices()
     }
-
 
 
 

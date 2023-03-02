@@ -21,9 +21,10 @@ class BleService : Service() {
     private var bluetoothGatt: BluetoothGatt? = null
     private var connectionState = STATE_DISCONNECTED
 
-    private lateinit var MAG_BLE_WIFI_INFO_Characteristic: BluetoothGattCharacteristic
-    private lateinit var MAG_BLE_BUTTON_PRESS_Characteristic: BluetoothGattCharacteristic
-    private lateinit var MAG_BLE_ERROR_Characteristic: BluetoothGattCharacteristic
+    private lateinit var WIFI_INFO_Characteristic: BluetoothGattCharacteristic
+    private lateinit var BUTTON_PRESS_Characteristic: BluetoothGattCharacteristic
+    private lateinit var ERROR_Characteristic: BluetoothGattCharacteristic
+    private lateinit var WIFI_INFO_Descriptor: BluetoothGattDescriptor
 
 
     //gatt callback
@@ -53,15 +54,20 @@ class BleService : Service() {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
                 val service = gatt.getService(SERVICE_UUID)
-                MAG_BLE_BUTTON_PRESS_Characteristic = service.getCharacteristic(
+                BUTTON_PRESS_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_BUTTON_PRESSED
                 )
-                MAG_BLE_WIFI_INFO_Characteristic = service.getCharacteristic(
+                WIFI_INFO_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_WIFI_INFO
                 )
-                MAG_BLE_ERROR_Characteristic = service.getCharacteristic(
+                WIFI_INFO_Descriptor = WIFI_INFO_Characteristic.getDescriptor(
+                    UUID_DESCRIPTOR_WIFI_INFO)
+                ERROR_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_ERROR
                 )
+                WIFI_INFO_Descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+                gatt.writeDescriptor(WIFI_INFO_Descriptor)
+                gatt.setCharacteristicNotification(WIFI_INFO_Characteristic, true)
 
             } else {
                 Log.e(
@@ -77,6 +83,7 @@ class BleService : Service() {
             value: ByteArray,
             status: Int
         ) {
+            Log.d(TAG, "onCharacteristicRead: unknown status ")
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.e(TAG, "onCharacteristicRead: ${characteristic.value}")
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
@@ -108,6 +115,25 @@ class BleService : Service() {
             super.onMtuChanged(gatt, mtu, status)
             Log.d(TAG, "onMtuChanged: ${gatt?.device?.name}  ${mtu}")
             broadcastUpdate(ACTION_GATT_CONNECTED)
+        }
+
+
+        override fun onDescriptorRead(
+            gatt: BluetoothGatt,
+            descriptor: BluetoothGattDescriptor?,
+            status: Int
+        ) {
+            super.onDescriptorRead(gatt, descriptor, status)
+            Log.e(TAG, "onDescriptorRead: " )
+        }
+
+        override fun onDescriptorWrite(
+            gatt: BluetoothGatt,
+            descriptor: BluetoothGattDescriptor?,
+            status: Int
+        ) {
+            super.onDescriptorWrite(gatt, descriptor, status)
+            Log.e(TAG, "onDescriptorWrite: " )
         }
 
 
@@ -219,7 +245,7 @@ class BleService : Service() {
     fun sendWifiCreds(ssid: String, pwd: String, type: String) {
         Log.i(TAG, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
         sendMessage(
-            MAG_BLE_WIFI_INFO_Characteristic,
+            WIFI_INFO_Characteristic,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.WIFI_CREDS).ssid(ssid).wifiPwd(pwd)
                 .wifiType(type).build().getByteArrayBlePayload()
         )
@@ -296,6 +322,7 @@ class BleService : Service() {
             UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
         val UUID_CHARACTERISTIC_WIFI_INFO = UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
         val UUID_CHARACTERISTIC_ERROR = UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
+        val UUID_DESCRIPTOR_WIFI_INFO = UUID.fromString("6b90805b2-08f9-4168-86f6-d49f5046f7b3")
 
     }
 

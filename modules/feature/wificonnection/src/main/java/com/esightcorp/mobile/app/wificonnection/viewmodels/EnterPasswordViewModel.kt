@@ -4,7 +4,9 @@ import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
@@ -17,13 +19,14 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class WifiCredentialsViewModel @Inject constructor(
+class EnterPasswordViewModel @Inject constructor(
     application: Application,
     val repository: WifiConnectionRepository
 ): AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(WifiCredentialsUiState())
     val uiState: StateFlow<WifiCredentialsUiState> = _uiState.asStateFlow()
+    private lateinit var navController: NavController
 
     val repoListener = object : WifiConnectionRepoListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
@@ -42,6 +45,10 @@ class WifiCredentialsViewModel @Inject constructor(
 
     init {
         repository.registerListener(repoListener)
+    }
+
+    fun setNavController(navController: NavController){
+        this.navController = navController
     }
 
     fun updatePassword(password:String){
@@ -63,6 +70,7 @@ class WifiCredentialsViewModel @Inject constructor(
             state.copy(passwordSubmitted = true)
         }
         sendWifiCredsViaBluetooth()
+        navigateToConnectingScreen()
     }
 
     fun wifiTypeSubmitted(){
@@ -75,6 +83,12 @@ class WifiCredentialsViewModel @Inject constructor(
     fun sendWifiCredsViaBluetooth(){
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
         repository.sendWifiCreds(_uiState.value.password, _uiState.value.wifiType)
+    }
+
+    private fun navigateToConnectingScreen(){
+        if (this::navController.isInitialized){
+            navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
+        }
     }
 
 

@@ -26,11 +26,15 @@ class WifiConnectionRepository @Inject constructor(
         }
 
         override fun onNetworkConnected() {
-            TODO("Not yet implemented")
+            wifiRepoListener.onWifiConnected(true)
+        }
+
+        override fun onNetworkConnectionError() {
+            wifiRepoListener.onWifiConnected(false)
         }
 
         override fun onScanFailed() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onScanFailed: ")
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {

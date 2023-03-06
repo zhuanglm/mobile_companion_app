@@ -62,6 +62,6 @@ class SelectNetworkViewModel @Inject constructor(
     }
 
     fun navigateToPasswordScreen(navController: NavController){
-        navController.navigate(WifiConnectionScreens.WifiCredentialsScreen.route)
+        navController.navigate(WifiConnectionScreens.EnterPasswordRoute.route)
     }
 }

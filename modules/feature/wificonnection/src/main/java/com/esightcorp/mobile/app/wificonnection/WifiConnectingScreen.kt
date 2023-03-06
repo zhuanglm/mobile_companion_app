@@ -1,8 +1,10 @@
 package com.esightcorp.mobile.app.wificonnection
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -13,6 +15,7 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectingUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectingViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun WifiConnectingRoute(
@@ -27,6 +30,7 @@ fun WifiConnectingRoute(
 internal fun WifiConnectingScreen(
     navController: NavController, vm: WifiConnectingViewModel, modifier: Modifier = Modifier, uiState: WifiConnectingUiState
 ) {
+    val TAG = "WifiConnectingScreen"
     Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
         ConstraintLayout() {
             val loading = createRef()
@@ -40,6 +44,19 @@ internal fun WifiConnectingScreen(
             )
         }
 
+    }
+    if(uiState.connectionWasSuccess){
+        Log.i(TAG, "WifiConnectingScreen: Connection was a success")
+        LaunchedEffect(Unit){
+            delay(2000)
+            navController.navigate(WifiConnectionScreens.ConnectedRoute.route)
+        }
+    }else{
+        LaunchedEffect(Unit){
+            delay(2000)
+            Log.e(TAG, "WifiConnectingScreen: ERROR connecting to wifi network provided ")
+            navController.navigate("home_first")
+        }
     }
 
 }

@@ -98,6 +98,21 @@ class BleService : Service() {
                 TAG,
                 "onCharacteristicChanged: ${gatt.device?.name}, ${characteristic.uuid}, $incoming"
             )
+            if(incoming.equals("WIFI_ERROR")){
+                Log.d(TAG, "onCharacteristicChanged: equals error ")
+                broadcastUpdate(ACTION_WIFI_ERROR)
+            }
+            when(incoming){
+                "WIFI_SUCCESS"->{
+                    broadcastUpdate(ACTION_WIFI_CONNECTED)
+                }
+                "WIFI_ERROR" -> {
+                    broadcastUpdate(ACTION_WIFI_ERROR)
+                }
+                else ->{
+                    Log.i(TAG, "onCharacteristicChanged: not handling this " + incoming)
+                }
+            }
         }
 
 
@@ -309,10 +324,14 @@ class BleService : Service() {
         const val ACTION_GATT_SERVICES_DISCOVERED =
             "com.esightcorp.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
+
         const val EXTRA_DATA = "com.esightcorp.bluetooth.le.EXTRA_DATA"
         const val DEVICE = "com.esightcorp.bluetooth.le.DEVICE"
-        const val REQUEST_MTU_SIZE = 200
 
+        const val ACTION_WIFI_CONNECTED = "com.esightcorp.wifi.ACTION_WIFI_CONNECTED"
+        const val ACTION_WIFI_ERROR = "com.esightcorp.wifi.ACTION_WIFI_ERROR"
+
+        const val REQUEST_MTU_SIZE = 200
 
         private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
         private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
@@ -323,7 +342,6 @@ class BleService : Service() {
         val UUID_CHARACTERISTIC_WIFI_INFO = UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
         val UUID_CHARACTERISTIC_ERROR = UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
         val UUID_DESCRIPTOR_WIFI_INFO = UUID.fromString("6b90805b2-08f9-4168-86f6-d49f5046f7b3")
-
     }
 
 }

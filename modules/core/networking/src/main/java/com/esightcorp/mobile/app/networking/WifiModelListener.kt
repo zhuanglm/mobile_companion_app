@@ -8,5 +8,6 @@ interface WifiModelListener {
     fun onWifiNetworkFound(result: ScanResult): Unit
     fun onScanStatusUpdated(status: ScanningStatus)
     fun onNetworkConnected(): Unit
+    fun onNetworkConnectionError(): Unit
     fun onScanFailed():Unit
 }

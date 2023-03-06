@@ -15,6 +15,9 @@ sealed class WifiConnectionScreens(val route: String){
     }*/
     object SearchingForNetworkRoute: WifiConnectionScreens("searching_for_networks")
     object SelectNetworkRoute: WifiConnectionScreens("select_network")
+    object ConnectingRoute: WifiConnectionScreens("connecting")
+    object ConnectedRoute: WifiConnectionScreens("connected")
+    object ErrorRoute: WifiConnectionScreens("wifi_error")
     object EnterPasswordRoute: WifiConnectionScreens("enter_password")
     object WifiQRCodeRoute: WifiConnectionScreens("wifi_qrcode")
     object HowToScanQrRoute: WifiConnectionScreens("help_wifi_qrcode")

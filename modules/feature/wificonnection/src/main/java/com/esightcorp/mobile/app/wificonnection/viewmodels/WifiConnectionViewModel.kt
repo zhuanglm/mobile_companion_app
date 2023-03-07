@@ -44,7 +44,7 @@ class WifiConnectionViewModel @Inject constructor(
         }
 
         override fun onWifiConnected(success: Boolean) {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onWifiConnected: ")
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {

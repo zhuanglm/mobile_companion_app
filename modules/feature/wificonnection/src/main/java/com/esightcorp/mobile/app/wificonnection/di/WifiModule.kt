@@ -14,8 +14,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ActivityComponent::class)
 object WifiModule {
-    @Singleton
     @Provides
+    @Singleton
     fun provideWifiRepository(@ApplicationContext context: Context):WifiConnectionRepository{
         return WifiConnectionRepository(context)
     }

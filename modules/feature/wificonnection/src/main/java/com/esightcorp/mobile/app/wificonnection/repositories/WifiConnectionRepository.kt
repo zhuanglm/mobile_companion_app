@@ -22,22 +22,27 @@ class WifiConnectionRepository @Inject constructor(
         override fun onWifiNetworkFound(result: ScanResult) {
             Log.e(TAG, "onWifiNetworkFound: ${result.SSID}")
             networkList.add(result)
+            Log.i(TAG, "onWifiNetworkFound: $wifiRepoListener")
             wifiRepoListener.onNetworkListUpdated(networkList)
         }
 
         override fun onNetworkConnected() {
+            Log.i(TAG, "onNetworkConnected: $wifiRepoListener")
             wifiRepoListener.onWifiConnected(true)
         }
 
         override fun onNetworkConnectionError() {
+            Log.i(TAG, "onNetwoorkConnectionError: $wifiRepoListener")
             wifiRepoListener.onWifiConnected(false)
         }
 
         override fun onScanFailed() {
+            Log.i(TAG, "onScanFailed: $wifiRepoListener")
             Log.e(TAG, "onScanFailed: ")
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
+            Log.i(TAG, "onScanStatusUpdated: $wifiRepoListener")
             wifiRepoListener.onScanStatusUpdated(status)
         }
     }
@@ -78,6 +83,7 @@ class WifiConnectionRepository @Inject constructor(
 
     fun setSelectedNetwork(network: ScanResult){
         WifiCache.selectNetwork(network)
+        wifiModel.stopWifiScan()
     }
 
     fun getSelectedNetwork():ScanResult{
@@ -85,7 +91,8 @@ class WifiConnectionRepository @Inject constructor(
     }
 
     fun registerListener(listener: WifiConnectionRepoListener){
-        wifiRepoListener = listener
+        Log.d(TAG, "registerListener: $listener")
+        this.wifiRepoListener = listener
         if(!eSightBleManager.checkIfConnected()){
             Log.e(TAG, "Bluetooth is not currently connected." )
             wifiRepoListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())

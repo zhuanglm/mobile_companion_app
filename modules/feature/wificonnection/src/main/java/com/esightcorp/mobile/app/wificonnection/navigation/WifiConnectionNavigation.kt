@@ -26,7 +26,19 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
             WifiConnectingRoute(navController = navController)
         }
         composable(WifiConnectionScreens.ConnectedRoute.route){
-
+            ConnectedRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.WifiOffRoute.route){
+            WifiOffRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.UnableToConnectRoute.route){
+            UnableToConnectRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.NoNetworksFoundRoute.route){
+            NoNetworksFoundRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.AlreadyConnectedRoute.route){
+            AlreadyConnectedRoute(navController = navController)
         }
     }
 }

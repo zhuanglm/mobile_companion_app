@@ -13,7 +13,7 @@ import com.esightcorp.mobile.app.utils.ScanningStatus
 private const val TAG = "WifiModel"
 
 class WifiModel(
-    context: Context
+   val context: Context
 ) {
 
     val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -102,6 +102,9 @@ class WifiModel(
     private fun scanFailure(){
         Log.e(TAG, "scanFailure: " )
         listener?.onScanStatusUpdated(ScanningStatus.Failed)
+    }
+    fun stopWifiScan(){
+        context.unregisterReceiver(wifiScanReceiver)
     }
 
 

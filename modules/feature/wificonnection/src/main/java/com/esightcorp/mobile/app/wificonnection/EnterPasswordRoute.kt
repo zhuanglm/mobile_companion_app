@@ -22,12 +22,11 @@ private const val TAG = "WifiCredentialsRoute"
 @Composable
 fun EnterPasswordRoute(
     navController: NavController,
-    /*ssid: String,*/
     viewModel: EnterPasswordViewModel = hiltViewModel()
 ) {
-    val ssid = "SSID"
-    Log.d(TAG, "WifiCredentialsRoute: $ssid")
+    Log.d(TAG, "EnterPasswordRoute:")
     val wifiUiState by viewModel.uiState.collectAsState()
+    viewModel.setNavController(navController = navController)
     EnterPasswordScreen(
         onPasswordSubmitted = viewModel::wifiPasswordSubmitted,
         onPasswordUpdated = viewModel::updatePassword,

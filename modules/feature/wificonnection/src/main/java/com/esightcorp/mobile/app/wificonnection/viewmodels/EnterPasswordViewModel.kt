@@ -27,19 +27,23 @@ class EnterPasswordViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiCredentialsUiState())
     val uiState: StateFlow<WifiCredentialsUiState> = _uiState.asStateFlow()
     private lateinit var navController: NavController
+    val TAG = "EnterPasswordViewModel"
 
     val repoListener = object : WifiConnectionRepoListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
+            Log.i(TAG, "onBluetoothStatusUpdate: ")
         }
 
         override fun onWifiConnected(success: Boolean) {
-            TODO("Not yet implemented")
+            Log.i(TAG, "onWifiConnected: ")
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
+            Log.i(TAG, "onNetworkListUpdated: ")
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
+            Log.i(TAG, "onScanStatusUpdated: ")
         }
     }
 

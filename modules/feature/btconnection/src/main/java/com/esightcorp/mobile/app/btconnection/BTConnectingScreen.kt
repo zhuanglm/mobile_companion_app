@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectingViewModel
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner

@@ -14,6 +14,7 @@ import com.esightcorp.mobile.app.btconnection.state.BtSearchingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtSearchingViewModel
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun BtSearchingRoute(

@@ -15,8 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDisabledViewModel
-import com.esightcorp.mobile.app.ui.R as uiR
-import com.esightcorp.mobile.app.btconnection.R as btR
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.BigIcon
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
@@ -42,8 +41,8 @@ internal fun BtDisabledScreen(
     /*
     Importing these are variables since the margin function does not accept @Composables
      */
-    val headerTopMargin = dimensionResource(id = btR.dimen.bt_disabled_header_top_margin)
-    val bodyTopMargin = dimensionResource(id = btR.dimen.bt_disabled_body_top_margin)
+    val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
+    val bodyTopMargin = dimensionResource(id = R.dimen.bt_disabled_body_top_margin)
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
@@ -61,8 +60,8 @@ internal fun BtDisabledScreen(
             )
 
             BigIcon(
-                painter = painterResource(id = uiR.drawable.baseline_bluetooth_24),
-                contentDescription = stringResource(btR.string.content_desc_bt_icon),
+                painter = painterResource(id = R.drawable.baseline_bluetooth_24),
+                contentDescription = stringResource(R.string.content_desc_bt_icon),
                 modifier = modifier.constrainAs(bigIcon) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -71,7 +70,7 @@ internal fun BtDisabledScreen(
                 })
 
             Header1Text(
-                text = stringResource(id = btR.string.bt_disabled_header),
+                text = stringResource(id = R.string.bt_disabled_header),
                 modifier = modifier.constrainAs(headerText) {
                     top.linkTo(bigIcon.bottom, margin = headerTopMargin)
                     start.linkTo(parent.start)
@@ -79,12 +78,12 @@ internal fun BtDisabledScreen(
                 })
 
             Header2Text(
-                text = stringResource(id = btR.string.bt_disabled_body),
+                text = stringResource(id = R.string.bt_disabled_body),
                 modifier = modifier
                     .padding(
-                        dimensionResource(id = btR.dimen.bt_disabled_horizontal_padding),
+                        dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),
                         dimensionResource(
-                            id = btR.dimen.zero
+                            id = R.dimen.zero
                         )
                     )
                     .constrainAs(header2Text) {

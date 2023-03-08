@@ -8,6 +8,7 @@ interface WifiConnectionRepoListener {
     fun onNetworkListUpdated(list: MutableList<ScanResult>): Unit
     fun onScanStatusUpdated(status: ScanningStatus): Unit
     fun onWifiConnected(success: Boolean): Unit
+    fun onWifiStatusUpdate(status: Boolean): Unit
 
 
 }

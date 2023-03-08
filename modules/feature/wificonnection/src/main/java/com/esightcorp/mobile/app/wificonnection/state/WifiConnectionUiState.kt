@@ -55,5 +55,6 @@ data class NoNetworksFoundUiState(
 )
 
 data class WifiOffUiState(
-    val ssid: String = ""
+    val isWifiEnabled: Boolean = false,
+    val isBtEnabled: Boolean = false
 )

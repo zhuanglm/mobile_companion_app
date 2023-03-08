@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -18,6 +20,7 @@ import com.esightcorp.mobile.app.ui.components.BigIcon
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.wificonnection.state.WifiOffUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiOffViewModel
 
 @Composable
@@ -25,11 +28,13 @@ fun WifiOffRoute(
     navController: NavController,
     vm: WifiOffViewModel = hiltViewModel()
 ){
-    val TAG = "WifiOffRoute"
+    vm.setNavController(navController)
+    val uiState by vm.uiState.collectAsState()
     WifiOffScreen(
         navController = navController,
-        vm = vm,
-        onBackPressed = { navController.popBackStack() },
+        onBackPressed = vm::onBackClicked,
+        onWifiTurnedOn = vm::navigateHome,
+        uiState = uiState
     )
 
 }
@@ -37,9 +42,10 @@ fun WifiOffRoute(
 @Composable
 internal fun WifiOffScreen(
     navController: NavController,
-    vm: WifiOffViewModel,
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = { navController.popBackStack() }
+    onBackPressed: () -> Unit = { navController.popBackStack() },
+    onWifiTurnedOn: () -> Unit = { /*Unused*/ },
+    uiState: WifiOffUiState
 ) {
     val TAG = "WifiOffScreen"
     val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
@@ -96,6 +102,9 @@ internal fun WifiOffScreen(
 
             )
         }
+    }
+    if(uiState.isWifiEnabled){
+        onWifiTurnedOn()
     }
 
 }

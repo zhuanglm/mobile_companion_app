@@ -38,6 +38,10 @@ class EnterPasswordViewModel @Inject constructor(
             Log.i(TAG, "onWifiConnected: ")
         }
 
+        override fun onWifiStatusUpdate(status: Boolean) {
+            TODO("Not yet implemented")
+        }
+
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             Log.i(TAG, "onNetworkListUpdated: ")
         }

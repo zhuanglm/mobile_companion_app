@@ -43,6 +43,10 @@ class WifiSearchingViewModel @Inject constructor(
         override fun onWifiConnected(success: Boolean) {
             Log.i(TAG, "onWifiConnected: " + success)
         }
+
+        override fun onWifiStatusUpdate(status: Boolean) {
+            TODO("Not yet implemented")
+        }
     }
 
     init {

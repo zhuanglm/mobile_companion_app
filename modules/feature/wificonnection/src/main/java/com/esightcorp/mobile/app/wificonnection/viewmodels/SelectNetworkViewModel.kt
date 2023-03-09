@@ -36,6 +36,10 @@ class SelectNetworkViewModel @Inject constructor(
             Log.e(TAG, "onWifiConnected: ", )
         }
 
+        override fun onWifiStatusUpdate(status: Boolean) {
+            TODO("Not yet implemented")
+        }
+
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             list.forEach {
                 Log.d("SelectNetworkViewModel", "onNetworkListUpdated: ${it.SSID}")

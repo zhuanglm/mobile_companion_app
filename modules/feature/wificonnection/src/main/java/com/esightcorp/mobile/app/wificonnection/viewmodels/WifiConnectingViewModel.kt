@@ -42,6 +42,10 @@ class WifiConnectingViewModel @Inject constructor(
         override fun onWifiConnected(success: Boolean) {
             updateConnectionStatus(success)
         }
+
+        override fun onWifiStatusUpdate(status: Boolean) {
+            TODO("Not yet implemented")
+        }
     }
 
     init {

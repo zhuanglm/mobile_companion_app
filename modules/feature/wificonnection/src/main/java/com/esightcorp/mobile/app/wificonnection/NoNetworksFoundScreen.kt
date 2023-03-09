@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.wificonnection.state.NoNetworksFoundUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.NoNetworksFoundViewModel
@@ -22,9 +23,14 @@ import com.esightcorp.mobile.app.wificonnection.viewmodels.NoNetworksFoundViewMo
 fun NoNetworksFoundRoute(
     navController: NavController,
     vm: NoNetworksFoundViewModel = hiltViewModel()
-){
+) {
     val uiState by vm.uiState.collectAsState()
-    NoNetworksFoundScreen(navController = navController, vm = vm, modifier = Modifier, uiState = uiState)
+    NoNetworksFoundScreen(
+        navController = navController,
+        vm = vm,
+        modifier = Modifier,
+        uiState = uiState
+    )
 }
 
 @Composable
@@ -37,7 +43,7 @@ internal fun NoNetworksFoundScreen(
 ) {
     val TAG = "NoNetworksFoundScreen"
     Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
-        ConstraintLayout(modifier = modifier.fillMaxSize()){
+        ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (topBar, headerText, header2Text, nhiOne, nhiTwo, button) = createRefs()
 
             ESightTopAppBar(
@@ -52,15 +58,19 @@ internal fun NoNetworksFoundScreen(
                 }
             )
 
-            Header1Text(text = "No Wi-Fi networks found", modifier = modifier.constrainAs(headerText) {
-                top.linkTo(topBar.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-            })
+            Header1Text(
+                text = "No Wi-Fi networks found",
+                modifier = modifier.constrainAs(headerText) {
+                    top.linkTo(topBar.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                })
 
-            Header2Text(text = "Please try the following" , modifier = modifier.constrainAs(header2Text) {
-                top.linkTo(headerText.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-            })
+            Header2Text(
+                text = "Please try the following",
+                modifier = modifier.constrainAs(header2Text) {
+                    top.linkTo(headerText.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                })
 
             NumberedHelpItem(
                 number = 1,
@@ -70,14 +80,19 @@ internal fun NoNetworksFoundScreen(
                     start.linkTo(parent.start)
                 }
             )
-             NumberedHelpItem(
+            NumberedHelpItem(
                 number = 2,
                 text = "Turn your router off and then back on again",
                 modifier = modifier.constrainAs(nhiTwo) {
                     top.linkTo(nhiOne.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
                 }
-             )
+            )
+            TextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier.constrainAs(button){
+                top.linkTo(nhiTwo.bottom, margin = 8.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }, text = "Try again" )
         }
     }
 

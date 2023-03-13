@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,13 +27,9 @@ class SelectNetworkViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(SelectNetworkUiState())
     val uiState: StateFlow<SelectNetworkUiState> = _uiState.asStateFlow()
     val TAG = "SelectNetworkViewModel"
-    val repoListener = object : WifiConnectionRepoListener{
+    val scanListener = object : WifiNetworkScanListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
             Log.e(TAG, "onBluetoothStatusUpdate: ", )
-        }
-
-        override fun onWifiConnected(success: Boolean) {
-            Log.e(TAG, "onWifiConnected: ", )
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
@@ -49,11 +45,12 @@ class SelectNetworkViewModel @Inject constructor(
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
+            Log.i(TAG, "onScanStatusUpdated: ")
         }
     }
 
     init {
-        wifiRepository.registerListener(listener = repoListener)
+        wifiRepository.registerListener(listener = scanListener)
         wifiRepository.getCachedWifiList()
     }
 

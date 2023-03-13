@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 import com.esightcorp.mobile.app.wificonnection.viewmodels.ConnectedViewModel
 import kotlinx.coroutines.delay
+import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun ConnectedRoute(
@@ -30,7 +31,7 @@ internal fun ConnectedScreen(
     val homeRoute = "home_first"
     val screenTimeout = 5000L //5s in milliseconds
     LoadingScreenWithIcon(
-        loadingText = "Wifi is now connected"
+        loadingText = stringResource(id = R.string.wifi_connected_text),
     )
     LaunchedEffect(Unit) {
         delay(screenTimeout)

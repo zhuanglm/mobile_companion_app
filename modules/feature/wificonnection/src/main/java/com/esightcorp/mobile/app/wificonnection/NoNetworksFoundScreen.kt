@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,6 +19,7 @@ import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.wificonnection.state.NoNetworksFoundUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.NoNetworksFoundViewModel
+import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun NoNetworksFoundRoute(
@@ -59,14 +61,14 @@ internal fun NoNetworksFoundScreen(
             )
 
             Header1Text(
-                text = "No Wi-Fi networks found",
+                text = stringResource(id = R.string.wifi_no_networks_header),
                 modifier = modifier.constrainAs(headerText) {
                     top.linkTo(topBar.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
                 })
 
             Header2Text(
-                text = "Please try the following",
+                text = stringResource(id = R.string.wifi_no_networks_subtitle),
                 modifier = modifier.constrainAs(header2Text) {
                     top.linkTo(headerText.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
@@ -74,7 +76,7 @@ internal fun NoNetworksFoundScreen(
 
             NumberedHelpItem(
                 number = 1,
-                text = "Turn your eSight off and then back on again",
+                text = stringResource(id = R.string.wifi_no_networks_1),
                 modifier = modifier.constrainAs(nhiOne) {
                     top.linkTo(header2Text.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
@@ -82,7 +84,7 @@ internal fun NoNetworksFoundScreen(
             )
             NumberedHelpItem(
                 number = 2,
-                text = "Turn your router off and then back on again",
+                text = stringResource(id = R.string.wifi_no_networks_2),
                 modifier = modifier.constrainAs(nhiTwo) {
                     top.linkTo(nhiOne.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
@@ -92,7 +94,7 @@ internal fun NoNetworksFoundScreen(
                 top.linkTo(nhiTwo.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            }, text = "Try again" )
+            }, text = stringResource(id = R.string.wifi_no_networks_button) )
         }
     }
 

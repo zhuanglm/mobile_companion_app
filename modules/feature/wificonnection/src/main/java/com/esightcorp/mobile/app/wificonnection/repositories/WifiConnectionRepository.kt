@@ -10,96 +10,146 @@ import com.esightcorp.mobile.app.networking.WifiModelListener
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+
 private const val TAG = "WifiConnectionRepository"
+
 class WifiConnectionRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
-    private lateinit var wifiRepoListener: WifiConnectionRepoListener
     private val wifiModel = WifiModel(context)
     private val networkList: MutableList<ScanResult> = mutableListOf()
     private lateinit var selectedNetwork: ScanResult
-    private val wifiModelListener = object: WifiModelListener{
+    private lateinit var networkScanListener: WifiNetworkScanListener
+    private lateinit var connectionListener: WifiConnectionListener
+    private val wifiModelListener = object : WifiModelListener {
         override fun onWifiNetworkFound(result: ScanResult) {
             Log.e(TAG, "onWifiNetworkFound: ${result.SSID}")
             networkList.add(result)
-            Log.i(TAG, "onWifiNetworkFound: $wifiRepoListener")
-            wifiRepoListener.onNetworkListUpdated(networkList)
+            getSafeNetworkScanListener()?.onNetworkListUpdated(networkList)
         }
 
         override fun onNetworkConnected() {
-            Log.i(TAG, "onNetworkConnected: $wifiRepoListener")
-            wifiRepoListener.onWifiConnected(true)
+            getSafeConnectionListener()?.onWifiConnected(true)
         }
 
         override fun onNetworkConnectionError() {
-            Log.i(TAG, "onNetwoorkConnectionError: $wifiRepoListener")
-            wifiRepoListener.onWifiConnected(false)
+            getSafeConnectionListener()?.onWifiConnected(false)
         }
 
         override fun onScanFailed() {
-            Log.i(TAG, "onScanFailed: $wifiRepoListener")
             Log.e(TAG, "onScanFailed: ")
+            getSafeNetworkScanListener()?.onScanStatusUpdated(ScanningStatus.Failed)
+        }
+
+        override fun onWifiDisabled() {
+            Log.i(TAG, "onWifiDisabled: ")
+            getSafeConnectionListener()?.onWifiStatusUpdate(false)
+            getSafeNetworkScanListener()?.onWifiStatusUpdate(false)
+        }
+
+        override fun onBluetoothDisconnected() {
+            Log.i(TAG, "onBluetoothDisconnected: ")
+            getSafeNetworkScanListener()?.onBluetoothStatusUpdate(false)
+            getSafeConnectionListener()?.onBluetoothStatusUpdate(false)
+        }
+
+        override fun AlreadyConnectedToWifi() {
+            Log.i(TAG, "AlreadyConnectedToWifi: still need to figure this one out")
+        }
+
+        override fun onErrorTest() {
+            Log.i(TAG, "onErrorTest: ")
+            getSafeConnectionListener()?.onWifiConnectionTest()
+        }
+
+        override fun onErrorWifiConnectionTimeout() {
+            Log.i(TAG, "onErrorWifiConnectionTimeout: ")
+            getSafeConnectionListener()?.onWifiConnectionTimeout()
+        }
+
+        override fun onErrorWifiInvalidPassword() {
+            Log.i(TAG, "onErrorWifiInvalidPassword: ")
+            getSafeConnectionListener()?.onWifiInvalidPassword()
+        }
+
+        override fun onErrorWifiWPALessThan8() {
+            Log.i(TAG, "onErrorWifiWPALessThan8: ")
+            getSafeConnectionListener()?.onWifiWPALessThan8()
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
-            Log.i(TAG, "onScanStatusUpdated: $wifiRepoListener")
-            wifiRepoListener.onScanStatusUpdated(status)
+            getSafeNetworkScanListener()?.onScanStatusUpdated(status)
         }
     }
 
     init {
+        setupWifiModelListener()
+    }
 
+    private fun getSafeNetworkScanListener(): WifiNetworkScanListener?{
+        return (if (this::networkScanListener.isInitialized) {networkScanListener} else {null})
+    }
+
+    private fun getSafeConnectionListener(): WifiConnectionListener?{
+        return (if (this::connectionListener.isInitialized) {connectionListener} else {null})
     }
 
 
-    fun sendWifiCreds(pwd: String, type: String){
-        if(eSightBleManager.checkIfConnected()){
-            try{
-                eSightBleManager.getBleService()?.sendWifiCreds(WifiCache.credentials.getNetwork().SSID.toString(), pwd, type)
-            }catch (exception:NullPointerException){
-                Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
-            }catch (exception:UninitializedPropertyAccessException){
-                Log.e(TAG, "sendWifiCreds: BleService has not been initialized ",exception )
+    fun sendWifiCreds(pwd: String, type: String) {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
+                eSightBleManager.getBleService()
+                    ?.sendWifiCreds(WifiCache.credentials.getNetwork().SSID.toString(), pwd, type)
+            } catch (exception: NullPointerException) {
+                Log.e(TAG, "sendWifiCreds: BleService has not been initialized ", exception)
+            } catch (exception: UninitializedPropertyAccessException) {
+                Log.e(TAG, "sendWifiCreds: BleService has not been initialized ", exception)
             }
-        }
-        else{
+        } else {
             Log.d(TAG, "sendWifiCreds: No bt connection")
-            wifiRepoListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+            getSafeConnectionListener()?.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+            getSafeNetworkScanListener()?.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
         }
 
     }
 
-    fun startWifiScan(){
+    fun startWifiScan() {
         wifiModel.startWifiScan()
     }
 
-    private fun setupWifiModelListener(){
+    private fun setupWifiModelListener() {
         wifiModel.registerListener(wifiModelListener)
     }
 
-    fun getCachedWifiList(){
-        wifiRepoListener.onNetworkListUpdated(WifiCache.getNetworkList())
+    fun getCachedWifiList() {
+        getSafeNetworkScanListener()?.onNetworkListUpdated(WifiCache.getNetworkList())
     }
 
-    fun setSelectedNetwork(network: ScanResult){
+    fun setSelectedNetwork(network: ScanResult) {
         WifiCache.selectNetwork(network)
         wifiModel.stopWifiScan()
     }
 
-    fun getSelectedNetwork():ScanResult{
+    fun getSelectedNetwork(): ScanResult {
         return WifiCache.credentials.getNetwork()
     }
 
-    fun registerListener(listener: WifiConnectionRepoListener){
+    fun registerListener(listener: WifiNetworkScanListener) {
         Log.d(TAG, "registerListener: $listener")
-        this.wifiRepoListener = listener
-        if(!eSightBleManager.checkIfConnected()){
-            Log.e(TAG, "Bluetooth is not currently connected." )
-            wifiRepoListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+        this.networkScanListener = listener
+        if (!eSightBleManager.checkIfConnected()) {
+            Log.e(TAG, "Bluetooth is not currently connected.")
+            this.networkScanListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
         }
-        setupWifiModelListener()
     }
 
-
+    fun registerListener(listener: WifiConnectionListener){
+        Log.d(TAG, "registerListener: ")
+        this.connectionListener = listener
+        if(!eSightBleManager.checkIfConnected()){
+            Log.e(TAG, "Bluetooth is not currently connected.")
+            this.connectionListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+        }
+    }
 
 }

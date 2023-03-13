@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -17,6 +18,7 @@ import com.esightcorp.mobile.app.ui.components.Header2Text
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.wificonnection.state.AlreadyConnectedUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.AlreadyConnectedViewModel
+import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun AlreadyConnectedRoute(
@@ -52,20 +54,20 @@ internal fun AlreadyConnectedScreen(
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = "Connected to Wi-Fi", modifier = modifier.constrainAs(headerText) {
+            Header1Text(text = stringResource(id =R.string.wifi_already_connected_header), modifier = modifier.constrainAs(headerText) {
                 top.linkTo(topBar.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             })
 
-            Header2Text(text = "Your eSight is already connected to a Wi-Fi network.",
+            Header2Text(text = stringResource(id = R.string.wifi_already_connected_body),
                 modifier = modifier.constrainAs(header2Text) {
                     top.linkTo(headerText.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = "Press the button below if you would like to connect to another network",
+            Header1Text(text = stringResource(id = R.string.wifi_already_connected_action),
                 modifier = modifier.constrainAs(helpText) {
                     top.linkTo(header2Text.bottom)
                     start.linkTo(parent.start)
@@ -75,7 +77,7 @@ internal fun AlreadyConnectedScreen(
             TextRectangularButton(
                 onClick = { Log.i(TAG, "AlreadyConnectedScreen: ") },
                 modifier = modifier,
-                text = "Connect to Wi-Fi"
+                text = stringResource(id = R.string.wifi_already_connected_button),
             )
         }
 

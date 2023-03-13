@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,17 +29,9 @@ class EnterPasswordViewModel @Inject constructor(
     private lateinit var navController: NavController
     val TAG = "EnterPasswordViewModel"
 
-    val repoListener = object : WifiConnectionRepoListener{
+    val scanListener = object : WifiNetworkScanListener {
         override fun onBluetoothStatusUpdate(status: Boolean) {
             Log.i(TAG, "onBluetoothStatusUpdate: ")
-        }
-
-        override fun onWifiConnected(success: Boolean) {
-            Log.i(TAG, "onWifiConnected: ")
-        }
-
-        override fun onWifiStatusUpdate(status: Boolean) {
-            TODO("Not yet implemented")
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
@@ -49,10 +41,15 @@ class EnterPasswordViewModel @Inject constructor(
         override fun onScanStatusUpdated(status: ScanningStatus) {
             Log.i(TAG, "onScanStatusUpdated: ")
         }
+
+        override fun onWifiStatusUpdate(status: Boolean) {
+            Log.i(TAG, "onWifiStatusUpdate: ")
+        }
     }
 
+
     init {
-        repository.registerListener(repoListener)
+        repository.registerListener(scanListener)
     }
 
     fun setNavController(navController: NavController){

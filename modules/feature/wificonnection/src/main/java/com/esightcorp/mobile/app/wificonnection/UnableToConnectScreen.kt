@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +17,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnec
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.wificonnection.state.UnableToConnectUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.UnableToConnectViewModel
+import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun UnableToConnectRoute(
@@ -47,13 +49,13 @@ internal fun UnableToConnectScreen(
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = "Unable to Connect", modifier = modifier.constrainAs(headerText) {
+            Header1Text(text = stringResource(id = R.string.wifi_unable_to_connect_header), modifier = modifier.constrainAs(headerText) {
                 top.linkTo(topBar.bottom, margin = 16.dp)
                 start.linkTo(parent.start, margin = 16.dp)
                 end.linkTo(parent.end, margin = 16.dp)
             })
 
-            Header2Text(text = "Please try the following:",
+            Header2Text(text = stringResource(id = R.string.wifi_unable_to_connect_subtitle),
                 modifier = modifier.constrainAs(header2Text) {
                     top.linkTo(headerText.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 16.dp)
@@ -61,7 +63,7 @@ internal fun UnableToConnectScreen(
                 })
 
             NumberedHelpItem(number = 1,
-                text = "Make sure your Wi-Fi password is correct.",
+                text = stringResource(id = R.string.wifi_unable_to_connect_1),
                 modifier = modifier.constrainAs(nhiOne) {
                     top.linkTo(header2Text.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 16.dp)
@@ -69,7 +71,7 @@ internal fun UnableToConnectScreen(
                 })
 
             NumberedHelpItem(number = 2,
-                text = "Make sure your eSight is within range.",
+                text = stringResource(id = R.string.wifi_unable_to_connect_2),
                 modifier = modifier.constrainAs(nhiTwo) {
                     top.linkTo(nhiOne.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 16.dp)
@@ -77,7 +79,7 @@ internal fun UnableToConnectScreen(
                 })
 
             NumberedHelpItem(number = 3,
-                text = "Make sure your eSight has sufficient charge.",
+                text = stringResource(id = R.string.wifi_unable_to_connect_3),
                 modifier = modifier.constrainAs(nhiThree) {
                     top.linkTo(nhiTwo.bottom, margin = 16.dp)
                     start.linkTo(parent.start, margin = 16.dp)
@@ -87,9 +89,9 @@ internal fun UnableToConnectScreen(
                 top.linkTo(nhiThree.bottom, margin = 16.dp)
                 start.linkTo(parent.start, margin = 16.dp)
                 end.linkTo(parent.end, margin = 16.dp)
-            }, text = "Try Again")
+            }, text = stringResource(id = R.string.wifi_unable_to_connect_button))
 
-            BodyText(text = "If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support",
+            BodyText(text = "",
                 modifier = modifier.constrainAs(helpText) {
 
                 })
@@ -98,6 +100,7 @@ internal fun UnableToConnectScreen(
                 start.linkTo(parent.start, margin = 16.dp)
                 end.linkTo(parent.end, margin = 16.dp)
             }) {
+                //todo: This should be a deeplink to the web
                 navController.navigate("how_to_connect")
             }
         }

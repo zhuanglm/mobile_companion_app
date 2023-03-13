@@ -3,10 +3,9 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,21 +25,37 @@ class WifiConnectingViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiConnectingUiState())
     val uiState: StateFlow<WifiConnectingUiState> = _uiState.asStateFlow()
     val TAG = "WifiConnectingViewModel"
-    val repoListener = object: WifiConnectionRepoListener{
+    val repoListener = object: WifiConnectionListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
             Log.i(TAG, "onBluetoothStatusUpdate: ")
         }
 
-        override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            Log.i(TAG, "onNetworkListUpdated: ")
-        }
-
-        override fun onScanStatusUpdated(status: ScanningStatus) {
-            Log.i(TAG, "onScanStatusUpdated: ")
-        }
-
         override fun onWifiConnected(success: Boolean) {
             updateConnectionStatus(success)
+        }
+
+        override fun onWifiNetworkNotFound() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onWifiConnectionTimeout() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onWifiInvalidPassword() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onWifiWPALessThan8() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onWifiConnectionTest() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onPlatformError() {
+            TODO("Not yet implemented")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {

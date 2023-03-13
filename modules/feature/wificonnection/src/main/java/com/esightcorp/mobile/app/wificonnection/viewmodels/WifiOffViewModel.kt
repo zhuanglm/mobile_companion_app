@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiOffUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ class WifiOffViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiOffUiState())
     val uiState: StateFlow<WifiOffUiState> = _uiState.asStateFlow()
     private lateinit var navController: NavController
-    private val listener = object : WifiConnectionRepoListener {
+    private val listener = object : WifiNetworkScanListener {
 
         override fun onBluetoothStatusUpdate(status: Boolean) {
             _uiState.value = _uiState.value.copy(isBtEnabled = status)
@@ -37,10 +37,6 @@ class WifiOffViewModel @Inject constructor(
         override fun onScanStatusUpdated(status: ScanningStatus)
         {
             Log.e(TAG, "onScanStatusUpdated: This should not be called")
-        }
-
-        override fun onWifiConnected(success: Boolean) {
-            Log.e(TAG, "onWifiConnected: This should not be called")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {

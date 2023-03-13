@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +17,7 @@ import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.text.EEditText
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.EnterPasswordViewModel
+import com.esightcorp.mobile.app.ui.R
 
 private const val TAG = "WifiCredentialsRoute"
 
@@ -115,7 +117,7 @@ private fun PasswordField(
                     start.linkTo(editText.start)
                     end.linkTo(editText.end)
                 },
-                text = "Connect"
+                text = stringResource(id = R.string.wifi_connect_button)
             )
 
 

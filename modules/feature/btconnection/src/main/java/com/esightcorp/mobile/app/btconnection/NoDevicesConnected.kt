@@ -18,37 +18,35 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
-import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
+import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.*
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
-const val TAG = "BtConnectionScreen"
-
+private const val TAG = "BluetoothScreens"
 @Composable
-fun BtConnectionScreen(
+fun NoDeviceConnectedRoute(
     navController: NavController,
-    vm: BtConnectionViewModel = hiltViewModel()
+    vm: NoDevicesConnectedViewModel = hiltViewModel()
 ) {
+
     Log.d(TAG, "BtConnectionScreen: ")
     val btUiState by vm.uiState.collectAsState()
-    NoDeviceConnectedScreen(
-        onSettingsButtonPressed = { },
-        onFeedbackButtonPressed = { },
-        onConnectToDeviceButtonPressed = { },
-        onTermsAndConditionsPressed = { },
-        onPrivacyPolicyPressed = { },
-        btUiState = btUiState,
-        navController = navController
-    )
-
-    /* IsBluetoothEnabled(vm = vm)
-     if(btUiState.isBtEnabled && !btUiState.btConnectionStatus){
-         BaseBtScreen(vm = vm, btUiState = btUiState, navController = navController)
-     } else if (btUiState.btConnectionStatus){
-        NavigateHome(navController = navController, btUiState = btUiState)
+    if (!btUiState.isBtEnabled){
+        IsBluetoothEnabled(vm = vm)
+    } else if(!btUiState.btConnectionStatus){
+         NoDeviceConnectedScreen(
+             onSettingsButtonPressed = { },
+             onFeedbackButtonPressed = { },
+             onConnectToDeviceButtonPressed = { },
+             onTermsAndConditionsPressed = { },
+             onPrivacyPolicyPressed = { },
+             btUiState = btUiState,
+             navController = navController
+         )
+     } else {
+        NavigateHome(navController = navController, device = btUiState.connectedDevice)
      }
- */
 }
 
 @Composable
@@ -94,7 +92,7 @@ internal fun NoDeviceConnectedScreen(
             )
 
             AddDeviceButton(
-                onClick = { navController.navigate("select_network") },
+                onClick = { navController.navigate(BtConnectionScreens.BtSearchingRoute.route) },
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(deviceButton) {
@@ -105,8 +103,8 @@ internal fun NoDeviceConnectedScreen(
 
             //Need to verify whats going on with this padding, 15.dp seems better than 25.dp which would match everything else
             TermsAndPolicy(
-                onTermsInvoked = { onTermsAndConditionsPressed },
-                onPrivacyPolicyInvoked = { onPrivacyPolicyPressed },
+                onTermsInvoked =  onTermsAndConditionsPressed ,
+                onPrivacyPolicyInvoked = onPrivacyPolicyPressed ,
                 modifier = modifier
                     .padding(15.dp, 0.dp, 15.dp, 0.dp)
                     .constrainAs(terms) {
@@ -135,7 +133,6 @@ fun NavigateHome(
     device: String
 ) {
     LaunchedEffect(Unit) {
-        Log.d(TAG, "BtConnectionScreen: ")
         navController.navigate("home_first/{${device}}")
     }
 }
@@ -145,14 +142,13 @@ fun NavigateBluetoothDisabled(
     navController: NavController,
 ) {
     LaunchedEffect(Unit) {
-        Log.d(TAG, "NavigateBluetoothDisabled: ")
         navController.navigate(BtConnectionScreens.BtDisabledScreen.route)
     }
 }
 
 @Composable
 fun IsBluetoothEnabled(
-    vm: BtConnectionViewModel
+    vm: NoDevicesConnectedViewModel
 ) {
     /**
      * No real UI here, we're calling the system UI to turn on bluetooth

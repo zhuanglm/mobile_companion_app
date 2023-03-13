@@ -6,11 +6,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -55,7 +52,9 @@ internal fun BaseHomeScreen(
 ) {
     vm.updateConnectedDevice(device)
     if (!homeUiState.isBluetoothConnected) {
+/*
         navigateToBtHomeScreen(navController = navController)
+*/
     } else {
         Surface(color = Color.Black ){
             ConstraintLayout(
@@ -87,7 +86,15 @@ internal fun BaseHomeScreen(
                         top.linkTo(personalGreeting.bottom, margin = 25.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
+                    },
+                    onClick = {Unit},
+                    /*
+                    currently we need to strip off the first two and last two characters due to a bug where
+                    the curly braces are passed through in jetpack navigation.
+                    TODO: Fix the curly brace nav argument bug
+                     */
+                    deviceModel = device.substring(2, device.length -2).substringBeforeLast('-'),
+                    serialNumber = device.substring(2, device.length -2).substringAfterLast('-'))
                 AppContainer(modifier = modifier.constrainAs(appContainer) {
                     top.linkTo(deviceCard.bottom)
                     start.linkTo(parent.start)
@@ -95,7 +102,7 @@ internal fun BaseHomeScreen(
                     bottom.linkTo(feedback.top)
                     height = Dimension.fillToConstraints
                     width = Dimension.fillToConstraints
-                }, navController)
+                }, navController, vm = vm)
                 FeedbackButton(modifier = modifier.constrainAs(feedback){
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
@@ -108,17 +115,18 @@ internal fun BaseHomeScreen(
     }
 }
 
-@Composable
+/*@Composable
 fun navigateToBtHomeScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route)
     }
-}
+}*/
 
 @Composable
 fun AppContainer(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    vm: HomeViewModel
 ) {
     Column(
         modifier = modifier,
@@ -129,7 +137,9 @@ fun AppContainer(
             .height(IntrinsicSize.Min)
             .fillMaxWidth()) {
             IconAndTextSquareButton(
-                onClick = { Unit },
+                onClick = {
+                  vm.navigateToWifiCredsOverBt(navController)
+                },
                 modifier = Modifier
                     .wrapContentHeight()
                     .wrapContentWidth()

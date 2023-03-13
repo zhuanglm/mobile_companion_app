@@ -7,8 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.wificonnection.*
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens.WifiCredentialsScreen.ssidArg
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens.WifiCredentialsScreen.arguments
 import com.esightcorp.mobile.app.wificonnection.WifiCredentialsRoute
 
 fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
@@ -17,15 +15,15 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
             WifiConnectionScreen(navController = navController)
         }
         composable(
-            WifiConnectionScreens.WifiCredentialsScreen.routeWithArgs,
+            WifiConnectionScreens.WifiCredentialsScreen.route/*,
             arguments = arguments,
             deepLinks = listOf( navDeepLink {
                 uriPattern = "android-app://androidx.navigation//${WifiConnectionScreens.WifiCredentialsScreen.route}/{$ssidArg}"
-            })
-        ){ navBackStackEntry ->
+            })*/
+        ){ /*navBackStackEntry ->
             val ssid = navBackStackEntry.arguments?.getString(ssidArg)
             Log.d("TAG", "addWifiConnectionNavigation: $ssid")
-            ssid?.let { WifiCredentialsRoute(navController = navController, ssid = it) }
+            ssid?.let {*/ WifiCredentialsRoute(navController = navController)/*, ssid = it*/ /*}*/
         }
         composable(WifiConnectionScreens.SearchingForNetworkRoute.route){
             SearchingForNetworksRoute(navController = navController)

@@ -9,11 +9,12 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ActivityComponent::class)
 object WifiModule {
-    @ViewModelScoped
+    @Singleton
     @Provides
     fun provideWifiRepository(@ApplicationContext context: Context):WifiConnectionRepository{
         return WifiConnectionRepository(context)

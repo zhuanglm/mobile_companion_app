@@ -7,4 +7,9 @@ import javax.inject.Inject
 
 class BtDisabledViewModel  @Inject constructor(
     application: Application,
-): AndroidViewModel(application)
+    val btConnectionRepository: BtConnectionRepository
+): AndroidViewModel(application){
+    /*
+    TODO: As part of the EG-1025 ticket - Edge scenarios for Bluetooth
+     */
+}

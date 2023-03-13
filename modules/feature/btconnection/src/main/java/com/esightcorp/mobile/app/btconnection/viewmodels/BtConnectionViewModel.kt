@@ -1,13 +1,15 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.bluetooth.BluetoothDevice
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.ScanningStatus
+import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,11 +37,6 @@ class BtConnectionViewModel @Inject constructor(
      * Methods to interact with the UI state StateFlow object
      */
 
-    fun updatePermissionsState(state: Boolean){
-        _uiState.update { currentState ->
-            currentState.copy(arePermissionsGranted = state)
-        }
-    }
 
     fun connectToDevice(device: String){
         btConnectionRepository.connectToDevice(device)
@@ -55,12 +52,6 @@ class BtConnectionViewModel @Inject constructor(
         }
     }
 
-    private fun updateConnectionStatus(){
-        val areWeConnected = btConnectionRepository.checkBtConnectionState()
-        _uiState.update { currentState ->
-            currentState.copy(btConnectionStatus = areWeConnected)
-        }
-    }
 
     /**
      * Interface to receive callbacks from the bluetooth repository
@@ -87,11 +78,21 @@ class BtConnectionViewModel @Inject constructor(
             }
         }
 
-        override fun deviceListReady(deviceList: HashMap<String, Boolean>) {
+        override fun deviceListReady(deviceList: MutableList<String>) {
             Log.d("TAG", "deviceListReady: $deviceList")
             _uiState.update{currentState ->
                 currentState.copy(deviceMapCache = deviceList)
             }
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onDeviceConnected(device: BluetoothDevice) {
+            Log.d(TAG, "onDeviceConnected: ${device.name}")
+            _uiState.update { currentState ->
+                currentState.copy(getConnectedDevice = device.name.trim(), btConnectionStatus = true)
+            }
+            Log.e(TAG, "onDeviceConnected: ${_uiState.value.getConnectedDevice}" )
+
         }
 
     }
@@ -102,26 +103,9 @@ class BtConnectionViewModel @Inject constructor(
 
     init {
         btConnectionRepository.registerListener(btRepositoryListener)
+        btConnectionRepository.setupBtModelListener()
     }
 
-    /**
-     * Permissions management
-     */
-
-    fun getBluetoothPermissionsList(): List<String>{
-        val PERMISSIONS:List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            listOf(
-                android.Manifest.permission.BLUETOOTH_SCAN,
-                android.Manifest.permission.BLUETOOTH_CONNECT
-            )
-        } else {
-            listOf(
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN)
-        }
-        Log.d("TAG", "getBluetoothPermissionsList: ${PERMISSIONS.first()} ")
-        return PERMISSIONS
-    }
 
     /**
      * Generate list of ble devices to show to the user
@@ -129,14 +113,13 @@ class BtConnectionViewModel @Inject constructor(
 
     fun uiDeviceList(){
         val uiDeviceList: MutableList<String> = mutableListOf()
-        val deviceMap = _uiState.value.deviceMapCache
-        updateConnectionStatus()
+        val deviceList = _uiState.value.deviceMapCache
         when(uiState.value.isScanning){
             ScanningStatus.Success -> {
                 if(uiState.value.isBtEnabled){
-                    deviceMap.forEach {
-                        Log.d("TAG", "getDevicesToDisplay: ${deviceMap.keys}")
-                        uiDeviceList.add(it.key)
+                    deviceList.forEach {
+                        Log.d("TAG", "getDevicesToDisplay: ${it}")
+                        uiDeviceList.add(it)
                     }
                 }else{
                     uiDeviceList.add("Bluetooth needs to be enabled")

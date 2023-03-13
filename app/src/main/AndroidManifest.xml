@@ -18,6 +18,14 @@
     <uses-feature android:name="android.hardware.bluetooth_le"
         android:required="false"/>
 
+    <!-- needed for wifi -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+
 
     <application
         android:name=".App"
@@ -39,6 +47,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="home" android:host="home_first_screen"/>
             </intent-filter>
         </activity>
         <service android:name="com.esightcorp.mobile.app.bluetooth.BleService"/>

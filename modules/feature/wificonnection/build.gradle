@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -42,7 +44,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_ui_ktx"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
     implementation "androidx.compose.ui:ui:$compose"
@@ -66,8 +68,23 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
 
-    implementation "com.google.dagger:hilt-android:$hilt"
-    implementation"androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+    implementation 'com.google.zxing:core:3.3.3'
+    // to make preview behave properly
+    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
+
+    //hilt dependencies
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
 
     implementation "androidx.navigation:navigation-compose:$nav"
+
+    //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.27.0"
+
+    implementation(project(":modules:core:utils"))
+    implementation(project(":modules:core:bluetooth"))
+    implementation(project(":modules:core:networking"))
+    implementation(project(":modules:core:ui"))
+
 }

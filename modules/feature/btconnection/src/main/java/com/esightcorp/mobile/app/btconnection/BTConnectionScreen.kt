@@ -2,103 +2,176 @@ package com.esightcorp.mobile.app.btconnection
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.state.BluetoothUiEvent
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
-import com.google.accompanist.permissions.*
-import kotlinx.coroutines.CoroutineScope
-import kotlin.contracts.contract
+import com.esightcorp.mobile.app.ui.components.*
+import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
+import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
 const val TAG = "BtConnectionScreen"
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BtConnectionScreen(
     navController: NavController,
-    vm: BtConnectionViewModel = hiltViewModel()){
-    val bluetoothPermissionState = rememberMultiplePermissionsState(permissions = vm.getBluetoothPermissionsList())
-    val context = LocalContext.current
+    vm: BtConnectionViewModel = hiltViewModel()
+) {
+    Log.d(TAG, "BtConnectionScreen: ")
     val btUiState by vm.uiState.collectAsState()
+    NoDeviceConnectedScreen(
+        onSettingsButtonPressed = { },
+        onFeedbackButtonPressed = { },
+        onConnectToDeviceButtonPressed = { },
+        onTermsAndConditionsPressed = { },
+        onPrivacyPolicyPressed = { },
+        btUiState = btUiState,
+        navController = navController
+    )
 
-    Log.d(TAG, "BtConnectionScreen: ${bluetoothPermissionState.permissions}")
-    if(bluetoothPermissionState.allPermissionsGranted){
-        vm.updatePermissionsState(true)
-        IsBluetoothEnabled(vm)
-    }else{
-        vm.updatePermissionsState(false)
-        RequestPermissions(permissionList = bluetoothPermissionState)
+    /* IsBluetoothEnabled(vm = vm)
+     if(btUiState.isBtEnabled && !btUiState.btConnectionStatus){
+         BaseBtScreen(vm = vm, btUiState = btUiState, navController = navController)
+     } else if (btUiState.btConnectionStatus){
+        NavigateHome(navController = navController, btUiState = btUiState)
+     }
+ */
+}
+
+@Composable
+internal fun NoDeviceConnectedScreen(
+    onSettingsButtonPressed: () -> Unit,
+    onFeedbackButtonPressed: () -> Unit,
+    onConnectToDeviceButtonPressed: () -> Unit,
+    onTermsAndConditionsPressed: () -> Unit,
+    onPrivacyPolicyPressed: () -> Unit,
+    btUiState: BluetoothUiState,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    /**
+     * Dummy data used here
+     */
+    val dummyDevice = "123456"
+
+    Surface(modifier.fillMaxSize(), color = Color.Black) {
+        ConstraintLayout {
+            val (topBar, greeting, deviceButton, terms, feedback) = createRefs()
+            ESightTopAppBar(
+                showBackButton = false,
+                showSettingsButton = true,
+                onBackButtonInvoked = { /*Unused*/ },
+                onSettingsButtonInvoked = { onSettingsButtonPressed },
+                modifier = modifier.constrainAs(topBar) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+
+            PersonalGreeting(
+                modifier = modifier
+                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(greeting) {
+                        top.linkTo(topBar.bottom, margin = 50.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                connected = false,
+            )
+
+            AddDeviceButton(
+                onClick = { navController.navigate("select_network") },
+                modifier = modifier
+                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(deviceButton) {
+                        top.linkTo(greeting.bottom, margin = 35.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
+
+            //Need to verify whats going on with this padding, 15.dp seems better than 25.dp which would match everything else
+            TermsAndPolicy(
+                onTermsInvoked = { onTermsAndConditionsPressed },
+                onPrivacyPolicyInvoked = { onPrivacyPolicyPressed },
+                modifier = modifier
+                    .padding(15.dp, 0.dp, 15.dp, 0.dp)
+                    .constrainAs(terms) {
+                        bottom.linkTo(feedback.top, margin = 25.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+            )
+
+            FeedbackButton(onFeedbackClick = { },
+                modifier = modifier.constrainAs(feedback) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
+
+        }
+    }
+}
+
+
+@Composable
+fun NavigateHome(
+    navController: NavController,
+    device: String
+) {
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "BtConnectionScreen: ")
+        navController.navigate("home_first/{${device}}")
+    }
+}
+
+@Composable
+fun NavigateBluetoothDisabled(
+    navController: NavController,
+) {
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "NavigateBluetoothDisabled: ")
+        navController.navigate(BtConnectionScreens.BtDisabledScreen.route)
     }
 }
 
 @Composable
 fun IsBluetoothEnabled(
-    vm: BtConnectionViewModel){
+    vm: BtConnectionViewModel
+) {
+    /**
+     * No real UI here, we're calling the system UI to turn on bluetooth
+     */
     val uiState by vm.uiState.collectAsState()
-    if(!uiState.isBtEnabled){
+    if (!uiState.isBtEnabled) {
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(), onResult = {
-            Log.d("TAG", "isBluetoothEnabled: $it")
-            vm.updateBtEnabledState(it.resultCode == Activity.RESULT_OK)
-        })
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+            onResult = {
+                Log.d("TAG", "isBluetoothEnabled: $it")
+                vm.updateBtEnabledState(it.resultCode == Activity.RESULT_OK)
+            })
         SideEffect {
             launcher.launch(intent)
         }
-    }else{
-        DisplayDevices(vm = vm, deviceList = uiState.listOfAvailableDevices )
-    }
-
-
-}
-
-@Composable
-fun DisplayDevices(
-    vm: BtConnectionViewModel,
-    deviceList: List<String>){
-    LaunchedEffect(Unit){
-        vm.refreshUiDeviceList()
-    }
-    Column(verticalArrangement = Arrangement.SpaceBetween) {
-        Log.d("TAG", "DisplayDevices: ${deviceList}")
-        deviceList.forEach{ device ->
-            Spacer(modifier = Modifier.height(20.dp))
-            ExtendedFloatingActionButton(text = { Text(text = device)}, onClick = {vm.connectToDevice(device)})
-        }
-    }
-
-}
-
-
-//TODO: REQUEST_PERMISSION composable -> move this to somewhere reusable, preferrably somewhere in a lib module
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun RequestPermissions(permissionList: MultiplePermissionsState) {
-    Column() {
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { permissionList.launchMultiplePermissionRequest()}) {
-            Text(text = "Request Permissions")
-        }
     }
 }
+
 
 //TODO:move with the REQUEST_PERMISSION composable
 //@OptIn(ExperimentalPermissionsApi::class)

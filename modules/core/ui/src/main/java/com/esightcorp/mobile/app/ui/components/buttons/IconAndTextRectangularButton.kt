@@ -19,14 +19,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun IconAndTextRectangularButton(
-    onClick: @Composable () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier,
     icon: ImageVector,
     iconContextDescription: String? = null,
     text: String,
 ) {
     ElevatedButton(
-        onClick = { onClick },
+        onClick =  onClick,
         modifier = modifier
             .fillMaxWidth()
             .padding(25.dp, 20.dp),
@@ -37,6 +37,29 @@ fun IconAndTextRectangularButton(
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         Icon(icon, contentDescription = iconContextDescription)
+        ButtonText(text = text, modifier = modifier
+            .weight(1f)
+            .offset(x = 12.dp))
+    }
+}
+
+@Composable
+fun TextRectangularButton(
+    onClick: () -> Unit,
+    modifier: Modifier,
+    text: String,
+) {
+    ElevatedButton(
+        onClick =  onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(25.dp, 20.dp),
+        enabled = true,
+        colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
+        elevation = ButtonDefaults.elevatedButtonElevation(),
+        shape = RoundedCornerShape(10.dp),
+        contentPadding = PaddingValues(20.dp, 10.dp),
+    ) {
         ButtonText(text = text, modifier = modifier
             .weight(1f)
             .offset(x = 12.dp))

@@ -1,56 +1,51 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectionViewModel
+import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
+import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 
 @Composable
-fun BtDevicesScreen(
-    navController: NavController,
-    vm: BtConnectionViewModel = hiltViewModel()
+fun BtDevicesRoute(
+    navController: NavController, vm: BtDevicesViewModel = hiltViewModel()
 ) {
-//    BaseDevicesScreen(vm = vm, navController = navController)
-    BtDevicesScreen(navController = navController) {
-
-    }
+    vm.getDeviceList()
+    val uiState by vm.uiState.collectAsState()
+    BtDevicesScreen(
+        navController = navController, uiState = uiState, vm = vm
+    )
 }
 
 @Composable
 internal fun BtDevicesScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onBackButtonPressed: () -> Unit,
+    uiState: BtDevicesUiState,
+    vm: BtDevicesViewModel
 ) {
-    /**
+    /*
      * Dummy data
      */
-    val dummyDeviceList = listOf<String>(
+    val dummyDeviceList = listOf(
         "eSight-Go-3141592",
         "eSight-Go-2340923",
         "eSight-Go-3049534",
@@ -60,57 +55,90 @@ internal fun BtDevicesScreen(
         "eSight-Go-8764756",
         "eSight-Go-2546765"
     )
+    val TAG = "BtDevicesScreen"
 
-
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topBar, header, deviceContainer, help) = createRefs()
-            ESightTopAppBar(
-                showBackButton = true,
+            ESightTopAppBar(showBackButton = true,
                 showSettingsButton = false,
-                onBackButtonInvoked = { onBackButtonPressed },
-                onSettingsButtonInvoked = { /*Unused*/ Unit },
+                onBackButtonInvoked = { vm.navigateToNoDeviceConnectedScreen(navController = navController) },
+                onSettingsButtonInvoked = { /*Unused*/ },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }
-            )
-            Header1Text(
-                text = "Select your eSight",
+                })
+
+            /*
+            Have to bring the margins in as vals since the margin function in .constrainAs
+            does not accept a @Composable function, but does accept a value
+             */
+            val headerMargin = dimensionResource(id = R.dimen.bt_devices_header_margin)
+            val lazyColTopMargin = dimensionResource(id = R.dimen.lazy_col_top_margin)
+
+            Header1Text(text = stringResource(id = R.string.select_your_esight),
                 modifier = modifier
-                    .padding(25.dp, 0.dp)
+                    .padding(
+                        dimensionResource(id = R.dimen.header_horizontal_padding),
+                        dimensionResource(
+                            id = R.dimen.header_vertical_padding
+                        )
+                    )
                     .constrainAs(header) {
-                        top.linkTo(topBar.bottom, margin = 50.dp)
+                        top.linkTo(
+                            topBar.bottom, margin = headerMargin
+                        )
                         start.linkTo(parent.start)
                     })
-            LazyColumn(modifier = modifier
-                .constrainAs(deviceContainer) {
-                    top.linkTo(header.bottom, margin = 35.dp)
+            LazyColumn(modifier = modifier.constrainAs(deviceContainer) {
+                    top.linkTo(header.bottom, margin = lazyColTopMargin)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(help.top)
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 }) {
-                items(dummyDeviceList) { device ->
-                    val deviceModel = device.substringBeforeLast('-')
-                    val serialNumber = device.substringAfterLast('-')
-                    YellowDeviceCard(
-                        deviceModel = deviceModel,
-                        serialNumber = serialNumber,
-                        modifier = modifier.padding(12.dp)
-                    )
+                items(uiState.listOfAvailableDevices) { device ->
+                    if (device.contains(stringResource(id = R.string.hyphen))) {
+                        val deviceModel =
+                            device.substringBeforeLast(stringResource(id = R.string.hyphen))
+                        val serialNumber =
+                            device.substringAfterLast(stringResource(id = R.string.hyphen))
+                        YellowDeviceCard(deviceModel = deviceModel,
+                            serialNumber = serialNumber,
+                            modifier = modifier.padding(dimensionResource(id = R.dimen.yellow_device_card_padding)),
+                            onClick = {
+                                Log.i(TAG, "$device was selected. Trying to connect...")
+                                vm.navigateToBtConnectingScreen(navController, device)
+                            })
+                    } else {
+                        val serialNumber = stringResource(id = R.string.default_serial_number)
+                        YellowDeviceCard(deviceModel = device,
+                            serialNumber = serialNumber,
+                            modifier = modifier.padding(dimensionResource(id = R.dimen.yellow_device_card_padding)),
+                            onClick = { Log.e(TAG, "This device is not an eSight device") })
+                    }
+
                 }
 
             }
-            CantFindDeviceButton(modifier = modifier.padding(0.dp, 15.dp, 0.dp, 0.dp)
-                .constrainAs(help){
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }) {}
+            CantFindDeviceButton(modifier = modifier
+                .padding(
+                    dimensionResource(id = R.dimen.zero),
+                    dimensionResource(id = R.dimen.bottom_button_top_padding),
+                    dimensionResource(id = R.dimen.zero),
+                    dimensionResource(id = R.dimen.zero)
+                )
+                .constrainAs(help) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }) {}
 
         }
     }
 }
+
+
+

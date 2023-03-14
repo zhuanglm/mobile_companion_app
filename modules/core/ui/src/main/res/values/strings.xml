@@ -39,4 +39,17 @@
     <string name="wifi_unable_to_connect_button" translatable="true">Try again</string>
     <string name="wifi_unable_to_connect_footer" translatable="true">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
     <string name="wifi_unable_to_connect_footer_button" translatable="true">How to connect</string>
+    <string name="bt_unable_to_connect_header" translatable="true">Unable to find an eSight</string>
+    <string name="bt_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
+    <string name="bt_unable_to_connect_1" translatable="true">Make sure your eSight is within range.</string>
+    <string name="bt_unable_to_connect_2" translatable="true">Make sure your eSight has sufficient charge</string>
+    <string name="bt_unable_to_connect_footer" translatable="true">If connecting to Bluetooth continues to fail, please visit the link below for more information or contact Support</string>
+    <string name="bt_unable_to_connect_button" translatable="true">Try again</string>
+    <string name="bt_no_devices_found_header" translatable="true">No eSight devices found</string>
+    <string name="bt_no_devices_found_subtitle" translatable="true">Please try the following:</string>
+    <string name="bt_no_devices_found_1" translatable="true">Turn your eSight off and then back on again.</string>
+    <string name="bt_no_devices_found_2" translatable="true">Make sure your eSight is within range.</string>
+    <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
+    <string name="bt_no_devices_found_button" translatable="true">Try again</string>
+
 </resources>

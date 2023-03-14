@@ -95,7 +95,7 @@ fun WifiButton(
     Button(
         onClick = {
             updateCurrentSelectedNetwork(network)
-            navController.navigate("${WifiConnectionScreens.WifiCredentialsScreen.route}/{${network.SSID}}")
+            navController.navigate("${WifiConnectionScreens.EnterPasswordRoute.route}/{${network.SSID}}")
         },
         modifier = modifier
             .fillMaxWidth(0.8f)

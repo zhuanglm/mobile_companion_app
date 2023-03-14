@@ -30,5 +30,31 @@ data class WifiCredentialsUiState(
 
 data class WifiConnectingUiState(
     val connectionWasSuccess: Boolean = false,
+    val connectionError: Boolean = false,
     val ssid: String = ""
+)
+
+data class WifiConnectedUiState(
+    val ssid: String = ""
+)
+
+data class WifiConnectionErrorUiState(
+    val error: String = ""
+)
+
+data class AlreadyConnectedUiState(
+    val ssid: String = ""
+)
+
+data class UnableToConnectUiState(
+    val ssid: String = ""
+)
+
+data class NoNetworksFoundUiState(
+    val ssid: String = ""
+)
+
+data class WifiOffUiState(
+    val isWifiEnabled: Boolean = false,
+    val isBtEnabled: Boolean = false
 )

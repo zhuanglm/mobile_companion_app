@@ -1,13 +1,11 @@
 package com.esightcorp.mobile.app.wificonnection.navigation
 
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.wificonnection.*
-import com.esightcorp.mobile.app.wificonnection.WifiCredentialsRoute
+import com.esightcorp.mobile.app.wificonnection.EnterPasswordRoute
 
 fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
     navigation(startDestination = WifiConnectionScreens.WifiConnectionHomeScreen.route, route= WifiConnectionScreens.IncomingNavigationRoute.route){
@@ -15,21 +13,32 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
             WifiConnectionScreen(navController = navController)
         }
         composable(
-            WifiConnectionScreens.WifiCredentialsScreen.route/*,
-            arguments = arguments,
-            deepLinks = listOf( navDeepLink {
-                uriPattern = "android-app://androidx.navigation//${WifiConnectionScreens.WifiCredentialsScreen.route}/{$ssidArg}"
-            })*/
-        ){ /*navBackStackEntry ->
-            val ssid = navBackStackEntry.arguments?.getString(ssidArg)
-            Log.d("TAG", "addWifiConnectionNavigation: $ssid")
-            ssid?.let {*/ WifiCredentialsRoute(navController = navController)/*, ssid = it*/ /*}*/
+            WifiConnectionScreens.EnterPasswordRoute.route){
+            EnterPasswordRoute(navController = navController)
         }
         composable(WifiConnectionScreens.SearchingForNetworkRoute.route){
             SearchingForNetworksRoute(navController = navController)
         }
         composable(WifiConnectionScreens.SelectNetworkRoute.route){
             SelectNetworkRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.ConnectingRoute.route){
+            WifiConnectingRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.ConnectedRoute.route){
+            ConnectedRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.WifiOffRoute.route){
+            WifiOffRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.UnableToConnectRoute.route){
+            UnableToConnectRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.NoNetworksFoundRoute.route){
+            NoNetworksFoundRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.AlreadyConnectedRoute.route){
+            AlreadyConnectedRoute(navController = navController)
         }
     }
 }

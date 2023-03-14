@@ -7,7 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 import kotlinx.coroutines.delay
-
+import com.esightcorp.mobile.app.ui.R
 @Composable
 fun BtConnectedRoute(
     navController: NavController, deviceName: String?, deviceAddress: String?

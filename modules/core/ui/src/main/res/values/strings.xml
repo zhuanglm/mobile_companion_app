@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="select_your_esight" translatable="true">Select your eSight</string>
+    <string name="default_serial_number" translatable="false">1000101</string>
+    <string name="hyphen" translatable="false">-</string>
+    <string name="navigate_to_home" translatable="false">home_first/</string>
+    <string name="connected_to" translatable="true">Connected to </string>
+    <string name="something_went_wrong" translatable="true">Something went horribly wrong!</string>
+    <string name="connecting_to_esight" translatable="true">Connecting to eSight</string>
+
+    <string name="content_desc_bt_icon" translatable="true">Bluetooth Icon</string>
+    <string name="content_desc_wifi_icon" translatable="true">Wifi Icon</string>
+    <string name="bt_disabled_header" translatable="true">Turn on Bluetooth</string>
+    <string name="bt_disabled_body" translatable="true">Open Settings on your phone, and turn on Bluetooth to connect</string>
+
+    <string name="wifi_disabled_header" translatable="true">Turn on Wifi</string>
+    <string name="wifi_disabled_body" translatable="true">Open Settings on your phone, and turn on Wifi to connect</string>
+
+    <string name="bt_searching_text" translatable="true">Searching for eSight devices</string>
+    <string name="wifi_already_connected_header" translatable="true">Connected to Wi-Fi</string>
+    <string name="wifi_already_connected_body" translatable="true">Your eSight is already connected to a Wi-Fi network.</string>
+    <string name="wifi_already_connected_action" translatable="true">Press the button below if you would like to connect to another network</string>
+    <string name="wifi_already_connected_button" translatable="true">Connect to another network</string>
+    <string name="wifi_connected_text" translatable="true">Wifi is now connected</string>
+    <string name="wifi_connect_button" translatable="true">Connect</string>
+    <string name="wifi_no_networks_header" translatable="true">No Wi-Fi networks found</string>
+    <string name="wifi_no_networks_subtitle" translatable="true">Please try the following:</string>
+    <string name="wifi_no_networks_1" translatable="true">Turn your eSight off and then back on again</string>
+    <string name="wifi_no_networks_2" translatable="true">Turn your router off and then back on again</string>
+    <string name="wifi_no_networks_button" translatable="true">Try again</string>
+    <string name="wifi_select_network_header" translatable="true">Select a Wi-Fi network</string>
+    <string name="wifi_unable_to_connect_header"  translatable="true">Unable to Connect</string>
+    <string name="wifi_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
+    <string name="wifi_unable_to_connect_1" translatable="true">Make sure your Wi-Fi password is correct.</string>
+    <string name="wifi_unable_to_connect_2" translatable="true">Make sure your eSight is within range.</string>
+    <string name="wifi_unable_to_connect_3" translatable="true">Make sure your eSight has sufficient charge.</string>
+    <string name="wifi_unable_to_connect_button" translatable="true">Try again</string>
+    <string name="wifi_unable_to_connect_footer" translatable="true">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
+    <string name="wifi_unable_to_connect_footer_button" translatable="true">How to connect</string>
+</resources>

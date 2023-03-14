@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,6 +24,7 @@ import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.SelectNetworkViewModel
+import com.esightcorp.mobile.app.ui.R
 
 
 @Composable
@@ -77,7 +79,7 @@ internal fun SelectNetworkScreen(
                 }
             )
             Header1Text(
-                text = "Select Wi-Fi network",
+                text = stringResource(id = R.string.wifi_select_network_header),
                 modifier = modifier
                     .padding(25.dp, 0.dp)
                     .constrainAs(header) {

@@ -50,9 +50,11 @@ class NoDevicesConnectedViewModel @Inject constructor(
      */
     private val btRepositoryListener = object : IBtConnectionRepository {
         override fun scanStatus(isScanning: ScanningStatus) {
+
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
+
         }
 
         @SuppressLint("MissingPermission")

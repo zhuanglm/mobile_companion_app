@@ -55,6 +55,7 @@ class BtConnectingViewModel @Inject constructor(
     init {
         btConnectionRepository.registerListener(listener)
         btConnectionRepository.setupBtModelListener()
+        btConnectionRepository.checkBtEnabledStatus()
     }
 
     fun navigateToConnectedScreen(navController: NavController, deviceName: String, address: String){

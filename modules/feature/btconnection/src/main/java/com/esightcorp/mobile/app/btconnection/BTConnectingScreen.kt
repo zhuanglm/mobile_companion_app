@@ -19,9 +19,14 @@ fun BtConnectingRoute(
     navController: NavController, vm: BtConnectingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    BtConnectingScreen(
-        modifier = Modifier, navController = navController, uiState = uiState, vm = vm
-    )
+    if(uiState.isBtEnabled){
+        BtConnectingScreen(
+            modifier = Modifier, navController = navController, uiState = uiState, vm = vm
+        )
+    }else{
+        NavigateBluetoothDisabled(navController = navController)
+    }
+
 }
 
 @Composable

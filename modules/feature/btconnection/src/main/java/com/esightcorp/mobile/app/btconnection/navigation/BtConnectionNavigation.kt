@@ -30,6 +30,9 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         composable(BtConnectionScreens.UnableToConnectRoute.route){
             UnableToConnectRoute(navController = navController)
         }
+        composable(BtConnectionScreens.NoDevicesFoundRoute.route){
+            NoDevicesFoundRoute(navController = navController)
+        }
         composable(BtConnectionScreens.BtConnectedRoute.routeWithArgs,
             arguments = arguments,
             deepLinks = listOf(navDeepLink {

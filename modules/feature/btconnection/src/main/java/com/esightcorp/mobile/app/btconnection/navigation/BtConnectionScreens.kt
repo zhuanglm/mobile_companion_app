@@ -9,6 +9,9 @@ sealed class BtConnectionScreens(val route: String){
     object BtDevicesScreen: BtConnectionScreens("bt_devices")
     object BtDisabledScreen: BtConnectionScreens("bt_disabled")
     object BtSearchingRoute: BtConnectionScreens("bt_searching")
+    object BTConnectingRoute: BtConnectionScreens("bt_connecting")
+    object UnableToConnectRoute: BtConnectionScreens("unable_to_connect_bt")
+
     object BtConnectedRoute: BtConnectionScreens("bt_connected"){
         const val nameArg = "deviceName"
         const val addrArg = "deviceAddress"
@@ -18,6 +21,5 @@ sealed class BtConnectionScreens(val route: String){
             navArgument(addrArg){type = NavType.StringType}
         )
     }
-    object BTConnectingRoute: BtConnectionScreens("bt_connecting")
 
 }

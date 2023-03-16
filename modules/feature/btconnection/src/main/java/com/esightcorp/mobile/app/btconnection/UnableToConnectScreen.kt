@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -18,6 +20,7 @@ import com.esightcorp.mobile.app.ui.components.*
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 
 @Composable
 fun UnableToConnectRoute(
@@ -26,7 +29,7 @@ fun UnableToConnectRoute(
 ){
     val btUiState by vm.uiState.collectAsState()
     UnableToConnectScreen(
-        onBackButtonClicked = { /*TODO*/ },
+        onBackButtonClicked = {Unit},
         navController = navController ,
         uiState = btUiState,
         vm = vm
@@ -57,24 +60,25 @@ internal fun UnableToConnectScreen(
                 }
             )
 
-            Header1Text(text = stringResource(id = R.string.bt_unable_to_connect_header), modifier = modifier.constrainAs(header) {
-                top.linkTo(topBar.bottom)
+            Header1Text(text = stringResource(id = R.string.bt_unable_to_connect_header), modifier = modifier.padding(25.dp, 0.dp, 25.dp, 0.dp)
+                .constrainAs(header) {
+                top.linkTo(topBar.bottom, margin = 50.dp)
                 start.linkTo(parent.start)
-                end.linkTo(parent.end)
             })
 
             Header2Text(
                 text = stringResource(id = R.string.bt_unable_to_connect_subtitle),
-                modifier = modifier.constrainAs(subtitle) {
-                    top.linkTo(header.bottom)
+                modifier = modifier.padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(subtitle) {
+                    top.linkTo(header.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                 })
             NumberedHelpItem(
                 number = 1,
                 text = stringResource(id =R.string.bt_unable_to_connect_1),
-                modifier = modifier.constrainAs(help1) {
-                    top.linkTo(subtitle.bottom)
+                modifier = modifier.padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(help1) {
+                    top.linkTo(subtitle.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
@@ -82,29 +86,34 @@ internal fun UnableToConnectScreen(
             NumberedHelpItem(
                 number = 2,
                 text = stringResource(id = R.string.bt_unable_to_connect_2),
-                modifier = modifier.constrainAs(help2) {
-                    top.linkTo(help1.bottom)
+                modifier = modifier.padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .constrainAs(help2) {
+                    top.linkTo(help1.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
             )
 
-            TextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier.constrainAs(button) {
-                top.linkTo(help2.bottom)
+            TextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier
+                .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                .constrainAs(button) {
+                top.linkTo(help2.bottom, margin = 35.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }, text = stringResource(id = R.string.bt_unable_to_connect_button))
             
-            BodyText(text = stringResource(id = R.string.bt_unable_to_connect_footer), modifier = modifier.constrainAs(footerText) {
-                bottom.linkTo(footerButton.top)
+            BodyText(text = stringResource(id = R.string.bt_unable_to_connect_footer), modifier = modifier.padding(25.dp, 0.dp, 25.dp, 0.dp)
+                .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                .constrainAs(footerText) {
+                bottom.linkTo(footerButton.top, margin = 35.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             })
 
-            CantFindDeviceButton(
-                onHelpClick = { /*TODO: Deeplink needed here*/ },
+            HowToConnectButton(
+                onConnectClick = { /*TODO: Deeplink needed here*/ },
                 modifier = modifier.constrainAs(footerButton) {
-                    bottom.linkTo(parent.bottom)
+                    bottom.linkTo(parent.bottom, margin = 13.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 })

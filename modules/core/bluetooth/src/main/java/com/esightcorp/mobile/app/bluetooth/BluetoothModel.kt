@@ -72,11 +72,44 @@ class BluetoothModel constructor(
         }
     }
 
+    private val bluetoothStateReceiver: BroadcastReceiver = object: BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent) {
+            when (intent.action) {
+                BluetoothAdapter.ACTION_STATE_CHANGED -> {
+                    val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
+                    when (state) {
+                        BluetoothAdapter.STATE_OFF -> {
+                            // Bluetooth is disabled
+                            Log.d(TAG, "onReceive: Bluetooth is disabled")
+                            eSightBleManager.getModelListener()?.onBluetoothStateChanged()
+                        }
+                        BluetoothAdapter.STATE_TURNING_OFF -> {
+                            Log.d(TAG, "onReceive: Bluetooth is turning off ")
+                            // Bluetooth is turning off
+                        }
+                        BluetoothAdapter.STATE_ON -> {
+                            // Bluetooth is enabled
+                            Log.d(TAG, "onReceive: Bluetooth is Enabled")
+                            eSightBleManager.getModelListener()?.onBluetoothStateChanged()
+                        }
+                        BluetoothAdapter.STATE_TURNING_ON -> {
+                            Log.d(TAG, "onReceive: Bluetooth is turning on")
+                            // Bluetooth is turning on
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private val btStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+
     init {
         val gattServiceIntent = Intent(context, BleService::class.java)
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        context.registerReceiver(bluetoothStateReceiver, btStateFilter)
+
     }
 
     /**

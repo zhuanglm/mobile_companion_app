@@ -2,22 +2,33 @@ package com.esightcorp.mobile.app.btconnection
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 import kotlinx.coroutines.delay
 import com.esightcorp.mobile.app.ui.R
 @Composable
 fun BtConnectedRoute(
-    navController: NavController, deviceName: String?, deviceAddress: String?
+    navController: NavController,
+    vm: BtConnectedViewModel = hiltViewModel()
 ) {
-    BtConnectedScreen(
-        navController = navController,
-        modifier = Modifier,
-        deviceAddress = deviceAddress,
-        deviceName = deviceName
-    )
+    val uiState by vm.uiState.collectAsState()
+    if(!uiState.isBtEnabled){
+        NavigateBluetoothDisabled(navController = navController)
+    }else{
+        BtConnectedScreen(
+            navController = navController,
+            modifier = Modifier,
+            deviceAddress = uiState.deviceAddress,
+            deviceName = uiState.deviceName
+        )
+    }
+
 }
 
 @Composable

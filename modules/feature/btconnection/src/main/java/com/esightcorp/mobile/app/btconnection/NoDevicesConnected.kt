@@ -8,13 +8,18 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
@@ -33,15 +38,16 @@ fun NoDeviceConnectedRoute(
 ) {
     // Get Bluetooth UI state from view model
     val btUiState by vm.uiState.collectAsState()
-    //We want this to run with every recomposition,so we constantly have the most up to date.
-    vm.checkBtEnabledStatus()
 
     // Check if Bluetooth is enabled
+    Log.d(TAG, "NoDeviceConnectedRoute: ")
     if (!btUiState.isBtEnabled) {
         // If Bluetooth is not enabled, show the Bluetooth enabled screen
+        Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth not enabled")
         IsBluetoothEnabled(vm = vm, navController = navController)
     } else if (!btUiState.btConnectionStatus) {
         // If Bluetooth is enabled and there is no device connected, show the no device connected screen
+        Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
         NoDeviceConnectedScreen(onSettingsButtonPressed = { },
             onFeedbackButtonPressed = { },
             onConnectToDeviceButtonPressed = { },
@@ -68,7 +74,7 @@ internal fun NoDeviceConnectedScreen(
     modifier: Modifier = Modifier
 ) {
     // Set up UI using ConstraintLayout
-    Surface(modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topBar, greeting, deviceButton, terms, feedback) = createRefs()
 
@@ -76,7 +82,7 @@ internal fun NoDeviceConnectedScreen(
             ESightTopAppBar(showBackButton = false,
                 showSettingsButton = true,
                 onBackButtonInvoked = { /*Unused*/ },
-                onSettingsButtonInvoked = { onSettingsButtonPressed },
+                onSettingsButtonInvoked =  onSettingsButtonPressed ,
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)

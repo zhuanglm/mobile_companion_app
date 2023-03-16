@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -35,10 +33,18 @@ fun BtDisabledScreen(
 ) {
     val TAG = "BtDisabledScreen"
     Log.d(TAG, "BtDisabledScreen: ")
-
+    val uiState by vm.uiState.collectAsState()
     vm.setNavController(navController)
     // Call the BtDisabledScreen composable function
-    BtDisabledScreen(onBackPressed = vm::onBackPressed, modifier = Modifier, vm = vm)
+    if(!uiState.isBtEnabled){
+        BtDisabledScreen(onBackPressed = vm::onBackPressed, modifier = Modifier, vm = vm)
+    }else{
+        Log.d(TAG, "BtDisabledScreen: on Back pressed")
+        LaunchedEffect(Unit){
+            vm.onBackPressed()
+        }
+    }
+
 }
 
 @Composable

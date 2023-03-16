@@ -3,6 +3,7 @@ package com.esightcorp.mobile.app.ui.components
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ fun LoadingScreenWithSpinner(
     modifier: Modifier = Modifier,
     loadingText: String = "Loading..."
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (text, spinner) = createRefs()
 
@@ -38,7 +39,7 @@ fun LoadingScreenWithSpinner(
                         end.linkTo(parent.end)
                     },
                 color = Color.Yellow,
-                strokeWidth = 15.dp
+                strokeWidth = 10.dp
             )
         }
     }

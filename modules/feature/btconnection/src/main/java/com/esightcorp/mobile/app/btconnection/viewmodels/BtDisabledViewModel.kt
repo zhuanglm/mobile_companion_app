@@ -1,11 +1,14 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
+import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BtDisabledUiState
+import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +25,21 @@ class BtDisabledViewModel  @Inject constructor(
 
     private var _uiState = MutableStateFlow(BtDisabledUiState())
     val uiState: StateFlow<BtDisabledUiState> = _uiState.asStateFlow()
+    private val listener = object: IBtConnectionRepository{
+        override fun scanStatus(isScanning: ScanningStatus) {
+        }
+
+        override fun deviceListReady(deviceList: MutableList<String>) {
+        }
+
+        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+        }
+
+        override fun onBtStateUpdate(enabled: Boolean) {
+            updateBtEnabledState(enabled)
+        }
+    }
+
 
 
     fun setNavController(controller: NavController){

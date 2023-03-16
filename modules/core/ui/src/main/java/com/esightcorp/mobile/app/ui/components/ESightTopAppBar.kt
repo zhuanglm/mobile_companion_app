@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
@@ -54,7 +55,7 @@ fun ESightTopAppBar(
             )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.Black
+            containerColor = MaterialTheme.colors.surface
         )
 
     )

@@ -64,13 +64,14 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
-            Log.d("TAG", "onBtStateUpdate: ")
+            Log.d("TAG", "onBtStateUpdate: " + enabled)
             updateBtEnabledState(enabled)
         }
 
     }
 
-    fun checkBtEnabledStatus(){
+    private fun checkBtEnabledStatus(){
+        Log.d("TAG", "checkBtEnabledStatus: ")
         btConnectionRepository.checkBtEnabledStatus()
     }
 
@@ -80,8 +81,10 @@ class NoDevicesConnectedViewModel @Inject constructor(
      */
 
     init {
+        Log.d("TAG", ": INIT NoDevicesConnectedViewModel")
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
+        checkBtEnabledStatus()
     }
 
 

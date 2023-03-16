@@ -27,6 +27,9 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         composable(BtConnectionScreens.BTConnectingRoute.route){
             BtConnectingRoute(navController = navController)
         }
+        composable(BtConnectionScreens.UnableToConnectRoute.route){
+            UnableToConnectRoute(navController = navController)
+        }
         composable(BtConnectionScreens.BtConnectedRoute.routeWithArgs,
             arguments = arguments,
             deepLinks = listOf(navDeepLink {
@@ -35,8 +38,9 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         ){navBackStackEntry ->
             val deviceName = navBackStackEntry.arguments?.getString(nameArg)
             val deviceAddress = navBackStackEntry.arguments?.getString(addrArg)
-            BtConnectedRoute(navController = navController, deviceName = deviceName, deviceAddress = deviceAddress)
+            BtConnectedRoute(navController = navController)
         }
+
 
     }
 }

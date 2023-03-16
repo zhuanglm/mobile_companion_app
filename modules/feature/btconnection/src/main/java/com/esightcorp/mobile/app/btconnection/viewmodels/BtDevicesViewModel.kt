@@ -40,13 +40,19 @@ class BtDevicesViewModel @Inject constructor(
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
-            TODO("Not yet implemented")
+            updateBtEnabledState(enabled)
         }
     }
 
     init {
         btConnectionRepository.registerListener(btRepoListener)
         btConnectionRepository.setupBtModelListener()
+    }
+
+    private fun updateBtEnabledState(enabled: Boolean){
+        _uiState.update { state ->
+            state.copy(isBtEnabled = enabled)
+        }
     }
 
     fun updateDeviceList(devices: List<String>) {

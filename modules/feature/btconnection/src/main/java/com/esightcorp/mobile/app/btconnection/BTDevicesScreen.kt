@@ -31,9 +31,14 @@ fun BtDevicesRoute(
 ) {
     vm.getDeviceList()
     val uiState by vm.uiState.collectAsState()
-    BtDevicesScreen(
-        navController = navController, uiState = uiState, vm = vm
-    )
+    if(!uiState.isBtEnabled){
+        NavigateBluetoothDisabled(navController = navController)
+    }else{
+        BtDevicesScreen(
+            navController = navController, uiState = uiState, vm = vm
+        )
+    }
+
 }
 
 @Composable

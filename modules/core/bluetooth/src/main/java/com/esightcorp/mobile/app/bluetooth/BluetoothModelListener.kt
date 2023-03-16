@@ -11,6 +11,7 @@ interface BluetoothModelListener {
     fun onScanStarted():Unit
     fun onScanFinished():Unit
     fun onDeviceConnected(device: BluetoothDevice, connected: Boolean): Unit
+    fun onBluetoothStateChanged()
 
 
 }

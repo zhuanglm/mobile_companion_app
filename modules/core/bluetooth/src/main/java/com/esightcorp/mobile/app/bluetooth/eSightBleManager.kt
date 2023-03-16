@@ -110,6 +110,10 @@ object eSightBleManager {
         return bleConnectionStatus
     }
 
+    fun checkIfEnabled():Boolean{
+        return bluetoothAdapter.isEnabled
+    }
+
     fun discoverServices(){
         bleService?.discoverServices()
     }

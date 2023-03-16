@@ -22,12 +22,17 @@ fun BtSearchingRoute(
     vm: BtSearchingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    BtSearchingScreen(
-        modifier = Modifier,
-        navController = navController,
-        uiState = uiState,
-        vm = vm
-    )
+    if(!uiState.isBtEnabled){
+        NavigateBluetoothDisabled(navController = navController)
+    }else{
+        BtSearchingScreen(
+            modifier = Modifier,
+            navController = navController,
+            uiState = uiState,
+            vm = vm
+        )
+    }
+
 }
 
 @Composable

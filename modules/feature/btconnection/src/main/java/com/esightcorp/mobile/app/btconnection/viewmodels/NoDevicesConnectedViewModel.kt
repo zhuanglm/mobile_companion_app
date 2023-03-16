@@ -4,6 +4,7 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
@@ -62,7 +63,17 @@ class NoDevicesConnectedViewModel @Inject constructor(
             updateBtConnectedState(connected, device.name)
         }
 
+        override fun onBtStateUpdate(enabled: Boolean) {
+            Log.d("TAG", "onBtStateUpdate: ")
+            updateBtEnabledState(enabled)
+        }
+
     }
+
+    fun checkBtEnabledStatus(){
+        btConnectionRepository.checkBtEnabledStatus()
+    }
+
 
     /**
      * First constructor is init{}

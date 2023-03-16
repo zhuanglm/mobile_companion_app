@@ -38,6 +38,10 @@ class BtDevicesViewModel @Inject constructor(
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
             Log.d(TAG, "onDeviceConnected: ")
         }
+
+        override fun onBtStateUpdate(enabled: Boolean) {
+            TODO("Not yet implemented")
+        }
     }
 
     init {
@@ -56,7 +60,7 @@ class BtDevicesViewModel @Inject constructor(
     }
 
     fun navigateToNoDeviceConnectedScreen(navController: NavController) {
-        navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route)
+        navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route)
     }
 
     fun navigateToBtConnectingScreen(navController: NavController, device: String){

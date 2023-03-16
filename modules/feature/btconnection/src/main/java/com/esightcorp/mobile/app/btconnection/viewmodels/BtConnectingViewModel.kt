@@ -37,6 +37,10 @@ class BtConnectingViewModel @Inject constructor(
             Log.d(TAG, "onDeviceConnected: $device")
             updateDeviceInfo(device, connected)
         }
+
+        override fun onBtStateUpdate(enabled: Boolean) {
+            TODO("Not yet implemented")
+        }
     }
 
     @SuppressLint("MissingPermission")

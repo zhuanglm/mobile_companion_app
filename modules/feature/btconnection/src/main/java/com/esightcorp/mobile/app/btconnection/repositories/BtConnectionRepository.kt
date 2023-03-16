@@ -62,6 +62,12 @@ class BtConnectionRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
     }
 
+    fun checkBtEnabledStatus(){
+        if(this::iBtConnectionRepository.isInitialized){
+            iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+        }
+    }
+
     fun setupBtModelListener(){
         eSightBleManager.setModelListener(bluetoothModelListener)
         bluetoothModel.checkForConnection()
@@ -94,6 +100,8 @@ class BtConnectionRepository @Inject constructor(
     fun registerListener(listener: IBtConnectionRepository){
         Log.d(TAG, "registerListener: ")
         this.iBtConnectionRepository = listener
+        this.iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+
     }
 
     /**

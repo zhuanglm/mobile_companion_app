@@ -34,4 +34,8 @@ data class NoDevicesFoundUiState(
     val isBtEnabled: Boolean = false,
 )
 
+data class BtDisabledUiState(
+    val isBtEnabled: Boolean = false,
+)
+
 

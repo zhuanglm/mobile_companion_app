@@ -4,7 +4,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 sealed class BtConnectionScreens(val route: String){
-    object BtConnectionHomeScreen: BtConnectionScreens("btconnection_home")
+    object NoDevicesConnectedRoute: BtConnectionScreens("btconnection_home")
     object IncomingNavigationRoute: BtConnectionScreens("btconnection")
     object BtDevicesScreen: BtConnectionScreens("bt_devices")
     object BtDisabledScreen: BtConnectionScreens("bt_disabled")

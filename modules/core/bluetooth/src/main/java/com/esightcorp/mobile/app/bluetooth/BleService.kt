@@ -87,7 +87,7 @@ class BleService : Service() {
         ) {
             Log.d(TAG, "onCharacteristicRead: unknown status ")
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.e(TAG, "onCharacteristicRead: ${characteristic.value}")
+                Log.e(TAG, "onCharacteristicRead: ${String(characteristic.value, StandardCharsets.UTF_8)}")
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
             }
         }

@@ -35,35 +35,40 @@ class WifiConnectingViewModel @Inject constructor(
         }
 
         override fun onWifiNetworkNotFound() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onWifiNetworkNotFound: ", )
         }
 
         override fun onWifiConnectionTimeout() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onWifiConnectionTimeout: ", )
         }
 
         override fun onWifiInvalidPassword() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onWifiInvalidPassword: ", )
         }
 
         override fun onWifiWPALessThan8() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onWifiWPALessThan8: ", )
         }
 
         override fun onWifiConnectionTest() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onWifiConnectionTest: ", )
         }
 
         override fun onPlatformError() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onPlatformError: ", )
         }
 
         override fun onGoWifiDisabled() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onGoWifiDisabled: ", )
+        }
+
+        override fun onNetworkConnectionError() {
+            Log.e(TAG, "onNetworkConnectionError: ", )
+            onWifiConnectionError()
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
-            TODO("Not yet implemented")
+            updateWifiEnabledState(status)
         }
     }
 
@@ -78,6 +83,18 @@ class WifiConnectingViewModel @Inject constructor(
     private fun updateSsid(ssid: String){
         _uiState.update { state ->
             state.copy(ssid = ssid)
+        }
+    }
+
+    private fun onWifiConnectionError(){
+        _uiState.update { state ->
+            state.copy(connectionError = true)
+        }
+    }
+    
+    private fun updateWifiEnabledState(enabled: Boolean){
+        _uiState.update { state -> 
+            state.copy(isWifiEnabled = enabled)
         }
     }
 

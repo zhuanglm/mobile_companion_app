@@ -12,19 +12,25 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.*
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.wificonnection.state.UnableToConnectUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.UnableToConnectViewModel
-import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun UnableToConnectRoute(
     navController: NavController, vm: UnableToConnectViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    UnableToConnectScreen(navController = navController, vm = vm, uiState = uiState)
+    vm.setNavController(navController)
+    UnableToConnectScreen(
+        navController = navController,
+        vm = vm,
+        uiState = uiState,
+        onBackPressed = vm::onBackPressed,
+        onTryAgain = vm::onTryAgain)
 }
 
 @Composable
@@ -33,7 +39,8 @@ internal fun UnableToConnectScreen(
     vm: UnableToConnectViewModel,
     modifier: Modifier = Modifier,
     uiState: UnableToConnectUiState,
-    onBackPressed: () -> Unit = { navController.popBackStack() },
+    onBackPressed: () -> Unit,
+    onTryAgain: () -> Unit
 ) {
     val TAG = "UnableToConnectScreen"
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
@@ -49,11 +56,13 @@ internal fun UnableToConnectScreen(
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = stringResource(id = R.string.wifi_unable_to_connect_header), modifier = modifier.constrainAs(headerText) {
-                top.linkTo(topBar.bottom, margin = 16.dp)
-                start.linkTo(parent.start, margin = 16.dp)
-                end.linkTo(parent.end, margin = 16.dp)
-            })
+            Header1Text(
+                text = stringResource(id = R.string.wifi_unable_to_connect_header),
+                modifier = modifier.constrainAs(headerText) {
+                    top.linkTo(topBar.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                })
 
             Header2Text(text = stringResource(id = R.string.wifi_unable_to_connect_subtitle),
                 modifier = modifier.constrainAs(header2Text) {
@@ -93,10 +102,9 @@ internal fun UnableToConnectScreen(
 
             BodyText(text = "",
                 modifier = modifier.constrainAs(helpText) {
-
                 })
             HowToConnectButton(modifier = modifier.constrainAs(howToConnect) {
-                top.linkTo(helpText.bottom, margin = 16.dp)
+                bottom.linkTo(parent.bottom, margin = 16.dp)
                 start.linkTo(parent.start, margin = 16.dp)
                 end.linkTo(parent.end, margin = 16.dp)
             }) {

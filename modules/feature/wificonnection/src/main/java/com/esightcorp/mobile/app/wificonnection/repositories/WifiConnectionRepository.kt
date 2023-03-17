@@ -34,7 +34,8 @@ class WifiConnectionRepository @Inject constructor(
         }
 
         override fun onNetworkConnectionError() {
-            getSafeConnectionListener()?.onWifiConnected(false)
+            Log.e(TAG, "onNetworkConnectionError: ", )
+            getSafeConnectionListener()?.onNetworkConnectionError()
         }
 
         override fun onScanFailed() {

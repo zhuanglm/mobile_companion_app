@@ -51,7 +51,7 @@ class SelectNetworkViewModel @Inject constructor(
 
     init {
         wifiRepository.registerListener(listener = scanListener)
-//        wifiRepository.getCachedWifiList()
+        wifiRepository.getCachedWifiList()
     }
 
     fun updateNetworkList(list: MutableList<ScanResult>){

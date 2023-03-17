@@ -28,5 +28,6 @@ interface WifiConnectionListener {
     fun onWifiConnectionTest(): Unit
     fun onPlatformError(): Unit
     fun onGoWifiDisabled():Unit
+    fun onNetworkConnectionError():Unit
 
 }

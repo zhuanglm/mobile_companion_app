@@ -1,9 +1,8 @@
 package com.esightcorp.mobile.app.home.state
 
-import android.bluetooth.BluetoothDevice
 
 data class HomeUiState(
     val isBluetoothConnected: Boolean = true,
-    val isBluetoothEnabled: Boolean = false,
+    val isBluetoothEnabled: Boolean = true,
     val connectedDevice: String = "Devicename"
 )

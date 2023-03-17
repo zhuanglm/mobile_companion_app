@@ -1,19 +1,20 @@
 package com.esightcorp.mobile.app.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
 import com.esightcorp.mobile.app.ui.components.DeviceCard
@@ -26,18 +27,15 @@ private const val TAG = "Home Screen"
 
 @Composable
 fun HomeFirstScreen(
-    navController: NavController,
-    device: String,
-    vm: HomeViewModel = hiltViewModel()
+    navController: NavController, vm: HomeViewModel = hiltViewModel()
 ) {
-    Log.d("HomeFirstScreen", "HomeFirstScreen: $device")
     val homeUiState by vm.uiState.collectAsState()
 
     BaseHomeScreen(
         vm = vm,
         homeUiState = homeUiState,
         navController = navController,
-        device = device,
+        device = homeUiState.connectedDevice,
         modifier = Modifier
     )
 }
@@ -50,20 +48,21 @@ internal fun BaseHomeScreen(
     device: String = "0123456",
     modifier: Modifier = Modifier
 ) {
-    vm.updateConnectedDevice(device)
-    if (!homeUiState.isBluetoothConnected) {
-/*
-        navigateToBtHomeScreen(navController = navController)
-*/
+    if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
+        LaunchedEffect(Unit) {
+            vm.navigateToBluetoothStart(navController)
+        }
+    } else if (!homeUiState.isBluetoothEnabled) {
+        LaunchedEffect(Unit) {
+            vm.navigateToBluetoothDisabled(navController)
+        }
     } else {
-        Surface(color = MaterialTheme.colors.surface ){
+        Surface(color = MaterialTheme.colors.surface) {
             ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 val (topBar, personalGreeting, deviceCard, appContainer, feedback) = createRefs()
-                ESightTopAppBar(
-                    showBackButton = false,
+                ESightTopAppBar(showBackButton = false,
                     showSettingsButton = true,
                     onBackButtonInvoked = { /*Unused*/ Unit },
                     onSettingsButtonInvoked = { Unit },
@@ -71,14 +70,12 @@ internal fun BaseHomeScreen(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
-                )
+                    })
                 PersonalGreeting(
                     Modifier.constrainAs(personalGreeting) {
                         top.linkTo(topBar.bottom, margin = 32.dp)
                         start.linkTo(parent.start, margin = 32.dp)
-                    },
-                    connected = true
+                    }, connected = true
                 )
                 DeviceCard(modifier = modifier
                     .padding(25.dp, 0.dp)
@@ -87,14 +84,10 @@ internal fun BaseHomeScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                    onClick = {Unit},
-                    /*
-                    currently we need to strip off the first two and last two characters due to a bug where
-                    the curly braces are passed through in jetpack navigation.
-                    TODO: Fix the curly brace nav argument bug
-                     */
-                    deviceModel = device.substring(1, device.length -1).substringBeforeLast('-'),
-                    serialNumber = device.substring(1, device.length -1).substringAfterLast('-'))
+                    onClick = { Unit },
+                    deviceModel = device.substringBeforeLast('-'),
+                    serialNumber = device.substringAfterLast('-')
+                )
                 AppContainer(modifier = modifier.constrainAs(appContainer) {
                     top.linkTo(deviceCard.bottom)
                     start.linkTo(parent.start)
@@ -103,7 +96,7 @@ internal fun BaseHomeScreen(
                     height = Dimension.fillToConstraints
                     width = Dimension.fillToConstraints
                 }, navController, vm = vm)
-                FeedbackButton(modifier = modifier.constrainAs(feedback){
+                FeedbackButton(modifier = modifier.constrainAs(feedback) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
@@ -115,30 +108,25 @@ internal fun BaseHomeScreen(
     }
 }
 
-/*@Composable
-fun navigateToBtHomeScreen(navController: NavController) {
-    LaunchedEffect(Unit) {
-        navController.navigate(BtConnectionScreens.BtConnectionHomeScreen.route)
-    }
-}*/
-
 @Composable
 fun AppContainer(
-    modifier: Modifier,
-    navController: NavController,
-    vm: HomeViewModel
+    modifier: Modifier, navController: NavController, vm: HomeViewModel
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly, modifier = modifier
-            .height(IntrinsicSize.Min)
-            .fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = modifier
+                .height(IntrinsicSize.Min)
+                .fillMaxWidth()
+        ) {
             IconAndTextSquareButton(
                 onClick = {
-                  vm.navigateToWifiCredsOverBt(navController)
+                    vm.navigateToWifiCredsOverBt(navController)
                 },
                 modifier = Modifier
                     .wrapContentHeight()
@@ -163,9 +151,13 @@ fun AppContainer(
                 text = "Wifi via QR"
             )
         }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start, modifier = modifier
-            .height(IntrinsicSize.Min)
-            .fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = modifier
+                .height(IntrinsicSize.Min)
+                .fillMaxWidth()
+        ) {
             IconAndTextSquareButton(
                 onClick = { Unit },
                 modifier = Modifier

@@ -29,7 +29,7 @@ class NoNetworksFoundViewModel @Inject constructor(
 
     fun navigateHome(){
         if(this::navController.isInitialized){
-            navController.navigate("home_first/eGo-Developer")
+            navController.navigate("home_first")
         }
     }
 

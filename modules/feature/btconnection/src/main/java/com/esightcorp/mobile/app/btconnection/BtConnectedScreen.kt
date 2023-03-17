@@ -35,7 +35,7 @@ fun BtConnectedRoute(
 internal fun BtConnectedScreen(
     navController: NavController, modifier: Modifier, deviceAddress: String?, deviceName: String?
 ) {
-    val homeRoute = stringResource(id = R.string.navigate_to_home) + "{$deviceName}"
+    val homeRoute = stringResource(id = R.string.navigate_to_home)
     val screenTimeout = 5000L //5s in milliseconds
     if (deviceName != null && deviceAddress != null) {
         val loadingText = stringResource(id = R.string.connected_to) + " ${deviceName}\n" + "Address: $deviceAddress"

@@ -35,7 +35,7 @@ class UnableToConnectViewModel @Inject constructor(
 
     fun onBackPressed(){
         if(this::navController.isInitialized){
-            navController.navigate("home_first/eGo-Developer")
+            navController.navigate("home_first")
         }
     }
 }

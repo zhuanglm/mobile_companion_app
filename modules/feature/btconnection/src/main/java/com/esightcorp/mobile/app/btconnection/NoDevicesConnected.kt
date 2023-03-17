@@ -139,7 +139,7 @@ fun NavigateHome(
 ) {
 // Use LaunchedEffect to navigate to home screen after a delay
     LaunchedEffect(Unit) {
-        navController.navigate("home_first/{${device}}")
+        navController.navigate("home_first")
     }
 }
 

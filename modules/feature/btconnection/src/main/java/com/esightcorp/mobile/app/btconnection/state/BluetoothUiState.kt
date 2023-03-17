@@ -28,7 +28,7 @@ data class BtConnectingUiState(
 )
 
 data class BtConnectedUiState(
-    val isBtEnabled: Boolean = false,
+    val isBtEnabled: Boolean = true,
     val deviceName: String? = null,
     val deviceAddress: String? = null
 )

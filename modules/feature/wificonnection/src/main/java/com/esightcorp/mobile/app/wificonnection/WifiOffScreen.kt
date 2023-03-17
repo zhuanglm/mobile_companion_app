@@ -1,12 +1,15 @@
 package com.esightcorp.mobile.app.wificonnection
 
+import android.content.Intent
+import android.provider.Settings
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -27,14 +30,14 @@ import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiOffViewModel
 fun WifiOffRoute(
     navController: NavController,
     vm: WifiOffViewModel = hiltViewModel()
-){
+) {
     vm.setNavController(navController)
     val uiState by vm.uiState.collectAsState()
     WifiOffScreen(
         navController = navController,
         onBackPressed = vm::onBackClicked,
         onWifiTurnedOn = vm::navigateHome,
-        uiState = uiState
+        uiState = uiState,
     )
 
 }
@@ -43,8 +46,8 @@ fun WifiOffRoute(
 internal fun WifiOffScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = { navController.popBackStack() },
-    onWifiTurnedOn: () -> Unit = { /*Unused*/ },
+    onBackPressed: () -> Unit,
+    onWifiTurnedOn: () -> Unit,
     uiState: WifiOffUiState
 ) {
     val TAG = "WifiOffScreen"
@@ -57,7 +60,7 @@ internal fun WifiOffScreen(
             ESightTopAppBar(
                 showBackButton = true,
                 showSettingsButton = false,
-                onBackButtonInvoked = onBackPressed ,
+                onBackButtonInvoked = onBackPressed,
                 onSettingsButtonInvoked = {/*Unused*/ },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
@@ -101,10 +104,39 @@ internal fun WifiOffScreen(
                 textAlign = TextAlign.Center
 
             )
+
+           /* This code block will actually launch settings for us
+               TODO: check if we want this with product
+
+           val launcher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult(),
+                onResult = {
+                    Log.d("TAG", "isWifiEnabled: $it")
+                }
+            )
+
+            DisposableEffect(Unit) {
+                val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                launcher.launch(intent)
+                onDispose {
+                    // clean up any resources if needed
+                }
+            }*/
+
         }
     }
-    if(uiState.isWifiEnabled){
-        onWifiTurnedOn()
+    if (uiState.isWifiEnabled) {
+        LaunchedEffect(Unit){
+            onWifiTurnedOn()
+        }
     }
 
+}
+
+@Composable
+fun NavigateToWifiOffScreen(navController: NavController) {
+    LaunchedEffect(Unit) {
+        navController.navigate(WifiConnectionScreens.WifiOffRoute.route)
+
+    }
 }

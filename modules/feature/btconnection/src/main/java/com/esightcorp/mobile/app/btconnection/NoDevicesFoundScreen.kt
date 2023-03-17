@@ -74,7 +74,7 @@ internal fun NoDevicesFoundScreen(
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(header) {
-                        top.linkTo(topBar.bottom, margin = 50.dp)
+                        top.linkTo(topBar.bottom, margin = 25.dp)
                         start.linkTo(parent.start)
                     })
 

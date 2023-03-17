@@ -153,6 +153,10 @@ class BtConnectionRepository @Inject constructor(
         }
     }
 
+    fun resetBtDeviceList(){
+        eSightBleManager.resetDeviceList()
+    }
+
 
 
 

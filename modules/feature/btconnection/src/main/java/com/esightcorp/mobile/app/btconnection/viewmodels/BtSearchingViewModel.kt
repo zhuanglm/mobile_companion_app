@@ -47,6 +47,7 @@ class BtSearchingViewModel @Inject constructor(
     init {
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
+        btConnectionRepository.resetBtDeviceList()
     }
 
 

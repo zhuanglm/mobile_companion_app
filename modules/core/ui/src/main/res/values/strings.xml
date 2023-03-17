@@ -51,5 +51,6 @@
     <string name="bt_no_devices_found_2" translatable="true">Make sure your eSight is within range.</string>
     <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
     <string name="bt_no_devices_found_button" translatable="true">Try again</string>
+    <string name="wifi_searching_for_networks_header" translatable="true">Searching for Wi-Fi networks</string>
 
 </resources>

@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToWifiCredsOverBt(navController: NavController){
-        navController.navigate("wificonnection_home")
+        navController.navigate("wificonnection")
     }
 
 }

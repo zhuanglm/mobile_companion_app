@@ -29,9 +29,11 @@ class WifiSearchingViewModel @Inject constructor(
     val repoListener = object : WifiNetworkScanListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
             Log.i(TAG, "onBluetoothStatusUpdate: ")
+            updateBtEnabledState(status)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
+            Log.d(TAG, "onNetworkListUpdated: " )
             updateScanningStatus(ScanningStatus.Success)
         }
 
@@ -41,7 +43,8 @@ class WifiSearchingViewModel @Inject constructor(
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
-            TODO("Not yet implemented")
+            Log.d(TAG, "onWifiStatusUpdate: " + status)
+            updateWifiEnabledState(status)
         }
     }
 
@@ -56,8 +59,20 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
+    private fun updateWifiEnabledState(enabled: Boolean){
+        _uiState.update { state ->
+            state.copy(isWifiEnabled = enabled)
+        }
+    }
+
+    private fun updateBtEnabledState(enabled: Boolean){
+        _uiState.update { state ->
+            state.copy(isBtEnabled = enabled)
+        }
+    }
 
     fun navigateToWifiNetworksScreen(navController: NavController){
+        Log.d(TAG, "navigateToWifiNetworksScreen: ")
         navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route)
     }
 

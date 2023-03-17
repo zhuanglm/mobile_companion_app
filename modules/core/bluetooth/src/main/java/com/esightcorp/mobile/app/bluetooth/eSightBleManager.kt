@@ -51,12 +51,12 @@ object eSightBleManager {
     /**
      * returns true when device is added to the device list
      * returns false when device is already in the device list OR when device does not contain part of our bt name
-     *
+     * TODO: Confirm the bluetooth name with Product
      * BT name is set in Mobile API Gateway if a reference to what the current one is, is needed.
      */
     @SuppressLint("MissingPermission")
     fun addToBleDeviceList(device: BluetoothDevice):Boolean{
-        return if(this.bleDeviceList.contains(device) /*|| !device.name.contains("eGo")*/){
+        return if(this.bleDeviceList.contains(device) || !device.name.contains("eGo")){
             false;
         } else{
             Log.d(TAG, "addToBleDeviceList: ${device.name}")
@@ -67,9 +67,6 @@ object eSightBleManager {
 
     @SuppressLint("MissingPermission")
     fun getBleDeviceList(): MutableList<BluetoothDevice>{
-        bleDeviceList.forEach {
-            Log.d(TAG, "getBleDeviceList: ${it.name}")
-        }
         return this.bleDeviceList
     }
 
@@ -87,6 +84,10 @@ object eSightBleManager {
         Log.d(TAG, "resetConnectedDevice: ")
         this.connectedDevice = null
         this.bleConnectionStatus = false
+    }
+
+    fun resetDeviceList(){
+        this.bleDeviceList = mutableListOf()
     }
 
     fun getConnectedDevice():BluetoothDevice?{

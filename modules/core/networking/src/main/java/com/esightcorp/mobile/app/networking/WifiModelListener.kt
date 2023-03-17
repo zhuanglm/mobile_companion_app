@@ -24,5 +24,9 @@ interface WifiModelListener {
     fun onErrorWifiConnectionTimeout():Unit
     fun onErrorWifiInvalidPassword():Unit
     fun onErrorWifiWPALessThan8():Unit
+    fun onWifiEnabled():Unit
+    fun onGoWifiDisabled():Unit
+    fun onPlatformError():Unit
+    fun onNetworkNotFound():Unit
 
 }

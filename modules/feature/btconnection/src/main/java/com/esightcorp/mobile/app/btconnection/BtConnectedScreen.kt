@@ -38,11 +38,7 @@ internal fun BtConnectedScreen(
     val homeRoute = stringResource(id = R.string.navigate_to_home) + "{$deviceName}"
     val screenTimeout = 5000L //5s in milliseconds
     if (deviceName != null && deviceAddress != null) {
-        val loadingText = stringResource(id = R.string.connected_to) + " ${
-            deviceName.substring(
-                1, deviceName.length - 1
-            )
-        }\n" + "Address: ${deviceAddress.substring(1, deviceAddress.length - 1)}"
+        val loadingText = stringResource(id = R.string.connected_to) + " ${deviceName}\n" + "Address: $deviceAddress"
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
     }else{
         val loadingText = stringResource(id = R.string.something_went_wrong)

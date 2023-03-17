@@ -16,8 +16,8 @@ class WifiModel(
     val context: Context
 ) {
 
-    val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    val wifiScanReceiver = object : BroadcastReceiver() {
+    private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    private val wifiScanReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
             if (success) {
@@ -27,20 +27,33 @@ class WifiModel(
             }
         }
     }
+    private val wifiStateChangeReceiver = object: BroadcastReceiver(){
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == WifiManager.WIFI_STATE_CHANGED_ACTION) {
+                val wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN)
+                when (wifiState) {
+                    WifiManager.WIFI_STATE_ENABLED -> {
+                        // Do something when WiFi is enabled
+                        listener?.onWifiEnabled()
+                    }
+                    WifiManager.WIFI_STATE_DISABLED -> {
+                        // Do something when WiFi is disabled
+                        listener?.onWifiDisabled()
+                    }
+                }
+            }
+        }
+    }
+    private val wifiStateIntentFilter  = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             when (intent.action) {
                 BleService.ACTION_GATT_CONNECTED -> {
-//                    bleManager.setConnectedDevice(bleManager.getConnectedDevice()!!, true)
-                    Log.e(TAG, "onReceive: CONNECTED")
-//                    bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!, true)
-//                    bleManager.discoverServices()
-
+                Log.e(TAG, "onReceive: CONNECTED")
                 }
                 BleService.ACTION_GATT_DISCONNECTED -> {
                     Log.e(TAG, "onReceive: DISCONNECTED")
-//                    bleManager.getConnectedDevice()?.let { bleManager.getModelListener()?.onDeviceConnected(it, false) }
-//                    bleManager.resetConnectedDevice()
+                    listener?.onBluetoothDisconnected()
                 }
                 BleService.ACTION_WIFI_CONNECTED -> {
                     Log.e(TAG, "onReceive: WIFI CONNECTED ")
@@ -55,13 +68,15 @@ class WifiModel(
                     when(intent.data.toString()){
                         ERROR_PLATFORM -> {
                             Log.e(TAG, "onReceive: ERROR_PLATFORM")
+                            listener?.onPlatformError()
                         }
                         ERROR_WIFI_NETWORK_NOT_FOUND -> {
                             Log.e(TAG, "onReceive: ERROR_WIFI_NETWORK_NOT_FOUND")
+                            listener?.onNetworkNotFound()
                         }
                         ERROR_WIFI_DISABLED -> {
                             Log.e(TAG, "onReceive: ERROR_WIFI_DISABLED")
-                            listener?.onWifiDisabled()
+                            listener?.onGoWifiDisabled()
                         }
                         ERROR_BLUETOOTH_DISABLED -> {
                             Log.e(TAG, "onReceive: ERROR_BLUETOOTH_DISABLED")
@@ -113,6 +128,7 @@ class WifiModel(
     init {
         context.registerReceiver(wifiScanReceiver, makeWifiIntentFilter)
         context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        context.registerReceiver(wifiStateChangeReceiver, wifiStateIntentFilter)
     }
 
     fun startWifiScan() {
@@ -142,12 +158,16 @@ class WifiModel(
     }
 
     private fun scanFailure() {
-        Log.e(TAG, "scanFailure: ")
+        Log.e(TAG, "scanFailure: Model call")
         listener?.onScanStatusUpdated(ScanningStatus.Failed)
     }
 
     fun stopWifiScan() {
         context.unregisterReceiver(wifiScanReceiver)
+    }
+
+    fun isWifiEnabled():Boolean{
+       return wifiManager.isWifiEnabled
     }
 
 

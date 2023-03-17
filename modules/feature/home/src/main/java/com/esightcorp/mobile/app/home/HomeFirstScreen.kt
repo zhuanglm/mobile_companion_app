@@ -56,7 +56,7 @@ internal fun BaseHomeScreen(
         navigateToBtHomeScreen(navController = navController)
 */
     } else {
-        Surface(color = Color.Black ){
+        Surface(color = MaterialTheme.colors.surface ){
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxSize()
@@ -93,8 +93,8 @@ internal fun BaseHomeScreen(
                     the curly braces are passed through in jetpack navigation.
                     TODO: Fix the curly brace nav argument bug
                      */
-                    deviceModel = device.substring(2, device.length -2).substringBeforeLast('-'),
-                    serialNumber = device.substring(2, device.length -2).substringAfterLast('-'))
+                    deviceModel = device.substring(1, device.length -1).substringBeforeLast('-'),
+                    serialNumber = device.substring(1, device.length -1).substringAfterLast('-'))
                 AppContainer(modifier = modifier.constrainAs(appContainer) {
                     top.linkTo(deviceCard.bottom)
                     start.linkTo(parent.start)

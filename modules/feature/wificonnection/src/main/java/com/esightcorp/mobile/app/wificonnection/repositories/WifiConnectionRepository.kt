@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.wificonnection.repositories
 
 import android.content.Context
 import android.net.wifi.ScanResult
+import android.net.wifi.WifiManager
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.WifiCache
@@ -77,6 +78,23 @@ class WifiConnectionRepository @Inject constructor(
             getSafeConnectionListener()?.onWifiWPALessThan8()
         }
 
+        override fun onWifiEnabled() {
+            getSafeConnectionListener()?.onWifiStatusUpdate(true)
+            getSafeNetworkScanListener()?.onWifiStatusUpdate(true)
+        }
+
+        override fun onGoWifiDisabled() {
+            getSafeConnectionListener()?.onGoWifiDisabled()
+        }
+
+        override fun onPlatformError() {
+            getSafeConnectionListener()?.onPlatformError()
+        }
+
+        override fun onNetworkNotFound() {
+            getSafeConnectionListener()?.onWifiNetworkNotFound()
+        }
+
         override fun onScanStatusUpdated(status: ScanningStatus) {
             getSafeNetworkScanListener()?.onScanStatusUpdated(status)
         }
@@ -137,19 +155,18 @@ class WifiConnectionRepository @Inject constructor(
     fun registerListener(listener: WifiNetworkScanListener) {
         Log.d(TAG, "registerListener: $listener")
         this.networkScanListener = listener
-        if (!eSightBleManager.checkIfConnected()) {
-            Log.e(TAG, "Bluetooth is not currently connected.")
-            this.networkScanListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
-        }
+        this.networkScanListener.onWifiStatusUpdate(isWifiEnabled())
+        this.networkScanListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+    }
+    private fun isWifiEnabled(): Boolean{
+        return wifiModel.isWifiEnabled()
     }
 
     fun registerListener(listener: WifiConnectionListener){
         Log.d(TAG, "registerListener: ")
         this.connectionListener = listener
-        if(!eSightBleManager.checkIfConnected()){
-            Log.e(TAG, "Bluetooth is not currently connected.")
-            this.connectionListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
-        }
+        this.connectionListener.onWifiStatusUpdate(isWifiEnabled())
+        this.connectionListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
     }
 
 }

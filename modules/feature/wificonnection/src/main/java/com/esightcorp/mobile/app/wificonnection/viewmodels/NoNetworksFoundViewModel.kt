@@ -2,6 +2,8 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.NoNetworksFoundUiState
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
@@ -19,5 +21,22 @@ class NoNetworksFoundViewModel @Inject constructor(
 
     private var _uiState = MutableStateFlow(NoNetworksFoundUiState())
     val uiState: StateFlow<NoNetworksFoundUiState> = _uiState.asStateFlow()
+    private lateinit var navController: NavController
+
+    fun setNavController(navController: NavController){
+        this.navController = navController
+    }
+
+    fun navigateHome(){
+        if(this::navController.isInitialized){
+            navController.navigate("home_first/eGo-Developer")
+        }
+    }
+
+    fun tryAgain(){
+        if(this::navController.isInitialized){
+            navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route)
+        }
+    }
 
 }

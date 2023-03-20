@@ -5,7 +5,7 @@
     <string name="select_your_esight" translatable="true">Select your eSight</string>
     <string name="default_serial_number" translatable="false">1000101</string>
     <string name="hyphen" translatable="false">-</string>
-    <string name="navigate_to_home" translatable="false">home_first/</string>
+    <string name="navigate_to_home" translatable="false">home_first</string>
     <string name="connected_to" translatable="true">Connected to </string>
     <string name="something_went_wrong" translatable="true">Something went horribly wrong!</string>
     <string name="connecting_to_esight" translatable="true">Connecting to eSight</string>
@@ -39,7 +39,7 @@
     <string name="wifi_unable_to_connect_button" translatable="true">Try again</string>
     <string name="wifi_unable_to_connect_footer" translatable="true">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
     <string name="wifi_unable_to_connect_footer_button" translatable="true">How to connect</string>
-    <string name="bt_unable_to_connect_header" translatable="true">Unable to find an eSight</string>
+    <string name="bt_unable_to_connect_header" translatable="true">Unable to connect</string>
     <string name="bt_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
     <string name="bt_unable_to_connect_1" translatable="true">Make sure your eSight is within range.</string>
     <string name="bt_unable_to_connect_2" translatable="true">Make sure your eSight has sufficient charge</string>
@@ -51,5 +51,6 @@
     <string name="bt_no_devices_found_2" translatable="true">Make sure your eSight is within range.</string>
     <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
     <string name="bt_no_devices_found_button" translatable="true">Try again</string>
+    <string name="wifi_searching_for_networks_header" translatable="true">Searching for Wi-Fi networks</string>
 
 </resources>

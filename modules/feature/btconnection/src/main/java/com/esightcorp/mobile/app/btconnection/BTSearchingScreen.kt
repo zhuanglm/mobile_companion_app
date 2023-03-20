@@ -1,13 +1,14 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BtSearchingUiState
@@ -22,12 +23,22 @@ fun BtSearchingRoute(
     vm: BtSearchingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    BtSearchingScreen(
-        modifier = Modifier,
-        navController = navController,
-        uiState = uiState,
-        vm = vm
-    )
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var recomposeTrigger by remember { mutableStateOf(Object()) }
+
+    // The rest of your composable function goes here...
+    if(!uiState.isBtEnabled){
+        NavigateBluetoothDisabled(navController = navController)
+    }else{
+        BtSearchingScreen(
+            modifier = Modifier,
+            navController = navController,
+            uiState = uiState,
+            vm = vm
+        )
+    }
+
 }
 
 @Composable

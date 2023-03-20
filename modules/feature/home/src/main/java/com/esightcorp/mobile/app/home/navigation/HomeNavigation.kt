@@ -15,16 +15,9 @@ fun NavGraphBuilder.addHomeNavigation(navController: NavController) {
             HomePermissionScreen(navController = navController)
         }
         composable(
-            route = HomeScreens.HomeFirstScreen.routeWithArgs,
-            arguments = arguments,
-            deepLinks = listOf( navDeepLink {
-                uriPattern = "android-app://androidx.navigation//${HomeScreens.HomeFirstScreen.route}/{${deviceArg}}"
-            })
-        ){ navBackStackEntry ->
-            val device = navBackStackEntry.arguments?.getString(deviceArg)
-            Log.d("TAG", "addHomeNavigation: $device")
-            device?.let { HomeFirstScreen(navController = navController, it) }
-
+            route = HomeScreens.HomeFirstScreen.route,
+        ){
+            HomeFirstScreen(navController = navController)
         }
 
     }

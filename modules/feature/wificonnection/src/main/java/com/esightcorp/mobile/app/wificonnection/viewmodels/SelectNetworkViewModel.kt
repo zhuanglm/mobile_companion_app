@@ -33,7 +33,7 @@ class SelectNetworkViewModel @Inject constructor(
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
-            TODO("Not yet implemented")
+            updateWifiEnabledState(status)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
@@ -60,11 +60,20 @@ class SelectNetworkViewModel @Inject constructor(
         }
     }
 
+    private fun updateWifiEnabledState(enabled: Boolean){
+        _uiState.update { state -> state.copy(isWifiEnabled = enabled) }
+
+    }
+
     fun selectNetwork(network:ScanResult){
         wifiRepository.setSelectedNetwork(network)
     }
 
     fun navigateToPasswordScreen(navController: NavController){
         navController.navigate(WifiConnectionScreens.EnterPasswordRoute.route)
+    }
+
+    fun navigateToNoNetworksFoundScreen(navController: NavController){
+        navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route)
     }
 }

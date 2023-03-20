@@ -27,5 +27,7 @@ interface WifiConnectionListener {
     fun onWifiWPALessThan8(): Unit
     fun onWifiConnectionTest(): Unit
     fun onPlatformError(): Unit
+    fun onGoWifiDisabled():Unit
+    fun onNetworkConnectionError():Unit
 
 }

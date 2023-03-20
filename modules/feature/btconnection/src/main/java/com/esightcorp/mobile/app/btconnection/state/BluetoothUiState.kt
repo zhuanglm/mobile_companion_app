@@ -21,7 +21,14 @@ data class BtDevicesUiState(
 )
 
 data class BtConnectingUiState(
+    val isBtEnabled: Boolean = false,
     val didDeviceConnect: Boolean = false,
+    val deviceName: String? = null,
+    val deviceAddress: String? = null
+)
+
+data class BtConnectedUiState(
+    val isBtEnabled: Boolean = true,
     val deviceName: String? = null,
     val deviceAddress: String? = null
 )
@@ -31,6 +38,10 @@ data class UnableToConnectUiState(
 )
 
 data class NoDevicesFoundUiState(
+    val isBtEnabled: Boolean = false,
+)
+
+data class BtDisabledUiState(
     val isBtEnabled: Boolean = false,
 )
 

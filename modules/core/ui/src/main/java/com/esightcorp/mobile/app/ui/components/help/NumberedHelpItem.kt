@@ -10,7 +10,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.esightcorp.mobile.app.ui.components.ButtonText
 import com.esightcorp.mobile.app.ui.components.Header1Text
+import com.esightcorp.mobile.app.ui.components.WrappableButtonText
 
 
 @Composable
@@ -18,6 +20,7 @@ fun HelpItemNumber(
     number: Int = 1,
     modifier: Modifier = Modifier,
     shape: Shape = CircleShape,
+    color: Color = Color.Black
 ) {
     Surface(
         modifier = Modifier
@@ -32,7 +35,7 @@ fun HelpItemNumber(
         ) {
             Header1Text(
                 text = number.toString(),
-                color = Color.Black,
+                color = color,
                 modifier = Modifier,)
         }
     }
@@ -44,7 +47,7 @@ fun HelpItemText(
     text: String = "This is a test",
     color: Color = Color.White,
 ) {
-    Header1Text(
+    WrappableButtonText(
         text = text,
         modifier = Modifier,
         color = color
@@ -57,21 +60,23 @@ fun NumberedHelpItem(
     modifier: Modifier = Modifier,
     number: Int = 1,
     text: String = "This is a test",
-    color: Color = Color.White,
+    textColor: Color = Color.White,
+    numberColor: Color = Color.Black
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(0.8f).wrapContentHeight(),
+        modifier = modifier.fillMaxWidth().wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         HelpItemNumber(
             number = number,
             modifier = Modifier,
             shape = CircleShape,
+            color = numberColor,
         )
         HelpItemText(
             modifier = Modifier,
             text = text,
-            color = color,
+            color = textColor,
         )
     }
 }

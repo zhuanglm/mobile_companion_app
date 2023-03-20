@@ -8,10 +8,10 @@ import com.esightcorp.mobile.app.wificonnection.*
 import com.esightcorp.mobile.app.wificonnection.EnterPasswordRoute
 
 fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
-    navigation(startDestination = WifiConnectionScreens.WifiConnectionHomeScreen.route, route= WifiConnectionScreens.IncomingNavigationRoute.route){
-        composable(WifiConnectionScreens.WifiConnectionHomeScreen.route){
+    navigation(startDestination = WifiConnectionScreens.SearchingForNetworkRoute.route, route= WifiConnectionScreens.IncomingNavigationRoute.route){
+        /*composable(WifiConnectionScreens.WifiConnectionHomeScreen.route){
             WifiConnectionScreen(navController = navController)
-        }
+        }*/
         composable(
             WifiConnectionScreens.EnterPasswordRoute.route){
             EnterPasswordRoute(navController = navController)

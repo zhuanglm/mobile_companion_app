@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.home.viewmodels.PermissionViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
@@ -20,7 +19,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
 @Composable
-fun HomePermissionScreen(navController: NavController){
+fun HomePermissionScreen(navController: NavController) {
     BasePermissionScreen(navController = navController)
 }
 
@@ -28,16 +27,15 @@ fun HomePermissionScreen(navController: NavController){
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BasePermissionScreen(
-    navController: NavController,
-    vm: PermissionViewModel = hiltViewModel()
-){
+    navController: NavController, vm: PermissionViewModel = hiltViewModel()
+) {
     val permissionsState = rememberMultiplePermissionsState(permissions = vm.getPermissionList())
-    if(permissionsState.allPermissionsGranted){
-        LaunchedEffect(Unit){
-            navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route)
+    if (permissionsState.allPermissionsGranted) {
+        LaunchedEffect(Unit) {
+            navController.navigate("btconnection")
         }
 
-    }else{
+    } else {
         Surface(color = Color(0xff004c4c)) {
             Rationale(permissionsState = permissionsState)
         }
@@ -47,22 +45,22 @@ fun BasePermissionScreen(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun Rationale(permissionsState: MultiplePermissionsState){
+fun Rationale(permissionsState: MultiplePermissionsState) {
     val textToShow = "These permissions are required to use this app. Accept them"
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (text, button) = createRefs()
-        Text(textToShow, Modifier.constrainAs(text){
+        Text(textToShow, Modifier.constrainAs(text) {
             top.linkTo(parent.top)
             bottom.linkTo(parent.bottom)
             start.linkTo(parent.start, margin = 16.dp)
             end.linkTo(parent.end, margin = 16.dp)
         })
-        Button(onClick = {permissionsState.launchMultiplePermissionRequest()},
-        modifier = Modifier.constrainAs(button){
-            top.linkTo(text.bottom, margin = 8.dp)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }){
+        Button(onClick = { permissionsState.launchMultiplePermissionRequest() },
+            modifier = Modifier.constrainAs(button) {
+                top.linkTo(text.bottom, margin = 8.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }) {
             Text(text = "Request Permissions")
         }
     }

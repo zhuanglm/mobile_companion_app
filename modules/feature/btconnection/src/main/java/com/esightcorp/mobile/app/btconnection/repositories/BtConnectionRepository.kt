@@ -53,6 +53,11 @@ class BtConnectionRepository @Inject constructor(
             deviceConnected(device, connected)
         }
 
+        override fun onBluetoothStateChanged() {
+            Log.d(TAG, "onBluetoothStateChanged: ")
+            checkBtEnabledStatus()
+        }
+
     }
 
     /**
@@ -60,6 +65,13 @@ class BtConnectionRepository @Inject constructor(
      */
     init {
         bluetoothModel = BluetoothModel(context)
+    }
+
+    fun checkBtEnabledStatus(){
+        if(this::iBtConnectionRepository.isInitialized){
+            Log.d(TAG, "checkBtEnabledStatus: ")
+            iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+        }
     }
 
     fun setupBtModelListener(){
@@ -75,6 +87,10 @@ class BtConnectionRepository @Inject constructor(
         bluetoothModel.triggerBleScan()
     }
 
+    fun getConnectedDevice(): BluetoothDevice?{
+        return eSightBleManager.getConnectedDevice()
+    }
+
     /**
      * Strips out the bluetoothDevice object, and passes a map of <String, Boolean>
      */
@@ -82,7 +98,12 @@ class BtConnectionRepository @Inject constructor(
     fun getMapOfDevices(){
         val strippedList = mutableListOf<String>()
         for (bluetoothDevice in eSightBleManager.getBleDeviceList()) {
-            strippedList.add(bluetoothDevice.name)
+            if(eSightBleManager.checkIfEnabled()){
+                strippedList.add(bluetoothDevice.name)
+            }else{
+                iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+                return
+            }
         }
         iBtConnectionRepository.deviceListReady(strippedList)
     }
@@ -94,6 +115,8 @@ class BtConnectionRepository @Inject constructor(
     fun registerListener(listener: IBtConnectionRepository){
         Log.d(TAG, "registerListener: ")
         this.iBtConnectionRepository = listener
+        this.iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+
     }
 
     /**
@@ -128,6 +151,10 @@ class BtConnectionRepository @Inject constructor(
         if(this::iBtConnectionRepository.isInitialized){
             iBtConnectionRepository.onDeviceConnected(device, connected)
         }
+    }
+
+    fun resetBtDeviceList(){
+        eSightBleManager.resetDeviceList()
     }
 
 

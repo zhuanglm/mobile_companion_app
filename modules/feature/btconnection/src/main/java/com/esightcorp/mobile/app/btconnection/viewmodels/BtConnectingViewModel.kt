@@ -28,31 +28,52 @@ class BtConnectingViewModel @Inject constructor(
     val uiState: StateFlow<BtConnectingUiState> = _uiState.asStateFlow()
     private val listener = object : IBtConnectionRepository{
         override fun scanStatus(isScanning: ScanningStatus) {
+            Log.e(TAG, "scanStatus: ", )
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
+            Log.e(TAG, "deviceListReady: ", )
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
             Log.d(TAG, "onDeviceConnected: $device")
             updateDeviceInfo(device, connected)
         }
+
+        override fun onBtStateUpdate(enabled: Boolean) {
+            updateBtEnabledState(enabled)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun updateDeviceInfo(device: BluetoothDevice, connected: Boolean){
          _uiState.update { state ->
-             state.copy(didDeviceConnect = true, deviceName = device.name, deviceAddress = device.address)
+             state.copy(didDeviceConnect = connected, deviceName = device.name, deviceAddress = device.address)
          }
     }
 
     init {
         btConnectionRepository.registerListener(listener)
         btConnectionRepository.setupBtModelListener()
+        btConnectionRepository.checkBtEnabledStatus()
     }
 
     fun navigateToConnectedScreen(navController: NavController, deviceName: String, address: String){
         navController.navigate(BtConnectionScreens.BtConnectedRoute.route + "/{$address}/{$deviceName}")
     }
+
+    fun navigateToUnableToConnectScreen(navController: NavController){
+       navController.graph.forEach {
+           Log.d(TAG, "navigateToUnableToConnectScreen: ${it.route}")
+       }
+        navController.navigate(BtConnectionScreens.UnableToConnectRoute.route)
+    }
+
+    private fun updateBtEnabledState(enabled: Boolean){
+        _uiState.update {state ->
+            state.copy(isBtEnabled = enabled)
+        }
+    }
+
 
 }

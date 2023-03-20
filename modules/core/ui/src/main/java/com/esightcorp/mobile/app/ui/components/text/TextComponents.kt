@@ -24,7 +24,8 @@ fun Header1Text(
         modifier = modifier,
         fontWeight = FontWeight.Bold,
         fontSize = 30.sp,
-        fontFamily = FontFamily.SansSerif
+        fontFamily = FontFamily.SansSerif,
+        color = color
     )
 }
 
@@ -94,6 +95,23 @@ fun ButtonText(
         fontFamily = FontFamily.SansSerif,
         maxLines = 1
 
+    )
+}
+
+@Composable
+fun WrappableButtonText(
+    text: String,
+    modifier: Modifier,
+    color: Color = Color.Black
+){
+    Text(
+        text = text,
+        color = color,
+        modifier = modifier,
+        fontWeight = FontWeight.Bold,
+        fontSize = 25.sp,
+        fontFamily = FontFamily.SansSerif,
+        softWrap = true
     )
 }
 

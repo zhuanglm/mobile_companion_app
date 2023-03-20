@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectingViewModel
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 
 @Composable
@@ -19,9 +19,14 @@ fun BtConnectingRoute(
     navController: NavController, vm: BtConnectingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    BtConnectingScreen(
-        modifier = Modifier, navController = navController, uiState = uiState, vm = vm
-    )
+    if(uiState.isBtEnabled){
+        BtConnectingScreen(
+            modifier = Modifier, navController = navController, uiState = uiState, vm = vm
+        )
+    }else{
+        NavigateBluetoothDisabled(navController = navController)
+    }
+
 }
 
 @Composable
@@ -41,7 +46,10 @@ internal fun BtConnectingScreen(
                 )
             }
         } else {
-            Log.e(TAG, "BtConnectingScreen: Send me to the error page, we did not connect")
+            LaunchedEffect(Unit) {
+                Log.e(TAG, "BtConnectingScreen: We did not connect, go to error screen")
+                vm.navigateToUnableToConnectScreen(navController)
+            }
         }
     } else {
         LoadingScreenWithSpinner(

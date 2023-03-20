@@ -4,6 +4,7 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
@@ -50,9 +51,11 @@ class NoDevicesConnectedViewModel @Inject constructor(
      */
     private val btRepositoryListener = object : IBtConnectionRepository {
         override fun scanStatus(isScanning: ScanningStatus) {
+
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
+
         }
 
         @SuppressLint("MissingPermission")
@@ -60,15 +63,28 @@ class NoDevicesConnectedViewModel @Inject constructor(
             updateBtConnectedState(connected, device.name)
         }
 
+        override fun onBtStateUpdate(enabled: Boolean) {
+            Log.d("TAG", "onBtStateUpdate: " + enabled)
+            updateBtEnabledState(enabled)
+        }
+
     }
+
+    private fun checkBtEnabledStatus(){
+        Log.d("TAG", "checkBtEnabledStatus: ")
+        btConnectionRepository.checkBtEnabledStatus()
+    }
+
 
     /**
      * First constructor is init{}
      */
 
     init {
+        Log.d("TAG", ": INIT NoDevicesConnectedViewModel")
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
+        checkBtEnabledStatus()
     }
 
 

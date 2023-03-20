@@ -4,12 +4,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -18,13 +19,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.SelectNetworkViewModel
-import com.esightcorp.mobile.app.ui.R
 
 
 @Composable
@@ -33,15 +34,27 @@ fun SelectNetworkRoute(
     vm: SelectNetworkViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
+    if (!uiState.isWifiEnabled) {
+        NavigateToWifiOffScreen(navController = navController)
+    } else {
+        if(uiState.networkList.isEmpty()){
+            LaunchedEffect(Unit){
+                vm.navigateToNoNetworksFoundScreen(navController)
+            }
+        }else{
+            SelectNetworkScreen(
+                modifier = Modifier,
+                navController = navController,
+                onBackButtonClicked = { Unit },
+                onNetworkButtonClicked = { Unit },
+                uiState = uiState,
+                vm = vm
+            )
+        }
 
-    SelectNetworkScreen(
-        modifier = Modifier,
-        navController = navController,
-        onBackButtonClicked = { Unit },
-        onNetworkButtonClicked = { Unit },
-        uiState = uiState,
-        vm = vm
-    )
+    }
+
+
 }
 
 
@@ -64,7 +77,7 @@ internal fun SelectNetworkScreen(
         "VIRUS.EXE"
     )
 
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (topBar, header, networkContainer, advancedButton) = createRefs()
             ESightTopAppBar(
@@ -105,7 +118,9 @@ internal fun SelectNetworkScreen(
                         icon = ImageVector.vectorResource(id = com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24),
                         text = network.SSID
                     )
+
                 }
+
             }
             AdvancedSettingsButton(
                 modifier = modifier.constrainAs(advancedButton) {

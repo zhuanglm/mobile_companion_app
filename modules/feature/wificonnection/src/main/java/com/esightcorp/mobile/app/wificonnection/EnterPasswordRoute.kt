@@ -72,7 +72,7 @@ private fun PasswordField(
 
     Surface(
         modifier = modifier
-            .fillMaxSize(), color = Color.Black
+            .fillMaxSize(), color = MaterialTheme.colors.surface
     ) {
         ConstraintLayout {
             val (topbar, header, editText, button) = createRefs()

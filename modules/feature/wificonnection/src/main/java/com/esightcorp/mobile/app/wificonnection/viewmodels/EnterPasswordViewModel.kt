@@ -4,9 +4,11 @@ import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,31 +19,41 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class WifiCredentialsViewModel @Inject constructor(
+class EnterPasswordViewModel @Inject constructor(
     application: Application,
     val repository: WifiConnectionRepository
 ): AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(WifiCredentialsUiState())
     val uiState: StateFlow<WifiCredentialsUiState> = _uiState.asStateFlow()
+    private lateinit var navController: NavController
+    val TAG = "EnterPasswordViewModel"
 
-    val repoListener = object : WifiConnectionRepoListener{
+    val scanListener = object : WifiNetworkScanListener {
         override fun onBluetoothStatusUpdate(status: Boolean) {
-        }
-
-        override fun onWifiConnected(success: Boolean) {
-            TODO("Not yet implemented")
+            Log.i(TAG, "onBluetoothStatusUpdate: ")
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
+            Log.i(TAG, "onNetworkListUpdated: ")
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
+            Log.i(TAG, "onScanStatusUpdated: ")
+        }
+
+        override fun onWifiStatusUpdate(status: Boolean) {
+            Log.i(TAG, "onWifiStatusUpdate: ")
         }
     }
 
+
     init {
-        repository.registerListener(repoListener)
+        repository.registerListener(scanListener)
+    }
+
+    fun setNavController(navController: NavController){
+        this.navController = navController
     }
 
     fun updatePassword(password:String){
@@ -63,6 +75,7 @@ class WifiCredentialsViewModel @Inject constructor(
             state.copy(passwordSubmitted = true)
         }
         sendWifiCredsViaBluetooth()
+        navigateToConnectingScreen()
     }
 
     fun wifiTypeSubmitted(){
@@ -75,6 +88,12 @@ class WifiCredentialsViewModel @Inject constructor(
     fun sendWifiCredsViaBluetooth(){
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
         repository.sendWifiCreds(_uiState.value.password, _uiState.value.wifiType)
+    }
+
+    private fun navigateToConnectingScreen(){
+        if (this::navController.isInitialized){
+            navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
+        }
     }
 
 

@@ -11,8 +11,8 @@ import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens.BtC
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens.BtConnectedRoute.nameArg
 
 fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
-    navigation(startDestination = BtConnectionScreens.BtConnectionHomeScreen.route, route= BtConnectionScreens.IncomingNavigationRoute.route){
-        composable(BtConnectionScreens.BtConnectionHomeScreen.route){
+    navigation(startDestination = BtConnectionScreens.NoDevicesConnectedRoute.route, route= BtConnectionScreens.IncomingNavigationRoute.route){
+        composable(BtConnectionScreens.NoDevicesConnectedRoute.route){
             NoDeviceConnectedRoute(navController = navController)
         }
         composable(BtConnectionScreens.BtDevicesScreen.route){
@@ -27,6 +27,12 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         composable(BtConnectionScreens.BTConnectingRoute.route){
             BtConnectingRoute(navController = navController)
         }
+        composable(BtConnectionScreens.UnableToConnectRoute.route){
+            UnableToConnectRoute(navController = navController)
+        }
+        composable(BtConnectionScreens.NoDevicesFoundRoute.route){
+            NoDevicesFoundRoute(navController = navController)
+        }
         composable(BtConnectionScreens.BtConnectedRoute.routeWithArgs,
             arguments = arguments,
             deepLinks = listOf(navDeepLink {
@@ -35,8 +41,9 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         ){navBackStackEntry ->
             val deviceName = navBackStackEntry.arguments?.getString(nameArg)
             val deviceAddress = navBackStackEntry.arguments?.getString(addrArg)
-            BtConnectedRoute(navController = navController, deviceName = deviceName, deviceAddress = deviceAddress)
+            BtConnectedRoute(navController = navController)
         }
+
 
     }
 }

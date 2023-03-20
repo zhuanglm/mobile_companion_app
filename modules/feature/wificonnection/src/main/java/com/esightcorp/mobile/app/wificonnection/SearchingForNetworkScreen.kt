@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.wificonnection
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -23,13 +25,19 @@ fun SearchingForNetworksRoute(
     vm: WifiSearchingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    SearchingForNetworksScreen(
-        modifier = Modifier,
-        navController = navController,
-        vm = vm,
-        uiState = uiState
-        /*loadingText = TODO: add string resource here*/
-    )
+    Log.d("TAG", "SearchingForNetworksRoute: ")
+    if(!uiState.isWifiEnabled){
+        NavigateToWifiOffScreen(navController = navController)
+    } else{
+        Log.d("TAG", "SearchingForNetworksRoute: WIFI ENABLED")
+        SearchingForNetworksScreen(
+            modifier = Modifier,
+            navController = navController,
+            vm = vm,
+            uiState = uiState,
+            loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.wifi_searching_for_networks_header))
+    }
+
 }
 
 @Composable
@@ -42,25 +50,20 @@ internal fun SearchingForNetworksScreen(
 ) {
     when(uiState.scanningStatus){
         ScanningStatus.Failed -> {
-            Log.e("SearchingForNetworksScreen", "SearchingForNetworksScreen: ")
+            Log.e("SearchingForNetworksScreen", "SearchingForNetworksScreen: SCAN STATUS FAILED")
         }
         ScanningStatus.Success -> {
+            Log.d("TAG", "SearchingForNetworksScreen: SUCCESS")
             LaunchedEffect(Unit){
                 vm.navigateToWifiNetworksScreen(navController)
             }
         }
         else -> {
             Log.i("SearchingForNetworksScreen", "Searching for networks...")
-            Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+            Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
                 LoadingScreenWithSpinner(loadingText = loadingText, modifier = modifier)
             }
         }
     }
 
-}
-
-@Preview
-@Composable
-fun SearchingForNetworksPreview() {
-//    SearchingForNetworksScreen()
 }

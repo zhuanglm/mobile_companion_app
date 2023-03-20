@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -20,7 +21,7 @@ fun LoadingScreenWithIcon(
     modifier: Modifier = Modifier,
     loadingText: String = "Loading..."
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (text, icon) = createRefs()
 

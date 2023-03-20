@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
@@ -30,9 +31,16 @@ fun BtDevicesRoute(
 ) {
     vm.getDeviceList()
     val uiState by vm.uiState.collectAsState()
-    BtDevicesScreen(
-        navController = navController, uiState = uiState, vm = vm
-    )
+    if(!uiState.isBtEnabled){
+        NavigateBluetoothDisabled(navController = navController)
+    }else if (uiState.listOfAvailableDevices.isEmpty()){
+        NavigateNoDevicesFound(navController = navController)
+    }else{
+        BtDevicesScreen(
+            navController = navController, uiState = uiState, vm = vm
+        )
+    }
+
 }
 
 @Composable

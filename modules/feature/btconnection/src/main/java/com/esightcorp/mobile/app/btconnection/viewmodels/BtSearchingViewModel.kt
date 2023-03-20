@@ -31,20 +31,23 @@ class BtSearchingViewModel @Inject constructor(
 
         override fun deviceListReady(deviceList: MutableList<String>) {
             Log.i(TAG, "deviceListReady: ")
-            /*
-            TODO: Verify that we should be showing the list once we have at least 1 device, with Nadim
-             */
-            updateBtSearchingState(ScanningStatus.Success)
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
             Log.i(TAG, "onDeviceConnected: ")
+        }
+
+        override fun onBtStateUpdate(enabled: Boolean) {
+            _uiState.update {
+                it.copy(isBtEnabled = enabled)
+            }
         }
     }
 
     init {
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
+        btConnectionRepository.resetBtDeviceList()
     }
 
 

@@ -6,7 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,20 +16,20 @@ import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.text.EEditText
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
-import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiCredentialsViewModel
+import com.esightcorp.mobile.app.wificonnection.viewmodels.EnterPasswordViewModel
+import com.esightcorp.mobile.app.ui.R
 
 private const val TAG = "WifiCredentialsRoute"
 
 @Composable
-fun WifiCredentialsRoute(
+fun EnterPasswordRoute(
     navController: NavController,
-    /*ssid: String,*/
-    viewModel: WifiCredentialsViewModel = hiltViewModel()
+    viewModel: EnterPasswordViewModel = hiltViewModel()
 ) {
-    val ssid = "SSID"
-    Log.d(TAG, "WifiCredentialsRoute: $ssid")
+    Log.d(TAG, "EnterPasswordRoute:")
     val wifiUiState by viewModel.uiState.collectAsState()
-    WifiCredentialsScreen(
+    viewModel.setNavController(navController = navController)
+    EnterPasswordScreen(
         onPasswordSubmitted = viewModel::wifiPasswordSubmitted,
         onPasswordUpdated = viewModel::updatePassword,
         onWifiTypeSubmitted = viewModel::wifiTypeSubmitted,
@@ -41,7 +41,7 @@ fun WifiCredentialsRoute(
 
 
 @Composable
-internal fun WifiCredentialsScreen(
+internal fun EnterPasswordScreen(
     onPasswordSubmitted: () -> Unit,
     onWifiTypeSubmitted: () -> Unit,
     onPasswordUpdated: (String) -> Unit,
@@ -54,7 +54,8 @@ internal fun WifiCredentialsScreen(
         onPasswordSubmitted = onPasswordSubmitted,
         modifier = modifier,
         onPasswordUpdated = onPasswordUpdated,
-        wifiUiState = wifiUiState
+        wifiUiState = wifiUiState,
+        navController = navController
     )
 
 }
@@ -65,12 +66,13 @@ private fun PasswordField(
     onPasswordSubmitted: () -> Unit,
     onPasswordUpdated: (String) -> Unit,
     modifier: Modifier,
-    wifiUiState: WifiCredentialsUiState
+    wifiUiState: WifiCredentialsUiState,
+    navController: NavController
 ) {
 
     Surface(
         modifier = modifier
-            .fillMaxSize(), color = Color.Black
+            .fillMaxSize(), color = MaterialTheme.colors.surface
     ) {
         ConstraintLayout {
             val (topbar, header, editText, button) = createRefs()
@@ -115,51 +117,12 @@ private fun PasswordField(
                     start.linkTo(editText.start)
                     end.linkTo(editText.end)
                 },
-                text = "Connect"
+                text = stringResource(id = R.string.wifi_connect_button)
             )
 
 
         }
     }
-
-
-    /* SubmitButton(modifier = modifier, action = onPasswordSubmitted)*/
-}
-
-@Composable
-private fun SubmitButton(
-    modifier: Modifier,
-    action: () -> Unit
-) {
-    Button(
-        modifier = modifier,
-        onClick = action
-    ) {
-        Text(text = "Submit")
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    //textfield
-    OutlinedTextField(
-        "String",
-        onValueChange = { stubStringFunction("testing") },
-        label = { Text("Type your password here") },
-        modifier = Modifier
-    )
-    SubmitButton(modifier = Modifier, action = { stubFunction() })
-}
-
-fun stubFunction() {
-    //use this to stub out your preview functions
-    Log.d(TAG, "stubFunction: ")
-}
-
-fun stubStringFunction(value: String) {
-    //use this to stub out your preview functions
-    Log.d(TAG, "stubStringFunction: ")
 }
 
 

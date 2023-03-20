@@ -2,21 +2,18 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import android.net.wifi.ScanResult
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -34,7 +31,7 @@ class WifiConnectionViewModel @Inject constructor(
      */
     private var _uiState = MutableStateFlow(WifiConnectionUiState())
     val uiState: StateFlow<WifiConnectionUiState> = _uiState.asStateFlow()
-    private val wifiRepoListener = object : WifiConnectionRepoListener{
+    private val wifiRepoListener = object : WifiNetworkScanListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
             Log.e(TAG, "onBluetoothNotConnected: Bluetooth needs to be connected to send a message " )
             updateQrCodeButtonVisibility(true)
@@ -43,7 +40,7 @@ class WifiConnectionViewModel @Inject constructor(
             }
         }
 
-        override fun onWifiConnected(success: Boolean) {
+        override fun onWifiStatusUpdate(status: Boolean) {
             TODO("Not yet implemented")
         }
 

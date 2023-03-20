@@ -7,9 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
-import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepoListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
-import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionUiState
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiSearchingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,11 +26,14 @@ class WifiSearchingViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiSearchingUiState())
     val uiState: StateFlow<WifiSearchingUiState> = _uiState.asStateFlow()
 
-    val repoListener = object : WifiConnectionRepoListener{
+    val repoListener = object : WifiNetworkScanListener{
         override fun onBluetoothStatusUpdate(status: Boolean) {
+            Log.i(TAG, "onBluetoothStatusUpdate: ")
+            updateBtEnabledState(status)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
+            Log.d(TAG, "onNetworkListUpdated: " )
             updateScanningStatus(ScanningStatus.Success)
         }
 
@@ -40,8 +42,9 @@ class WifiSearchingViewModel @Inject constructor(
             updateScanningStatus(status)
         }
 
-        override fun onWifiConnected(success: Boolean) {
-            TODO("Not yet implemented")
+        override fun onWifiStatusUpdate(status: Boolean) {
+            Log.d(TAG, "onWifiStatusUpdate: " + status)
+            updateWifiEnabledState(status)
         }
     }
 
@@ -56,8 +59,20 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
+    private fun updateWifiEnabledState(enabled: Boolean){
+        _uiState.update { state ->
+            state.copy(isWifiEnabled = enabled)
+        }
+    }
+
+    private fun updateBtEnabledState(enabled: Boolean){
+        _uiState.update { state ->
+            state.copy(isBtEnabled = enabled)
+        }
+    }
 
     fun navigateToWifiNetworksScreen(navController: NavController){
+        Log.d(TAG, "navigateToWifiNetworksScreen: ")
         navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route)
     }
 

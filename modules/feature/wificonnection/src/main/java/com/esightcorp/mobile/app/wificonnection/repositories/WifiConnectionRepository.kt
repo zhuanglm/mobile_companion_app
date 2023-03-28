@@ -170,4 +170,9 @@ class WifiConnectionRepository @Inject constructor(
         this.connectionListener.onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
     }
 
+    fun unregisterListener(listener: WifiConnectionListener) {
+//        TODO("Not yet implemented")
+        Log.e(TAG, "unregisterListener: ", )
+    }
+
 }

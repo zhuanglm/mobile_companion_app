@@ -5,7 +5,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Shapes
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +15,7 @@ import com.esightcorp.mobile.app.ui.R
 
 
 @Composable
-fun EEditText(
+fun PasswordEditText(
     value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, label: @Composable (() -> Unit)? = null,
 ) {
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }

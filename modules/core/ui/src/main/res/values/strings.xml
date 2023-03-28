@@ -52,5 +52,13 @@
     <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
     <string name="bt_no_devices_found_button" translatable="true">Try again</string>
     <string name="wifi_searching_for_networks_header" translatable="true">Searching for Wi-Fi networks</string>
+    <string name="wifi_advanced_ssidHeader" translatable="true">Enter Wi-Fi name</string>
+    <string name="wifi_advanced_pwdHeader" translatable="true">Enter Wi-Fi password</string>
+    <string name="wifi_advanced_securityHeader" translatable="true">Select security type</string>
+    <string name="wifi_type_security_none" translatable="true">None</string>
+    <string name="wifi_type_security_wep" translatable="true">WEP</string>
+    <string name="wifi_type_security_wpa" translatable="true">WPA/WPA2/WPA3</string>
+    <string name="wifi_advanced_QR_finishButton" translatable="true">Create Wi-Fi code</string>
+    <string name="wifi_advanced_BT_finishButton" translatable="true">Connect to network</string>
 
 </resources>

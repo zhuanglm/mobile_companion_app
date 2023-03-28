@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -14,7 +13,7 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
-import com.esightcorp.mobile.app.ui.components.text.EEditText
+import com.esightcorp.mobile.app.ui.components.text.PasswordEditText
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.EnterPasswordViewModel
 import com.esightcorp.mobile.app.ui.R
@@ -97,7 +96,7 @@ private fun PasswordField(
                 }
                 .padding(25.dp, 50.dp, 0.dp, 0.dp))
 
-            EEditText(
+            PasswordEditText(
                 value = wifiUiState.password,
                 onValueChange = onPasswordUpdated,
                 modifier = Modifier

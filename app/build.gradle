@@ -125,6 +125,7 @@ dependencies {
     implementation(project(":modules:feature:btconnection"))
     implementation(project(":modules:feature:wificonnection"))
     implementation(project(":modules:core:bluetooth"))
+    implementation(project(":modules:core:ui"))
 
     implementation "com.google.accompanist:accompanist-permissions:0.27.0"
 

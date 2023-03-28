@@ -30,8 +30,9 @@ fun BaseScreen(
     showSettingsButton: Boolean,
     onBackButtonInvoked: () -> Unit ,
     onSettingsButtonInvoked: () -> Unit ,
-    everythingElse: @Composable () -> Unit,
     bottomButton: @Composable () -> Unit,
+    everythingElse: @Composable () -> Unit,
+
 
     ) {
     BaseSurface(modifier = modifier) {
@@ -46,22 +47,26 @@ fun BaseScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 })
-            LazyColumn(modifier = modifier
+            LazyColumn(modifier = modifier.fillMaxSize()
                 .constrainAs(everything) {
                     top.linkTo(topAppBar.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
+                    bottom.linkTo(bottomButton.top)
                 }
-                .padding(25.dp, 30.dp, 25.dp, 0.dp)) {
+                .padding(25.dp, 30.dp, 25.dp, 0.dp)
+                ) {
                 item {
                     everythingElse()
                 }
             }
-            Box(modifier = modifier.constrainAs(bottomButton) {
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }.fillMaxWidth(),
+            Box(modifier = modifier
+                .constrainAs(bottomButton) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center) {
                 bottomButton()
             }

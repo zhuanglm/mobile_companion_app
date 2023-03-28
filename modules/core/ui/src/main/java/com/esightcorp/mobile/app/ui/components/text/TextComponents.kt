@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -35,15 +36,17 @@ fun Subheader(
     text: String,
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onSurface,
-    textAlign: TextAlign? = TextAlign.Justify
+    textAlign: TextAlign? = TextAlign.Start
 ){
+    Log.d("TAG", "Subheader: " + color.toString())
     Text(
         text = text,
         modifier = modifier,
         fontWeight = FontWeight.Bold,
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,
-        textAlign = textAlign
+        textAlign = textAlign,
+        color = color
     )
 }
 @Composable
@@ -134,8 +137,8 @@ fun WrappableButtonText(
 
 @Composable
 fun Button2Text(
-    text: String = "Text goes here",
     modifier: Modifier = Modifier,
+    text: String = "Text goes here",
     color: Color = MaterialTheme.colors.onPrimary
 ){
     Text(
@@ -152,8 +155,8 @@ fun Button2Text(
 
 @Composable
 fun WrappableButton2Text(
-    text: String = "Text goes here",
     modifier: Modifier = Modifier,
+    text: String = "Text goes here",
     color: Color = MaterialTheme.colors.onPrimary
 ){
     Text(

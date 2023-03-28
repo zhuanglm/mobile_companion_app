@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.esightcorp.mobile.app.companion.navigation.toplevel.TopLevelNavigation
-import com.esightcorp.mobile.app.companion.ui.theme.Mobile_companion_appTheme
+import com.esightcorp.mobile.app.ui.components.theme.Mobile_companion_appTheme
 import com.google.android.material.elevation.SurfaceColors
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,9 +39,10 @@ fun CompanionApp(){
     Mobile_companion_appTheme {
         // A surface container using the 'background' color from the theme
         Surface(
-            modifier = Modifier.fillMaxSize()) {
+            modifier = Modifier.fillMaxSize()
+        ) {
             Column {
-                 TopLevelNavigation()
+                TopLevelNavigation()
             }
         }
     }

@@ -28,9 +28,10 @@ fun SupportButtonTemplate(
     modifier: Modifier = Modifier,
     painter: Painter = painterResource(id = R.drawable.glasses),
     text: String = "Override me",
+    textColor: Color = MaterialTheme.colors.onSurface
 ) {
     ExtendedFloatingActionButton(
-        text = { BodyText(text = text, modifier = modifier) },
+        text = { BodyText(text = text, modifier = modifier, color = textColor) },
         icon = { SupportButtonIcon(onClick = { }, modifier = modifier, painter = painter) },
         onClick = onClick ,
         containerColor = MaterialTheme.colors.surface,

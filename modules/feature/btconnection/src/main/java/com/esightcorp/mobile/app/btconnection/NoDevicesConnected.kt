@@ -1,33 +1,24 @@
 package com.esightcorp.mobile.app.btconnection
 
-import android.app.Activity
-import android.bluetooth.BluetoothAdapter
-import android.content.Intent
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.AddDeviceButton
-import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
+import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
 private const val TAG = "BluetoothScreens"
@@ -48,7 +39,8 @@ fun NoDeviceConnectedRoute(
     } else if (!btUiState.btConnectionStatus) {
         // If Bluetooth is enabled and there is no device connected, show the no device connected screen
         Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
-        NoDeviceConnectedScreen(onSettingsButtonPressed = { },
+        NoDeviceConnectedScreen(
+            onSettingsButtonPressed = { },
             onFeedbackButtonPressed = { },
             onConnectToDeviceButtonPressed = { },
             onTermsAndConditionsPressed = { },
@@ -74,63 +66,75 @@ internal fun NoDeviceConnectedScreen(
     modifier: Modifier = Modifier
 ) {
     // Set up UI using ConstraintLayout
-    Surface(modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-        ConstraintLayout {
-            val (topBar, greeting, deviceButton, terms, feedback) = createRefs()
 
-            // Set up top app bar with settings button
-            ESightTopAppBar(showBackButton = false,
-                showSettingsButton = true,
-                onBackButtonInvoked = { /*Unused*/ },
-                onSettingsButtonInvoked =  onSettingsButtonPressed ,
-                modifier = modifier.constrainAs(topBar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
-
-            // Set up greeting message
-            PersonalGreeting(
-                modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
-                    .constrainAs(greeting) {
-                        top.linkTo(topBar.bottom, margin = 50.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                connected = false,
+    BaseScreen(modifier = modifier,
+        showBackButton = false,
+        showSettingsButton = true,
+        onBackButtonInvoked = { /*Unused*/ },
+        onSettingsButtonInvoked = onSettingsButtonPressed,
+        bottomButton = {
+            FeedbackButton(
+                onFeedbackClick = onFeedbackButtonPressed, modifier = modifier
             )
+        }) {
+        NoDevicesBody(
+            modifier = modifier,
+            onPrivacyPolicyPressed = onPrivacyPolicyPressed,
+            onTermsAndConditionsPressed = onTermsAndConditionsPressed,
+            navController = navController
+        )
 
-            // Set up device button to navigate to Bluetooth searching screen
-            AddDeviceButton(onClick = { navController.navigate(BtConnectionScreens.BtSearchingRoute.route) },
-                modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
-                    .constrainAs(deviceButton) {
-                        top.linkTo(greeting.bottom, margin = 35.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    })
-
-            // Set up terms and policy buttons
-            TermsAndPolicy(onTermsInvoked = onTermsAndConditionsPressed,
-                onPrivacyPolicyInvoked = onPrivacyPolicyPressed,
-                modifier = modifier
-                    .padding(15.dp, 0.dp, 15.dp, 0.dp)
-                    .constrainAs(terms) {
-                        bottom.linkTo(feedback.top, margin = 25.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    })
-
-            // Set up feedback button
-            FeedbackButton(onFeedbackClick = onFeedbackButtonPressed,
-                modifier = modifier.constrainAs(feedback) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
-        }
     }
+}
+
+@Composable
+private fun NoDevicesBody(
+    modifier: Modifier,
+    onPrivacyPolicyPressed: (Int) -> Unit,
+    onTermsAndConditionsPressed: (Int) -> Unit,
+    navController: NavController
+) {
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (greeting, deviceButton, terms) = createRefs()
+        val topGuideline = createGuidelineFromTop(0.3f)
+        val bottomGuideline = createGuidelineFromTop(0.84f)
+
+        // Set up greeting message
+        PersonalGreeting(
+            modifier = modifier.constrainAs(greeting) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(topGuideline)
+            },
+            connected = false,
+        )
+
+        // Set up device button to navigate to Bluetooth searching screen
+        AddDeviceButton(onClick = { navController.navigate(BtConnectionScreens.BtSearchingRoute.route) },
+            modifier = modifier.constrainAs(deviceButton) {
+                top.linkTo(topGuideline)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            })
+
+        // Set up terms and policy buttons
+        TermsAndPolicy(
+            onTermsInvoked = onTermsAndConditionsPressed,
+            onPrivacyPolicyInvoked = onPrivacyPolicyPressed,
+            modifier = modifier.constrainAs(terms) {
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(bottomGuideline)
+
+            },
+            textColor = MaterialTheme.colors.onSurface
+        )
+
+
+    }
+
 }
 
 @Composable

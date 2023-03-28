@@ -4,23 +4,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun TermsAndPolicy(
     onTermsInvoked: (Int) -> Unit,
     onPrivacyPolicyInvoked: (Int) -> Unit,
     modifier: Modifier,
+    textColor: Color
 ){
     Column(modifier = modifier.fillMaxWidth()) {
         ClickableBodyText(
             text = "By continuing, you agree to our Terms.",
             modifier = modifier.fillMaxWidth(),
-            onClick = onTermsInvoked
+            onClick = onTermsInvoked,
+            color = textColor
         )
         ClickableBodyText(
             text = "See how we use your data in our Privacy Policy",
             modifier = modifier.fillMaxWidth(),
-            onClick = onPrivacyPolicyInvoked
+            onClick = onPrivacyPolicyInvoked,
+            color = textColor
         )
     }
 

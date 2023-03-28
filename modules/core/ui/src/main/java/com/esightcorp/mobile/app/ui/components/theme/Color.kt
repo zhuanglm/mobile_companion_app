@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.companion.ui.theme
+package com.esightcorp.mobile.app.ui.components.theme
 
 import androidx.compose.ui.graphics.Color
 

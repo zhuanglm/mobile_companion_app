@@ -32,9 +32,9 @@ fun SupportButtonTemplate(
     ExtendedFloatingActionButton(
         text = { BodyText(text = text, modifier = modifier) },
         icon = { SupportButtonIcon(onClick = { }, modifier = modifier, painter = painter) },
-        onClick = { onClick },
+        onClick = onClick ,
         containerColor = MaterialTheme.colors.surface,
-        contentColor = Color.White,
+        contentColor = MaterialTheme.colors.onSurface,
         modifier = modifier
     )
 }
@@ -42,17 +42,17 @@ fun SupportButtonTemplate(
 
 @Composable
 private fun SupportButtonIcon(
-    onClick: @Composable () -> Unit,
+    onClick:  () -> Unit,
     modifier: Modifier,
     painter: Painter,
 
     ) {
     FilledIconButton(
-        onClick = { onClick },
+        onClick =  onClick ,
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
-        colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
+        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
     ) {
         Icon(
             painter = painter,

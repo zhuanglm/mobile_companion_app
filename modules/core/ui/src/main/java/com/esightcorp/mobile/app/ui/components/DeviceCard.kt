@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedCard
@@ -23,8 +24,8 @@ import com.esightcorp.mobile.app.ui.R
 fun DeviceCard(
     deviceModel: String = "eSight Go",
     serialNumber: String = "31415962",
-    containerColor: Color = Color.White,
-    borderColor: Color = Color.Yellow,
+    containerColor: Color = MaterialTheme.colors.secondary,
+    borderColor: Color = MaterialTheme.colors.primary,
     border: Boolean = true,
     modifier: Modifier,
     onClick : () -> Unit
@@ -73,7 +74,7 @@ fun YellowDeviceCard(
         deviceModel = deviceModel,
         serialNumber = serialNumber,
         border = false,
-        containerColor = Color.Yellow,
+        containerColor = MaterialTheme.colors.primary,
         modifier = modifier,
         onClick = onClick
     )

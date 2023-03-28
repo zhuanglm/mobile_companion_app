@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -26,12 +27,12 @@ fun BigIcon(
     Surface(
         modifier = modifier.size(120.dp),
         shape = CircleShape,
-        color = Color.Yellow) {
+        color = MaterialTheme.colors.primary) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            Icon(painter = painter, contentDescription = contentDescription, modifier = modifier.size(75.dp))
+            Icon(painter = painter, contentDescription = contentDescription, modifier = modifier.size(75.dp), tint = MaterialTheme.colors.onPrimary)
         }
 
     }

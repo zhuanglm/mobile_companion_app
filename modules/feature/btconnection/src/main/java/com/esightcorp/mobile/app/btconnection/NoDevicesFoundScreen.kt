@@ -21,7 +21,7 @@ import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesFoundViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
@@ -78,7 +78,7 @@ internal fun NoDevicesFoundScreen(
                         start.linkTo(parent.start)
                     })
 
-            Header2Text(text = stringResource(id = R.string.bt_no_devices_found_subtitle),
+            Subheader(text = stringResource(id = R.string.bt_no_devices_found_subtitle),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(subtitle) {

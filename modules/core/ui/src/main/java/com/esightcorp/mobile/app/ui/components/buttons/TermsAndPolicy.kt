@@ -7,20 +7,20 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TermsAndPolicy(
-    onTermsInvoked: () -> Unit,
-    onPrivacyPolicyInvoked: () -> Unit,
+    onTermsInvoked: (Int) -> Unit,
+    onPrivacyPolicyInvoked: (Int) -> Unit,
     modifier: Modifier,
 ){
     Column(modifier = modifier.fillMaxWidth()) {
         ClickableBodyText(
             text = "By continuing, you agree to our Terms.",
             modifier = modifier.fillMaxWidth(),
-            onClick = { onTermsInvoked }
+            onClick = onTermsInvoked
         )
         ClickableBodyText(
             text = "See how we use your data in our Privacy Policy",
             modifier = modifier.fillMaxWidth(),
-            onClick = { onPrivacyPolicyInvoked }
+            onClick = onPrivacyPolicyInvoked
         )
     }
 

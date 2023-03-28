@@ -81,12 +81,12 @@ fun TopAppBarNavIconButton(
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
-        colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
+        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colors.primary,MaterialTheme.colors.onPrimary),
     ) {
         Icon(
             Icons.Rounded.ArrowBack,
             contentDescription = "Back button",
-            modifier = modifier.size(30.dp)
+            modifier = modifier.size(30.dp),
         )
     }
 }
@@ -101,7 +101,7 @@ fun TopAppBarSettingsIconButton(
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
-        colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
+        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colors.primary,MaterialTheme.colors.onPrimary),
     ) {
         Icon(
             Icons.Rounded.Settings,

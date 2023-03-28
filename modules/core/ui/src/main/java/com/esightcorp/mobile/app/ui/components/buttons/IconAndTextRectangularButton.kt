@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ButtonDefaults
@@ -31,7 +32,7 @@ fun IconAndTextRectangularButton(
             .fillMaxWidth()
             .padding(25.dp, 20.dp),
         enabled = true,
-        colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
+        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),

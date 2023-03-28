@@ -21,7 +21,7 @@ fun LoadingScreenWithSpinner(
         ConstraintLayout {
             val (text, spinner) = createRefs()
 
-            Header2Text(
+            Subheader(
                 text = loadingText,
                 modifier = modifier.constrainAs(text) {
                     top.linkTo(parent.top)

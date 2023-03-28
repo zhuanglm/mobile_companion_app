@@ -67,8 +67,8 @@ internal fun NoDeviceConnectedScreen(
     onSettingsButtonPressed: () -> Unit,
     onFeedbackButtonPressed: () -> Unit,
     onConnectToDeviceButtonPressed: () -> Unit,
-    onTermsAndConditionsPressed: () -> Unit,
-    onPrivacyPolicyPressed: () -> Unit,
+    onTermsAndConditionsPressed: (Int) -> Unit,
+    onPrivacyPolicyPressed: (Int) -> Unit,
     btUiState: BluetoothUiState,
     navController: NavController,
     modifier: Modifier = Modifier

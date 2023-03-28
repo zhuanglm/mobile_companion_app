@@ -11,15 +11,21 @@ import com.esightcorp.mobile.app.companion.ui.theme.*
 private val DarkColorPalette = darkColors(
     primary = Yellow,
     primaryVariant = YellowVariant,
+    onPrimary = DarkGrey,
     secondary = Color.White,
-    surface = DarkGrey
+    onSecondary = DarkGrey,
+    surface = DarkGrey,
+    onSurface = Color.White
 )
 
 private val LightColorPalette = lightColors(
     primary = Green,
     primaryVariant = GreenVariant,
+    onPrimary = DarkGrey,
     secondary = Color.White,
-    surface = DarkGrey
+    onSecondary = DarkGrey,
+    surface = DarkGrey,
+    onSurface = Green
 
     /* Other default colors to override
     background = Color.White,

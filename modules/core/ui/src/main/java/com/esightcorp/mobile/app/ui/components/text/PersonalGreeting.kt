@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.Subheader
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalUnitApi::class)
@@ -47,13 +47,13 @@ fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
                 }
             }
             if (!connected) {
-                Header2Text(text = "You are not connected to an eSight",
+                Subheader(text = "You are not connected to an eSight",
                     modifier = Modifier.constrainAs(connectionStatus) {
                         top.linkTo(greeting.bottom, margin = 8.dp)
                         start.linkTo(parent.start)
                     })
             } else {
-                Header2Text(
+                Subheader(
                     text = "You are connected to",
                     modifier = Modifier.constrainAs(connectionStatus) {
                         top.linkTo(greeting.bottom, margin = 8.dp)

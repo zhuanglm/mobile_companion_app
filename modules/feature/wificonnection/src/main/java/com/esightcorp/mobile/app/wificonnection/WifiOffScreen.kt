@@ -1,10 +1,5 @@
 package com.esightcorp.mobile.app.wificonnection
 
-import android.content.Intent
-import android.provider.Settings
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -19,10 +14,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.BigIcon
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.Subheader
+import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.wificonnection.state.WifiOffUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiOffViewModel
 
@@ -87,7 +82,7 @@ internal fun WifiOffScreen(
                     end.linkTo(parent.end)
                 })
 
-            Header2Text(
+            Subheader(
                 text = stringResource(id = R.string.wifi_disabled_body),
                 modifier = modifier
                     .padding(

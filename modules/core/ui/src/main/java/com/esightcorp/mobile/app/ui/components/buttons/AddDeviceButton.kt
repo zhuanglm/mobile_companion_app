@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ButtonDefaults
@@ -32,7 +33,7 @@ fun AddDeviceButton(
             .fillMaxWidth()
             .wrapContentHeight(),
         enabled = true,
-        colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
+        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),

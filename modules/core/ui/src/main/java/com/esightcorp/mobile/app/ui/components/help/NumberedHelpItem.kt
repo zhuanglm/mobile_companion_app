@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components.help
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,14 +21,14 @@ fun HelpItemNumber(
     number: Int = 1,
     modifier: Modifier = Modifier,
     shape: Shape = CircleShape,
-    color: Color = Color.Black
+    color: Color = MaterialTheme.colors.onPrimary
 ) {
     Surface(
         modifier = Modifier
-            .size(80.dp)
+            .size(60.dp)
             .padding(8.dp),
         shape = CircleShape,
-        color = Color.Yellow,
+        color = MaterialTheme.colors.primary,
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -36,7 +37,7 @@ fun HelpItemNumber(
             Header1Text(
                 text = number.toString(),
                 color = color,
-                modifier = Modifier,)
+                modifier = Modifier)
         }
     }
 }
@@ -45,7 +46,7 @@ fun HelpItemNumber(
 fun HelpItemText(
     modifier: Modifier = Modifier,
     text: String = "This is a test",
-    color: Color = Color.White,
+    color: Color = MaterialTheme.colors.secondary,
 ) {
     WrappableButtonText(
         text = text,
@@ -60,8 +61,8 @@ fun NumberedHelpItem(
     modifier: Modifier = Modifier,
     number: Int = 1,
     text: String = "This is a test",
-    textColor: Color = Color.White,
-    numberColor: Color = Color.Black
+    textColor: Color = MaterialTheme.colors.secondary,
+    numberColor: Color = MaterialTheme.colors.onPrimary
 ) {
     Row(
         modifier = modifier.fillMaxWidth().wrapContentHeight(),

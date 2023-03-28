@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.wificonnection.state.AlreadyConnectedUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.AlreadyConnectedViewModel
@@ -60,7 +60,7 @@ internal fun AlreadyConnectedScreen(
                 end.linkTo(parent.end)
             })
 
-            Header2Text(text = stringResource(id = R.string.wifi_already_connected_body),
+            Subheader(text = stringResource(id = R.string.wifi_already_connected_body),
                 modifier = modifier.constrainAs(header2Text) {
                     top.linkTo(headerText.bottom)
                     start.linkTo(parent.start)

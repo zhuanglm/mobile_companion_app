@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -29,7 +30,7 @@ fun IconAndTextSquareButton(
         modifier = modifier
             .padding(25.dp, 20.dp).defaultMinSize(100.dp, 100.dp) ,
         enabled = true,
-        colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
+        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(5.dp, 5.dp),

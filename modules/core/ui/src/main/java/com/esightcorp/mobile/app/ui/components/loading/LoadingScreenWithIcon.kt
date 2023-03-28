@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.ui.components.loading
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -13,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.Subheader
 
 
 @Composable
@@ -25,7 +24,7 @@ fun LoadingScreenWithIcon(
         ConstraintLayout {
             val (text, icon) = createRefs()
 
-            Header2Text(
+            Subheader(
                 text = loadingText,
                 modifier = modifier.constrainAs(text) {
                     top.linkTo(parent.top)

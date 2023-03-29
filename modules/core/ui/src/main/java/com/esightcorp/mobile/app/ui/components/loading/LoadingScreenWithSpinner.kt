@@ -38,7 +38,7 @@ fun LoadingScreenWithSpinner(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                color = Color.Yellow,
+                color = MaterialTheme.colors.primary,
                 strokeWidth = 10.dp
             )
         }

@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.ui.components.theme
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -17,13 +18,14 @@ private val DarkColorPalette = darkColors(
     onSurface = Color.White
 )
 
+@SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
     primary = Green,
     primaryVariant = GreenVariant,
-    onPrimary = DarkGrey,
+    onPrimary = LightGrey,
     secondary = Color.White,
     onSecondary = DarkGrey,
-    surface = DarkGrey,
+    surface = Color.White,
     onSurface = Green
 
     /* Other default colors to override

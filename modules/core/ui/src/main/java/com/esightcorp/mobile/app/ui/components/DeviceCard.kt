@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -13,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +24,7 @@ import com.esightcorp.mobile.app.ui.R
 fun DeviceCard(
     deviceModel: String = "eSight Go",
     serialNumber: String = "31415962",
-    containerColor: Color = MaterialTheme.colors.secondary,
+    containerColor: Color = MaterialTheme.colors.primaryVariant,
     borderColor: Color = MaterialTheme.colors.primary,
     border: Boolean = true,
     modifier: Modifier,
@@ -40,7 +40,7 @@ fun DeviceCard(
         border = borderStroke,
         shape = RoundedCornerShape(18.dp),
         onClick = onClick,
-        elevation = CardDefaults.cardElevation(3.dp)
+        elevation = CardDefaults.cardElevation(20.dp)
     ) {
         Row(
             modifier = Modifier
@@ -87,7 +87,8 @@ fun ImageForDeviceCard(
     Image(
         painter = painterResource(id = R.drawable.glasses),
         contentDescription = "Temporary image for the eSight Go",
-        modifier = modifier.size(76.dp)
+        modifier = modifier.size(76.dp),
+        colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
     )
 }
 

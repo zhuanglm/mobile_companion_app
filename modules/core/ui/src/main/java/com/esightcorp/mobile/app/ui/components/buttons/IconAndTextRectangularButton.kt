@@ -56,7 +56,7 @@ fun TextRectangularButton(
             .fillMaxWidth()
             .padding(25.dp, 20.dp),
         enabled = true,
-        colors = ButtonDefaults.elevatedButtonColors(Color.Yellow, Color.Black),
+        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),

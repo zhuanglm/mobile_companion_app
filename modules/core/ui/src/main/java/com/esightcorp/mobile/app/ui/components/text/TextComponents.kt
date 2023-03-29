@@ -137,7 +137,7 @@ fun WrappableButtonText(
 
 @Composable
 fun Button2Text(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     text: String = "Text goes here",
     color: Color = MaterialTheme.colors.onPrimary
 ){

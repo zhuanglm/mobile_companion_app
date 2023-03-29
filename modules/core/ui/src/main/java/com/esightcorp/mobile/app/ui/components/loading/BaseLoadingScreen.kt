@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components.loading
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,7 +17,7 @@ fun BaseLoadingScreen(
     modifier: Modifier = Modifier,
     loadingText: String = "Loading..."
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
+    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (text, spinner) = createRefs()
 
@@ -37,7 +38,7 @@ fun BaseLoadingScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                color = Color.Yellow,
+                color = MaterialTheme.colors.primary,
                 strokeWidth = 15.dp
             )
         }

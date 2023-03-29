@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExtendedFloatingActionButton
 
@@ -36,7 +37,7 @@ fun SupportButtonTemplate(
         onClick = onClick ,
         containerColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     )
 }
 

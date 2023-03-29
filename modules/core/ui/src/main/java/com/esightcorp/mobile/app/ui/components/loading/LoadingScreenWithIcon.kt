@@ -42,7 +42,7 @@ fun LoadingScreenWithIcon(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                tint = Color.Yellow
+                tint = MaterialTheme.colors.primary
             )
         }
     }

@@ -23,8 +23,8 @@ private val LightColorPalette = lightColors(
     primary = Green,
     primaryVariant = GreenVariant,
     onPrimary = LightGrey,
-    secondary = Color.White,
-    onSecondary = DarkGrey,
+    secondary = DarkGrey,
+    onSecondary = LightGrey,
     surface = Color.White,
     onSurface = Green
 

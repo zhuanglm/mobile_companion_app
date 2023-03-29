@@ -61,7 +61,7 @@ fun NumberedHelpItem(
     modifier: Modifier = Modifier,
     number: Int = 1,
     text: String = "This is a test",
-    textColor: Color = MaterialTheme.colors.secondary,
+    textColor: Color = MaterialTheme.colors.onSurface,
     numberColor: Color = MaterialTheme.colors.onPrimary
 ) {
     Row(

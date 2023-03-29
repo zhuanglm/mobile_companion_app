@@ -2,12 +2,10 @@ package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material.FloatingActionButtonElevation
 
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +35,8 @@ fun SupportButtonTemplate(
         onClick = onClick ,
         containerColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
     )
 }
 

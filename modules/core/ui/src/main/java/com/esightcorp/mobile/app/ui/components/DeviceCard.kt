@@ -24,7 +24,7 @@ import com.esightcorp.mobile.app.ui.R
 fun DeviceCard(
     deviceModel: String = "eSight Go",
     serialNumber: String = "31415962",
-    containerColor: Color = MaterialTheme.colors.primaryVariant,
+    containerColor: Color = MaterialTheme.colors.secondary,
     borderColor: Color = MaterialTheme.colors.primary,
     border: Boolean = true,
     modifier: Modifier,

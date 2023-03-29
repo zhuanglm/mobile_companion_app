@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Subheader
 
 
@@ -22,7 +23,18 @@ fun LoadingScreenWithIcon(
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
-            val (text, icon) = createRefs()
+            val (topAppBar, text, icon) = createRefs()
+            ESightTopAppBar(
+                showBackButton = false,
+                showSettingsButton = false ,
+                onBackButtonInvoked = { /*Unused*/ },
+                onSettingsButtonInvoked = { /*Unused*/ },
+                modifier = modifier.constrainAs(topAppBar){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
 
             Subheader(
                 text = loadingText,

@@ -67,7 +67,7 @@ internal fun UnableToConnectScreen(
                         start.linkTo(parent.start)
                     })
 
-            Header2Text(text = stringResource(id = R.string.bt_unable_to_connect_subtitle),
+            Subheader(text = stringResource(id = R.string.bt_unable_to_connect_subtitle),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(subtitle) {

@@ -73,6 +73,7 @@ dependencies {
 
     implementation "androidx.compose.runtime:runtime:$compose"
     implementation "androidx.compose.runtime:runtime-livedata:$compose"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
 
 
     //Testing CPIII

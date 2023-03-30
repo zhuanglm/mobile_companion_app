@@ -21,10 +21,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDisabledViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.BigIcon
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.Subheader
+import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 
 @Composable
 fun BtDisabledScreen(
@@ -100,7 +100,7 @@ internal fun BtDisabledScreen(
                 })
 
             // Set up the body text
-            Header2Text(
+            Subheader(
                 text = stringResource(id = R.string.bt_disabled_body),
                 modifier = modifier
                     .padding(

@@ -60,5 +60,6 @@
     <string name="wifi_type_security_wpa" translatable="true">WPA/WPA2/WPA3</string>
     <string name="wifi_advanced_QR_finishButton" translatable="true">Create Wi-Fi code</string>
     <string name="wifi_advanced_BT_finishButton" translatable="true">Connect to network</string>
+    <string name="cancel" translatable="true">Cancel</string>
 
 </resources>

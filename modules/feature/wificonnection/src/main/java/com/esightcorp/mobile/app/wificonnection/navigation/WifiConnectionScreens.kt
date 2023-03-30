@@ -1,9 +1,19 @@
 package com.esightcorp.mobile.app.wificonnection
 
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+
 sealed class WifiConnectionScreens(val route: String) {
     object WifiConnectionHomeScreen : WifiConnectionScreens("wificonnection_home")
     object IncomingNavigationRoute : WifiConnectionScreens("wificonnection")
-    object SearchingForNetworkRoute : WifiConnectionScreens("searching_for_networks")
+    object SearchingForNetworkRoute : WifiConnectionScreens("searching_for_networks"){
+        const val flowArg = "flow"
+        val routeWithArgs = "${route}/{$flowArg}"
+        val arguments = listOf(
+            navArgument(flowArg){type = NavType.StringType},
+        )
+    }
+
     object SelectNetworkRoute : WifiConnectionScreens("select_network")
     object ConnectingRoute : WifiConnectionScreens("connecting")
     object ConnectedRoute : WifiConnectionScreens("connected")

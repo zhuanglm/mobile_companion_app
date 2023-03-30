@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -59,6 +60,30 @@ fun TextRectangularButton(
         colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(10.dp),
+        contentPadding = PaddingValues(20.dp, 10.dp),
+    ) {
+        ButtonText(text = text, modifier = modifier
+            .weight(1f)
+            .offset(x = 12.dp))
+    }
+}
+
+@Composable
+fun OutlinedTextRectangularButton(
+    onClick: () -> Unit,
+    modifier: Modifier,
+    text: String,
+) {
+    ElevatedButton(
+        onClick =  onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(25.dp, 20.dp),
+        enabled = true,
+        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.surface, MaterialTheme.colors.onSurface),
+        elevation = ButtonDefaults.elevatedButtonElevation(),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(4.dp, MaterialTheme.colors.primary) ,
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         ButtonText(text = text, modifier = modifier

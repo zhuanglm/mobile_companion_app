@@ -27,6 +27,7 @@ object WifiCache {
 //    }
 
     fun setWifiFlow(flow: WifiFlow) {
+        Log.d("WIFI_CACHE", "setWifiFlow: ${flow.toString()}")
         this.currentFlow = flow
     }
 

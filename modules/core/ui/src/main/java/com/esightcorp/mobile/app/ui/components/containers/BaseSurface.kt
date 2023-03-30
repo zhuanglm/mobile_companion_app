@@ -27,6 +27,7 @@ fun BaseScreen(
     showSettingsButton: Boolean,
     onBackButtonInvoked: () -> Unit,
     onSettingsButtonInvoked: () -> Unit,
+    isBottomButtonNeeded: Boolean = true,
     bottomButton: @Composable () -> Unit,
     everythingElse: @Composable () -> Unit,
 
@@ -59,17 +60,19 @@ fun BaseScreen(
                     }
                 }
             }
-
-            Box(modifier = modifier
-                .constrainAs(bottomButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+            if(isBottomButtonNeeded){
+                Box(modifier = modifier
+                    .constrainAs(bottomButton) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .fillMaxWidth(),
+                    contentAlignment = Alignment.Center) {
+                    bottomButton()
                 }
-                .fillMaxWidth(),
-                contentAlignment = Alignment.Center) {
-                bottomButton()
             }
+
         }
     }
 }

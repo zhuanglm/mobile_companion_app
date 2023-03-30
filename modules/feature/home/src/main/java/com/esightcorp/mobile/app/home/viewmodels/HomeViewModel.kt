@@ -62,7 +62,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToWifiCredsOverBt(navController: NavController){
-        navController.navigate("wificonnection")
+        navController.navigate("searching_for_networks/bluetooth")
     }
 
     fun navigateToBluetoothStart(navController: NavController){
@@ -71,6 +71,14 @@ class HomeViewModel @Inject constructor(
 
     fun navigateToBluetoothDisabled(navController: NavController){
         navController.navigate("bt_disabled")
+    }
+
+    fun navigateToWifiCredsQr(navController: NavController){
+        navController.navigate("searching_for_networks/qr")
+    }
+
+    fun navigateToShareYourView(navController: NavController){
+        navController.navigate("share")
     }
 
 }

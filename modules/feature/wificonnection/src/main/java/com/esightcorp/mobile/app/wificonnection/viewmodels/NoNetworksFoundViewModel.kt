@@ -35,7 +35,7 @@ class NoNetworksFoundViewModel @Inject constructor(
 
     fun tryAgain(){
         if(this::navController.isInitialized){
-            navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route)
+            navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route + "/bluetooth")
         }
     }
 

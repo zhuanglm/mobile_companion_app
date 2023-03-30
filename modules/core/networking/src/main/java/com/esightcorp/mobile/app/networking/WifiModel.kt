@@ -170,6 +170,21 @@ class WifiModel(
        return wifiManager.isWifiEnabled
     }
 
+    fun setWifiFlow(flow: String){
+        when(flow.lowercase()){
+            "bluetooth" -> {
+                Log.i(TAG, "setWifiFlow: WIFI")
+                WifiCache.setWifiFlow(WifiCache.WifiFlow.BluetoothFlow)
+            }
+            "qr" -> {
+                Log.i(TAG, "setWifiFlow: QR")
+                WifiCache.setWifiFlow(WifiCache.WifiFlow.QrFlow)
+            }
+            else -> {
+                Log.e(TAG, "setWifiFlow: Unknown") }
+        }
+    }
+
 
     private companion object {
         /*

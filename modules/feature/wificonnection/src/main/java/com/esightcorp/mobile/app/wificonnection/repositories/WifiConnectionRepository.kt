@@ -175,4 +175,8 @@ class WifiConnectionRepository @Inject constructor(
         Log.e(TAG, "unregisterListener: ", )
     }
 
+    fun setWifiFlow(flow: String){
+        wifiModel.setWifiFlow(flow)
+    }
+
 }

@@ -73,7 +73,15 @@ class SelectNetworkViewModel @Inject constructor(
         navController.navigate(WifiConnectionScreens.EnterPasswordRoute.route)
     }
 
+    fun onBackButtonClicked(navController: NavController){
+        navController.popBackStack("home_first", false)
+    }
+
     fun navigateToNoNetworksFoundScreen(navController: NavController){
         navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route)
+    }
+
+    fun onAdvancedButtonClicked(navController: NavController){
+        navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
     }
 }

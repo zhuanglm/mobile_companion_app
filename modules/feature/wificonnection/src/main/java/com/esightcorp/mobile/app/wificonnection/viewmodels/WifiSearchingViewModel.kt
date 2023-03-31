@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiSearchingViewModel @Inject constructor(
     application: Application,
-    repository: WifiConnectionRepository
+   val repository: WifiConnectionRepository
 ): AndroidViewModel(application) {
     private val TAG = "WifiSearchingViewModel"
     private var _uiState = MutableStateFlow(WifiSearchingUiState())
@@ -74,6 +74,10 @@ class WifiSearchingViewModel @Inject constructor(
     fun navigateToWifiNetworksScreen(navController: NavController){
         Log.d(TAG, "navigateToWifiNetworksScreen: ")
         navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route)
+    }
+
+    fun setWifiFlow(flow: String?){
+        repository.setWifiFlow(flow!!)
     }
 
 }

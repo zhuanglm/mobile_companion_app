@@ -5,6 +5,7 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -20,13 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EnterPasswordViewModel @Inject constructor(
-    application: Application,
-    val repository: WifiConnectionRepository
-): AndroidViewModel(application) {
+    application: Application, val repository: WifiConnectionRepository
+) : AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(WifiCredentialsUiState())
     val uiState: StateFlow<WifiCredentialsUiState> = _uiState.asStateFlow()
-    private lateinit var navController: NavController
     val TAG = "EnterPasswordViewModel"
 
     val scanListener = object : WifiNetworkScanListener {
@@ -50,53 +49,57 @@ class EnterPasswordViewModel @Inject constructor(
 
     init {
         repository.registerListener(scanListener)
+        updateWifiFlow(repository.getCurrentWifiFlow())
     }
 
-    fun setNavController(navController: NavController){
-        this.navController = navController
-    }
-
-    fun updatePassword(password:String){
+    fun updatePassword(password: String) {
         Log.d("WifiCredentialsViewModel", "updatePassword: $password")
         _uiState.update { state ->
             state.copy(password = password)
         }
     }
-
-    fun updateWifiType(type:String){
-        Log.d("WifiCredentialsViewModel", "updateWifiType: $type")
+    fun updateWifiFlow(flow: WifiCache.WifiFlow){
         _uiState.update { state ->
-            state.copy(wifiType = type)
+            state.copy(wifiFlow = flow)
         }
     }
 
-    fun wifiPasswordSubmitted(){
+    fun wifiPasswordSubmitted(navController: NavController) {
         _uiState.update { state ->
             state.copy(passwordSubmitted = true)
         }
-        sendWifiCredsViaBluetooth()
-        navigateToConnectingScreen()
-    }
-
-    fun wifiTypeSubmitted(){
-        _uiState.update { state ->
-            state.copy(wifiTypeSubmitted = true)
+        repository.setWifiPassword(_uiState.value.password)
+        if(_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow){
+            sendWifiCredsViaBluetooth()
+            navigateToConnectingScreen(navController)
+        }else if(_uiState.value.wifiFlow == WifiCache.WifiFlow.QrFlow){
+            navigateToQrScreen(navController)
         }
-        Log.d("WifiCredentialsViewModel", "wifiTypeSubmitted: ")
+        
     }
 
-    fun sendWifiCredsViaBluetooth(){
+    fun onAdvancedButtonPressed(navController: NavController) {
+        navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
+    }
+
+    fun onBackButtonPressed(navController: NavController) {
+        navController.popBackStack()
+    }
+
+    fun sendWifiCredsViaBluetooth() {
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
         repository.sendWifiCreds(_uiState.value.password, _uiState.value.wifiType)
     }
 
-    private fun navigateToConnectingScreen(){
-        if (this::navController.isInitialized){
-            navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
-        }
+    private fun navigateToConnectingScreen(navController: NavController) {
+        Log.i(TAG, "navigateToConnectingScreen: Bluetooth route selected")
+        navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
     }
-
-
+    
+    private fun navigateToQrScreen(navController: NavController){
+        Log.i(TAG, "navigateToQrScreen: QR Route selected")
+        navController.navigate(WifiConnectionScreens.WifiQRCodeRoute.route)
+    }
 
 
 }

@@ -142,9 +142,9 @@ fun SquareTileCardLayout(
     }, CardData(
         "Share your view", com.esightcorp.mobile.app.ui.R.drawable.baseline_camera_alt_24
     ) {
-        Unit
+        vm.navigateToShareYourView(navController)
     }, CardData("Wifi via QR", com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24) {
-        Unit
+        vm.navigateToWifiCredsQr(navController)
     })
 
     LazyVerticalGrid(

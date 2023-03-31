@@ -163,11 +163,38 @@ class WifiModel(
     }
 
     fun stopWifiScan() {
-        context.unregisterReceiver(wifiScanReceiver)
+        try {
+            context.unregisterReceiver(wifiScanReceiver)
+        }catch (e: Exception){
+            Log.e(TAG, "stopWifiScan: ${e.message}")
+        }
     }
 
     fun isWifiEnabled():Boolean{
        return wifiManager.isWifiEnabled
+    }
+
+    fun setWifiFlow(flow: String){
+        when(flow.lowercase()){
+            "bluetooth" -> {
+                Log.i(TAG, "setWifiFlow: WIFI")
+                WifiCache.setWifiFlow(WifiCache.WifiFlow.BluetoothFlow)
+            }
+            "qr" -> {
+                Log.i(TAG, "setWifiFlow: QR")
+                WifiCache.setWifiFlow(WifiCache.WifiFlow.QrFlow)
+            }
+            else -> {
+                Log.e(TAG, "setWifiFlow: Unknown") }
+        }
+    }
+
+    fun setWifiPassword(password: String){
+        WifiCache.credentials.setPassword(password)
+    }
+
+    fun getQrString():String{
+        return "WIFI:S:${WifiCache.credentials.getNetwork().SSID};T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
     }
 
 

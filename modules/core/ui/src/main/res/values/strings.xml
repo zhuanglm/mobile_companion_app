@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="select_your_esight" translatable="true">Select your eSight</string>
@@ -52,6 +52,19 @@
     <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
     <string name="bt_no_devices_found_button" translatable="true">Try again</string>
     <string name="wifi_searching_for_networks_header" translatable="true">Searching for Wi-Fi networks</string>
+    <string name="wifi_advanced_ssidHeader" translatable="true">Enter Wi-Fi name</string>
+    <string name="wifi_advanced_pwdHeader" translatable="true">Enter Wi-Fi password</string>
+    <string name="wifi_advanced_securityHeader" translatable="true">Select security type</string>
+    <string name="wifi_type_security_none" translatable="true">None</string>
+    <string name="wifi_type_security_wep" translatable="true">WEP</string>
+    <string name="wifi_type_security_wpa" translatable="true">WPA/WPA2/WPA3</string>
+    <string name="wifi_advanced_QR_finishButton" translatable="true">Create Wi-Fi code</string>
+    <string name="wifi_advanced_BT_finishButton" translatable="true">Connect to network</string>
     <string name="cancel" translatable="true">Cancel</string>
-
+    <string name="retry" translatable="true">Retry</string>
+    <string name="how_to_scan" translatable="true" tools:ignore="ExtraTranslation">How to scan</string>
+    /!-- TODO: Why does this need lint suppression but others dont --/
+    <string name="wifi_qr_code_header" translatable="true">Scan Wi-Fi code</string>
+    <string name="wifi_qr_code_subheader" translatable="true">Use the QR scanner in eSight Settings</string>
+    <string name="wifi_qr_code_button" translatable="true">Return to home screen</string>
 </resources>

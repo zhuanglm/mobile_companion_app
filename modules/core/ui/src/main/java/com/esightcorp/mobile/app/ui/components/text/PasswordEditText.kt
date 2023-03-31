@@ -11,7 +11,7 @@ import com.esightcorp.mobile.app.ui.R
 
 
 @Composable
-fun EEditText(
+fun PasswordEditText(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,

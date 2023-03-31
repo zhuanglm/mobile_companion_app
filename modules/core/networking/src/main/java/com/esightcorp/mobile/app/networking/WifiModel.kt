@@ -163,7 +163,11 @@ class WifiModel(
     }
 
     fun stopWifiScan() {
-        context.unregisterReceiver(wifiScanReceiver)
+        try {
+            context.unregisterReceiver(wifiScanReceiver)
+        }catch (e: Exception){
+            Log.e(TAG, "stopWifiScan: ${e.message}")
+        }
     }
 
     fun isWifiEnabled():Boolean{

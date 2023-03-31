@@ -46,14 +46,14 @@ fun BaseScreen(
                     end.linkTo(parent.end)
                 })
             Box(modifier = modifier
-                .fillMaxSize()
                 .constrainAs(everything) {
-                    top.linkTo(topAppBar.bottom)
+                    top.linkTo(topAppBar.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(bottomButton.top)
                 }
-                .padding(25.dp, 30.dp, 25.dp, 0.dp)) {
+                .padding(25.dp, 0.dp, 25.dp, 0.dp).fillMaxSize()
+            ) {
                 LazyColumn(modifier = modifier) {
                     item {
                         everythingElse()
@@ -102,14 +102,14 @@ fun HomeBaseScreen(
                     end.linkTo(parent.end)
                 })
             Box(modifier = modifier
-                .fillMaxSize()
                 .padding(25.dp, 30.dp, 25.dp, 0.dp)
                 .constrainAs(everything) {
-                    top.linkTo(topAppBar.bottom)
+                    top.linkTo(topAppBar.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(bottomButton.top)
-                }){
+                }.fillMaxSize()
+            ){
                 everythingElse()
             }
 

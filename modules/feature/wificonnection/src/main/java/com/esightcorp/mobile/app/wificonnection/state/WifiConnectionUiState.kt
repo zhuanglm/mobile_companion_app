@@ -1,6 +1,7 @@
 package com.esightcorp.mobile.app.wificonnection.state
 
 import android.net.wifi.ScanResult
+import com.esightcorp.mobile.app.networking.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
 
@@ -31,6 +32,7 @@ data class WifiCredentialsUiState(
     val passwordSubmitted: Boolean = false,
     val wifiType: String ="WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
+    val wifiFlow: WifiCache.WifiFlow = WifiCache.WifiFlow.NotInUse,
 )
 
 data class WifiConnectingUiState(
@@ -85,5 +87,10 @@ data class WifiTypeUiState(
     val isWifiEnabled: Boolean = false,
     val wifiType: String = "WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
+    val isBtEnabled: Boolean = false
+)
+
+data class WifiQrCodeUiState(
+    val isWifiEnabled: Boolean = false,
     val isBtEnabled: Boolean = false
 )

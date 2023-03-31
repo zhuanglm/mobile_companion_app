@@ -4,7 +4,6 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 sealed class WifiConnectionScreens(val route: String) {
-    object WifiConnectionHomeScreen : WifiConnectionScreens("wificonnection_home")
     object IncomingNavigationRoute : WifiConnectionScreens("wificonnection")
     object SearchingForNetworkRoute : WifiConnectionScreens("searching_for_networks"){
         const val flowArg = "flow"

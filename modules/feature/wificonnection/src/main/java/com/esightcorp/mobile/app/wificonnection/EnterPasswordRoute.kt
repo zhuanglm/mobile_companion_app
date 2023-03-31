@@ -17,6 +17,8 @@ import com.esightcorp.mobile.app.ui.components.text.PasswordEditText
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.EnterPasswordViewModel
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
+import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 
 private const val TAG = "WifiCredentialsRoute"
 
@@ -27,12 +29,11 @@ fun EnterPasswordRoute(
 ) {
     Log.d(TAG, "EnterPasswordRoute:")
     val wifiUiState by viewModel.uiState.collectAsState()
-    viewModel.setNavController(navController = navController)
     EnterPasswordScreen(
         onPasswordSubmitted = viewModel::wifiPasswordSubmitted,
         onPasswordUpdated = viewModel::updatePassword,
-        onWifiTypeSubmitted = viewModel::wifiTypeSubmitted,
-        onWifiTypeUpdated = viewModel::updateWifiType,
+        onAdvancedButtonPressed = viewModel::onAdvancedButtonPressed,
+        onBackPressed = viewModel::onBackButtonPressed,
         wifiUiState = wifiUiState,
         navController = navController,
     )
@@ -41,10 +42,10 @@ fun EnterPasswordRoute(
 
 @Composable
 internal fun EnterPasswordScreen(
-    onPasswordSubmitted: () -> Unit,
-    onWifiTypeSubmitted: () -> Unit,
+    onPasswordSubmitted: (NavController) -> Unit,
+    onAdvancedButtonPressed: (NavController) -> Unit,
+    onBackPressed: (NavController) -> Unit,
     onPasswordUpdated: (String) -> Unit,
-    onWifiTypeUpdated: (String) -> Unit,
     wifiUiState: WifiCredentialsUiState,
     navController: NavController,
     modifier: Modifier = Modifier,
@@ -54,7 +55,9 @@ internal fun EnterPasswordScreen(
         modifier = modifier,
         onPasswordUpdated = onPasswordUpdated,
         wifiUiState = wifiUiState,
-        navController = navController
+        navController = navController,
+        onBackPressed = onBackPressed,
+        onAdvancedButtonClicked = onAdvancedButtonPressed,
     )
 
 }
@@ -62,7 +65,9 @@ internal fun EnterPasswordScreen(
 
 @Composable
 private fun PasswordField(
-    onPasswordSubmitted: () -> Unit,
+    onPasswordSubmitted: (NavController) -> Unit,
+    onBackPressed: (NavController) -> Unit,
+    onAdvancedButtonClicked: (NavController) -> Unit,
     onPasswordUpdated: (String) -> Unit,
     modifier: Modifier,
     wifiUiState: WifiCredentialsUiState,
@@ -73,54 +78,69 @@ private fun PasswordField(
         modifier = modifier
             .fillMaxSize(), color = MaterialTheme.colors.surface
     ) {
-        ConstraintLayout {
-            val (topbar, header, editText, button) = createRefs()
 
-            ESightTopAppBar(
-                showBackButton = true,
-                showSettingsButton = false,
-                onBackButtonInvoked = { Unit },
-                onSettingsButtonInvoked = { /*Unused*/ },
-                modifier = modifier.constrainAs(topbar) {
-                    top.linkTo(parent.top)
+    }
+    BaseScreen(
+        modifier = modifier,
+        showBackButton = true ,
+        showSettingsButton = false,
+        onBackButtonInvoked = { onBackPressed(navController) },
+        onSettingsButtonInvoked = { /*unused*/ },
+        bottomButton = { AdvancedSettingsButton(
+            modifier = modifier,
+            onAdvancedSettingsClick = { onAdvancedButtonClicked(navController) }
+        ) }) {
+        PasswordBody(
+            modifier = modifier,
+            onPasswordSubmitted = onPasswordSubmitted,
+            onPasswordUpdated = onPasswordUpdated ,
+            wifiUiState = wifiUiState ,
+            navController = navController
+        )
+
+    }
+}
+
+@Composable
+private fun PasswordBody(
+    modifier: Modifier,
+    onPasswordSubmitted: (NavController) -> Unit,
+    onPasswordUpdated: (String) -> Unit,
+    wifiUiState: WifiCredentialsUiState,
+    navController: NavController
+){
+    ConstraintLayout {
+        val (header, editText, button) = createRefs()
+
+        Header1Text(text = "Enter Wi-Fi password", modifier = modifier
+            .constrainAs(header) {
+                top.linkTo(parent.top, margin = 50.dp)
+                start.linkTo(parent.start)
+            })
+
+        PasswordEditText(
+            value = wifiUiState.password,
+            onValueChange = onPasswordUpdated,
+            modifier = Modifier
+                .constrainAs(editText) {
+                    top.linkTo(header.bottom, margin = 25.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-            )
+                .fillMaxWidth()
+        )
 
-            Header1Text(text = "Enter Wi-Fi password", modifier = modifier
-                .constrainAs(header) {
-                    top.linkTo(topbar.bottom)
-                    start.linkTo(parent.start)
-
-                }
-                .padding(25.dp, 50.dp, 0.dp, 0.dp))
-
-            PasswordEditText(
-                value = wifiUiState.password,
-                onValueChange = onPasswordUpdated,
-                modifier = Modifier
-                    .constrainAs(editText) {
-                        top.linkTo(header.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                    .fillMaxWidth()
-                    .padding(25.dp)
-            )
-
-            TextRectangularButton(
-                onClick = onPasswordSubmitted ,
-                modifier = modifier.constrainAs(button) {
-                    top.linkTo(editText.bottom)
-                    start.linkTo(editText.start)
-                    end.linkTo(editText.end)
-                },
-                text = stringResource(id = R.string.wifi_connect_button)
-            )
+        TextRectangularButton(
+            onClick = { onPasswordSubmitted(navController) } ,
+            modifier = modifier.constrainAs(button) {
+                top.linkTo(editText.bottom, margin = 25.dp)
+                start.linkTo(editText.start)
+                end.linkTo(editText.end)
+            },
+            text = stringResource(id = R.string.wifi_connect_button)
+        )
 
 
-        }
     }
 }
 

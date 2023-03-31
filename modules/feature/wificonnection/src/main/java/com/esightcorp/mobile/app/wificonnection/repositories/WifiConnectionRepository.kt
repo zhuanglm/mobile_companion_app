@@ -136,6 +136,10 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.startWifiScan()
     }
 
+    fun getCurrentWifiFlow(): WifiCache.WifiFlow{
+        return WifiCache.getWifiFlow()
+    }
+
     private fun setupWifiModelListener() {
         wifiModel.registerListener(wifiModelListener)
     }
@@ -151,6 +155,16 @@ class WifiConnectionRepository @Inject constructor(
 
     fun getSelectedNetwork(): ScanResult {
         return WifiCache.credentials.getNetwork()
+    }
+    fun getCurrentPassword(): String{
+        return WifiCache.credentials.getPassword()
+    }
+    fun getCurrentSecurityType(): String{
+        return WifiCache.credentials.getWifiType()
+    }
+
+    fun setWifiType(type: String){
+        WifiCache.credentials.setWifiType(type)
     }
 
     fun registerListener(listener: WifiNetworkScanListener) {

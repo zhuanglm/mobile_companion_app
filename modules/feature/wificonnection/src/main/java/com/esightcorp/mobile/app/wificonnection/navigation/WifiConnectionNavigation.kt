@@ -54,5 +54,11 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
         composable(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route) {
             AdvancedWifiRoute(navController = navController)
         }
+        composable(WifiConnectionScreens.SelectNetworkSecurityRoute.route){
+            WifiTypeRoute(navController = navController)
+        }
+        composable(WifiConnectionScreens.WifiQRCodeRoute.route){
+            WifiQRCodeRoute(navController = navController)
+        }
     }
 }

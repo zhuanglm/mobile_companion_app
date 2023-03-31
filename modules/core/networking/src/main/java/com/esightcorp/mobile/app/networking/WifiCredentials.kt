@@ -4,8 +4,8 @@ import android.net.wifi.ScanResult
 
 object WifiCredentials{
     private lateinit var network: ScanResult
-    private var password: String? = null
-    private var wifiType: String? = null
+    private var password: String = ""
+    private var wifiType: String = "WPA/WPA2"
 
     fun setNetwork(network: ScanResult){
         this.network = network
@@ -16,11 +16,11 @@ object WifiCredentials{
     }
 
     fun getPassword():String{
-        return password!!
+        return password
     }
 
     fun getWifiType():String{
-        return wifiType!!
+        return wifiType
     }
 
     fun setPassword(pwd: String){

@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiTypeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,17 +39,13 @@ class WifiTypeViewModel @Inject constructor(
         }
     }
 
-    fun onWepPressed(){
-        onWifiTypeSelected("WEP")
+    fun onTypePressed(navController: NavController, type: String){
+        repository.setWifiType(type)
+        navController.popBackStack()
     }
 
-    fun onWpaPressed(){
-        onWifiTypeSelected("WPA/WPA2")
-    }
 
-    fun onNonePressed(){
-        onWifiTypeSelected("None")
-    }
+
 
 
 

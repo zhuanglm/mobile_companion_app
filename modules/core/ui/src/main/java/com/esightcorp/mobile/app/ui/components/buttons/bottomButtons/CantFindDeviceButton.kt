@@ -13,7 +13,7 @@ fun CantFindDeviceButton(
     onHelpClick: () -> Unit
 ) {
     SupportButtonTemplate(
-        onClick = { onHelpClick },
+        onClick =  onHelpClick ,
         text = "Can't find your eSight?",
         painter = painterResource(id = R.drawable.round_question_mark_24),
         modifier = modifier

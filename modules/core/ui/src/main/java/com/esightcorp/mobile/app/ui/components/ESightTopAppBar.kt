@@ -1,18 +1,21 @@
 package com.esightcorp.mobile.app.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
 
 //TODO: Update the content descriptions to use resources
@@ -62,12 +65,22 @@ fun ESightTopAppBar(
 }
 
 @Composable
-private fun TopAppBarTitle() {
-    Image(
-        painter = painterResource(id = R.drawable.logo),
-        contentDescription = "eSight Logo",
-        modifier = Modifier.size(25.dp)
-    )
+private fun TopAppBarTitle(
+    darkTheme: Boolean = isSystemInDarkTheme()
+) {
+    val boxColor =
+        if (darkTheme) androidx.compose.material.MaterialTheme.colors.surface else androidx.compose.material.MaterialTheme.colors.onSurface
+    Log.i("TAG", "TopAppBarTitle: ${boxColor.toString()}")
+    Box(
+        modifier = Modifier.background(boxColor, shape = RoundedCornerShape(10.dp)).wrapContentSize().padding(8.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "eSight Logo",
+            modifier = Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)
+        )
+    }
+
 
 }
 
@@ -81,12 +94,15 @@ fun TopAppBarNavIconButton(
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
-        colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
+        colors = IconButtonDefaults.filledIconButtonColors(
+            MaterialTheme.colors.primary,
+            MaterialTheme.colors.onPrimary
+        ),
     ) {
         Icon(
             Icons.Rounded.ArrowBack,
             contentDescription = "Back button",
-            modifier = modifier.size(30.dp)
+            modifier = modifier.size(30.dp),
         )
     }
 }
@@ -101,7 +117,10 @@ fun TopAppBarSettingsIconButton(
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
-        colors = IconButtonDefaults.filledIconButtonColors(Color.Yellow, Color.Black),
+        colors = IconButtonDefaults.filledIconButtonColors(
+            MaterialTheme.colors.primary,
+            MaterialTheme.colors.onPrimary
+        ),
     ) {
         Icon(
             Icons.Rounded.Settings,

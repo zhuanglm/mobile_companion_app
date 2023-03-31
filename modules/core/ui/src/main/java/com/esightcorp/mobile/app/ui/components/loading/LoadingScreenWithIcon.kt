@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.ui.components.loading
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -13,7 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.esightcorp.mobile.app.ui.components.Header2Text
+import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
+import com.esightcorp.mobile.app.ui.components.Subheader
 
 
 @Composable
@@ -23,9 +23,20 @@ fun LoadingScreenWithIcon(
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
-            val (text, icon) = createRefs()
+            val (topAppBar, text, icon) = createRefs()
+            ESightTopAppBar(
+                showBackButton = false,
+                showSettingsButton = false ,
+                onBackButtonInvoked = { /*Unused*/ },
+                onSettingsButtonInvoked = { /*Unused*/ },
+                modifier = modifier.constrainAs(topAppBar){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            )
 
-            Header2Text(
+            Subheader(
                 text = loadingText,
                 modifier = modifier.constrainAs(text) {
                     top.linkTo(parent.top)
@@ -43,7 +54,7 @@ fun LoadingScreenWithIcon(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                tint = Color.Yellow
+                tint = MaterialTheme.colors.primary
             )
         }
     }

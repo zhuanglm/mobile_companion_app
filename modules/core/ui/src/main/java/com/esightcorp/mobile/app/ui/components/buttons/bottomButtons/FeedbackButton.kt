@@ -14,9 +14,9 @@ fun FeedbackButton(
     onFeedbackClick: () -> Unit
 ) {
     SupportButtonTemplate(
-        onClick = { onFeedbackClick },
+        onClick =  onFeedbackClick ,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.round_feedback_24),
+        painter = painterResource(id = R.drawable.round_chat_bubble_outline_24),
         text = "Feedback"
     )
 }

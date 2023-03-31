@@ -193,4 +193,12 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.setWifiFlow(flow)
     }
 
+    fun setWifiPassword(pwd: String){
+        wifiModel.setWifiPassword(pwd)
+    }
+
+    fun getQrString():String{
+        return wifiModel.getQrString()
+    }
+
 }

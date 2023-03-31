@@ -91,6 +91,6 @@ data class WifiTypeUiState(
 )
 
 data class WifiQrCodeUiState(
-    val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = false
+    val isBtEnabled: Boolean = false,
+    val qrString: String = ""
 )

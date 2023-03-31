@@ -68,6 +68,7 @@ class EnterPasswordViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(passwordSubmitted = true)
         }
+        repository.setWifiPassword(_uiState.value.password)
         if(_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow){
             sendWifiCredsViaBluetooth()
             navigateToConnectingScreen(navController)

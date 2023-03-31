@@ -189,6 +189,14 @@ class WifiModel(
         }
     }
 
+    fun setWifiPassword(password: String){
+        WifiCache.credentials.setPassword(password)
+    }
+
+    fun getQrString():String{
+        return "WIFI:S:${WifiCache.credentials.getNetwork().SSID};T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
+    }
+
 
     private companion object {
         /*

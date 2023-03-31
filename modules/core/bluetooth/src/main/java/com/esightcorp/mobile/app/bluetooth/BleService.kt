@@ -21,11 +21,13 @@ class BleService : Service() {
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var connectionState = STATE_DISCONNECTED
+    private var errorNotificationFlag: Boolean = false
 
     private lateinit var WIFI_INFO_Characteristic: BluetoothGattCharacteristic
     private lateinit var BUTTON_PRESS_Characteristic: BluetoothGattCharacteristic
     private lateinit var ERROR_Characteristic: BluetoothGattCharacteristic
     private lateinit var WIFI_INFO_Descriptor: BluetoothGattDescriptor
+    private lateinit var ERROR_Descriptor: BluetoothGattDescriptor
 
 
     //gatt callback
@@ -66,6 +68,9 @@ class BleService : Service() {
                 )
                 ERROR_Characteristic = service.getCharacteristic(
                     UUID_CHARACTERISTIC_ERROR
+                )
+                ERROR_Descriptor = ERROR_Characteristic.getDescriptor(
+                    UUID_DESCRIPTOR_ERROR
                 )
                 WIFI_INFO_Descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
                 gatt.writeDescriptor(WIFI_INFO_Descriptor)
@@ -162,6 +167,12 @@ class BleService : Service() {
         ) {
             super.onDescriptorWrite(gatt, descriptor, status)
             Log.e(TAG, "onDescriptorWrite: ")
+            if(!errorNotificationFlag){
+                ERROR_Characteristic.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+                gatt.writeDescriptor(ERROR_Descriptor)
+                gatt.setCharacteristicNotification(ERROR_Characteristic, true)
+                errorNotificationFlag = !errorNotificationFlag
+            }
         }
 
 
@@ -365,6 +376,7 @@ companion object {
     val UUID_CHARACTERISTIC_WIFI_INFO = UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
     val UUID_CHARACTERISTIC_ERROR = UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
     val UUID_DESCRIPTOR_WIFI_INFO = UUID.fromString("6b90805b2-08f9-4168-86f6-d49f5046f7b3")
+    val UUID_DESCRIPTOR_ERROR = UUID.fromString("f385809a-2e27-4630-b189-7ea51b79c058")
 }
 
 }

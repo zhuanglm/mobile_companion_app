@@ -76,7 +76,7 @@ fun BaseWifiScreen(
                 }
             } else {
                 LaunchedEffect(Unit) {
-                    navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route)
+                    navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route + "/bluetooth")
                 }
 
             }

@@ -22,10 +22,12 @@ import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiSearchingViewMode
 @Composable
 fun SearchingForNetworksRoute(
     navController: NavController,
+    flow: String?,
     vm: WifiSearchingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
     Log.d("TAG", "SearchingForNetworksRoute: ")
+    vm.setWifiFlow(flow)
     if(!uiState.isWifiEnabled){
         NavigateToWifiOffScreen(navController = navController)
     } else{

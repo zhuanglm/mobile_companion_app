@@ -61,7 +61,7 @@ class WifiOffViewModel @Inject constructor(
 
     fun navigateHome(){
         if(this::navController.isInitialized){
-            navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route)
+            navController.navigate("home_first")
         }
     }
 

@@ -29,7 +29,7 @@ class UnableToConnectViewModel @Inject constructor(
 
     fun onTryAgain(){
         if(this::navController.isInitialized){
-            navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route)
+            navController.navigate(WifiConnectionScreens.SearchingForNetworkRoute.route + "/bluetooth")
         }
     }
 

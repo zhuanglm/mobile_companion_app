@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.wificonnection
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,10 +21,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
+import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
+import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.SelectNetworkViewModel
 
@@ -37,16 +39,16 @@ fun SelectNetworkRoute(
     if (!uiState.isWifiEnabled) {
         NavigateToWifiOffScreen(navController = navController)
     } else {
-        if(uiState.networkList.isEmpty()){
-            LaunchedEffect(Unit){
+        if (uiState.networkList.isEmpty()) {
+            LaunchedEffect(Unit) {
                 vm.navigateToNoNetworksFoundScreen(navController)
             }
-        }else{
+        } else {
             SelectNetworkScreen(
                 modifier = Modifier,
                 navController = navController,
-                onBackButtonClicked = { Unit },
-                onNetworkButtonClicked = { Unit },
+                onBackButtonClicked = vm::onBackButtonClicked,
+                onAdvancedButtonClicked = vm::onAdvancedButtonClicked,
                 uiState = uiState,
                 vm = vm
             )
@@ -62,8 +64,8 @@ fun SelectNetworkRoute(
 @Composable
 internal fun SelectNetworkScreen(
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit,
-    onNetworkButtonClicked: () -> Unit,
+    onBackButtonClicked: (NavController) -> Unit,
+    onAdvancedButtonClicked: (NavController) -> Unit,
     navController: NavController,
     uiState: SelectNetworkUiState,
     vm: SelectNetworkViewModel
@@ -78,59 +80,69 @@ internal fun SelectNetworkScreen(
     )
 
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-        ConstraintLayout(modifier = modifier.fillMaxSize()) {
-            val (topBar, header, networkContainer, advancedButton) = createRefs()
-            ESightTopAppBar(
-                showBackButton = true,
-                showSettingsButton = false,
-                onBackButtonInvoked = onBackButtonClicked,
-                onSettingsButtonInvoked = { /*Unused*/ Unit },
-                modifier = modifier.constrainAs(topBar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
+    }
+    HomeBaseScreen(
+        modifier = modifier,
+        showBackButton = true,
+        showSettingsButton = false,
+        onBackButtonInvoked = { onBackButtonClicked(navController) },
+        onSettingsButtonInvoked = { /*Unused*/ },
+        bottomButton = {
+            AdvancedSettingsButton(
+                modifier = modifier,
+                onAdvancedSettingsClick = { onAdvancedButtonClicked(navController) }
             )
-            Header1Text(
-                text = stringResource(id = R.string.wifi_select_network_header),
-                modifier = modifier
-                    .padding(25.dp, 0.dp)
-                    .constrainAs(header) {
-                        top.linkTo(topBar.bottom, margin = 50.dp)
-                        start.linkTo(parent.start)
-                    })
-            LazyColumn(modifier = modifier
-                .constrainAs(networkContainer) {
-                    top.linkTo(header.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(advancedButton.top)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                }) {
-                items(uiState.networkList) { network ->
-                    IconAndTextRectangularButton(
-                        onClick = {
-                            vm.selectNetwork(network)
-                            vm.navigateToPasswordScreen(navController)
-                        },
-                        modifier = Modifier,
-                        icon = ImageVector.vectorResource(id = com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24),
-                        text = network.SSID
-                    )
+        }) {
 
-                }
+        SelectNetworkBody(
+            modifier = modifier,
+            navController = navController,
+            uiState = uiState,
+            vm = vm
+        )
+
+    }
+
+}
+
+@Composable
+private fun SelectNetworkBody(
+    modifier: Modifier,
+    navController: NavController,
+    uiState: SelectNetworkUiState,
+    vm: SelectNetworkViewModel
+) {
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (header, networkContainer) = createRefs()
+        Header1Text(
+            text = stringResource(id = R.string.wifi_select_network_header),
+            modifier = modifier
+                .constrainAs(header) {
+                    top.linkTo(parent.top, margin = 35.dp)
+                    start.linkTo(parent.start)
+                })
+        LazyColumn(modifier = modifier
+            .constrainAs(networkContainer) {
+                top.linkTo(header.bottom, margin = 35.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+                height = Dimension.fillToConstraints
+                width = Dimension.fillToConstraints
+            }) {
+            items(uiState.networkList) { network ->
+                IconAndTextRectangularButton(
+                    onClick = {
+                        vm.selectNetwork(network)
+                        vm.navigateToPasswordScreen(navController)
+                    },
+                    modifier = Modifier,
+                    icon = ImageVector.vectorResource(id = com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24),
+                    text = network.SSID
+                )
+                Spacer(modifier = modifier.padding(10.dp))
 
             }
-            AdvancedSettingsButton(
-                modifier = modifier.constrainAs(advancedButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-                onAdvancedSettingsClick = { Unit }
-            )
-
 
         }
     }

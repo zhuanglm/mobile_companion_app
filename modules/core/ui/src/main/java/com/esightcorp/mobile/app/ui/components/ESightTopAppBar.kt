@@ -14,23 +14,34 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 
-//TODO: Update the content descriptions to use resources
-//TODO: Change all colours to follow material theme
-//TODO: Extrapolate values to res file
-//TODO: Create previews for everything
 
 /**
- * There are a few variations on this top app bar.
- * logo + gear
- * back + logo
- * just logo
- * [Note: Dont see an option where it is back + logo + gear]
- * e is always centered and always shown
+ * Displays a top app bar with optional back and settings buttons.
+ * The buttons are displayed based on the boolean parameters `showBackButton` and `showSettingsButton`.
+ * The back button is displayed on the left, and the settings button is displayed on the right.
+ * The app bar has the `CenterAlignedTopAppBar` design with a title in the center.
+ * The container color of the top app bar is set to the `surface` color of the current material theme.
+ *
+ * This composable uses experimental Material 3 API.
+ *
+ * @param showBackButton If true, the back button is displayed. Otherwise, it's not displayed.
+ * @param showSettingsButton If true, the settings button is displayed. Otherwise, it's not displayed.
+ * @param onBackButtonInvoked A lambda function that will be triggered when the back button is clicked.
+ * @param onSettingsButtonInvoked A lambda function that will be triggered when the settings button is clicked.
+ * @param modifier A [Modifier] applied to the top app bar for layout and styling.
+ *
+ * @see CenterAlignedTopAppBar
+ * @see TopAppBarTitle
+ * @see TopAppBarNavIconButton
+ * @see TopAppBarSettingsIconButton
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +76,27 @@ fun ESightTopAppBar(
     )
 }
 
+@Preview(showBackground = true)
+@Composable
+fun ESightTopAppBarPreview() {
+    MaterialTheme {
+        ESightTopAppBar(
+            showBackButton = true,
+            showSettingsButton = true,
+            onBackButtonInvoked = { /* implement action for back button here in your real app */ },
+            onSettingsButtonInvoked = { /* implement action for settings button here in your real app */ },
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+/**
+ * Displays a title for the top app bar, which is a logo image wrapped inside a box.
+ * The background color of the box is determined based on the theme of the system.
+ *
+ * @param darkTheme A boolean value to determine whether the system theme is dark or not.
+ * Defaults to `isSystemInDarkTheme()`.
+ */
 @Composable
 private fun TopAppBarTitle(
     darkTheme: Boolean = isSystemInDarkTheme()
@@ -73,18 +105,36 @@ private fun TopAppBarTitle(
         if (darkTheme) androidx.compose.material.MaterialTheme.colors.surface else androidx.compose.material.MaterialTheme.colors.surface
     Log.i("TAG", "TopAppBarTitle: ${boxColor.toString()}")
     Box(
-        modifier = Modifier.background(boxColor, shape = RoundedCornerShape(10.dp)).wrapContentSize().padding(8.dp)
+        modifier = Modifier
+            .background(boxColor, shape = RoundedCornerShape(dimensionResource(id = R.dimen.logo_corner_radius_top_app_bar)))
+            .wrapContentSize()
+            .padding(8.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "eSight Logo",
-            modifier = Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .width(IntrinsicSize.Min)
         )
     }
-
-
 }
 
+@Preview(showBackground = true)
+@Composable
+fun TopAppBarTitlePreview() {
+    MaterialTheme {
+        TopAppBarTitle(darkTheme = false)
+    }
+}
+
+/**
+ * Displays a navigation icon button on the top app bar.
+ * The icon used is `Icons.Rounded.ArrowBack` which represents a back arrow.
+ *
+ * @param modifier A [Modifier] applied to the icon button for layout and styling.
+ * @param onClick A lambda function that will be triggered when the icon button is clicked.
+ */
 @Composable
 fun TopAppBarNavIconButton(
     modifier: Modifier,
@@ -102,12 +152,28 @@ fun TopAppBarNavIconButton(
     ) {
         Icon(
             Icons.Rounded.ArrowBack,
-            contentDescription = "Back",
-            modifier = modifier.size(30.dp),
+            contentDescription = stringResource(id = R.string.back),
+            modifier = modifier.size(dimensionResource(id = R.dimen.filled_icon_top_app_bar_size)),
         )
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun TopAppBarNavIconButtonPreview() {
+    MaterialTheme {
+        TopAppBarNavIconButton(modifier = Modifier.padding(16.dp), onClick = {Unit})
+    }
+}
+
+
+/**
+ * Displays a settings icon button on the top app bar.
+ * The icon used is `Icons.Rounded.Settings` which represents settings.
+ *
+ * @param modifier A [Modifier] applied to the icon button for layout and styling.
+ * @param onClick A lambda function that will be triggered when the icon button is clicked.
+ */
 @Composable
 fun TopAppBarSettingsIconButton(
     modifier: Modifier,
@@ -125,8 +191,16 @@ fun TopAppBarSettingsIconButton(
     ) {
         Icon(
             Icons.Rounded.Settings,
-            contentDescription = "Settings",
-            modifier = modifier.size(30.dp)
+            contentDescription = stringResource(id = R.string.settings),
+            modifier = modifier.size(dimensionResource(id = R.dimen.filled_icon_top_app_bar_size))
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TopAppBarSettingsIconButtonPreview() {
+    MaterialTheme {
+        TopAppBarSettingsIconButton(modifier = Modifier.padding(16.dp), onClick = {Unit})
     }
 }

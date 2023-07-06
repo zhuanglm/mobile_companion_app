@@ -68,4 +68,6 @@
     <string name="wifi_qr_code_header" translatable="true">Scan Wi-Fi code</string>
     <string name="wifi_qr_code_subheader" translatable="true">Use the QR scanner in eSight Settings</string>
     <string name="wifi_qr_code_button" translatable="true">Return to home screen</string>
+    <string name="back" translatable="true">Back</string>
+    <string name="settings" translatable="true">Settings</string>
 </resources>

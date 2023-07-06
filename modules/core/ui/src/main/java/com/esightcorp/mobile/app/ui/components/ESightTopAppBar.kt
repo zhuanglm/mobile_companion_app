@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 
@@ -43,7 +44,7 @@ fun ESightTopAppBar(
 ) {
 
     CenterAlignedTopAppBar(
-        modifier = modifier,
+        modifier = modifier.semantics(mergeDescendants = true){},
         title = { TopAppBarTitle() },
         navigationIcon = {
             if (showBackButton) TopAppBarNavIconButton(
@@ -69,7 +70,7 @@ private fun TopAppBarTitle(
     darkTheme: Boolean = isSystemInDarkTheme()
 ) {
     val boxColor =
-        if (darkTheme) androidx.compose.material.MaterialTheme.colors.surface else androidx.compose.material.MaterialTheme.colors.onSurface
+        if (darkTheme) androidx.compose.material.MaterialTheme.colors.surface else androidx.compose.material.MaterialTheme.colors.surface
     Log.i("TAG", "TopAppBarTitle: ${boxColor.toString()}")
     Box(
         modifier = Modifier.background(boxColor, shape = RoundedCornerShape(10.dp)).wrapContentSize().padding(8.dp)
@@ -101,7 +102,7 @@ fun TopAppBarNavIconButton(
     ) {
         Icon(
             Icons.Rounded.ArrowBack,
-            contentDescription = "Back button",
+            contentDescription = "Back",
             modifier = modifier.size(30.dp),
         )
     }
@@ -124,7 +125,7 @@ fun TopAppBarSettingsIconButton(
     ) {
         Icon(
             Icons.Rounded.Settings,
-            contentDescription = "Settings button",
+            contentDescription = "Settings",
             modifier = modifier.size(30.dp)
         )
     }

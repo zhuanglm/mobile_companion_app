@@ -21,7 +21,19 @@ import androidx.compose.ui.unit.dp
 //TODO: Extrapolate values to res file
 //TODO: Create previews for everything
 
-
+/**
+ * Displays a button styled as an `ElevatedButton` with a text "Connect to eSight".
+ * This button spans the entire width of its parent and has rounded corners.
+ *
+ * This composable is primarily used to initiate the connection process to an eSight device.
+ * The button color scheme uses the primary color for the background and the onPrimary color for the text.
+ *
+ * @param onClick A lambda function that will be triggered when the button is clicked.
+ * @param modifier A [Modifier] for applying layout and styling to this composable.
+ *
+ * @see ElevatedButton
+ * @sample AddDeviceButtonPreview
+ */
 @Composable
 fun AddDeviceButton(
     onClick: () -> Unit,
@@ -38,7 +50,6 @@ fun AddDeviceButton(
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
-//        Icon(Icons.Rounded.Add, contentDescription = "Add something new", modifier.padding(15.dp, 0.dp))
         ButtonText("Connect to eSight", modifier = modifier.weight(1f))
     }
 }

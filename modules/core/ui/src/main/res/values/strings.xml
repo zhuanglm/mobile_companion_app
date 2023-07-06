@@ -63,6 +63,7 @@
     <string name="cancel" translatable="true">Cancel</string>
     <string name="retry" translatable="true">Retry</string>
     <string name="how_to_scan" translatable="true" tools:ignore="ExtraTranslation">How to scan</string>
+    <string name="feedback" translatable="true">Feedback</string>
     /!-- TODO: Why does this need lint suppression but others dont --/
     <string name="wifi_qr_code_header" translatable="true">Scan Wi-Fi code</string>
     <string name="wifi_qr_code_subheader" translatable="true">Use the QR scanner in eSight Settings</string>

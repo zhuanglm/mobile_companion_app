@@ -10,6 +10,8 @@
     <dimen name="bt_disabled_header_top_margin">25dp</dimen>
     <dimen name="bt_disabled_body_top_margin">15dp</dimen>
     <dimen name="bt_disabled_horizontal_padding">35dp</dimen>
+    <dimen name="min_dimension_touch_area">48dp</dimen>
+    <dimen name="filled_icon_bottom_button_size">30dp</dimen>
 
 
 </resources>

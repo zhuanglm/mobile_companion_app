@@ -50,7 +50,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
 
 // to make preview behave properly
-    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
+    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0"
 
 // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"

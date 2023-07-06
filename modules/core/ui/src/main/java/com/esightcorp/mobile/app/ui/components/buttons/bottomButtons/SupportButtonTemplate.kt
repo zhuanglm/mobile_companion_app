@@ -1,25 +1,43 @@
 package com.esightcorp.mobile.app.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.FloatingActionButtonElevation
-
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 
 
-//TODO: Update the content descriptions to use resources
-//TODO: Change all colours to follow material theme
-//TODO: Extrapolate values to res file
 //TODO: Create previews for everything
 
+/**
+ * Displays an `ExtendedFloatingActionButton` with an icon and a text.
+ * The button fills the maximum width of its parent.
+ * The icon is displayed via the `SupportButtonIcon` composable.
+ *
+ * @param onClick A lambda function that will be triggered when the button is clicked.
+ * @param modifier A [Modifier] applied to the button for layout and styling.
+ * @param painter A [Painter] object that describes the vector graphic to be displayed as the button's icon.
+ * @param text The text displayed on the button.
+ * @param textColor The color of the text.
+ *
+ * @see ExtendedFloatingActionButton
+ * @see SupportButtonIcon
+ * @sample SupportButtonTemplatePreview
+ */
 
 @Composable
 fun SupportButtonTemplate(
@@ -32,33 +50,77 @@ fun SupportButtonTemplate(
     ExtendedFloatingActionButton(
         text = { BodyText(text = text, modifier = modifier, color = textColor) },
         icon = { SupportButtonIcon(onClick = { }, modifier = modifier, painter = painter) },
-        onClick = onClick ,
+        onClick = onClick,
         containerColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
         modifier = modifier.fillMaxWidth(),
-        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
+        elevation = FloatingActionButtonDefaults.elevation(
+            dimensionResource(id = R.dimen.zero),
+            dimensionResource(id = R.dimen.zero),
+            dimensionResource(id = R.dimen.zero),
+            dimensionResource(id = R.dimen.zero)
+        ),
     )
+}
+@Preview(showBackground = true)
+@Composable
+fun SupportButtonTemplatePreview() {
+    MaterialTheme {
+        SupportButtonTemplate(
+            onClick = {},
+            modifier = Modifier.padding(16.dp),
+            painter = painterResource(id = R.drawable.glasses),
+            text = "Support Button",
+            textColor = MaterialTheme.colors.onSurface
+        )
+    }
 }
 
 
+/**
+ * Displays an icon button filled with the primary color and an icon.
+ * The icon's size is defined by the dimension resource `R.dimen.filled_icon_bottom_button_size`.
+ *
+ * @param onClick A lambda function that will be triggered when the button is clicked.
+ * @param modifier A [Modifier] applied to the button for layout and styling.
+ * @param painter A [Painter] object that describes the vector graphic to be displayed on the button.
+ *
+ * @see FilledIconButton
+ * @sample SupportButtonIconPreview
+ */
 @Composable
 private fun SupportButtonIcon(
-    onClick:  () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier,
     painter: Painter,
 
     ) {
     FilledIconButton(
-        onClick =  onClick ,
+        onClick = onClick,
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
-        colors = IconButtonDefaults.filledIconButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
+        colors = IconButtonDefaults.filledIconButtonColors(
+            MaterialTheme.colors.primary,
+            MaterialTheme.colors.onPrimary
+        ),
     ) {
         Icon(
             painter = painter,
-            contentDescription = "Feedback",
-            modifier = Modifier.size(30.dp)
+            contentDescription = stringResource(id = R.string.feedback),
+            modifier = Modifier.size(dimensionResource(id = R.dimen.filled_icon_bottom_button_size))
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SupportButtonIconPreview() {
+    MaterialTheme {
+        SupportButtonIcon(
+            onClick = {},
+            modifier = Modifier.padding(16.dp),
+            painter = painterResource(id = R.drawable.glasses)
         )
     }
 }

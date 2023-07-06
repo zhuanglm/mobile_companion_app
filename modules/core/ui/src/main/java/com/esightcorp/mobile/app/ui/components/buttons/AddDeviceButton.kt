@@ -1,20 +1,19 @@
 package com.esightcorp.mobile.app.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.esightcorp.mobile.app.ui.R
 
 //TODO: Update the content descriptions to use resources
 //TODO: Change all colours to follow material theme
@@ -36,21 +35,28 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun AddDeviceButton(
-    onClick: () -> Unit,
-    modifier: Modifier
+    onClick: () -> Unit, modifier: Modifier
 ) {
     ElevatedButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .defaultMinSize(dimensionResource(id = R.dimen.min_dimension_touch_area)),
         enabled = true,
-        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
+        colors = ButtonDefaults.elevatedButtonColors(
+            MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
+        ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = PaddingValues(20.dp, 10.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.button_corner_radius)),
+        contentPadding = PaddingValues(
+            dimensionResource(id = R.dimen.add_device_content_padding_horiz),
+            dimensionResource(id = R.dimen.add_device_content_padding_vert)
+        ),
     ) {
-        ButtonText("Connect to eSight", modifier = modifier.weight(1f))
+        WrappableButtonText(
+            stringResource(id = R.string.add_device_button_text), modifier = modifier.weight(1f)
+        )
     }
 }
 

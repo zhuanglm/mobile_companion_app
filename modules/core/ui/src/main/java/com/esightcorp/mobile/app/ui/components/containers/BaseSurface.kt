@@ -2,6 +2,8 @@ package com.esightcorp.mobile.app.ui.components.containers
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -12,7 +14,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import com.esightcorp.mobile.app.ui.components.AddDeviceButton
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
+import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
+import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import kotlinx.coroutines.NonDisposableHandle.parent
 
 @Composable
 fun BaseSurface(
@@ -52,10 +59,8 @@ fun BaseScreen(
     isBottomButtonNeeded: Boolean = true,
     bottomButton: @Composable () -> Unit,
     everythingElse: @Composable () -> Unit,
-
-
     ) {
-    BaseSurface(modifier = modifier) {
+    BaseSurface(modifier = modifier.systemBarsPadding()){
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (topAppBar, everything, bottomButton) = createRefs()
             ESightTopAppBar(showBackButton = showBackButton,
@@ -73,6 +78,7 @@ fun BaseScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(bottomButton.top)
+                    height = Dimension.fillToConstraints
                 }
                 .padding(25.dp, 0.dp, 25.dp, 0.dp).fillMaxSize()
             ) {
@@ -104,7 +110,7 @@ fun BaseScreen(
 fun BaseScreenPreview() {
     MaterialTheme {
         BaseScreen(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier,
             showBackButton = true,
             showSettingsButton = true,
             onBackButtonInvoked = {},
@@ -151,7 +157,8 @@ fun HomeBaseScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     bottom.linkTo(bottomButton.top)
-                }.fillMaxSize()
+                }
+                .fillMaxSize()
             ){
                 everythingElse()
             }

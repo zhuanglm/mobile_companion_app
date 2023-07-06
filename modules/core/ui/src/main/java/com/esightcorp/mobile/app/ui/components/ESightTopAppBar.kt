@@ -85,7 +85,7 @@ fun ESightTopAppBarPreview() {
             showSettingsButton = true,
             onBackButtonInvoked = { /* implement action for back button here in your real app */ },
             onSettingsButtonInvoked = { /* implement action for settings button here in your real app */ },
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
         )
     }
 }
@@ -162,7 +162,7 @@ fun TopAppBarNavIconButton(
 @Composable
 fun TopAppBarNavIconButtonPreview() {
     MaterialTheme {
-        TopAppBarNavIconButton(modifier = Modifier.padding(16.dp), onClick = {Unit})
+        TopAppBarNavIconButton(modifier = Modifier, onClick = {Unit})
     }
 }
 
@@ -201,6 +201,6 @@ fun TopAppBarSettingsIconButton(
 @Composable
 fun TopAppBarSettingsIconButtonPreview() {
     MaterialTheme {
-        TopAppBarSettingsIconButton(modifier = Modifier.padding(16.dp), onClick = {Unit})
+        TopAppBarSettingsIconButton(modifier = Modifier, onClick = {Unit})
     }
 }

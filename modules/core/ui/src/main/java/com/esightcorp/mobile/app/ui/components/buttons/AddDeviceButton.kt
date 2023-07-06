@@ -15,11 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.esightcorp.mobile.app.ui.R
 
-//TODO: Update the content descriptions to use resources
-//TODO: Change all colours to follow material theme
-//TODO: Extrapolate values to res file
-//TODO: Create previews for everything
-
 /**
  * Displays a button styled as an `ElevatedButton` with a text "Connect to eSight".
  * This button spans the entire width of its parent and has rounded corners.

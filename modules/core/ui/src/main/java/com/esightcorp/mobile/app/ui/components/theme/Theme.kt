@@ -22,13 +22,13 @@ private val DarkColorPalette = darkColors(
 
 @SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
-    primary = Green,
-    primaryVariant = GreenVariant,
-    onPrimary = LightGrey,
-    secondary = DarkGrey,
-    onSecondary = LightGrey,
-    surface = Color.White,
-    onSurface = DarkGrey
+    primary = Yellow,
+    primaryVariant = YellowVariant,
+    onPrimary = DarkGrey,
+    secondary = Color.White,
+    onSecondary = DarkGrey,
+    surface = DarkGrey,
+    onSurface = Color.White,
 
     /* Other default colors to override
     background = Color.White,
@@ -57,9 +57,16 @@ fun Mobile_companion_appTheme(
             darkIcons = false
         )
     }else{
+        //TODO:This needs to change if we want to support light themes
+        /*
+        Proper settings for light theme
         systemUiController.setSystemBarsColor(
             color = Color.White,
             darkIcons = true
+         */
+        systemUiController.setSystemBarsColor(
+            color = DarkGrey,
+            darkIcons = false
         )
     }
 

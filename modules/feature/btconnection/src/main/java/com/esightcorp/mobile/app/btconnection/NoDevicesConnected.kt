@@ -1,17 +1,23 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
@@ -87,6 +93,23 @@ internal fun NoDeviceConnectedScreen(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun NoDeviceConnectedScreenPreview() {
+    MaterialTheme {
+        NoDeviceConnectedScreen(
+            onSettingsButtonPressed = { /* implement dummy action for preview */ },
+            onFeedbackButtonPressed = { /* implement dummy action for preview */ },
+            onConnectToDeviceButtonPressed = { /* implement dummy action for preview */ },
+            onTermsAndConditionsPressed = { /* implement dummy action for preview */ },
+            onPrivacyPolicyPressed = { /* implement dummy action for preview */ },
+            btUiState = BluetoothUiState(), // provide dummy state
+            navController = rememberNavController(), // Note: this won't actually navigate in preview
+            modifier = Modifier
+        )
+    }
+}
+
 @Composable
 private fun NoDevicesBody(
     modifier: Modifier,
@@ -94,10 +117,8 @@ private fun NoDevicesBody(
     onTermsAndConditionsPressed: (Int) -> Unit,
     navController: NavController
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (greeting, deviceButton, terms) = createRefs()
-        val topGuideline = createGuidelineFromTop(0.3f)
-        val bottomGuideline = createGuidelineFromTop(0.84f)
+    ConstraintLayout(modifier = modifier) {
+        val (greeting, deviceButton, spacer,terms) = createRefs()
 
         // Set up greeting message
         PersonalGreeting(
@@ -105,7 +126,6 @@ private fun NoDevicesBody(
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-                bottom.linkTo(topGuideline)
             },
             connected = false,
         )
@@ -113,9 +133,18 @@ private fun NoDevicesBody(
         // Set up device button to navigate to Bluetooth searching screen
         AddDeviceButton(onClick = { navController.navigate(BtConnectionScreens.BtSearchingRoute.route) },
             modifier = modifier.constrainAs(deviceButton) {
-                top.linkTo(topGuideline)
+                top.linkTo(greeting.bottom, margin = 16.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
+            })
+
+        Spacer(modifier = modifier
+            .height(300.dp)
+            .constrainAs(spacer) {
+                top.linkTo(deviceButton.bottom, margin = 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+
             })
 
         // Set up terms and policy buttons
@@ -123,11 +152,10 @@ private fun NoDevicesBody(
             onTermsInvoked = onTermsAndConditionsPressed,
             onPrivacyPolicyInvoked = onPrivacyPolicyPressed,
             modifier = modifier.constrainAs(terms) {
+                top.linkTo(spacer.bottom)
                 bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-                top.linkTo(bottomGuideline)
-
             },
             textColor = MaterialTheme.colors.onSurface
         )
@@ -135,6 +163,19 @@ private fun NoDevicesBody(
 
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NoDevicesBodyPreview() {
+    MaterialTheme {
+        NoDevicesBody(
+            modifier = Modifier,
+            onPrivacyPolicyPressed = { /* implement dummy action for preview */ },
+            onTermsAndConditionsPressed = { /* implement dummy action for preview */ },
+            navController = rememberNavController() // Note: this won't actually navigate in preview
+        )
+    }
 }
 
 @Composable

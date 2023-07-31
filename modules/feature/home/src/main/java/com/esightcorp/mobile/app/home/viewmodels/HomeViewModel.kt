@@ -78,7 +78,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToShareYourView(navController: NavController){
-        navController.navigate("share")
+        navController.navigate("eshare")
     }
 
 }

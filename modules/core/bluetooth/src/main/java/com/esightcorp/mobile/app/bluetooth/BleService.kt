@@ -109,12 +109,15 @@ class BleService : Service() {
                     UUID_DESCRIPTOR_ESHARE_STATUS
                 )
 
-                characteristicToDescriptorMap.put(WIFI_INFO_Characteristic, WIFI_INFO_Descriptor)
-                characteristicToDescriptorMap.put(ERROR_Characteristic, ERROR_Descriptor)
-                characteristicToDescriptorMap.put(HOTSPOT_Characteristic, HOTSPOT_Descriptor)
-                characteristicToDescriptorMap.put(WIFI_CONNECTION_STATUS_Characteristic, WIFI_CONNECTION_STATUS_Descriptor)
-                characteristicToDescriptorMap.put(ESHARE_COMMANDS_Characteristic, ESHARE_COMMANDS_Descriptor)
-                characteristicToDescriptorMap.put(ESHARE_STATUS_Characteristic, ESHARE_STATUS_Descriptor)
+                characteristicToDescriptorMap[WIFI_INFO_Characteristic] = WIFI_INFO_Descriptor
+                characteristicToDescriptorMap[ERROR_Characteristic] = ERROR_Descriptor
+                characteristicToDescriptorMap[HOTSPOT_Characteristic] = HOTSPOT_Descriptor
+                characteristicToDescriptorMap[WIFI_CONNECTION_STATUS_Characteristic] =
+                    WIFI_CONNECTION_STATUS_Descriptor
+                characteristicToDescriptorMap[ESHARE_COMMANDS_Characteristic] =
+                    ESHARE_COMMANDS_Descriptor
+                characteristicToDescriptorMap[ESHARE_STATUS_Characteristic] =
+                    ESHARE_STATUS_Descriptor
 
                 setCharacteristicEnabledNotification(
                     characteristicToDescriptorMap.keys.first(),

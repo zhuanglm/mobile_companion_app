@@ -56,7 +56,7 @@ fun LoadingScreenWithSpinner(
             )
 
             if(cancelButtonNeeded){
-                CancelButton(onClick = { /*Unit*/ }, modifier = modifier.constrainAs(cancelButton){
+                CancelButton(onClick = onCancelButtonClicked, modifier = modifier.constrainAs(cancelButton){
                     start.linkTo(parent.start, margin= 25.dp)
                     bottom.linkTo(parent.bottom, margin = 25.dp)
                 } )

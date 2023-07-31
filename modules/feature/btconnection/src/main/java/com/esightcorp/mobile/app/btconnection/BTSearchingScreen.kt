@@ -24,10 +24,9 @@ fun BtSearchingRoute(
 ) {
     val uiState by vm.uiState.collectAsState()
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var recomposeTrigger by remember { mutableStateOf(Object()) }
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    var recomposeTrigger by remember { mutableStateOf(Object()) }
 
-    // The rest of your composable function goes here...
     if(!uiState.isBtEnabled){
         NavigateBluetoothDisabled(navController = navController)
     }else{

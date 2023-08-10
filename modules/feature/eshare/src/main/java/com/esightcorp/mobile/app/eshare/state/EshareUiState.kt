@@ -11,3 +11,8 @@ data class EshareConnectingUiState(
     val radioState: RadioState = RadioState(),
     val connectionState: eShareConnectionStatus = eShareConnectionStatus.Unknown,
 )
+
+data class EshareConnectedUiState(
+    val radioState: RadioState = RadioState(),
+    val connectionState: eShareConnectionStatus = eShareConnectionStatus.Initiated,
+)

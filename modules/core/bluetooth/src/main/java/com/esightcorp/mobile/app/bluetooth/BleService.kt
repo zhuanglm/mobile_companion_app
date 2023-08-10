@@ -12,7 +12,6 @@ import android.os.IBinder
 import android.util.Log
 import java.nio.charset.StandardCharsets
 import java.util.*
-import kotlin.collections.HashMap
 
 private const val TAG = "BleService"
 
@@ -38,7 +37,8 @@ class BleService : Service() {
     private lateinit var WIFI_INFO_Descriptor: BluetoothGattDescriptor
     private lateinit var ERROR_Descriptor: BluetoothGattDescriptor
 
-    private val characteristicToDescriptorMap  : HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> = hashMapOf()
+    private val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
+        hashMapOf()
 
 
     //gatt callback
@@ -165,32 +165,40 @@ class BleService : Service() {
                         "WIFI_SUCCESS" -> {
                             broadcastUpdate(ACTION_WIFI_CONNECTED)
                         }
+
                         "WIFI_ERROR" -> {
                             broadcastUpdate(ACTION_WIFI_ERROR)
                             gatt.readCharacteristic(ERROR_Characteristic)
                         }
+
                         else -> {
                             Log.i(TAG, "onCharacteristicChanged: not handling this $incoming")
                         }
                     }
                 }
+
                 UUID_CHARACTERISTIC_ERROR -> {
                     broadcastUpdate(ACTION_ERROR, incoming)
                     Log.i(TAG, "onCharacteristicChanged: Error $incoming")
                 }
+
                 UUID_CHARACTERISTIC_BUTTON_PRESSED -> {
                     Log.i(TAG, "onCharacteristicChanged: Button pressed  $incoming")
 
                 }
+
                 UUID_CHARACTERISTIC_HOTSPOT -> {
                     Log.i(TAG, "onCharacteristicChanged: Hotspot $incoming")
                 }
+
                 UUID_CHARACTERISTIC_ESHARE_COMMANDS -> {
                     Log.i(TAG, "onCharacteristicChanged: Eshare $incoming")
                 }
+
                 UUID_CHARACTERISTIC_ESHARE_STATUS -> {
                     Log.i(TAG, "onCharacteristicChanged: Eshare status $incoming")
                 }
+
                 UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS -> {
                     Log.i(TAG, "onCharacteristicChanged: Wifi connection status $incoming")
                 }
@@ -232,7 +240,7 @@ class BleService : Service() {
         ) {
             super.onDescriptorWrite(gatt, descriptor, status)
             Log.e(TAG, "onDescriptorWrite: ")
-            if(characteristicToDescriptorMap.isNotEmpty()) {
+            if (characteristicToDescriptorMap.isNotEmpty()) {
                 Log.i(TAG, "onDescriptorWrite: ${characteristicToDescriptorMap.values.first()}")
                 setCharacteristicEnabledNotification(
                     characteristicToDescriptorMap.keys.first(),
@@ -252,7 +260,7 @@ class BleService : Service() {
         characteristic: BluetoothGattCharacteristic,
         descriptor: BluetoothGattDescriptor,
         gatt: BluetoothGatt,
-    ){
+    ) {
         characteristic.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
         gatt.writeDescriptor(descriptor)
         gatt.setCharacteristicNotification(characteristic, true)
@@ -378,6 +386,15 @@ class BleService : Service() {
         )
     }
 
+    fun sendPortAndIp(port: Int, ip: String) {
+        Log.i(TAG, "sendPortAndIp: Port = $port, IP = $ip")
+        sendMessage(
+            ESHARE_COMMANDS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT).port(port.toString())
+                .ipAddress(ip).build().getByteArrayBlePayload()
+        )
+    }
+
     @SuppressLint("MissingPermission")
     private fun sendMessage(
         characteristic: BluetoothGattCharacteristic, byteArray: ByteArray
@@ -405,24 +422,31 @@ class BleService : Service() {
             BluetoothStatusCodes.SUCCESS -> {
                 Log.d(TAG, "decodeSendMessageResult: SUCCESS")
             }
+
             BluetoothStatusCodes.ERROR_BLUETOOTH_NOT_ALLOWED -> {
                 Log.d(TAG, "decodeSendMessageResult: BLUETOOTH NOT ALLOWED ")
             }
+
             BluetoothStatusCodes.ERROR_BLUETOOTH_NOT_ENABLED -> {
                 Log.d(TAG, "decodeSendMessageResult: BLUETOOTH NOT ENABLED")
             }
+
             BluetoothStatusCodes.ERROR_DEVICE_NOT_BONDED -> {
                 Log.d(TAG, "decodeSendMessageResult: NOT BONDED ")
             }
+
             BluetoothStatusCodes.ERROR_GATT_WRITE_NOT_ALLOWED -> {
                 Log.d(TAG, "decodeSendMessageResult:  WRITE NOT ALLOWED")
             }
+
             BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY -> {
                 Log.d(TAG, "decodeSendMessageResult: WRITE BUSY")
             }
+
             BluetoothStatusCodes.ERROR_UNKNOWN -> {
                 Log.d(TAG, "decodeSendMessageResult: UNKNOWN")
             }
+
             else -> {
                 Log.d(TAG, "decodeSendMessageResult: UNKNOWN ELSE")
             }
@@ -451,28 +475,33 @@ class BleService : Service() {
 
         val SERVICE_UUID = UUID.fromString("0000b81d-0000-1000-8000-00805f9b34fb")
 
-        val UUID_DESCRIPTOR_WIFI_INFO: UUID = UUID.fromString("6b90805b2-08f9-4168-86f6-d49f5046f7b3")
+        val UUID_DESCRIPTOR_WIFI_INFO: UUID =
+            UUID.fromString("6b90805b2-08f9-4168-86f6-d49f5046f7b3")
         val UUID_DESCRIPTOR_ERROR: UUID = UUID.fromString("f385809a-2e27-4630-b189-7ea51b79c058")
         val UUID_DESCRIPTOR_HOTSPOT: UUID = UUID.fromString("7a786414-d6ec-466d-80ca-d9f6a51c2ad1")
-        val UUID_DESCRIPTOR_ESHARE_COMMANDS: UUID = UUID.fromString("11235813-2134-5589-1442-ac3cf6d01c7d")
-        val UUID_DESCRIPTOR_ESHARE_STATUS: UUID = UUID.fromString("68daeef1-e849-4530-8bf4-d7c10d6fc3ac")
+        val UUID_DESCRIPTOR_ESHARE_COMMANDS: UUID =
+            UUID.fromString("11235813-2134-5589-1442-ac3cf6d01c7d")
+        val UUID_DESCRIPTOR_ESHARE_STATUS: UUID =
+            UUID.fromString("68daeef1-e849-4530-8bf4-d7c10d6fc3ac")
         val UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS: UUID =
             UUID.fromString("f38a6f74-8e88-456e-aa85-92d28b2c4823")
 
-        val UUID_CHARACTERISTIC_HOTSPOT: UUID = UUID.fromString("76a70d9c-276e-4230-9eb0-ea302fdd3c3d")
+        val UUID_CHARACTERISTIC_HOTSPOT: UUID =
+            UUID.fromString("76a70d9c-276e-4230-9eb0-ea302fdd3c3d")
         val UUID_CHARACTERISTIC_ESHARE_COMMANDS: UUID =
-            UUID.fromString("11235813-2134-5589-1442-ac3cf6d01c7d")
+            UUID.fromString("72330422-8c4d-3eca-1234-e2bafeb7dd0d")
         val UUID_CHARACTERISTIC_ESHARE_STATUS: UUID =
             UUID.fromString("68daeef1-e849-4530-8bf4-d7c10d6fc3ac")
         val UUID_CHARACTERISTIC_BUTTON_PRESSED: UUID =
             UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
 
-        val UUID_CHARACTERISTIC_ERROR: UUID = UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
+        val UUID_CHARACTERISTIC_ERROR: UUID =
+            UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
 
         val UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS: UUID =
             UUID.fromString("1530e059-4d5e-46a8-947b-a6714f9ee5b2")
-        val UUID_CHARACTERISTIC_WIFI_INFO: UUID = UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
-
+        val UUID_CHARACTERISTIC_WIFI_INFO: UUID =
+            UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
 
 
     }

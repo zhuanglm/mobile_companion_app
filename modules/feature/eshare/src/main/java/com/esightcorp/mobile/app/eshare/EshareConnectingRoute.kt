@@ -5,9 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
@@ -18,10 +16,10 @@ import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 
 
 private const val TAG = "EshareConnectingRoute"
+
 @Composable
 fun EshareConnectingRoute(
-    navController: NavController,
-    vm: EshareConnectingViewModel = hiltViewModel()
+    navController: NavController, vm: EshareConnectingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
 
@@ -29,19 +27,16 @@ fun EshareConnectingRoute(
 
     if (!uiState.radioState.isBtEnabled) {
         NavigateBluetoothDisabled(navController = navController)
-    }else{
+    } else {
         EshareConnectingScreen(
-            modifier = Modifier,
-            navController = navController,
-            uiState = uiState,
-            vm = vm
+            modifier = Modifier, navController = navController, uiState = uiState, vm = vm
         )
     }
 }
 
 @Composable
 fun NavigateBluetoothDisabled(navController: NavController) {
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         navController.navigate("bt_disabled")
     }
 }
@@ -53,7 +48,8 @@ internal fun EshareConnectingScreen(
     uiState: EshareConnectingUiState,
     vm: EshareConnectingViewModel
 ) {
-    val TAG = "BtSearchingScreen"
+    val TAG = "EshareConnectingScreen"
+    Log.i(TAG, "EshareConnectingScreen: ${uiState.connectionState}")
 
     when (uiState.connectionState) {
         eShareConnectionStatus.Failed -> {
@@ -61,34 +57,44 @@ internal fun EshareConnectingScreen(
         }
 
         eShareConnectionStatus.Connected -> {
+            Log.i(TAG, "EshareConnectingScreen: Should not hit here")
+        }
+
+        eShareConnectionStatus.Initiated -> {
+            //start timer for timeout
             LaunchedEffect(Unit) {
                 navController.navigate(EshareScreens.EshareConnectedRoute.route)
             }
+
         }
-        eShareConnectionStatus.Initiated -> {
-            //start timer for timeout
-        }
+
         eShareConnectionStatus.Unknown -> {
             //base state
-            LoadingScreenWithSpinner(
-                loadingText = "Connecting HCS", modifier = modifier, cancelButtonNeeded = true, onCancelButtonClicked = {
-                    vm.onCancelClicked()
-                    navController.popBackStack("home", false)
-                }
-            )
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 vm.startEshareConnection()
             }
+            LoadingScreenWithSpinner(loadingText = "Connecting HCS",
+                modifier = modifier,
+                cancelButtonNeeded = true,
+                onCancelButtonClicked = {
+                    vm.onCancelClicked()
+                    navController.popBackStack("home", false)
+                })
+
         }
+
         eShareConnectionStatus.ReceivedUserAcceptance -> {
             //stop timer
         }
+
         eShareConnectionStatus.ReceivedUserRejection -> {
             //show rejection screen
         }
+
         eShareConnectionStatus.Timeout -> {
-           //show timeout screen
+            //show timeout screen
         }
+
         eShareConnectionStatus.Disconnected -> {
             //show disconnected screen
         }

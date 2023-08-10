@@ -67,6 +67,10 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
 
+    //VideoTextureViewRenderer comes from this import
+    implementation "io.getstream:stream-webrtc-android-ui:1.0.4"
+
+
 
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
     implementation "androidx.navigation:navigation-compose:$nav"
@@ -79,4 +83,5 @@ dependencies {
     implementation(project(":modules:core:bluetooth"))
     implementation(project(":modules:core:ui"))
     implementation(project(":modules:core:utils"))
+    implementation(project(":modules:core:networking"))
 }

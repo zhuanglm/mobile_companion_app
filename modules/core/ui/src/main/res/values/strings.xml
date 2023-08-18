@@ -18,6 +18,10 @@
     <string name="wifi_disabled_header" translatable="true">Turn on Wifi</string>
     <string name="wifi_disabled_body" translatable="true">Open Settings on your phone, and turn on Wifi to connect</string>
 
+    <string name="eshare_stopped_header" translatable="true">Connection Stopped</string>
+    <string name="eshare_stopped_subheader" translatable="true">The eSight wearer has stopped the session</string>
+    <string name="eshare_stopped_button" translatable="true">Return</string>
+
     <string name="bt_searching_text" translatable="true">Searching for eSight devices</string>
     <string name="wifi_already_connected_header" translatable="true">Connected to Wi-Fi</string>
     <string name="wifi_already_connected_body" translatable="true">Your eSight is already connected to a Wi-Fi network.</string>

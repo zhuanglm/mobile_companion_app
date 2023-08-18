@@ -23,6 +23,7 @@ import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 import java.io.InputStream
 
@@ -32,7 +33,7 @@ fun EshareConnectedRoute(
     vm: EshareConnectedViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    eShareConnectedScreen(vm = vm, uiState = uiState, navController = navController)
+    eShareConnectedScreen(vm = vm, uiState = uiState, navController = navController, navigateToStoppedRoute = vm::navigateToStoppedRoute)
 }
 
 private const val TAG = "EshareConnectedRoute"
@@ -42,6 +43,7 @@ fun eShareConnectedScreen(
     uiState: EshareConnectedUiState,
     modifier: Modifier = Modifier,
     navController: NavController,
+    navigateToStoppedRoute: (NavController) -> Unit,
 ) {
     Log.i(TAG, "eShareConnectedScreen: ")
     Row {
@@ -78,12 +80,9 @@ fun eShareConnectedScreen(
         }
         eShareConnectionStatus.Disconnected -> {
             Log.i(TAG, "eShareConnectedScreen: We are now disconnected from HMD ")
-            LoadingScreenWithSpinner(loadingText = "Connection lost",
-                modifier = modifier,
-                cancelButtonNeeded = true,
-                onCancelButtonClicked = {
-                    navController.popBackStack("home_first", false)
-                })
+            LoadingScreenWithIcon(loadingText = "Connection lost",
+                modifier = modifier)
+            navigateToStoppedRoute(navController)
         }
         else -> {
             Log.e(TAG, "eShareConnectedScreen: Should not hit here")
@@ -92,3 +91,4 @@ fun eShareConnectedScreen(
 
 
 }
+

@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.eshare.EshareConnectedRoute
 import com.esightcorp.mobile.app.eshare.EshareConnectingRoute
+import com.esightcorp.mobile.app.eshare.EshareConnectionStoppedRoute
 
 
 fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
@@ -15,6 +16,9 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
         }
         composable(EshareScreens.EshareConnectedRoute.route){
             EshareConnectedRoute(navController = navController)
+        }
+        composable(EshareScreens.EshareConnectionStoppedRoute.route){
+            EshareConnectionStoppedRoute(navController = navController)
         }
 
     }

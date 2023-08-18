@@ -1,69 +1,65 @@
-package com.esightcorp.mobile.app.eshare
+package com.esightcorp.mobile.app.ui.components.error_screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Button
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectionStoppedViewModel
+import androidx.constraintlayout.compose.Dimension
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.Subheader
-import com.esightcorp.mobile.app.ui.components.TextRectangularButton
-import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
+import kotlinx.coroutines.NonDisposableHandle.parent
 
 
-@Composable
-fun EshareConnectionStoppedRoute(
-    navController: NavController,
-    vm: EshareConnectionStoppedViewModel = hiltViewModel()
-) {
 
 
-    EshareConnectionStoppedScreen(
-        navController = navController,
-        onReturnButtonClicked = vm::navigateToNoDevicesConnectedScreen
-    )
-}
+//Draft state, throwing an error based on infinite height when trying to preview
 
 @Composable
-fun EshareConnectionStoppedScreen(
-    navController: NavController,
+fun BigIconBase(
     modifier: Modifier = Modifier,
-    onReturnButtonClicked: (navController: NavController) -> Unit,
+    onBackButtonClicked: () -> Unit = {Unit},
+    onSettingsButtonClicked: () -> Unit = {Unit},
+    showBackButton: Boolean = false,
+    showSettingsButton: Boolean = false,
+    bottomButton: @Composable () -> Unit = {Unit},
+    content: @Composable () -> Unit
 ) {
 
-    // Retrieve margin values from resources
     val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
     val bodyTopMargin = dimensionResource(id = R.dimen.bt_disabled_body_top_margin)
 
 
-    //TODO: Make this into a reusable component
     BaseScreen(modifier = modifier,
         showBackButton = false,
         showSettingsButton = false,
-        onBackButtonInvoked = { Unit },
+        onBackButtonInvoked = onBackButtonClicked,
         onSettingsButtonInvoked = { /*Unused*/ },
         bottomButton = {Unit}) {
 
-        ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-            val (icon, header, subheader, button, spacer) = createRefs()
+        ConstraintLayout(modifier = modifier.fillMaxSize()) {
+            val (icon, header, subheader, everything) = createRefs()
             // Set up the big Bluetooth icon
             BigIcon(
-                painter = painterResource(id = R.drawable.link_off),
-                contentDescription = "Disconnected chain link",
+                painter = painterResource(id = R.drawable.baseline_bluetooth_24),
+                contentDescription = stringResource(R.string.content_desc_bt_icon),
                 modifier = modifier.constrainAs(icon) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -73,7 +69,7 @@ fun EshareConnectionStoppedScreen(
 
             // Set up the header text
             Header1Text(
-                text = stringResource(id = R.string.eshare_stopped_header),
+                text = stringResource(id = R.string.bt_disabled_header),
                 modifier = modifier.constrainAs(header) {
                     top.linkTo(icon.bottom, margin = headerTopMargin)
                     start.linkTo(parent.start)
@@ -82,7 +78,7 @@ fun EshareConnectionStoppedScreen(
 
             // Set up the body text
             Subheader(
-                text = stringResource(id = R.string.eshare_stopped_subheader),
+                text = stringResource(id = R.string.bt_disabled_body),
                 modifier = modifier
                     .padding(
                         dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),
@@ -99,17 +95,22 @@ fun EshareConnectionStoppedScreen(
 
             )
 
-            TextRectangularButton(onClick = { onReturnButtonClicked(navController) }, modifier = modifier.constrainAs(button){
-                top.linkTo(subheader.bottom, margin = 50.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-
-            }, text = stringResource(id = R.string.eshare_stopped_button))
-
-
+            Box(modifier = modifier
+                .constrainAs(everything){
+                    top.linkTo(subheader.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    height = Dimension.fillToConstraints
+                }
+                .padding(25.dp, 0.dp, 25.dp, 0.dp).fillMaxSize()
+            ) {
+                LazyColumn(modifier = modifier) {
+                    item {
+                        content()
+                    }
+                }
+            }
         }
-
-
-
     }
 }

@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
+import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
@@ -99,6 +101,10 @@ class EshareConnectedViewModel @Inject constructor(
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
         Log.i(TAG, "onSurfaceTextureUpdated: ")
+    }
+
+    fun navigateToStoppedRoute(navController: NavController){
+        navController.navigate(EshareScreens.EshareConnectionStoppedRoute.route)
     }
 }
 

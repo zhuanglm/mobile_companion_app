@@ -45,13 +45,16 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_ui_ktx"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
     testImplementation "junit:junit:$junit_testimpl"
     androidTestImplementation "androidx.test.ext:junit:$junit_android"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+
+    //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.27.0"
 
 // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"

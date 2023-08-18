@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.Surface
+import com.esightcorp.mobile.app.networking.sockets.SocketManager
 import java.io.InputStream
 
 class StreamOutThread(
@@ -39,6 +40,8 @@ class StreamOutThread(
                 val read = inputStream.read(buffer)
                 if (read == -1 || read == 0) {
                     Log.d(TAG, "run: read -1 or 0  ")
+                    streamOutListener.onConnectionClosed()
+                    SocketManager.close()
                     break
                 }
                 Log.d(TAG, "run: read $read bytes")

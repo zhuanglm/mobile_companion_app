@@ -81,7 +81,8 @@ class EshareRepository @Inject constructor(
         }
 
         override fun onSocketClosed() {
-            TODO("Not yet implemented")
+            Log.i(TAG, "onSocketClosed: ")
+            updateEshareState(eShareConnectionStatus.Disconnected)
         }
 
         override fun onSocketError() {
@@ -94,7 +95,7 @@ class EshareRepository @Inject constructor(
             //start reading from input stream
             Log.i(TAG, "onInputStreamCreated: ")
             updateEshareState(eShareConnectionStatus.Connected)
-            eShareRepositoryListener.onInputStreamCreated(inputStream)
+            updateInputStream(inputStream)
         }
 
         override fun onInputStreamClosed() {
@@ -133,6 +134,12 @@ class EshareRepository @Inject constructor(
         }
     }
 
+    private fun updateInputStream(inputStream: InputStream){
+        if(eShareRepositoryListener != null){
+            eShareRepositoryListener.onInputStreamCreated(inputStream)
+        }
+    }
+
     fun startStreamFromHMD(surface: Surface, inputStream: InputStream){
         Log.i(TAG, "startStreamFromHMD: ")
         SocketManager.startStreamingFromHMD(surface, inputStream, streamOutListener)
@@ -146,6 +153,7 @@ class EshareRepository @Inject constructor(
 
         override fun onConnectionClosed() {
             Log.d(TAG, "onConnectionClosed: ")
+            updateEshareState(eShareConnectionStatus.Disconnected)
         }
 
         override fun onConnectionError() {

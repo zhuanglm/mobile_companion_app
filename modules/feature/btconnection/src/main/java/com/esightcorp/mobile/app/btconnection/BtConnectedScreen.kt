@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 import kotlinx.coroutines.delay
@@ -40,12 +41,17 @@ internal fun BtConnectedScreen(
     if (deviceName != null && deviceAddress != null) {
         val loadingText = stringResource(id = R.string.connected_to) + " ${deviceName}\n" + "Address: $deviceAddress"
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
+        LaunchedEffect(Unit) {
+            delay(screenTimeout)
+            navController.navigate(homeRoute)
+        }
     }else{
         val loadingText = stringResource(id = R.string.something_went_wrong)
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
+        LaunchedEffect(Unit) {
+            delay(screenTimeout)
+            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route)
+        }
     }
-    LaunchedEffect(Unit) {
-        delay(screenTimeout)
-        navController.navigate(homeRoute)
-    }
+
 }

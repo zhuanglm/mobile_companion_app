@@ -38,9 +38,11 @@ class StreamOutThread(
                 isReadingData = true
                 val read = inputStream.read(buffer)
                 if (read == -1 || read == 0) {
+                    Log.d(TAG, "run: read -1 or 0  ")
                     break
                 }
-                decoder.decode(buffer.copyOf(read))
+                Log.d(TAG, "run: read $read bytes")
+                decoder.consume(buffer.copyOf(read))
             }
         } catch (e: Exception) {
             e.printStackTrace()

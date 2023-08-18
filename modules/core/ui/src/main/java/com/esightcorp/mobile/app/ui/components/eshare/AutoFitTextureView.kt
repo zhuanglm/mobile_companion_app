@@ -47,17 +47,6 @@ class AutoFitTextureView @JvmOverloads constructor(
         }
     }
 
-    fun setImageStream(inputStream: InputStream) {
-        Log.i(TAG, "setImageStream: ")
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        val canvas = lockCanvas()
-        if(canvas != null){
-            canvas.drawBitmap(bitmap, 0f, 0f, null)
-            unlockCanvasAndPost(canvas)
-        }
-
-    }
-
     init {
         setAspectRatio(16, 9)
     }

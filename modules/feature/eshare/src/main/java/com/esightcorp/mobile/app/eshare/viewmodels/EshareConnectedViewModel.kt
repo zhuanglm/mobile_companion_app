@@ -31,7 +31,6 @@ class EshareConnectedViewModel @Inject constructor(
 ): AndroidViewModel(application), EshareRepositoryListener, SurfaceTextureListener {
 
     private var surfaceTexture: SurfaceTexture? = null
-    var inputStream: InputStream? = null
 
     private var _uiState = MutableStateFlow(EshareConnectedUiState())
     val uiState: StateFlow<EshareConnectedUiState> = _uiState.asStateFlow()
@@ -71,7 +70,11 @@ class EshareConnectedViewModel @Inject constructor(
         Log.i(TAG, "onInputStreamCreated: ")
         if(surfaceTexture != null){
             Log.d(TAG, "onInputStreamCreated: surfaceTexture is not null")
-            eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed ({
+                Log.d(TAG, "onInputStreamCreated: starting stream")
+                eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
+            }, 1000)
         }
     }
 
@@ -79,9 +82,9 @@ class EshareConnectedViewModel @Inject constructor(
         super.onCleared()
     }
 
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        Log.i(TAG, "onSurfaceTextureAvailable: ")
-        this.surfaceTexture = surface
+    override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
+        Log.i(TAG, "onSurfaceTextureAvailable: " + width + " " + height)
+        this.surfaceTexture = surfaceTexture
 
     }
 

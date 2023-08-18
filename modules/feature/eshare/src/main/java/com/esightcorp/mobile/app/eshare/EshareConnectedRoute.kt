@@ -1,10 +1,19 @@
 package com.esightcorp.mobile.app.eshare
 
 import android.util.Log
+import android.view.TextureView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -32,37 +41,39 @@ fun eShareConnectedScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
-
+    Log.i(TAG, "eShareConnectedScreen: ")
     AndroidView(factory = { context ->
-        AutoFitTextureView(context).apply {
+        TextureView(context).apply {
             surfaceTextureListener = vm
-
         }
-    }, update = { view ->
-        view.surfaceTextureListener = vm
+    }, modifier = modifier
+        .width(1920.dp)
+        .height(1080.dp)
+        .background(Color.Cyan)
+        ,update = { view ->
+            view.surfaceTextureListener = vm
+            Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
 
     })
+
+
     when(uiState.connectionState){
-        eShareConnectionStatus.Failed -> {
-            TODO()
-        }
+
         eShareConnectionStatus.Connected -> {
-            Log.i(TAG, "eShareConnectedScreen: ")
+            Log.i(TAG, "eShareConnectedScreen: We are now connected to HMD ")
 
         }
-        eShareConnectionStatus.Disconnected -> TODO()
         eShareConnectionStatus.Initiated -> {
-            LoadingScreenWithSpinner(loadingText = "Connecting HCS",
+            LoadingScreenWithSpinner(loadingText = "Connection initiated",
                 modifier = modifier,
                 cancelButtonNeeded = true,
                 onCancelButtonClicked = {
-                    navController.popBackStack("home", false)
+                    navController.popBackStack("home_first", false)
                 })
         }
-        eShareConnectionStatus.ReceivedUserAcceptance -> TODO()
-        eShareConnectionStatus.ReceivedUserRejection -> TODO()
-        eShareConnectionStatus.Timeout -> TODO()
-        eShareConnectionStatus.Unknown -> TODO()
+        else -> {
+            Log.e(TAG, "eShareConnectedScreen: Should not hit here")
+        }
     }
 
 

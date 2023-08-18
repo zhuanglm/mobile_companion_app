@@ -6,39 +6,36 @@ import android.media.MediaFormat
 import android.util.Log
 import android.view.Surface
 import java.io.IOException
+import java.nio.ByteBuffer
 
 class DecoderImpl(
-    surface: Surface?
+    val surface: Surface?
 ) : Decoder(surface) {
 
     override var mDecoder: MediaCodec? = null
     override var isConfigured: Boolean = false
-    override var mMediaInfo: MediaCodec.BufferInfo = MediaCodec.BufferInfo()
+    override lateinit var mMediaInfo: MediaCodec.BufferInfo
 
     override fun initializeDecoder() {
-        mSurface.let {
+        mSurface?.let {
             try {
                 val mediaFormat = MediaFormat.createVideoFormat(mMime, mWidth, mHeight)
                 mDecoder = getDecoder(mediaFormat)
-                mDecoder?.let { mMediaCodec ->
-                    mMediaCodec.configure(mediaFormat, mSurface, null, 0)
-                    mMediaCodec.start()
+                mMediaInfo = MediaCodec.BufferInfo()
+                mDecoder?.let { mDecoder ->
+                    Log.i(TAG, "initializeDecoder: is surface valid " + mSurface.isValid)
+                    mDecoder.configure(mediaFormat, mSurface, null, 0)
                     isConfigured = true
+                    mDecoder.start()
                 }
-                mDecoder?.start()
             } catch (e: Exception) {
                 close()
-                Log.e(TAG, "initializeDecoder: CODEC EXCEPTION", e)
                 e.printStackTrace()
                 throw IOException("Decoder Start Exception")
-
             }
         }
     }
 
-    init {
-        initializeDecoder()
-    }
 
     @Synchronized
     override fun close() {
@@ -70,14 +67,17 @@ class DecoderImpl(
      */
     @Synchronized
     override fun readFrame(dataInput: ByteArray, length: Int) {
+        Log.i(TAG, "readFrame: Trying to read frame")
         if(mDecoder == null){
             Log.e(TAG, "readFrame: Decoder is null")
             return
         }
         val inputIndex = mDecoder!!.dequeueInputBuffer(TIMEOUT)
+        Log.d(TAG, "readFrame: input index " + inputIndex)
         if (inputIndex >= 0){
-            val buffer = mDecoder!!.getInputBuffer(inputIndex)
+            val buffer: ByteBuffer? = mDecoder!!.getInputBuffer(inputIndex)
             if(buffer != null){
+                Log.i(TAG, "readFrame: buffer is not null")
                 buffer.clear()
                 buffer.put(mAccessUnit)
                 buffer.put(dataInput, 0, length)
@@ -85,11 +85,15 @@ class DecoderImpl(
             }
         }
         try{
-            val outputIndex = mDecoder!!.dequeueOutputBuffer(mMediaInfo, TIMEOUT)
+            val outputIndex = mDecoder!!.dequeueOutputBuffer(MediaCodec.BufferInfo(), TIMEOUT)
+            Log.d(TAG, "readFrame: output index " + outputIndex)
+            Log.d(TAG, "readFrame: isConfigured " + isConfigured)
             if(outputIndex >= 0 && isConfigured){
+                Log.i(TAG, "readFrame: release output buffer called")
                 mDecoder!!.releaseOutputBuffer(outputIndex, true)
             }else if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED){
                 val format = mDecoder!!.outputFormat
+                Log.i(TAG, "readFrame: Size changed")
                 onSizeChanged?.onSizeChanged(format.getInteger(MediaFormat.KEY_WIDTH), format.getInteger(MediaFormat.KEY_HEIGHT))
                 isConfigured = true
                 Log.i(TAG, "readFrame: Output format changed")
@@ -98,6 +102,8 @@ class DecoderImpl(
             Log.e(TAG, "readFrame: Exception reading frame", e)
         }
     }
+
+
 
 
     /**
@@ -116,6 +122,7 @@ class DecoderImpl(
      * @throws IllegalArgumentException if no suitable decoder is found.
      */
     override fun getDecoder(format: MediaFormat): MediaCodec {
+        Log.i(TAG, "getDecoder: Getting decoder")
         val mediaCodecList = MediaCodecList(MediaCodecList.ALL_CODECS)
         val decoder = mediaCodecList.findDecoderForFormat(format)
         if (decoder != "OMX.Exynos.avc.dec") {

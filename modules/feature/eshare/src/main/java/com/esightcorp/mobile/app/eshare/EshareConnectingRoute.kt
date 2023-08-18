@@ -78,7 +78,7 @@ internal fun EshareConnectingScreen(
                 cancelButtonNeeded = true,
                 onCancelButtonClicked = {
                     vm.onCancelClicked()
-                    navController.popBackStack("home", false)
+                    navController.popBackStack("home_first", false)
                 })
 
         }

@@ -146,6 +146,7 @@ class WifiModel(
     }
 
     fun startWifiScan() {
+        Log.i(TAG, "startWifiScan: ")
         val success = wifiManager.startScan()
         listener?.onScanStatusUpdated(ScanningStatus.InProgress)
         if (!success) {

@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
 import java.util.*
 
@@ -44,11 +43,21 @@ class BluetoothModel constructor(
         }
     }
 
+    private fun shutdownReceivers(){
+        try{
+            context.unregisterReceiver(gattUpdateReceiver)
+            context.unregisterReceiver(bluetoothStateReceiver)
+        } catch (e: Exception){
+            Log.e(TAG, "shutdownReceivers: ${e.message}")
+        }
+    }
+
     /**
      * receiver to capture changes to the connection state
      */
     private val gattUpdateReceiver: BroadcastReceiver = object: BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent) {
+            Log.i(TAG, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
             when (intent.action){
                 BleService.ACTION_GATT_CONNECTED -> {
                     bleManager.setConnectedDevice(bleManager.getConnectedDevice()!!, true)
@@ -69,6 +78,22 @@ class BluetoothModel constructor(
                 BleService.ACTION_DATA_AVAILABLE -> {
                     Log.d(TAG, "onReceive DATA AVAILABLE: ${intent.extras}")
                 }
+                BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE-> {
+                    bleManager.getEshareBluetoothListener()?.let {
+                        it.onEshareAddrNotAvailable()
+                    }
+                }
+                BleService.ACTION_ESHARE_IP_NOT_REACHABLE -> {
+                    bleManager.getEshareBluetoothListener()?.let {
+                        it.onEshareIpNotReachable()
+                    }
+                }
+                BleService.ACTION_ESHARE_BUSY -> {
+                    bleManager.getEshareBluetoothListener()?.let {
+                        it.onEshareBusy()
+                    }
+                }
+
             }
 
         }
@@ -105,11 +130,18 @@ class BluetoothModel constructor(
     }
     private val btStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
 
+    //need to handle the cleanup here... receivers are going bonkers
     init {
+        shutdownReceivers()
         val gattServiceIntent = Intent(context, BleService::class.java)
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-        context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(),
+                Context.RECEIVER_NOT_EXPORTED)
+        }else{
+            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        }
         context.registerReceiver(bluetoothStateReceiver, btStateFilter)
 
     }
@@ -209,8 +241,13 @@ class BluetoothModel constructor(
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
             addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
+            addAction(BleService.ACTION_DATA_AVAILABLE)
+            addAction(BleService.ACTION_ESHARE_IP_NOT_REACHABLE)
+            addAction(BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE)
+            addAction(BleService.ACTION_ESHARE_BUSY)
         }
     }
+
     companion object{
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4
     }

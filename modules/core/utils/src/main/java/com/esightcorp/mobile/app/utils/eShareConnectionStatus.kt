@@ -6,8 +6,11 @@ sealed class eShareConnectionStatus {
     object Unknown : eShareConnectionStatus()
     object Failed: eShareConnectionStatus()
     object Initiated: eShareConnectionStatus()
-    object ReceivedUserAcceptance: eShareConnectionStatus()
     object ReceivedUserRejection: eShareConnectionStatus()
     object Timeout: eShareConnectionStatus()
+    object ADDR_NOT_AVAILABLE: eShareConnectionStatus()
+    object IP_NOT_REACHABLE: eShareConnectionStatus()
+    object BUSY: eShareConnectionStatus()
+
 
 }

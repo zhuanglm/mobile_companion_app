@@ -5,8 +5,10 @@ import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.util.Log
 import android.view.Surface
+import androidx.compose.animation.core.updateTransition
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
+import com.esightcorp.mobile.app.bluetooth.EshareBluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.eshare.state.EshareConnectingUiState
 import com.esightcorp.mobile.app.networking.WifiModel
@@ -25,7 +27,7 @@ import javax.inject.Inject
 @SuppressLint("NewApi")
 class EshareRepository @Inject constructor(
     @ApplicationContext context: Context
-): BluetoothModelListener, WifiModelListener {
+): BluetoothModelListener, WifiModelListener, EshareBluetoothModelListener {
 
     private val TAG = "EshareRepository"
     private val bluetoothModel: BluetoothModel
@@ -112,6 +114,7 @@ class EshareRepository @Inject constructor(
 
     init {
         bluetoothModel = BluetoothModel(context)
+        eSightBleManager.setEshareBluetoothListener(this)
         wifiModel = WifiModel(context)
     }
     fun setupEshareListener(eshareRepositoryListener: EshareRepositoryListener) {
@@ -232,5 +235,21 @@ class EshareRepository @Inject constructor(
 
     override fun onNetworkNotFound() {
         TODO("Not yet implemented")
+    }
+
+    override fun onEshareIpNotReachable() {
+        updateEshareState(eShareConnectionStatus.IP_NOT_REACHABLE)
+    }
+
+    override fun onEshareAddrNotAvailable() {
+        updateEshareState(eShareConnectionStatus.ADDR_NOT_AVAILABLE)
+    }
+
+    override fun onEshareBusy() {
+        updateEshareState(eShareConnectionStatus.BUSY)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
     }
 }

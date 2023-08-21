@@ -37,6 +37,9 @@ class BleService : Service() {
     private lateinit var WIFI_INFO_Descriptor: BluetoothGattDescriptor
     private lateinit var ERROR_Descriptor: BluetoothGattDescriptor
 
+    var lastBroadcastTimeEshareError = 0L
+
+
     private val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
         hashMapOf()
 
@@ -61,76 +64,60 @@ class BleService : Service() {
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            Log.i(
-                TAG,
-                "onServicesDiscovered: device ${gatt.device.name} and status is success? ${status == BluetoothGatt.GATT_SUCCESS}"
-            )
+            Log.i(TAG, "onServicesDiscovered: device ${gatt.device.name} and status is success? ${status == BluetoothGatt.GATT_SUCCESS}")
+
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
-                val service = gatt.getService(SERVICE_UUID)
-                BUTTON_PRESS_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_BUTTON_PRESSED
-                )
-                WIFI_INFO_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_WIFI_INFO
-                )
-                WIFI_INFO_Descriptor = WIFI_INFO_Characteristic.getDescriptor(
-                    UUID_DESCRIPTOR_WIFI_INFO
-                )
-                ERROR_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_ERROR
-                )
-                ERROR_Descriptor = ERROR_Characteristic.getDescriptor(
-                    UUID_DESCRIPTOR_ERROR
-                )
-                HOTSPOT_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_HOTSPOT
-                )
-                HOTSPOT_Descriptor = HOTSPOT_Characteristic.getDescriptor(
-                    UUID_DESCRIPTOR_HOTSPOT
-                )
-                WIFI_CONNECTION_STATUS_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS
-                )
-                WIFI_CONNECTION_STATUS_Descriptor =
-                    WIFI_CONNECTION_STATUS_Characteristic.getDescriptor(
-                        UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS
+
+                val service = gatt.getService(SERVICE_UUID) ?: return
+                BUTTON_PRESS_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_BUTTON_PRESSED)
+                WIFI_INFO_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_INFO)
+                WIFI_INFO_Characteristic?.getDescriptor(UUID_DESCRIPTOR_WIFI_INFO)?.let {
+                    WIFI_INFO_Descriptor = it
+                    characteristicToDescriptorMap[WIFI_INFO_Characteristic] = it
+                }
+
+                ERROR_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_ERROR)
+                ERROR_Characteristic?.getDescriptor(UUID_DESCRIPTOR_ERROR)?.let {
+                    Log.i(TAG, "onServicesDiscovered: ERROR CHARACTERTISTIC SETTING DESCRIPTOR")
+                    ERROR_Descriptor = it
+                    characteristicToDescriptorMap[ERROR_Characteristic] = it
+                }
+
+                HOTSPOT_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_HOTSPOT)
+                HOTSPOT_Characteristic?.getDescriptor(UUID_DESCRIPTOR_HOTSPOT)?.let {
+                    HOTSPOT_Descriptor = it
+                    characteristicToDescriptorMap[HOTSPOT_Characteristic] = it
+                }
+
+                WIFI_CONNECTION_STATUS_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS)
+                WIFI_CONNECTION_STATUS_Characteristic?.getDescriptor(UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS)?.let {
+                    WIFI_CONNECTION_STATUS_Descriptor = it
+                    characteristicToDescriptorMap[WIFI_CONNECTION_STATUS_Characteristic] = it
+                }
+
+                ESHARE_COMMANDS_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_COMMANDS)
+                ESHARE_COMMANDS_Characteristic?.getDescriptor(UUID_DESCRIPTOR_ESHARE_COMMANDS)?.let {
+                    ESHARE_COMMANDS_Descriptor = it
+                    characteristicToDescriptorMap[ESHARE_COMMANDS_Characteristic] = it
+                }
+
+                ESHARE_STATUS_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_STATUS)
+                ESHARE_STATUS_Characteristic?.getDescriptor(UUID_DESCRIPTOR_ESHARE_STATUS)?.let {
+                    ESHARE_STATUS_Descriptor = it
+                    characteristicToDescriptorMap[ESHARE_STATUS_Characteristic] = it
+                }
+
+                while(characteristicToDescriptorMap.isNotEmpty()) {
+                    setCharacteristicEnabledNotification(
+                        characteristicToDescriptorMap.keys.first(),
+                        characteristicToDescriptorMap.values.first(),
+                        gatt
                     )
-                ESHARE_COMMANDS_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_ESHARE_COMMANDS
-                )
-                ESHARE_COMMANDS_Descriptor = ESHARE_COMMANDS_Characteristic.getDescriptor(
-                    UUID_DESCRIPTOR_ESHARE_COMMANDS
-                )
-                ESHARE_STATUS_Characteristic = service.getCharacteristic(
-                    UUID_CHARACTERISTIC_ESHARE_STATUS
-                )
-                ESHARE_STATUS_Descriptor = ESHARE_STATUS_Characteristic.getDescriptor(
-                    UUID_DESCRIPTOR_ESHARE_STATUS
-                )
-
-                characteristicToDescriptorMap[WIFI_INFO_Characteristic] = WIFI_INFO_Descriptor
-                characteristicToDescriptorMap[ERROR_Characteristic] = ERROR_Descriptor
-                characteristicToDescriptorMap[HOTSPOT_Characteristic] = HOTSPOT_Descriptor
-                characteristicToDescriptorMap[WIFI_CONNECTION_STATUS_Characteristic] =
-                    WIFI_CONNECTION_STATUS_Descriptor
-                characteristicToDescriptorMap[ESHARE_COMMANDS_Characteristic] =
-                    ESHARE_COMMANDS_Descriptor
-                characteristicToDescriptorMap[ESHARE_STATUS_Characteristic] =
-                    ESHARE_STATUS_Descriptor
-
-                setCharacteristicEnabledNotification(
-                    characteristicToDescriptorMap.keys.first(),
-                    characteristicToDescriptorMap.values.first(),
-                    gatt
-                )
-                characteristicToDescriptorMap.remove(characteristicToDescriptorMap.keys.first())
-
+                    characteristicToDescriptorMap.remove(characteristicToDescriptorMap.keys.first())
+                }
             } else {
-                Log.e(
-                    TAG,
-                    "onServicesDiscovered received GATT_FAILURE ? ${status == BluetoothGatt.GATT_FAILURE}"
-                )
+                Log.e(TAG, "onServicesDiscovered received GATT_FAILURE ? ${status == BluetoothGatt.GATT_FAILURE}")
             }
         }
 
@@ -178,8 +165,27 @@ class BleService : Service() {
                 }
 
                 UUID_CHARACTERISTIC_ERROR -> {
-                    broadcastUpdate(ACTION_ERROR, incoming)
                     Log.i(TAG, "onCharacteristicChanged: Error $incoming")
+                    when(incoming){
+                        "ERROR_IP_NOT_REACHABLE" -> {
+                            val BROADCAST_DEBOUNCE_TIME = 1000  // 1 second
+                            val currentTime = System.currentTimeMillis()
+                            if (currentTime - lastBroadcastTimeEshareError > BROADCAST_DEBOUNCE_TIME) {
+                                broadcastUpdate(ACTION_ESHARE_IP_NOT_REACHABLE)
+                                lastBroadcastTimeEshareError = currentTime
+                            }
+
+                        }
+                        "ERROR_BUSY" -> {
+                            broadcastUpdate(ACTION_ESHARE_BUSY)
+                        }
+                        "ERROR_ADDR_NOT_FOUND" -> {
+                            broadcastUpdate(ACTION_ESHARE_ADDR_NOT_AVAILABLE)
+                        }
+                        else -> {
+                            broadcastUpdate(ACTION_ERROR, incoming)
+                        }
+                    }
                 }
 
                 UUID_CHARACTERISTIC_BUTTON_PRESSED -> {
@@ -238,6 +244,7 @@ class BleService : Service() {
         override fun onDescriptorWrite(
             gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor?, status: Int
         ) {
+            Log.i(TAG, "onDescriptorWrite: aaaaaa")
             super.onDescriptorWrite(gatt, descriptor, status)
             Log.e(TAG, "onDescriptorWrite: ")
             if (characteristicToDescriptorMap.isNotEmpty()) {
@@ -252,6 +259,8 @@ class BleService : Service() {
         }
 
 
+
+
     }
 
     @Suppress("DEPRECATION")
@@ -261,6 +270,7 @@ class BleService : Service() {
         descriptor: BluetoothGattDescriptor,
         gatt: BluetoothGatt,
     ) {
+        Log.i(TAG, "setCharacteristicEnabledNotification: ${characteristic.uuid} ")
         characteristic.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
         gatt.writeDescriptor(descriptor)
         gatt.setCharacteristicNotification(characteristic, true)
@@ -468,6 +478,10 @@ class BleService : Service() {
         const val ACTION_WIFI_ERROR = "com.esightcorp.wifi.ACTION_WIFI_ERROR"
         const val ACTION_ERROR = "com.esightcorp.wifi.ACTION_ERROR"
 
+        const val ACTION_ESHARE_BUSY = "com.esightcorp.wifi.ACTION_ESHARE_BUSY"
+        const val ACTION_ESHARE_ADDR_NOT_AVAILABLE = "com.esightcorp.wifi.ACTION_ESHARE_ADDR_NOT_AVAILABLE"
+        const val ACTION_ESHARE_IP_NOT_REACHABLE = "com.esightcorp.wifi.ACTION_ESHARE_IP_NOT_REACHABLE"
+
         const val REQUEST_MTU_SIZE = 200
 
         private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
@@ -491,7 +505,7 @@ class BleService : Service() {
         val UUID_CHARACTERISTIC_ESHARE_COMMANDS: UUID =
             UUID.fromString("72330422-8c4d-3eca-1234-e2bafeb7dd0d")
         val UUID_CHARACTERISTIC_ESHARE_STATUS: UUID =
-            UUID.fromString("68daeef1-e849-4530-8bf4-d7c10d6fc3ac")
+            UUID.fromString("72330422-8c4d-3eca-1234-e2bafeb7dd0e")
         val UUID_CHARACTERISTIC_BUTTON_PRESSED: UUID =
             UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
 
@@ -502,7 +516,6 @@ class BleService : Service() {
             UUID.fromString("1530e059-4d5e-46a8-947b-a6714f9ee5b2")
         val UUID_CHARACTERISTIC_WIFI_INFO: UUID =
             UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
-
 
     }
 

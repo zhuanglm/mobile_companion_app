@@ -59,7 +59,7 @@ fun EshareConnectionStoppedScreen(
         bottomButton = {Unit}) {
 
         ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-            val (icon, header, subheader, button, spacer) = createRefs()
+            val (icon, header, subheader, button) = createRefs()
             // Set up the big Bluetooth icon
             BigIcon(
                 painter = painterResource(id = R.drawable.link_off),

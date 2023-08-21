@@ -81,6 +81,7 @@ class EshareConnectedViewModel @Inject constructor(
     }
 
     override fun onCleared() {
+        Log.i(TAG, "onCleared: ")
         super.onCleared()
     }
 
@@ -105,6 +106,20 @@ class EshareConnectedViewModel @Inject constructor(
 
     fun navigateToStoppedRoute(navController: NavController){
         navController.navigate(EshareScreens.EshareConnectionStoppedRoute.route)
+    }
+
+    fun navigateToBusyRoute(navController: NavController){
+        Log.i(TAG, "navigateToBusyRoute: ")
+//        navController.navigate(EshareScreens.EshareConnectionBusyRoute.route)
+    }
+
+    fun navigateToUnableToConnectRoute(navController: NavController){
+        Log.i(TAG, "navigateToUnableToConnectRoute: ")
+        navController.navigate(EshareScreens.EshareUnableToConnectRoute.route){
+            popUpTo(EshareScreens.EshareConnectingRoute.route){
+                inclusive = true
+            }
+        }
     }
 }
 

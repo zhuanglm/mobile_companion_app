@@ -83,9 +83,6 @@ internal fun EshareConnectingScreen(
 
         }
 
-        eShareConnectionStatus.ReceivedUserAcceptance -> {
-            //stop timer
-        }
 
         eShareConnectionStatus.ReceivedUserRejection -> {
             //show rejection screen
@@ -98,6 +95,8 @@ internal fun EshareConnectingScreen(
         eShareConnectionStatus.Disconnected -> {
             //show disconnected screen
         }
+
+        else -> {}
     }
 
 }

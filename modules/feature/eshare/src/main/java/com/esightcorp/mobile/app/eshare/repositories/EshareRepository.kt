@@ -173,6 +173,22 @@ class EshareRepository @Inject constructor(
 
     }
 
+    fun startHotspotOnHMD(){
+        Log.i(TAG, "startHotspotOnHMD: ")
+        if(eSightBleManager.checkIfConnected()){
+            try {
+                eSightBleManager.getBleService()?.startHotspot(
+                    ssid = HotspotCredentialGenerator.generateHotspotName(),
+                    password = HotspotCredentialGenerator.generateHotspotPassword()
+                )
+            } catch (exception: NullPointerException) {
+                Log.e(TAG, "startHotspotOnHMD: BleService has not been initialized ", exception)
+            } catch (exception: UninitializedPropertyAccessException) {
+                Log.e(TAG, "startHotspotOnHMD: BleService has not been initialized ", exception)
+            }
+        }
+    }
+
     override fun onWifiNetworkFound(result: android.net.wifi.ScanResult) {
         TODO("Not yet implemented")
     }

@@ -9,4 +9,5 @@ sealed class EshareScreens(val route: String){
     object EshareHowToSetupRoute: EshareScreens("eshare_how_to_setup")
     object EshareUnableToConnectRoute: EshareScreens("eshare_unable_to_connect")
     object EshareWifiDisabledRoute: EshareScreens("eshare_wifi_disabled")
+    object HotspotSetupRoute: EshareScreens("hotspot_setup")
 }

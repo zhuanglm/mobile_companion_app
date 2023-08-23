@@ -16,3 +16,9 @@ data class EshareConnectedUiState(
     val radioState: RadioState = RadioState(),
     val connectionState: eShareConnectionStatus = eShareConnectionStatus.Initiated,
 )
+
+data class HotspotSetupUiState(
+    val radioState: RadioState = RadioState(),
+    val networkName: String = "",
+    val networkPassword: String = "",
+)

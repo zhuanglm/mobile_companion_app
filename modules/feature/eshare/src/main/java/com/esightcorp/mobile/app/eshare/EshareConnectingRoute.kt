@@ -16,7 +16,7 @@ import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 
 
 private const val TAG = "EshareConnectingRoute"
-
+//TODO: Can we scrap this route and only use the EshareConnectedRoute?
 @Composable
 fun EshareConnectingRoute(
     navController: NavController, vm: EshareConnectingViewModel = hiltViewModel()

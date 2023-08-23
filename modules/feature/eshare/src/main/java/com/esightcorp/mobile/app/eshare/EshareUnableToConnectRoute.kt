@@ -20,7 +20,7 @@ fun EshareUnableToConnectRoute(
         navController = navController,
         onBackPressed = { navController.popBackStack("home_first", false) },
         onTryAgainPressed = {Unit},
-        onSetupHotspotPressed = {Unit},
+        onSetupHotspotPressed = vm::onSetupHotspotPressed,
         modifier = Modifier
     )
 

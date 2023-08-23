@@ -12,7 +12,9 @@ class BluetoothPayload private constructor(
     val wifiPwd: String?,
     val wifiType: String?,
     val ipAddress: String?,
-    val port: String?
+    val port: String?,
+    val hotspotSsid: String?,
+    val hotspotPwd: String?
 ) {
 
     data class Builder(
@@ -21,7 +23,9 @@ class BluetoothPayload private constructor(
         private var wifiPwd: String? = null,
         private var wifiType: String? = null,
         private var ipAddress: String? = null,
-        private var port: String? = null
+        private var port: String? = null,
+        private var hotspotSsid: String? = null,
+        private var hotspotPwd: String? = null
     ) {
         //        fun bleCode(bleCode: BleCodes) = apply { this.bleCode = bleCode }
         fun ssid(ssid: String) = apply { this.SSID = ssid }
@@ -29,7 +33,10 @@ class BluetoothPayload private constructor(
         fun wifiType(type: String) = apply { this.wifiType = type }
         fun ipAddress(address: String) = apply { this.ipAddress = address }
         fun port(port: String) = apply { this.port = port }
-        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port)
+        fun hotspotSsid(ssid: String) = apply { this.hotspotSsid = ssid }
+        fun hotspotPwd(password: String) = apply { this.hotspotPwd = password }
+
+        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port, hotspotSsid, hotspotPwd)
     }
 
     enum class BleCodes(val code: String) {
@@ -64,8 +71,14 @@ class BluetoothPayload private constructor(
                 byteArray += code
             }
             BleCodes.HOTSPOT_CREDS -> {
-                val code = BleCodes.HOTSPOT_CREDS.code.toByteArray(charset)
-                byteArray += code
+                if(hotspotPwd != null && hotspotSsid != null){
+                    val outgoingJson = JSONObject()
+                        .put(code, BleCodes.HOTSPOT_CREDS.code)
+                        .put(ssid, hotspotSsid)
+                        .put(pwd, hotspotPwd)
+                    byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
+                    Log.i(TAG, "getByteArrayBlePayload: outgoingJSON -> ${outgoingJson.toString()}")
+                }
             }
             BleCodes.WIFI_CREDS -> {
                 if (SSID != null && wifiPwd != null && wifiType != null) {

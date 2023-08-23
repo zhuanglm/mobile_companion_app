@@ -8,6 +8,7 @@ import com.esightcorp.mobile.app.eshare.EshareConnectedRoute
 import com.esightcorp.mobile.app.eshare.EshareConnectingRoute
 import com.esightcorp.mobile.app.eshare.EshareConnectionStoppedRoute
 import com.esightcorp.mobile.app.eshare.EshareUnableToConnectRoute
+import com.esightcorp.mobile.app.eshare.HotspotSetupRoute
 
 
 fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
@@ -23,6 +24,9 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
         }
         composable(EshareScreens.EshareUnableToConnectRoute.route){
             EshareUnableToConnectRoute(navController = navController)
+        }
+        composable(EshareScreens.HotspotSetupRoute.route){
+            HotspotSetupRoute(navController = navController)
         }
 
     }

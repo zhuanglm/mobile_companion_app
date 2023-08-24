@@ -11,6 +11,7 @@ import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.EshareBluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.eshare.state.EshareConnectingUiState
+import com.esightcorp.mobile.app.networking.SystemStatusListener
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
 import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
@@ -24,10 +25,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.InputStream
 import javax.inject.Inject
 
-@SuppressLint("NewApi")
 class EshareRepository @Inject constructor(
     @ApplicationContext context: Context
-): BluetoothModelListener, WifiModelListener, EshareBluetoothModelListener {
+): BluetoothModelListener, SystemStatusListener, EshareBluetoothModelListener {
 
     private val TAG = "EshareRepository"
     private val bluetoothModel: BluetoothModel
@@ -189,23 +189,8 @@ class EshareRepository @Inject constructor(
         }
     }
 
-    override fun onWifiNetworkFound(result: android.net.wifi.ScanResult) {
-        TODO("Not yet implemented")
-    }
 
     override fun onScanStatusUpdated(status: ScanningStatus) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onNetworkConnected() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onNetworkConnectionError() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onScanFailed() {
         TODO("Not yet implemented")
     }
 
@@ -217,39 +202,11 @@ class EshareRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun alreadyConnectedToWifi() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onErrorTest() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onErrorWifiConnectionTimeout() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onErrorWifiInvalidPassword() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onErrorWifiWPALessThan8() {
-        TODO("Not yet implemented")
-    }
-
     override fun onWifiEnabled() {
         TODO("Not yet implemented")
     }
 
     override fun onGoWifiDisabled() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPlatformError() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onNetworkNotFound() {
         TODO("Not yet implemented")
     }
 
@@ -265,7 +222,4 @@ class EshareRepository @Inject constructor(
         updateEshareState(eShareConnectionStatus.BUSY)
     }
 
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
 }

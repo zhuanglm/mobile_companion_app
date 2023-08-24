@@ -260,18 +260,6 @@ class BleService : Service() {
         override fun onDescriptorWrite(
             gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor?, status: Int
         ) {
-            Log.i(TAG, "onDescriptorWrite: aaaaaa")
-            super.onDescriptorWrite(gatt, descriptor, status)
-            Log.e(TAG, "onDescriptorWrite: ")
-            if (characteristicToDescriptorMap.isNotEmpty()) {
-                Log.i(TAG, "onDescriptorWrite: ${characteristicToDescriptorMap.values.first()}")
-                setCharacteristicEnabledNotification(
-                    characteristicToDescriptorMap.keys.first(),
-                    characteristicToDescriptorMap.values.first(),
-                    gatt
-                )
-                characteristicToDescriptorMap.remove(characteristicToDescriptorMap.keys.first())
-            }
         }
 
 

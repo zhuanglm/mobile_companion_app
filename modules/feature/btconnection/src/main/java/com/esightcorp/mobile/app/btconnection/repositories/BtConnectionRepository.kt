@@ -47,15 +47,28 @@ class BtConnectionRepository @Inject constructor(
             scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Success)
         }
 
-        @SuppressLint("MissingPermission")
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            Log.d(TAG, "onDeviceConnected: ${device.name}")
-            deviceConnected(device, connected)
+        override fun onDeviceDisconnected(device: BluetoothDevice) {
+            deviceConnected(device, false)
         }
 
-        override fun onBluetoothStateChanged() {
-            Log.d(TAG, "onBluetoothStateChanged: ")
+        override fun onDeviceConnected(device: BluetoothDevice) {
+            deviceConnected(device, true)
+        }
+
+        override fun onConnectionStateQueried(state: Boolean) {
+            Log.i(TAG, "onConnectionStateQueried: $state")
+        }
+
+        override fun onBluetoothEnabled() {
             checkBtEnabledStatus()
+        }
+
+        override fun onBluetoothDisabled() {
+            checkBtEnabledStatus()
+        }
+
+        override fun onBluetoothStateQueried(state: Boolean) {
+            Log.i(TAG, "onBluetoothStateQueried: $state")
         }
 
     }

@@ -6,7 +6,8 @@ import java.io.InputStream
 interface EshareRepositoryListener{
     fun onEshareStateChanged(state: eShareConnectionStatus)
     fun onEshareStateRequested(state : eShareConnectionStatus)
-    fun onBluetoothStateChanged(state: Boolean)
+    fun onBluetoothDeviceDisconnected()
+    fun onBluetoothDisabled()
     fun onWifiStateChanged(state: Boolean)
     fun onInputStreamCreated(inputStream: InputStream)
 }

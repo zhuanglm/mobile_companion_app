@@ -6,8 +6,10 @@ import android.content.Context
 import android.util.Log
 import android.view.Surface
 import androidx.compose.animation.core.updateTransition
+import com.esightcorp.mobile.app.bluetooth.BluetoothConnectionListener
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
+import com.esightcorp.mobile.app.bluetooth.BluetoothRadioListener
 import com.esightcorp.mobile.app.bluetooth.EshareBluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.eshare.state.EshareConnectingUiState
@@ -27,39 +29,36 @@ import javax.inject.Inject
 
 class EshareRepository @Inject constructor(
     @ApplicationContext context: Context
-): BluetoothModelListener, SystemStatusListener, EshareBluetoothModelListener {
+): BluetoothRadioListener, BluetoothConnectionListener, SystemStatusListener, EshareBluetoothModelListener {
 
     private val TAG = "EshareRepository"
     private val bluetoothModel: BluetoothModel
     private val wifiModel: WifiModel
     private lateinit var eShareRepositoryListener: EshareRepositoryListener
     private var state: eShareConnectionStatus = eShareConnectionStatus.Unknown
-    override fun listOfDevicesUpdated() {
-        TODO("Not yet implemented")
+
+    override fun onDeviceDisconnected(device: BluetoothDevice) {
+        updateBluetoothDeviceDisconnected()
     }
 
-    override fun onBatchScanResults(results: List<ScanResult>) {
-        TODO("Not yet implemented")
+    override fun onDeviceConnected(device: BluetoothDevice) {
+        // We should always be connected at this point
     }
 
-    override fun onScanFailed(error: Int) {
-        TODO("Not yet implemented")
+    override fun onConnectionStateQueried(state: Boolean) {
+        Log.i(TAG, "onConnectionStateQueried: $state")
     }
 
-    override fun onScanStarted() {
-        TODO("Not yet implemented")
+    override fun onBluetoothEnabled() {
+       //this should always be enabled at this point
     }
 
-    override fun onScanFinished() {
-        TODO("Not yet implemented")
+    override fun onBluetoothDisabled() {
+        updateBluetoothRadioDisabled()
     }
 
-    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onBluetoothStateChanged() {
-        TODO("Not yet implemented")
+    override fun onBluetoothStateQueried(state: Boolean) {
+        Log.i(TAG, "onBluetoothStateQueried: $state")
     }
 
     private val createSocketListener = object: CreateSocketListener{
@@ -88,7 +87,7 @@ class EshareRepository @Inject constructor(
         }
 
         override fun onSocketError() {
-            TODO("Not yet implemented")
+            Log.e(TAG, "onSocketError: ")
         }
     }
 
@@ -142,6 +141,20 @@ class EshareRepository @Inject constructor(
             eShareRepositoryListener.onInputStreamCreated(inputStream)
         }
     }
+
+    private fun updateBluetoothDeviceDisconnected(){
+        if(eShareRepositoryListener != null){
+            eShareRepositoryListener.onBluetoothDeviceDisconnected()
+        }
+    }
+
+    private fun updateBluetoothRadioDisabled(){
+        if(eShareRepositoryListener != null){
+            eShareRepositoryListener.onBluetoothDisabled()
+        }
+    }
+
+
 
     fun startStreamFromHMD(surface: Surface, inputStream: InputStream){
         Log.i(TAG, "startStreamFromHMD: ")

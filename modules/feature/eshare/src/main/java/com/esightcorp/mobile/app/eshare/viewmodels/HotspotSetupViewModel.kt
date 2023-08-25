@@ -30,7 +30,11 @@ class HotspotSetupViewModel @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun onBluetoothStateChanged(state: Boolean) {
+    override fun onBluetoothDeviceDisconnected() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBluetoothDisabled() {
         TODO("Not yet implemented")
     }
 

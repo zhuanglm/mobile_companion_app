@@ -1,8 +1,10 @@
 package com.esightcorp.mobile.app.bluetooth
 
+import android.bluetooth.BluetoothDevice
+
 interface BluetoothConnectionListener {
 
-    fun onDeviceDisconnected()
-    fun onDeviceConnected()
+    fun onDeviceDisconnected(device: BluetoothDevice)
+    fun onDeviceConnected(device: BluetoothDevice)
     fun onConnectionStateQueried(state: Boolean)
 }

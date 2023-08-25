@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanResult
 import android.content.Context
+import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
+private const val TAG = "HomeRepository"
 class HomeRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
@@ -32,16 +34,28 @@ class HomeRepository @Inject constructor(
         override fun onScanFinished() {
         }
 
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-
+        override fun onDeviceDisconnected(device: BluetoothDevice) {
+            repoListener.onBluetoothDeviceDisconnected()
         }
 
-        override fun onBluetoothStateChanged() {
-            if (eSightBleManager.checkIfEnabled()) {
-                repoListener.onBluetoothEnabled()
-            } else {
-                repoListener.onBluetoothDisabled()
-            }
+        override fun onDeviceConnected(device: BluetoothDevice) {
+            Log.i(TAG, "onDeviceConnected: $device")
+        }
+
+        override fun onConnectionStateQueried(state: Boolean) {
+            Log.i(TAG, "onConnectionStateQueried: $state")
+        }
+
+        override fun onBluetoothEnabled() {
+            repoListener.onBluetoothEnabled()
+        }
+
+        override fun onBluetoothDisabled() {
+            repoListener.onBluetoothDisabled()
+        }
+
+        override fun onBluetoothStateQueried(state: Boolean) {
+            Log.i(TAG, "onBluetoothStateQueried: $state")
         }
     }
 

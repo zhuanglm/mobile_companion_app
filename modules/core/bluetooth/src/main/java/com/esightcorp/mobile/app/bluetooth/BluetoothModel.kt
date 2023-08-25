@@ -62,18 +62,24 @@ class BluetoothModel constructor(
                 BleService.ACTION_GATT_CONNECTED -> {
                     bleManager.setConnectedDevice(bleManager.getConnectedDevice()!!, true)
                     Log.e(TAG, "onReceive: CONNECTED" )
-                    bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!, true)
+                    bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
+                    bleManager.getBluetoothConnectionListener()?.let {
+                        it.onDeviceConnected(bleManager.getConnectedDevice()!!)
+                    }
                     bleManager.discoverServices()
 
                 }
                 BleService.ACTION_GATT_DISCONNECTED -> {
                     Log.e(TAG, "onReceive: DISCONNECTED" )
-                    bleManager.getConnectedDevice()?.let { bleManager.getModelListener()?.onDeviceConnected(it, false) }
+                    bleManager.getConnectedDevice()?.let {
+                        bleManager.getModelListener()?.onDeviceDisconnected(it)
+                        bleManager.getBluetoothConnectionListener()?.onDeviceDisconnected(it)
+                    }
                     bleManager.resetConnectedDevice()
                 }
                 BleService.ACTION_GATT_SERVICES_DISCOVERED -> {
-                    bleManager.getBleService()?.getSupportedGattServices()?.forEach {
-                    }
+//                    bleManager.getBleService()?.getSupportedGattServices()?.forEach {
+//                    }
                 }
                 BleService.ACTION_DATA_AVAILABLE -> {
                     Log.d(TAG, "onReceive DATA AVAILABLE: ${intent.extras}")
@@ -108,7 +114,7 @@ class BluetoothModel constructor(
                         BluetoothAdapter.STATE_OFF -> {
                             // Bluetooth is disabled
                             Log.d(TAG, "onReceive: Bluetooth is disabled")
-                            eSightBleManager.getModelListener()?.onBluetoothStateChanged()
+                            eSightBleManager.getModelListener()?.onBluetoothDisabled()
                         }
                         BluetoothAdapter.STATE_TURNING_OFF -> {
                             Log.d(TAG, "onReceive: Bluetooth is turning off ")
@@ -117,7 +123,7 @@ class BluetoothModel constructor(
                         BluetoothAdapter.STATE_ON -> {
                             // Bluetooth is enabled
                             Log.d(TAG, "onReceive: Bluetooth is Enabled")
-                            eSightBleManager.getModelListener()?.onBluetoothStateChanged()
+                            eSightBleManager.getModelListener()?.onBluetoothEnabled()
                         }
                         BluetoothAdapter.STATE_TURNING_ON -> {
                             Log.d(TAG, "onReceive: Bluetooth is turning on")
@@ -154,7 +160,7 @@ class BluetoothModel constructor(
         Log.d(TAG, "Are there any connected devices?  $connectedDeviceList ")
         if(connectedDeviceList.isNotEmpty()){
             bleManager.setConnectedDevice(connectedDeviceList[0], true)
-            bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!, true)
+            bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
         }
     }
 

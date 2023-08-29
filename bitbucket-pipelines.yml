@@ -1,101 +1,78 @@
-# Bitbucket Pipelines Template to build, test your Android Application.
+# Bitbucket Pipelines YAML file for building Android Application
+# Reference Links:
+# - Bitbucket Pipelines Documentation: https://support.atlassian.com/bitbucket-cloud/docs/configure-bitbucket-pipelinesyml/
+# - Caching Dependencies: https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
+# - Using Artifacts: https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
+# - Docker Image Details: https://hub.docker.com/r/androidsdk/android-31
 
-# This template contains 3 parallel steps to build Android application, run Android code scanning tool and run unit tests.
-# For more details see https://support.atlassian.com/bitbucket-cloud/docs/configure-bitbucket-pipelinesyml/
-
-# Docker for Android SDK 30 with pre-installed build tools and emulator image.
-# Note: This docker image is created and maintained by a non official third party. For more details see: https://hub.docker.com/r/androidsdk/android-30
 image: androidsdk/android-31
 
 pipelines:
   pull-requests:
-    '**': #this runs as default for any branch not elsewhere defined
-      - step: # step to build Android debug application
-          name: Pull request build
-          caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-            - gradle
+    '**':
+      - step:
+          name: Build Debug .aab
+          caches:
+            - gradle  # Gradle cache to speed up build
+            - android-34  # Android SDK 34 cache
           script:
-            - ./gradlew assembleDebug
+            # Check if SDK 34 is already cached, if not then install it
+            - if [ ! -d "$HOME/android-34" ]; then yes | sdkmanager "platforms;android-33"; fi
+            # Copy the installed SDK 34 to cacheable directory
+            - cp -r "$ANDROID_HOME/platforms/android-34" "$HOME/android-34" || true
+            # Run the build task for Debug .aab
+            - ./gradlew bundleDebug
           artifacts:
-            - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
+            - app/build/outputs/**
 
   branches:
-    # This section is something that I want to bring back once we have unit tests in place. For now, we don't need anything to run for every
-    # branch, so commenting it out.
-#    '**':
-#      - parallel:
-#          - step: # step to build Android debug application
-#              name: Debug Unit tests
-#              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-#                - gradle
-#              script:
-#                - ./gradlew testDebugUnitTest
-#              artifacts:
-#                - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
-#          - step:
-#              name: Lint
-#              caches:
-#                - gradle
-#              script:
-#                - ./gradlew lint
-#    'feature/*':
-#      - parallel:
-#          - step: # step to build Android debug application
-#              name: Debug Unit tests
-#              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-#                - gradle
-#              script:
-#                - ./gradlew testDebugUnitTest
-#
-#          - step:
-#              name: Debug lint
-#              caches:
-#                - gradle
-#              script:
-#                - ./gradlew lint
-#              artifacts:
-#                - app/build/reports/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
-    'release/*': # step to build Release branches
+    'release/*':
       - parallel:
           - step:
-              name: Release lint
+              name: Run lint for Release
               caches:
                 - gradle
               script:
                 - ./gradlew lint
               artifacts:
-                    - app/build/reports/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
-          - step: # step to build Android release application
-              name: Android Release Application
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
+                - app/build/reports/**
+          - step:
+              name: Build Release .aab
+              caches:
                 - gradle
               script:
                 - ./gradlew bundleRelease
               artifacts:
-                - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
+                - app/build/outputs/**
+
     'develop':
       - parallel:
           - step:
-              name: Release lint
+              name: Run lint for Develop
               caches:
                 - gradle
               script:
                 - ./gradlew lint
               artifacts:
-                - app/build/reports/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
-          - step: # step to build Android release application
-              name: Android Release Application
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
+                - app/build/reports/**
+          - step:
+              name: Build Release .aab for Develop
+              caches:
                 - gradle
               script:
-                - ./gradlew assembleRelease
+                - ./gradlew bundleRelease
               artifacts:
-                - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
-          - step: # step to build Android debug application
-              name: Android Debug Application
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
+                - app/build/outputs/**
+          - step:
+              name: Build Debug .aab for Develop
+              caches:
                 - gradle
               script:
-                - ./gradlew assembleDebug
+                - ./gradlew bundleDebug
               artifacts:
-                - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
+                - app/build/outputs/**
+
+# Definitions for custom cache directories
+definitions:
+  caches:
+    android-34: $HOME/android-34  # Cache directory for Android SDK 34

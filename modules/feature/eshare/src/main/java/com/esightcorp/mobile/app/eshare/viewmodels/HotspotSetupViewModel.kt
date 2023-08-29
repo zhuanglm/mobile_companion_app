@@ -1,12 +1,15 @@
 package com.esightcorp.mobile.app.eshare.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.repositories.HotspotCredentialGenerator
+import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.EshareConnectingUiState
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
+import com.esightcorp.mobile.app.eshare.state.RadioState
 import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +26,7 @@ class HotspotSetupViewModel @Inject constructor(
 ): AndroidViewModel(application), EshareRepositoryListener {
 
     override fun onEshareStateChanged(state: eShareConnectionStatus) {
-        TODO("Not yet implemented")
+        Log.i(TAG, "onEshareStateChanged: Should not happen here")
     }
 
     override fun onEshareStateRequested(state: eShareConnectionStatus) {
@@ -31,19 +34,19 @@ class HotspotSetupViewModel @Inject constructor(
     }
 
     override fun onBluetoothDeviceDisconnected() {
-        TODO("Not yet implemented")
+        updateBluetoothConnectionState(false)
     }
 
     override fun onBluetoothDisabled() {
-        TODO("Not yet implemented")
+        updateBluetoothState(false)
     }
 
     override fun onWifiStateChanged(state: Boolean) {
-        TODO("Not yet implemented")
+        updateWifiState(state)
     }
 
     override fun onInputStreamCreated(inputStream: InputStream) {
-        TODO("Not yet implemented")
+        Log.i(TAG, "onInputStreamCreated: Should not happen here")
     }
 
     private var _uiState = MutableStateFlow(HotspotSetupUiState())
@@ -60,6 +63,25 @@ class HotspotSetupViewModel @Inject constructor(
             uiState.copy(networkPassword = networkPassword)
         }
     }
+    private fun updateBluetoothState(state:Boolean){
+        _uiState.update { uiState ->
+            uiState.copy(radioState = RadioState(isBtEnabled = state, isWifiEnabled = uiState.radioState.isWifiEnabled))
+        }
+    }
+
+    private fun updateWifiState(state:Boolean){
+        _uiState.update { uiState ->
+            uiState.copy(radioState = RadioState(isBtEnabled = uiState.radioState.isBtEnabled, isWifiEnabled = state))
+        }
+    }
+
+    private fun updateBluetoothConnectionState(state:Boolean){
+        _uiState.update { uiState ->
+            uiState.copy(isDeviceConnected = DeviceConnectionState(isDeviceConnected = state))
+        }
+    }
+
+
 
     init {
         updateNetworkName(HotspotCredentialGenerator.generateHotspotName())
@@ -72,6 +94,10 @@ class HotspotSetupViewModel @Inject constructor(
         eshareRepository.startHotspotOnHMD()
     }
 
+
+    companion object{
+        private const val TAG = "HotspotSetupViewModel"
+    }
 
 
 

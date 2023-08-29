@@ -4,11 +4,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.esightcorp.mobile.app.eshare.EshareConnectedRoute
-import com.esightcorp.mobile.app.eshare.EshareConnectingRoute
-import com.esightcorp.mobile.app.eshare.EshareConnectionStoppedRoute
-import com.esightcorp.mobile.app.eshare.EshareUnableToConnectRoute
-import com.esightcorp.mobile.app.eshare.HotspotSetupRoute
+import com.esightcorp.mobile.app.eshare.composables.EshareBusyRoute
+import com.esightcorp.mobile.app.eshare.composables.EshareConnectedRoute
+import com.esightcorp.mobile.app.eshare.composables.EshareConnectingRoute
+import com.esightcorp.mobile.app.eshare.composables.EshareConnectionStoppedRoute
+import com.esightcorp.mobile.app.eshare.composables.EshareUnableToConnectRoute
+import com.esightcorp.mobile.app.eshare.composables.HotspotSetupRoute
 
 
 fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
@@ -27,6 +28,9 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
         }
         composable(EshareScreens.HotspotSetupRoute.route){
             HotspotSetupRoute(navController = navController)
+        }
+        composable(EshareScreens.EshareBusyRoute.route){
+            EshareBusyRoute(navController = navController)
         }
 
     }

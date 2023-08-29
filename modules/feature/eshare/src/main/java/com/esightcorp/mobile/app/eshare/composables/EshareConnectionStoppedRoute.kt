@@ -1,9 +1,6 @@
-package com.esightcorp.mobile.app.eshare
+package com.esightcorp.mobile.app.eshare.composables
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +17,6 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
-import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 

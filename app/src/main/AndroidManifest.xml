@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.esightcorp.mobile.app.companion">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Legacy permissions-->
     <uses-permission android:name="android.permission.BLUETOOTH"

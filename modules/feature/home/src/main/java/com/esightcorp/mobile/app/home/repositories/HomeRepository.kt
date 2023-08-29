@@ -15,7 +15,6 @@ private const val TAG = "HomeRepository"
 class HomeRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
-
     private val bluetoothModel: BluetoothModel
     private lateinit var repoListener: HomeRepositoryListener
     private val modelListener = object : BluetoothModelListener {

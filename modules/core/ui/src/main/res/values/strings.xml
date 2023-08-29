@@ -85,4 +85,6 @@
     <string name="hotspot_setup_button" translatable="true">Share your view</string>
 
     <string name="still_unable_to_connect_button" translatable="true">Still unable to connect?</string>
+
+    <string name="eshare_loading_text" translatable="true">Connecting to eSight</string>
 </resources>

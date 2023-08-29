@@ -17,7 +17,7 @@ private const val TAG = "HomeViewModel"
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     application: Application,
-    homeRepository: HomeRepository
+    homeRepository: HomeRepository,
 ): AndroidViewModel(application) {
 
     /**
@@ -25,6 +25,7 @@ class HomeViewModel @Inject constructor(
      */
     private var _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
     private val listener = object: HomeRepositoryListener{
         override fun onBluetoothDisabled() {
             updateBtEnabledState(false)
@@ -35,6 +36,11 @@ class HomeViewModel @Inject constructor(
 
         override fun onBluetoothEnabled() {
            updateBtEnabledState(true)
+        }
+
+        override fun onBluetoothDeviceDisconnected() {
+            updateConnectedDevice("")
+            updateConnectedState(false)
         }
     }
     init {

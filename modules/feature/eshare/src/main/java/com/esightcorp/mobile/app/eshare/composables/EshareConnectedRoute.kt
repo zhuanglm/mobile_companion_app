@@ -1,24 +1,26 @@
-package com.esightcorp.mobile.app.eshare
+package com.esightcorp.mobile.app.eshare.composables
 
 import android.util.Log
+import android.view.TextureView
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectedViewModel
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
-import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
+import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
+import com.esightcorp.mobile.app.utils.NavigateToDeviceDisconnected
 import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 
 @Composable
@@ -27,39 +29,56 @@ fun EshareConnectedRoute(
     vm: EshareConnectedViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    eShareConnectedScreen(
-        vm = vm,
-        uiState = uiState,
-        navController = navController,
-        navigateToStoppedRoute = vm::navigateToStoppedRoute,
-        navigateToUnableToConnectRoute = vm::navigateToUnableToConnectRoute,
-        navigateToBusyRoute = vm::navigateToBusyRoute
+    if (!uiState.radioState.isBtEnabled){
+        Log.i(TAG, "EshareConnectedRoute: Bluetooth is disabled right now")
+        NavigateToBluetoothDisabled(navController = navController)
+    }
 
-    )
+    if(!uiState.radioState.isWifiEnabled){
+        Log.i(TAG, "EshareConnectedRoute: Wifi is disabled right now")
+    }
+
+    if(!uiState.deviceConnectionState.isDeviceConnected){
+        Log.i(TAG, "EshareConnectedRoute: Device is not connected")
+        NavigateToDeviceDisconnected(navController = navController)
+    }
+    if(uiState.radioState.isBtEnabled && uiState.deviceConnectionState.isDeviceConnected){
+        eShareConnectedScreen(
+            textureViewListener = vm,
+            uiState = uiState,
+            navController = navController,
+            navigateToStoppedRoute = vm::navigateToStoppedRoute,
+            navigateToUnableToConnectRoute = vm::navigateToUnableToConnectRoute,
+            navigateToBusyRoute = vm::navigateToBusyRoute,
+            onCancelButtonClicked = vm::onCancelButtonClicked
+
+        )
+    }
+    
 }
 
 private const val TAG = "EshareConnectedRoute"
 
 @Composable
 fun eShareConnectedScreen(
-    vm: EshareConnectedViewModel,
+    textureViewListener: TextureView.SurfaceTextureListener,
     uiState: EshareConnectedUiState,
     modifier: Modifier = Modifier,
     navController: NavController,
     navigateToStoppedRoute: (NavController) -> Unit,
     navigateToUnableToConnectRoute: (NavController) -> Unit,
-    navigateToBusyRoute: (NavController) -> Unit
+    navigateToBusyRoute: (NavController) -> Unit,
+    onCancelButtonClicked: (NavController) -> Unit
 ) {
     Log.i(TAG, "eShareConnectedScreen: ")
     Row {
         AndroidView(factory = { context ->
             AutoFitTextureView(context).apply {
-                surfaceTextureListener = vm
+                surfaceTextureListener = textureViewListener
             }
         }, modifier = modifier
-            .width(1920.dp)
-            .height(1080.dp), update = { view ->
-            view.surfaceTextureListener = vm
+            .fillMaxHeight(), update = { view ->
+            view.surfaceTextureListener = textureViewListener
             Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
 
         })
@@ -76,40 +95,40 @@ fun eShareConnectedScreen(
         }
 
         eShareConnectionStatus.Initiated -> {
-            LoadingScreenWithSpinner(loadingText = "Connection initiated",
+            LoadingScreenWithSpinner(loadingText = stringResource(R.string.eshare_loading_text),
                 modifier = modifier,
                 cancelButtonNeeded = true,
                 onCancelButtonClicked = {
-                    navController.popBackStack("home_first", false)
+                    onCancelButtonClicked(navController)
                 })
         }
 
         eShareConnectionStatus.Disconnected -> {
             Log.i(TAG, "eShareConnectedScreen: We are now disconnected from HMD ")
-            LoadingScreenWithIcon(
-                loadingText = "Connection lost",
-                modifier = modifier
-            )
-            navigateToStoppedRoute(navController)
+            LaunchedEffect(Unit) {
+                navigateToStoppedRoute(navController)
+            }
         }
 
         eShareConnectionStatus.IP_NOT_REACHABLE -> {
             Log.i(TAG, "eShareConnectedScreen: IP not reachable")
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 navigateToUnableToConnectRoute(navController)
             }
         }
 
         eShareConnectionStatus.ADDR_NOT_AVAILABLE -> {
             Log.i(TAG, "eShareConnectedScreen: Address not available")
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 navigateToUnableToConnectRoute(navController)
             }
         }
 
         eShareConnectionStatus.BUSY -> {
             Log.i(TAG, "eShareConnectedScreen: HMD has a session running already")
-            navigateToBusyRoute(navController)
+            LaunchedEffect(Unit) {
+                navigateToBusyRoute(navController)
+            }
         }
 
         else -> {

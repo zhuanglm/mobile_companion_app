@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.eshare
+package com.esightcorp.mobile.app.eshare.composables
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

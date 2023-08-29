@@ -13,19 +13,11 @@ object WifiCache {
     fun getNetworkList(): MutableList<ScanResult> {
         return networkList
     }
-// TODO: Can we remove this
-//    fun setNetworkList(list: MutableList<ScanResult>) {
-//        this.networkList = list
-//    }
 
     fun selectNetwork(network: ScanResult) {
         Log.i("WifiCache", "selectNetwork: ${network.SSID}")
         WifiCredentials.setNetwork(network)
     }
-//TODO: Can we remove this
-//    fun enterNetworkPassword(pwd: String) {
-//        this.credentials.setPassword(pwd)
-//    }
 
     fun setWifiFlow(flow: WifiFlow) {
         Log.d("WIFI_CACHE", "setWifiFlow: ${flow.toString()}")

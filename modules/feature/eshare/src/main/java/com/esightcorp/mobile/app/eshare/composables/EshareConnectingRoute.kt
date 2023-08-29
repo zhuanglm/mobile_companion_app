@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.eshare
+package com.esightcorp.mobile.app.eshare.composables
 
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -12,6 +12,7 @@ import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
 import com.esightcorp.mobile.app.eshare.state.EshareConnectingUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectingViewModel
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
 import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 
 
@@ -26,18 +27,11 @@ fun EshareConnectingRoute(
     Log.i(TAG, "EshareConnectingRoute: uiState: ${uiState.radioState.isBtEnabled}")
 
     if (!uiState.radioState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
+        NavigateToBluetoothDisabled(navController = navController)
     } else {
         EshareConnectingScreen(
             modifier = Modifier, navController = navController, uiState = uiState, vm = vm
         )
-    }
-}
-
-@Composable
-fun NavigateBluetoothDisabled(navController: NavController) {
-    LaunchedEffect(Unit) {
-        navController.navigate("bt_disabled")
     }
 }
 
@@ -52,13 +46,6 @@ internal fun EshareConnectingScreen(
     Log.i(TAG, "EshareConnectingScreen: ${uiState.connectionState}")
 
     when (uiState.connectionState) {
-        eShareConnectionStatus.Failed -> {
-            Log.e(TAG, "eShare connection has failed. Show the error screen")
-        }
-
-        eShareConnectionStatus.Connected -> {
-            Log.i(TAG, "EshareConnectingScreen: Should not hit here")
-        }
 
         eShareConnectionStatus.Initiated -> {
             //start timer for timeout
@@ -73,27 +60,6 @@ internal fun EshareConnectingScreen(
             LaunchedEffect(Unit) {
                 vm.startEshareConnection()
             }
-            LoadingScreenWithSpinner(loadingText = "Connecting HCS",
-                modifier = modifier,
-                cancelButtonNeeded = true,
-                onCancelButtonClicked = {
-                    vm.onCancelClicked()
-                    navController.popBackStack("home_first", false)
-                })
-
-        }
-
-
-        eShareConnectionStatus.ReceivedUserRejection -> {
-            //show rejection screen
-        }
-
-        eShareConnectionStatus.Timeout -> {
-            //show timeout screen
-        }
-
-        eShareConnectionStatus.Disconnected -> {
-            //show disconnected screen
         }
 
         else -> {}

@@ -20,47 +20,43 @@ pipelines:
             - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
 
   branches:
-    '**':
-      - parallel:
-          - step: # step to build Android debug application
-              name: Debug Unit tests
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-                - gradle
-              script:
-                - ./gradlew testDebugUnitTest
-              artifacts:
-                - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
-          - step:
-              name: Lint
-              caches:
-                - gradle
-              script:
-                - ./gradlew lint
-    'feature/*':
-      - parallel:
-          - step: # step to build Android debug application
-              name: Debug Unit tests
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-                - gradle
-              script:
-                - ./gradlew testDebugUnitTest
-
-          - step:
-              name: Debug lint
-              caches:
-                - gradle
-              script:
-                - ./gradlew lint
-              artifacts:
-                - app/build/reports/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
+    # This section is something that I want to bring back once we have unit tests in place. For now, we don't need anything to run for every
+    # branch, so commenting it out.
+#    '**':
+#      - parallel:
+#          - step: # step to build Android debug application
+#              name: Debug Unit tests
+#              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
+#                - gradle
+#              script:
+#                - ./gradlew testDebugUnitTest
+#              artifacts:
+#                - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
+#          - step:
+#              name: Lint
+#              caches:
+#                - gradle
+#              script:
+#                - ./gradlew lint
+#    'feature/*':
+#      - parallel:
+#          - step: # step to build Android debug application
+#              name: Debug Unit tests
+#              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
+#                - gradle
+#              script:
+#                - ./gradlew testDebugUnitTest
+#
+#          - step:
+#              name: Debug lint
+#              caches:
+#                - gradle
+#              script:
+#                - ./gradlew lint
+#              artifacts:
+#                - app/build/reports/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
     'release/*': # step to build Release branches
       - parallel:
-          - step:
-              name: Release unit tests
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-                - gradle
-              script:
-                - ./gradlew testReleaseUnitTest
           - step:
               name: Release lint
               caches:
@@ -79,12 +75,6 @@ pipelines:
                 - app/build/outputs/**        # artifacts are files that are produced by a step https://support.atlassian.com/bitbucket-cloud/docs/use-artifacts-in-steps/
     'develop':
       - parallel:
-          - step:
-              name: Release unit tests
-              caches: # caching speed up subsequent execution https://support.atlassian.com/bitbucket-cloud/docs/cache-dependencies/
-                - gradle
-              script:
-                - ./gradlew testReleaseUnitTest
           - step:
               name: Release lint
               caches:

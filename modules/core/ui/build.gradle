@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         minSdk 28
-        targetSdk 32
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -36,6 +36,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.3.0"
     }
+    namespace 'com.esightcorp.mobile.app.ui'
 }
 
 dependencies {
@@ -50,7 +51,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
 
 // to make preview behave properly
-    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-rc01"
+    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0"
 
 // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"
@@ -77,10 +78,8 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.1'
 
 
-
     //Testing CPIII
     testImplementation 'androidx.ui:ui-test:1.0.0-alpha07'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:2.2.0"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.7.10"
     testImplementation "org.mockito:mockito-core:2.15.0"
     implementation 'androidx.test.ext:junit-ktx:1.1.5'

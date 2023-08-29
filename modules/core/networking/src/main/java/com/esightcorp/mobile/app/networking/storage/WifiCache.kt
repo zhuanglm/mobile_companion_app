@@ -1,7 +1,8 @@
-package com.esightcorp.mobile.app.networking
+package com.esightcorp.mobile.app.networking.storage
 
 import android.net.wifi.ScanResult
 import android.util.Log
+import com.esightcorp.mobile.app.networking.WifiCredentials
 
 object WifiCache {
 
@@ -12,38 +13,30 @@ object WifiCache {
     fun getNetworkList(): MutableList<ScanResult> {
         return networkList
     }
-// TODO: Can we remove this
-//    fun setNetworkList(list: MutableList<ScanResult>) {
-//        this.networkList = list
-//    }
 
     fun selectNetwork(network: ScanResult) {
         Log.i("WifiCache", "selectNetwork: ${network.SSID}")
-        this.credentials.setNetwork(network)
+        WifiCredentials.setNetwork(network)
     }
-//TODO: Can we remove this
-//    fun enterNetworkPassword(pwd: String) {
-//        this.credentials.setPassword(pwd)
-//    }
 
     fun setWifiFlow(flow: WifiFlow) {
         Log.d("WIFI_CACHE", "setWifiFlow: ${flow.toString()}")
-        this.currentFlow = flow
+        currentFlow = flow
     }
 
-    fun getWifiFlow():WifiFlow{
-        return this.currentFlow
+    fun getWifiFlow(): WifiFlow {
+        return currentFlow
     }
 
     fun finishWifiFlow(){
-        this.currentFlow = WifiFlow.NotInUse
+        currentFlow = WifiFlow.NotInUse
     }
 
     fun addNetworkToNetworkList(result: ScanResult): Boolean {
         Log.d("WifiCache", "addNetworkToNetworkList: " + result.SSID)
         Log.d("WifiCache", result.toString())
         return if (networkList.none { it.BSSID == result.BSSID }) {
-            this.networkList.add(result)
+            networkList.add(result)
             true
         } else {
             false

@@ -5,6 +5,7 @@ import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.*
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -42,31 +43,63 @@ class BluetoothModel constructor(
         }
     }
 
+    private fun shutdownReceivers(){
+        try{
+            context.unregisterReceiver(gattUpdateReceiver)
+            context.unregisterReceiver(bluetoothStateReceiver)
+        } catch (e: Exception){
+            Log.e(TAG, "shutdownReceivers: ${e.message}")
+        }
+    }
+
     /**
      * receiver to capture changes to the connection state
      */
     private val gattUpdateReceiver: BroadcastReceiver = object: BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent) {
+            Log.i(TAG, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
             when (intent.action){
                 BleService.ACTION_GATT_CONNECTED -> {
                     bleManager.setConnectedDevice(bleManager.getConnectedDevice()!!, true)
                     Log.e(TAG, "onReceive: CONNECTED" )
-                    bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!, true)
+                    bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
+                    bleManager.getBluetoothConnectionListener()?.let {
+                        it.onDeviceConnected(bleManager.getConnectedDevice()!!)
+                    }
                     bleManager.discoverServices()
 
                 }
                 BleService.ACTION_GATT_DISCONNECTED -> {
                     Log.e(TAG, "onReceive: DISCONNECTED" )
-                    bleManager.getConnectedDevice()?.let { bleManager.getModelListener()?.onDeviceConnected(it, false) }
+                    bleManager.getConnectedDevice()?.let {
+                        bleManager.getModelListener()?.onDeviceDisconnected(it)
+                        bleManager.getBluetoothConnectionListener()?.onDeviceDisconnected(it)
+                    }
                     bleManager.resetConnectedDevice()
                 }
                 BleService.ACTION_GATT_SERVICES_DISCOVERED -> {
-                    bleManager.getBleService()?.getSupportedGattServices()?.forEach {
-                    }
+//                    bleManager.getBleService()?.getSupportedGattServices()?.forEach {
+//                    }
                 }
                 BleService.ACTION_DATA_AVAILABLE -> {
                     Log.d(TAG, "onReceive DATA AVAILABLE: ${intent.extras}")
                 }
+                BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE-> {
+                    bleManager.getEshareBluetoothListener()?.let {
+                        it.onEshareAddrNotAvailable()
+                    }
+                }
+                BleService.ACTION_ESHARE_IP_NOT_REACHABLE -> {
+                    bleManager.getEshareBluetoothListener()?.let {
+                        it.onEshareIpNotReachable()
+                    }
+                }
+                BleService.ACTION_ESHARE_BUSY -> {
+                    bleManager.getEshareBluetoothListener()?.let {
+                        it.onEshareBusy()
+                    }
+                }
+
             }
 
         }
@@ -81,7 +114,7 @@ class BluetoothModel constructor(
                         BluetoothAdapter.STATE_OFF -> {
                             // Bluetooth is disabled
                             Log.d(TAG, "onReceive: Bluetooth is disabled")
-                            eSightBleManager.getModelListener()?.onBluetoothStateChanged()
+                            eSightBleManager.getModelListener()?.onBluetoothDisabled()
                         }
                         BluetoothAdapter.STATE_TURNING_OFF -> {
                             Log.d(TAG, "onReceive: Bluetooth is turning off ")
@@ -90,7 +123,7 @@ class BluetoothModel constructor(
                         BluetoothAdapter.STATE_ON -> {
                             // Bluetooth is enabled
                             Log.d(TAG, "onReceive: Bluetooth is Enabled")
-                            eSightBleManager.getModelListener()?.onBluetoothStateChanged()
+                            eSightBleManager.getModelListener()?.onBluetoothEnabled()
                         }
                         BluetoothAdapter.STATE_TURNING_ON -> {
                             Log.d(TAG, "onReceive: Bluetooth is turning on")
@@ -103,11 +136,18 @@ class BluetoothModel constructor(
     }
     private val btStateFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
 
+    //need to handle the cleanup here... receivers are going bonkers
     init {
+        shutdownReceivers()
         val gattServiceIntent = Intent(context, BleService::class.java)
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-        context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(),
+                Context.RECEIVER_NOT_EXPORTED)
+        }else{
+            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        }
         context.registerReceiver(bluetoothStateReceiver, btStateFilter)
 
     }
@@ -120,7 +160,7 @@ class BluetoothModel constructor(
         Log.d(TAG, "Are there any connected devices?  $connectedDeviceList ")
         if(connectedDeviceList.isNotEmpty()){
             bleManager.setConnectedDevice(connectedDeviceList[0], true)
-            bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!, true)
+            bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
         }
     }
 
@@ -207,8 +247,13 @@ class BluetoothModel constructor(
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
             addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
+            addAction(BleService.ACTION_DATA_AVAILABLE)
+            addAction(BleService.ACTION_ESHARE_IP_NOT_REACHABLE)
+            addAction(BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE)
+            addAction(BleService.ACTION_ESHARE_BUSY)
         }
     }
+
     companion object{
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4
     }

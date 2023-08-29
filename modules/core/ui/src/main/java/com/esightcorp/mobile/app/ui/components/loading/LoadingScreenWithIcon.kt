@@ -47,7 +47,7 @@ fun LoadingScreenWithIcon(
 
             Icon(
                 Icons.Rounded.Check,
-                contentDescription = "Connected to eSight",
+                contentDescription = "Checkmark",
                 modifier = modifier.size(75.dp)
                     .constrainAs(icon){
                     top.linkTo(text.bottom)

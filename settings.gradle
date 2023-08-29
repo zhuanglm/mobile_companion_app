@@ -3,7 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        jcenter()
     }
 }
 dependencyResolutionManagement {
@@ -11,8 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-    }
+   }
 }
 rootProject.name = "mobile_companion_app"
 include ':app'
@@ -20,18 +18,8 @@ include ':modules:core:utils'
 include ':modules:core:networking'
 include ':modules:core:bluetooth'
 include ':modules:core:ui'
-include ':feature:home'
-include ':modules:core:ui'
-include ':modules:core:utils'
 include ':modules:feature:home'
-include ':feature:eshare'
 include ':modules:feature:eshare'
 include ':modules:feature:btconnection'
 include ':modules:feature:wificonnection'
-include ':modules:core:ui'
-include ':modules:core:bluetooth'
-include ':modules:core:utils'
-include ':modules:core:ui'
-include ':modules:core:bluetooth'
-include ':modules:core:utils'
-include ':modules:core:networking'
+

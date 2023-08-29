@@ -8,13 +8,27 @@ import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleService
+import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
+import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
+import com.esightcorp.mobile.app.networking.sockets.SocketManager
+import com.esightcorp.mobile.app.networking.storage.WifiCache
+import com.esightcorp.mobile.app.networking.storage.eShareCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.NetworkInterface
+import java.net.ServerSocket
+import java.util.Collections
+import kotlin.random.Random
 
 private const val TAG = "WifiModel"
 
 class WifiModel(
     val context: Context
 ) {
+
 
     private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
     private val wifiScanReceiver = object : BroadcastReceiver() {
@@ -132,6 +146,7 @@ class WifiModel(
     }
 
     fun startWifiScan() {
+        Log.i(TAG, "startWifiScan: ")
         val success = wifiManager.startScan()
         listener?.onScanStatusUpdated(ScanningStatus.InProgress)
         if (!success) {
@@ -197,6 +212,88 @@ class WifiModel(
         return "WIFI:S:${WifiCache.credentials.getNetwork().SSID};T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
     }
 
+    fun connectToEshare(createSocketListener: CreateSocketListener, inputStreamListener: InputStreamListener){
+        getMyIpAddress()?.let { eShareCache.setIpAddress(it) }
+        getPortToConnectOn { port ->
+            if (port != null) {
+                // Use the port
+                eShareCache.setPort(port)
+                SocketManager.connect(port = port, createSocketListener =  createSocketListener, inputStreamListener = inputStreamListener)
+            } else {
+                // Handle the case where no port was found
+                Log.e(TAG, "connectToEshare: No port found")
+
+            }
+        }
+    }
+
+    private fun getRandomPortFromRange(start: Int = 49152, end: Int = 65535): Int {
+        return Random.nextInt(start, end + 1)
+    }
+
+    private suspend fun isPortAvailable(port: Int): Boolean = withContext(Dispatchers.IO) {
+        try {
+            ServerSocket(port).use {
+                true
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun findRandomAvailablePort(): Int? = withContext(Dispatchers.IO) {
+        repeat(100) { // try up to 100 times
+            val randomPort = getRandomPortFromRange()
+            if (isPortAvailable(randomPort)) {
+                return@withContext randomPort
+            }
+        }
+        return@withContext null
+    }
+
+
+    private fun getPortToConnectOn(callback: (Int?) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val port = findRandomAvailablePort()
+            withContext(Dispatchers.Main) { // Switch back to the main thread to handle the result
+                if (port != null) {
+                    Log.i(TAG, "getPortToConnectOn: $port")
+                    callback(port)
+                } else {
+                    Log.e(TAG, "getPortToConnectOn: Port is null")
+                    callback(null)
+                }
+            }
+        }
+    }
+
+    private fun getMyIpAddress(useIPv4: Boolean = true): String? {
+        try {
+            val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (intf in interfaces) {
+                val addrs = Collections.list(intf.inetAddresses)
+                for (addr in addrs) {
+                    if (!addr.isLoopbackAddress) {
+                        val sAddr = addr.hostAddress
+                        // Check for IPv4 or IPv6 preference
+                        val isIPv4 = sAddr.indexOf(':') < 0
+                        if (useIPv4) {
+                            if (isIPv4) return sAddr
+                        } else {
+                            if (!isIPv4) {
+                                // Remove prefix for IPv6 address
+                                val delim = sAddr.indexOf('%')
+                                return if (delim < 0) sAddr else sAddr.substring(0, delim)
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
 
     private companion object {
         /*

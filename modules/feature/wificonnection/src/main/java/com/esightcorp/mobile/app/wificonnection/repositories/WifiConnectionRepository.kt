@@ -2,10 +2,9 @@ package com.esightcorp.mobile.app.wificonnection.repositories
 
 import android.content.Context
 import android.net.wifi.ScanResult
-import android.net.wifi.WifiManager
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
-import com.esightcorp.mobile.app.networking.WifiCache
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -55,7 +54,7 @@ class WifiConnectionRepository @Inject constructor(
             getSafeConnectionListener()?.onBluetoothStatusUpdate(false)
         }
 
-        override fun AlreadyConnectedToWifi() {
+        override fun alreadyConnectedToWifi() {
             Log.i(TAG, "AlreadyConnectedToWifi: still need to figure this one out")
         }
 

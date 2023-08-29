@@ -8,4 +8,6 @@ interface HomeRepositoryListener{
     fun onBluetoothDisabled():Unit
     fun onBluetoothEnabled():Unit
 
+    fun onBluetoothDeviceDisconnected():Unit
+
 }

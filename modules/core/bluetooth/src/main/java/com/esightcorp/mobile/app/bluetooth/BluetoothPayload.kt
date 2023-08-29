@@ -12,7 +12,9 @@ class BluetoothPayload private constructor(
     val wifiPwd: String?,
     val wifiType: String?,
     val ipAddress: String?,
-    val port: String?
+    val port: String?,
+    val hotspotSsid: String?,
+    val hotspotPwd: String?
 ) {
 
     data class Builder(
@@ -21,7 +23,9 @@ class BluetoothPayload private constructor(
         private var wifiPwd: String? = null,
         private var wifiType: String? = null,
         private var ipAddress: String? = null,
-        private var port: String? = null
+        private var port: String? = null,
+        private var hotspotSsid: String? = null,
+        private var hotspotPwd: String? = null
     ) {
         //        fun bleCode(bleCode: BleCodes) = apply { this.bleCode = bleCode }
         fun ssid(ssid: String) = apply { this.SSID = ssid }
@@ -29,24 +33,23 @@ class BluetoothPayload private constructor(
         fun wifiType(type: String) = apply { this.wifiType = type }
         fun ipAddress(address: String) = apply { this.ipAddress = address }
         fun port(port: String) = apply { this.port = port }
-        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port)
+        fun hotspotSsid(ssid: String) = apply { this.hotspotSsid = ssid }
+        fun hotspotPwd(password: String) = apply { this.hotspotPwd = password }
+
+        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port, hotspotSsid, hotspotPwd)
     }
 
     enum class BleCodes(val code: String) {
-        STREAM_OUT("0x02"),
-        STREAM_OUT_SHUTDOWN("0x0203"),
+        STREAM_OUT("start_stream_out"),
+        STREAM_OUT_SHUTDOWN("stop_stream_out"),
         HOTSPOT_CREDS("0x03"),
         WIFI_CREDS("0x11")
         //TODO: make this enum class its own file
     }
 
     /**
-     * For the payload to work properly:
-     * there is a character at the beginning [startAndEnd]
-     * there is a character between each piece of data [delimiter]
-     * and there is a character at the end [startAndEnd]
+     * Payloads need to go out as a JSON -> ByteArray
      *
-     * Order is very important here, as it needs to be decoded properly on the glasses
      *
      */
 
@@ -55,13 +58,12 @@ class BluetoothPayload private constructor(
         val charset = Charsets.UTF_8
         when (bleCode) {
             BleCodes.STREAM_OUT -> {
-                val code = (BleCodes.STREAM_OUT.code).plus(delimiter).toByteArray(charset)
-                byteArray += code
-                if (port != null && ipAddress != null) {
-                    val port = port.plus(delimiter).toByteArray(charset)
-                    byteArray += port
-                    val ip = ipAddress.toByteArray(charset)
-                    byteArray += ip
+                if(port != null && ipAddress != null){
+                    val outgoingJson = JSONObject()
+                        .put(code, BleCodes.STREAM_OUT.code)
+                        .put(portName, port)
+                        .put(ipAddressName, ipAddress)
+                    byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
                 }
             }
             BleCodes.STREAM_OUT_SHUTDOWN -> {
@@ -69,8 +71,14 @@ class BluetoothPayload private constructor(
                 byteArray += code
             }
             BleCodes.HOTSPOT_CREDS -> {
-                val code = BleCodes.HOTSPOT_CREDS.code.toByteArray(charset)
-                byteArray += code
+                if(hotspotPwd != null && hotspotSsid != null){
+                    val outgoingJson = JSONObject()
+                        .put(code, BleCodes.HOTSPOT_CREDS.code)
+                        .put(ssid, hotspotSsid)
+                        .put(pwd, hotspotPwd)
+                    byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
+                    Log.i(TAG, "getByteArrayBlePayload: outgoingJSON -> ${outgoingJson.toString()}")
+                }
             }
             BleCodes.WIFI_CREDS -> {
                 if (SSID != null && wifiPwd != null && wifiType != null) {
@@ -94,7 +102,9 @@ class BluetoothPayload private constructor(
         const val ssid: String = "ssid"
         const val pwd: String = "pwd"
         const val type: String = "type"
-        const val code: String = "code"
+        const val code: String = "command"
+        const val portName: String = "port"
+        const val ipAddressName: String = "ip"
     }
 
 }

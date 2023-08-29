@@ -18,6 +18,10 @@
     <string name="wifi_disabled_header" translatable="true">Turn on Wifi</string>
     <string name="wifi_disabled_body" translatable="true">Open Settings on your phone, and turn on Wifi to connect</string>
 
+    <string name="eshare_stopped_header" translatable="true">Connection Stopped</string>
+    <string name="eshare_stopped_subheader" translatable="true">The eSight wearer has stopped the session</string>
+    <string name="eshare_stopped_button" translatable="true">Return</string>
+
     <string name="bt_searching_text" translatable="true">Searching for eSight devices</string>
     <string name="wifi_already_connected_header" translatable="true">Connected to Wi-Fi</string>
     <string name="wifi_already_connected_body" translatable="true">Your eSight is already connected to a Wi-Fi network.</string>
@@ -63,8 +67,24 @@
     <string name="cancel" translatable="true">Cancel</string>
     <string name="retry" translatable="true">Retry</string>
     <string name="how_to_scan" translatable="true" tools:ignore="ExtraTranslation">How to scan</string>
-    /!-- TODO: Why does this need lint suppression but others dont --/
+    <string name="feedback" translatable="true">Feedback</string>
     <string name="wifi_qr_code_header" translatable="true">Scan Wi-Fi code</string>
     <string name="wifi_qr_code_subheader" translatable="true">Use the QR scanner in eSight Settings</string>
     <string name="wifi_qr_code_button" translatable="true">Return to home screen</string>
+    <string name="back" translatable="true">Back</string>
+    <string name="settings" translatable="true">Settings</string>
+    <string name="add_device_button_text" translatable="true">Connect to eSight</string>
+
+
+    <string name="hotspot_setup_header" translatable="true">How to set up a hotspot</string>
+    <string name="hotspot_setup_subheader" translatable="true">Connect your phone directly to eSight</string>
+    <string name="hotspot_setup_step_1" translatable="true">On your phone: open Settings > Wi-Fi</string>
+    <string name="hotspot_setup_step_2" translatable="true">Connect to the eSight\'s " %1$s " network</string>
+    <string name="hotspot_setup_step_3" translatable="true">Enter this password: %1$s </string>
+    <string name="hotspot_setup_step_4" translatable="true">Once connected, press the button below to retry</string>\
+    <string name="hotspot_setup_button" translatable="true">Share your view</string>
+
+    <string name="still_unable_to_connect_button" translatable="true">Still unable to connect?</string>
+
+    <string name="eshare_loading_text" translatable="true">Connecting to eSight</string>
 </resources>

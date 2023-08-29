@@ -1,7 +1,7 @@
 package com.esightcorp.mobile.app.wificonnection.state
 
 import android.net.wifi.ScanResult
-import com.esightcorp.mobile.app.networking.WifiCache
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
 

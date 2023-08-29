@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.esightcorp.mobile.app.companion"
@@ -73,6 +73,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    namespace 'com.esightcorp.mobile.app.companion'
     tasks.withType(Test) {
         testLogging {
             exceptionFormat "full"

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 28
-        targetSdk 32
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -27,6 +27,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.esightcorp.mobile.app.utils'
 }
 
 dependencies {
@@ -34,7 +35,29 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx "
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.7.0'
+
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_ui_ktx"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
+
+    //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.27.0"
+
+// Integration with activities
+    implementation "androidx.activity:activity-compose:$activity_compose"
+// Compose Material Design
+    implementation "androidx.compose.material:material:$compose_material"
+// Animations
+    implementation "androidx.compose.animation:animation:$animations"
+// Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$ui_tooling"
+// Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
+
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose"
+    implementation "androidx.navigation:navigation-compose:$nav"
+
 }

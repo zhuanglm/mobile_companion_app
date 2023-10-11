@@ -19,6 +19,7 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
+import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
 import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
 import com.esightcorp.mobile.app.utils.NavigateToDeviceDisconnected
 import com.esightcorp.mobile.app.utils.eShareConnectionStatus
@@ -82,6 +83,7 @@ fun eShareConnectedScreen(
             Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
 
         })
+        EshareRemote()
     }
 
 

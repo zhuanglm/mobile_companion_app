@@ -26,6 +26,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ext.config = getProps('../config/release.properties')
+            signingConfig signingConfigs.debug
             ext.config.each{p ->
                 if(p.key == "APP_NAME"){
                     resValue "string", "app_name", p.value

@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,8 +27,9 @@ class BtDevicesViewModel @Inject constructor(
 
     private var _uiState = MutableStateFlow(BtDevicesUiState())
     val uiState: StateFlow<BtDevicesUiState> = _uiState.asStateFlow()
-    private val btRepoListener = object : IBtConnectionRepository {
+    private val btRepoListener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
+            //unused in this composable
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {

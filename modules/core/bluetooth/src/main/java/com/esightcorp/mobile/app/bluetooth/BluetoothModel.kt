@@ -195,10 +195,10 @@ class BluetoothModel constructor(
         }
     }
 
-    private fun stopScan(){
+    fun stopScan(){
         bleManager.bluetoothLeScanner.stopScan(leScanCallback)
         scanning = false
-        bleManager.getModelListener()?.onScanFinished()
+        bleManager.getModelListener()?.onScanCancelled()
     }
 
     /**

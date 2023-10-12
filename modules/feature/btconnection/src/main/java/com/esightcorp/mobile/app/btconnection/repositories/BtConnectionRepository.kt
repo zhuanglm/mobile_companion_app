@@ -8,6 +8,7 @@ import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
+import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class BtConnectionRepository @Inject constructor(
     @ApplicationContext context: Context
 ){
     private val bluetoothModel: BluetoothModel
-    private lateinit var iBtConnectionRepository: IBtConnectionRepository
+    private lateinit var bluetoothConnectionRepositoryCallback: BluetoothConnectionRepositoryCallback
 
 
     /**
@@ -47,6 +48,10 @@ class BtConnectionRepository @Inject constructor(
             scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Success)
         }
 
+        override fun onScanCancelled() {
+            scanStatus(ScanningStatus.Cancelled)
+        }
+
         override fun onDeviceDisconnected(device: BluetoothDevice) {
             deviceConnected(device, false)
         }
@@ -74,16 +79,16 @@ class BtConnectionRepository @Inject constructor(
     }
 
     /**
-     * First constructor is init{}
+     * First constructor here is init{}, as don't have any other constructors here.
      */
     init {
         bluetoothModel = BluetoothModel(context)
     }
 
     fun checkBtEnabledStatus(){
-        if(this::iBtConnectionRepository.isInitialized){
+        if(this::bluetoothConnectionRepositoryCallback.isInitialized){
             Log.d(TAG, "checkBtEnabledStatus: ")
-            iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+            bluetoothConnectionRepositoryCallback.onBtStateUpdate(eSightBleManager.checkIfEnabled())
         }
     }
 
@@ -93,11 +98,20 @@ class BtConnectionRepository @Inject constructor(
     }
 
 
+
+
     /**
      * Triggers the BLE scan on the backend
      */
     fun triggerBleScan(){
         bluetoothModel.triggerBleScan()
+    }
+
+    /**
+     * Cancel a scan if one is running
+     */
+    fun cancelBleScan(){
+        bluetoothModel.stopScan()
     }
 
     fun getConnectedDevice(): BluetoothDevice?{
@@ -114,22 +128,21 @@ class BtConnectionRepository @Inject constructor(
             if(eSightBleManager.checkIfEnabled()){
                 strippedList.add(bluetoothDevice.name)
             }else{
-                iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+                bluetoothConnectionRepositoryCallback.onBtStateUpdate(eSightBleManager.checkIfEnabled())
                 return
             }
         }
-        iBtConnectionRepository.deviceListReady(strippedList)
+        bluetoothConnectionRepositoryCallback.deviceListReady(strippedList)
     }
 
 
     /**
      * how we communicate between repo and viewmodel
      */
-    fun registerListener(listener: IBtConnectionRepository){
+    fun registerListener(listener: BluetoothConnectionRepositoryCallback){
         Log.d(TAG, "registerListener: ")
-        this.iBtConnectionRepository = listener
-        this.iBtConnectionRepository.onBtStateUpdate(eSightBleManager.checkIfEnabled())
-
+        this.bluetoothConnectionRepositoryCallback = listener
+        this.checkBtEnabledStatus()
     }
 
     /**
@@ -153,22 +166,23 @@ class BtConnectionRepository @Inject constructor(
         if(isScanning == com.esightcorp.mobile.app.utils.ScanningStatus.Success){
             getMapOfDevices()
         }
-        if(this::iBtConnectionRepository.isInitialized){
-            iBtConnectionRepository.scanStatus(isScanning)
+        if(this::bluetoothConnectionRepositoryCallback.isInitialized){
+            bluetoothConnectionRepositoryCallback.scanStatus(isScanning)
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun deviceConnected(device: BluetoothDevice, connected: Boolean){
         Log.d(TAG, "onDeviceConnected: ${device.name}")
-        if(this::iBtConnectionRepository.isInitialized){
-            iBtConnectionRepository.onDeviceConnected(device, connected)
+        if(this::bluetoothConnectionRepositoryCallback.isInitialized){
+            bluetoothConnectionRepositoryCallback.onDeviceConnected(device, connected)
         }
     }
 
     fun resetBtDeviceList(){
         eSightBleManager.resetDeviceList()
     }
+
 
 
 

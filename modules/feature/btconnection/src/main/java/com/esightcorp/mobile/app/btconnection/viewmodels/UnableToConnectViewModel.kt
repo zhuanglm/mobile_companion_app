@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.UnableToConnectUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,17 +25,17 @@ class UnableToConnectViewModel @Inject constructor(
     val uiState: StateFlow<UnableToConnectUiState> = _uiState.asStateFlow()
     private lateinit var navController: NavController
 
-    private val listener = object : IBtConnectionRepository{
+    private val listener = object : BluetoothConnectionRepositoryCallback{
         override fun scanStatus(isScanning: ScanningStatus) {
-            TODO("Not yet implemented")
+            //unused by this composable
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-            TODO("Not yet implemented")
+            //unused by this composable
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            TODO("Not yet implemented")
+            //unused by this composable
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
@@ -46,7 +46,6 @@ class UnableToConnectViewModel @Inject constructor(
     init {
         btConnectionRepository.registerListener(listener)
         btConnectionRepository.setupBtModelListener()
-        btConnectionRepository.checkBtEnabledStatus()
     }
     private fun updateBtEnabledState(enabled: Boolean){
         _uiState.update {state ->
@@ -60,13 +59,23 @@ class UnableToConnectViewModel @Inject constructor(
 
     fun navigateToNoDevicesConnectedScreen(){
         if(this::navController.isInitialized){
-            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route)
+            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route){
+                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
+                    inclusive = false
+                }
+                launchSingleTop = true
+            }
         }
     }
 
     fun navigateToBtSearchingScreen(){
         if(this::navController.isInitialized){
-            navController.navigate(BtConnectionScreens.BtSearchingRoute.route)
+            navController.navigate(BtConnectionScreens.BtSearchingRoute.route){
+                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
+                    inclusive = false
+                }
+                launchSingleTop = true
+            }
         }
     }
 

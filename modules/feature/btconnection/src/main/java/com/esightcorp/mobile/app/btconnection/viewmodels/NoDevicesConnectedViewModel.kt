@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoDevicesConnectedViewModel @Inject constructor(
-    application: Application, private val btConnectionRepository: BtConnectionRepository
+    application: Application,
+    private val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
 
     /**
@@ -39,7 +40,7 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
     }
 
-    fun updateBtConnectedState(state: Boolean, device: String){
+    fun updateBtConnectedState(state: Boolean, device: String) {
         _uiState.update { currentState ->
             currentState.copy(btConnectionStatus = state, connectedDevice = device)
         }
@@ -49,13 +50,13 @@ class NoDevicesConnectedViewModel @Inject constructor(
     /**
      * Interface to receive callbacks from the bluetooth repository
      */
-    private val btRepositoryListener = object : IBtConnectionRepository {
+    private val btRepositoryListener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
-
+            //not needed on this particular screen
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-
+            //Not needed on this particular screen
         }
 
         @SuppressLint("MissingPermission")
@@ -70,10 +71,10 @@ class NoDevicesConnectedViewModel @Inject constructor(
 
     }
 
-    private fun checkBtEnabledStatus(){
-        Log.d("TAG", "checkBtEnabledStatus: ")
-        btConnectionRepository.checkBtEnabledStatus()
-    }
+//    private fun checkBtEnabledStatus() {
+//        Log.d("TAG", "checkBtEnabledStatus: ")
+//        btConnectionRepository.checkBtEnabledStatus()
+//    }
 
 
     /**
@@ -84,10 +85,7 @@ class NoDevicesConnectedViewModel @Inject constructor(
         Log.d("TAG", ": INIT NoDevicesConnectedViewModel")
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
-        checkBtEnabledStatus()
     }
-
-
 
 
 }

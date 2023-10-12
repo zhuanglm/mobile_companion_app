@@ -9,5 +9,6 @@ interface BluetoothModelListener:BluetoothRadioListener, BluetoothConnectionList
     fun onScanFailed(error: Int): Unit
     fun onScanStarted():Unit
     fun onScanFinished():Unit
+    fun onScanCancelled():Unit
 
 }

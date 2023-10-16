@@ -14,7 +14,7 @@ pipelines:
           name: Create keystore
           script:
             - mkdir keys
-            - echo $KEYSTORE_FILE_BASE64 | base64 --decode > "keys/$KEYSTORE_FILE"
+            - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
           artifacts:
             - keys/**
       - step:
@@ -28,11 +28,11 @@ pipelines:
             # Copy the installed SDK 34 to cacheable directory
             - cp -r "$ANDROID_HOME/platforms/android-34" "$HOME/android-34" || true
             # Run the build task for Debug .aab
-            - ./gradlew -PKEYSTORE_FILE= keys/$KEYSTORE_FILE 
+            - "./gradlew -PKEYSTORE_FILE= ../keys/$KEYSTORE_FILE 
                         -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
-                        bundleDebug
+                        bundleDebug"
           artifacts:
             - app/build/outputs/**
 

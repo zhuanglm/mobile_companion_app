@@ -15,7 +15,6 @@ pipelines:
           script:
             - set -x
             - mkdir keys
-            - cat keys/temp.txt
             - echo $GOOGLE_PLAY_API_KEY_BASE64 > keys/temp.txt
             - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE

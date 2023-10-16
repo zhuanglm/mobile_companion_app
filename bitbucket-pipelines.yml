@@ -33,7 +33,7 @@ pipelines:
                         -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
-                        -PGOOGLE_PLAY_API_KEY=$GOOGLE_PLAY_API_KEY
+                        -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
                         publishBundle --info"
           artifacts:
             - app/build/outputs/**

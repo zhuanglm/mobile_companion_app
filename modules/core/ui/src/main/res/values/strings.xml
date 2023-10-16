@@ -81,7 +81,7 @@
     <string name="hotspot_setup_step_1" translatable="true">On your phone: open Settings > Wi-Fi</string>
     <string name="hotspot_setup_step_2" translatable="true">Connect to the eSight\'s " %1$s " network</string>
     <string name="hotspot_setup_step_3" translatable="true">Enter this password: %1$s </string>
-    <string name="hotspot_setup_step_4" translatable="true">Once connected, press the button below to retry</string>\
+    <string name="hotspot_setup_step_4" translatable="true">Once connected, press the button below to retry</string>
     <string name="hotspot_setup_button" translatable="true">Share your view</string>
 
     <string name="still_unable_to_connect_button" translatable="true">Still unable to connect?</string>

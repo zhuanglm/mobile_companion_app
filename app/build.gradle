@@ -15,7 +15,7 @@ android {
         applicationId "com.esightcorp.mobile.app.companion"
         minSdk 28
         targetSdk 33
-        versionCode project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 3
+        versionCode project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 4
         versionName "0.1." + (project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER') : "0")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

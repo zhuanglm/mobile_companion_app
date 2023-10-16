@@ -14,7 +14,7 @@ pipelines:
           name: Create keystore
           script:
             - mkdir keys
-            - echo $KEYSTORE_FILE_BASE64 | base64 --decode > "keys/$KEYSTORE_FILE"
+            - echo "$KEYSTORE_FILE_BASE64" | base64 --decode > "keys/$KEYSTORE_FILE"
           artifacts:
             - keys/**
       - step:

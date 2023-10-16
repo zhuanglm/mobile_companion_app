@@ -12,8 +12,8 @@ android {
         applicationId "com.esightcorp.mobile.app.companion"
         minSdk 28
         targetSdk 33
-        versionCode 2
-        versionName "0.1.0"
+        versionCode project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 2
+        versionName "0.1." + (project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER') : "0")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

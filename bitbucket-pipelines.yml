@@ -13,7 +13,7 @@ pipelines:
       - step:
           name: Create keystore
           script:
-            - mkdir keys
+            - mkdir -v keys
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
           artifacts:
             - keys/**
@@ -32,7 +32,7 @@ pipelines:
                         -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
-                        bundleDebug"
+                        bundleDebug --debug"
           artifacts:
             - app/build/outputs/**
 

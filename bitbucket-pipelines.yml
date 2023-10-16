@@ -13,8 +13,8 @@ pipelines:
       - step:
           name: Create keystore & API Key
           script:
-            - set -x  # Enable shell debugging
-            - echo "GOOGLE_PLAY_API_KEY_BASE64: $GOOGLE_PLAY_API_KEY_BASE64" # Verify the variable value
+            - set -x
+            - echo $GOOGLE_PLAY_API_KEY_BASE64
             - mkdir keys
             - echo $GOOGLE_PLAY_API_KEY_BASE64| base64 --decode > keys/$GOOGLE_PLAY_API_KEY
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE

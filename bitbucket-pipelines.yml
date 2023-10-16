@@ -14,9 +14,10 @@ pipelines:
           name: Create keystore & API Key
           script:
             - set -x
-            - echo $GOOGLE_PLAY_API_KEY_BASE64
             - mkdir keys
-            - echo $GOOGLE_PLAY_API_KEY_BASE64| base64 --decode > keys/$GOOGLE_PLAY_API_KEY
+            - cat keys/temp.txt
+            - echo $GOOGLE_PLAY_API_KEY_BASE64 > keys/temp.txt
+            - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
             - ls -la keys/
             - base64 keys/$GOOGLE_PLAY_API_KEY

@@ -1,8 +1,11 @@
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
+    id 'com.github.triplet.play'
 }
 
 android {
@@ -12,7 +15,7 @@ android {
         applicationId "com.esightcorp.mobile.app.companion"
         minSdk 28
         targetSdk 33
-        versionCode project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 2
+        versionCode project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 3
         versionName "0.1." + (project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER') : "0")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -99,6 +102,13 @@ android {
             showStandardStreams true
         }
     }
+}
+
+play {
+    serviceAccountCredentials = file(GOOGLE_PLAY_API_KEY)
+    track.set('internal')
+    //TODO- change this after its not a draft app
+    releaseStatus.set(ReleaseStatus.DRAFT)
 }
 
 dependencies {

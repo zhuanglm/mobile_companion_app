@@ -11,10 +11,11 @@ pipelines:
   pull-requests:
     '**':
       - step:
-          name: Create keystore
+          name: Create keystore & API Key
           script:
             - mkdir -v keys
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
+            - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
           artifacts:
             - keys/**
       - step:
@@ -32,6 +33,7 @@ pipelines:
                         -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
+                        -PGOOGLE_PLAY_API_KEY=$GOOGLE_PLAY_API_KEY
                         bundleDebug --info"
           artifacts:
             - app/build/outputs/**
@@ -39,10 +41,11 @@ pipelines:
   branches:
     'release/*':
       - step:
-          name: Create keystore
+          name: Create keystore & API Key
           script:
             - mkdir keys
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
+            - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
           artifacts:
             - keys/**
       - parallel:
@@ -68,7 +71,8 @@ pipelines:
                   -PKEY_ALIAS=$KEY_ALIAS
                   -PKEY_PASSWORD=$KEY_PASSWORD
                   -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
-                  bundleRelease
+                  -PGOOGLE_PLAY_API_KEY=$GOOGLE_PLAY_API_KEY
+                  publishBundle --info
               artifacts:
                 - app/build/outputs/**
 
@@ -76,9 +80,17 @@ pipelines:
 
 
     'develop':
+      - step:
+          name: Create keystore & API Key
+          script:
+            - mkdir keys
+            - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
+            - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
+          artifacts:
+            - keys/**
       - parallel:
           - step:
-              name: Run lint for Develop
+              name: Run lint for Release
               caches:
                 - gradle
               script:
@@ -86,19 +98,21 @@ pipelines:
               artifacts:
                 - app/build/reports/**
           - step:
-              name: Build Release .aab for Develop
+              name: Build Release .aab
               caches:
                 - gradle
               script:
-                - ./gradlew bundleRelease
-              artifacts:
-                - app/build/outputs/**
-          - step:
-              name: Build Debug .aab for Develop
-              caches:
-                - gradle
-              script:
-                - ./gradlew bundleDebug
+                # Check if SDK 34 is already cached, if not then install it
+                - if [ ! -d "$HOME/android-34" ]; then yes | sdkmanager "platforms;android-33"; fi
+                # Copy the installed SDK 34 to cacheable directory
+                - cp -r "$ANDROID_HOME/platforms/android-34" "$HOME/android-34" || true
+                - ./gradlew -PKEYSTORE_FILE= keys/$KEYSTORE_FILE
+                  -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
+                  -PKEY_ALIAS=$KEY_ALIAS
+                  -PKEY_PASSWORD=$KEY_PASSWORD
+                  -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
+                  -PGOOGLE_PLAY_API_KEY=$GOOGLE_PLAY_API_KEY
+                  publishBundle --info
               artifacts:
                 - app/build/outputs/**
 

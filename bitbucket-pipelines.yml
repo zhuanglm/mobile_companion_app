@@ -18,25 +18,25 @@ pipelines:
             - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
           artifacts:
             - keys/**
-      - step:
-          name: Build Debug .aab
-          caches:
-            - gradle  # Gradle cache to speed up build
-            - android-34  # Android SDK 34 cache
-          script:
-            # Check if SDK 34 is already cached, if not then install it
-            - if [ ! -d "$HOME/android-34" ]; then yes | sdkmanager "platforms;android-33"; fi
-            # Copy the installed SDK 34 to cacheable directory
-            - cp -r "$ANDROID_HOME/platforms/android-34" "$HOME/android-34" || true
-            # Run the build task for Debug .aab
-            - "./gradlew -PKEYSTORE_FILE=../keys/$KEYSTORE_FILE 
-                        -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
-                        -PKEY_ALIAS=$KEY_ALIAS
-                        -PKEY_PASSWORD=$KEY_PASSWORD
-                        -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
-                        publishBundle --info"
-          artifacts:
-            - app/build/outputs/**
+#      - step:
+#          name: Build Debug .aab
+#          caches:
+#            - gradle  # Gradle cache to speed up build
+#            - android-34  # Android SDK 34 cache
+#          script:
+#            # Check if SDK 34 is already cached, if not then install it
+#            - if [ ! -d "$HOME/android-34" ]; then yes | sdkmanager "platforms;android-33"; fi
+#            # Copy the installed SDK 34 to cacheable directory
+#            - cp -r "$ANDROID_HOME/platforms/android-34" "$HOME/android-34" || true
+#            # Run the build task for Debug .aab
+#            - "./gradlew -PKEYSTORE_FILE=../keys/$KEYSTORE_FILE
+#                        -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
+#                        -PKEY_ALIAS=$KEY_ALIAS
+#                        -PKEY_PASSWORD=$KEY_PASSWORD
+#                        -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
+#                        publishBundle --info"
+#          artifacts:
+#            - app/build/outputs/**
 
   branches:
     'release/*':

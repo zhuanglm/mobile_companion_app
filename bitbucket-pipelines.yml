@@ -34,7 +34,7 @@ pipelines:
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
                         -PGOOGLE_PLAY_API_KEY=$GOOGLE_PLAY_API_KEY
-                        bundleDebug --info"
+                        publishBundle --info"
           artifacts:
             - app/build/outputs/**
 

@@ -33,7 +33,8 @@ pipelines:
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
                         -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
-                        bundleDebug "
+                        assembleDebug "
+            #We are building an apk here instead of the bundle as it makes it easier to install manually
           artifacts:
             - app/build/outputs/**
 

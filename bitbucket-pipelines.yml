@@ -34,7 +34,8 @@ pipelines:
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
                         -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
-                        publishBundle --info"
+                        -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
+                        bundleDebug "
           artifacts:
             - app/build/outputs/**
 
@@ -72,6 +73,7 @@ pipelines:
                   -PKEY_PASSWORD=$KEY_PASSWORD
                   -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
                   -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
+                  -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
                   publishBundle --info
               artifacts:
                 - app/build/outputs/**
@@ -112,6 +114,7 @@ pipelines:
                   -PKEY_PASSWORD=$KEY_PASSWORD
                   -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
                   -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
+                  -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
                   publishBundle --info
               artifacts:
                 - app/build/outputs/**

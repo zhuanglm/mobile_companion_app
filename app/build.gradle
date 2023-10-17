@@ -47,7 +47,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ext.config = getProps('../config/release.properties')
             ext.config.each{p ->
-                if(p.key == "APP_NAME"){
+                if(p.key == "APP_NAME_BUILD"){
                     resValue "string", "app_name", p.value
                 }
                 else if(p.key == "APPLICATION_ID_SUFFIX"){
@@ -62,7 +62,7 @@ android {
             debuggable true
             ext.config = getProps('../config/debug.properties')
             ext.config.each{p ->
-                if(p.key == "APP_NAME"){
+                if(p.key == "APP_NAME_BUILD"){
                     resValue "string", "app_name", p.value
                 }
                 else if(p.key == "APPLICATION_ID_SUFFIX"){

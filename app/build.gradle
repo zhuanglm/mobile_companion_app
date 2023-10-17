@@ -67,7 +67,7 @@ android {
                     resValue "string", "app_name", p.value
                 }
                 else if(p.key == "APPLICATION_ID_SUFFIX"){
-                    applicationIdSuffix p.value
+                    applicationIdSuffix (p.value + project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 0)
                 }
                 else {
                     buildConfigField 'String', p.key, p.value

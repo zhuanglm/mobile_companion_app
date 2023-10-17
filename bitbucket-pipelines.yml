@@ -14,7 +14,6 @@ pipelines:
           name: Create keystore & API Key
           script:
             - mkdir keys
-            - echo $GOOGLE_PLAY_API_KEY_BASE64 | base64 --decode > keys/$GOOGLE_PLAY_API_KEY
             - echo $KEYSTORE_FILE_BASE64 | base64 --decode > keys/$KEYSTORE_FILE
           artifacts:
             - keys/**
@@ -33,7 +32,6 @@ pipelines:
                         -PKEYSTORE_PASSWORD=$KEYSTORE_PASSWORD
                         -PKEY_ALIAS=$KEY_ALIAS
                         -PKEY_PASSWORD=$KEY_PASSWORD
-                        -PGOOGLE_PLAY_API_KEY=../keys/$GOOGLE_PLAY_API_KEY
                         -PBUILD_NUMBER=$BITBUCKET_BUILD_NUMBER
                         bundleDebug "
           artifacts:
@@ -62,6 +60,7 @@ pipelines:
               name: Build Release .aab
               caches:
                 - gradle
+                - android-34
               script:
                 # Check if SDK 34 is already cached, if not then install it
                 - if [ ! -d "$HOME/android-34" ]; then yes | sdkmanager "platforms;android-33"; fi
@@ -103,6 +102,7 @@ pipelines:
               name: Build Release .aab
               caches:
                 - gradle
+                - android-34
               script:
                 # Check if SDK 34 is already cached, if not then install it
                 - if [ ! -d "$HOME/android-34" ]; then yes | sdkmanager "platforms;android-33"; fi

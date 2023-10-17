@@ -60,14 +60,13 @@ android {
         }
         debug {
             debuggable true
-            signingConfig signingConfigs.debug
             ext.config = getProps('../config/debug.properties')
             ext.config.each{p ->
                 if(p.key == "APP_NAME"){
                     resValue "string", "app_name", p.value
                 }
                 else if(p.key == "APPLICATION_ID_SUFFIX"){
-                    applicationIdSuffix (p.value + project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 0)
+                    applicationIdSuffix p.value
                 }
                 else {
                     buildConfigField 'String', p.key, p.value
@@ -75,6 +74,8 @@ android {
             }
         }
     }
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

@@ -31,13 +31,6 @@ android {
             keyAlias KEY_ALIAS
             keyPassword KEY_PASSWORD
         }
-
-        debug {
-            storeFile file(KEYSTORE_FILE)
-            storePassword KEYSTORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
     }
     buildTypes {
         release {

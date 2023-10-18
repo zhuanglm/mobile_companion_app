@@ -40,10 +40,12 @@ class BtConnectionRepository @Inject constructor(
         }
 
         override fun onScanStarted() {
+            Log.i(TAG, "onScanStarted: ")
             scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.InProgress)
         }
 
         override fun onScanFinished() {
+            Log.d(TAG, "onScanFinished: ")
             scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Success)
         }
 

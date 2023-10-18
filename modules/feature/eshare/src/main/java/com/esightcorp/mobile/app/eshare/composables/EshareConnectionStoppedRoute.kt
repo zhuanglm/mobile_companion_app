@@ -26,8 +26,6 @@ fun EshareConnectionStoppedRoute(
     navController: NavController,
     vm: EshareConnectionStoppedViewModel = hiltViewModel()
 ) {
-
-
     EshareConnectionStoppedScreen(
         navController = navController,
         onReturnButtonClicked = vm::navigateToNoDevicesConnectedScreen

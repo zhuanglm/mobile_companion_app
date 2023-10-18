@@ -6,17 +6,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.eshare.composables.EshareBusyRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectedRoute
-import com.esightcorp.mobile.app.eshare.composables.EshareConnectingRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectionStoppedRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareUnableToConnectRoute
 import com.esightcorp.mobile.app.eshare.composables.HotspotSetupRoute
 
 
 fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
-    navigation(startDestination = EshareScreens.EshareConnectingRoute.route, route= EshareScreens.IncomingNavigationRoute.route){
-        composable(EshareScreens.EshareConnectingRoute.route){
-            EshareConnectingRoute(navController = navController)
-        }
+    navigation(startDestination = EshareScreens.EshareConnectedRoute.route, route= EshareScreens.IncomingNavigationRoute.route){
         composable(EshareScreens.EshareConnectedRoute.route){
             EshareConnectedRoute(navController = navController)
         }

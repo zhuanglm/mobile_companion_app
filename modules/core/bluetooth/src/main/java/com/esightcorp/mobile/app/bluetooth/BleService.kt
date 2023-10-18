@@ -38,6 +38,7 @@ class BleService : Service() {
     private lateinit var ERROR_Descriptor: BluetoothGattDescriptor
 
     var lastBroadcastTimeEshareError = 0L
+    var buttonPressState: Boolean = false
 
 
     private val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
@@ -144,9 +145,17 @@ class BleService : Service() {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.e(
                     TAG,
-                    "onCharacteristicRead: ${String(characteristic.value, StandardCharsets.UTF_8)}"
+                    "onCharacteristicRead: ${value.decodeToString()}"
                 )
-                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
+                when (characteristic) {
+                    ESHARE_STATUS_Characteristic -> {
+                        broadcastUpdate(ACTION_ESHARE_STATUS, characteristic)
+                    }
+
+                    else -> {
+                        broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
+                    }
+                }
             }
         }
 
@@ -210,19 +219,15 @@ class BleService : Service() {
                 }
 
                 UUID_CHARACTERISTIC_HOTSPOT -> {
-                    Log.i(TAG, "onCharacteristicChanged: Hotspot $incoming")
-                }
-
-                UUID_CHARACTERISTIC_ESHARE_COMMANDS -> {
-                    Log.i(TAG, "onCharacteristicChanged: Eshare $incoming")
+                    broadcastUpdate(ACTION_HOTSPOT, incoming)
                 }
 
                 UUID_CHARACTERISTIC_ESHARE_STATUS -> {
-                    Log.i(TAG, "onCharacteristicChanged: Eshare status $incoming")
+                    broadcastUpdate(ACTION_ESHARE_STATUS, incoming)
                 }
 
                 UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS -> {
-                    Log.i(TAG, "onCharacteristicChanged: Wifi connection status $incoming")
+                    broadcastUpdate(ACTION_WIFI_CONNECTION_STATUS, incoming)
                 }
 
                 else -> {
@@ -241,6 +246,13 @@ class BleService : Service() {
                 TAG,
                 "onCharacteristicWrite: ${gatt?.device?.name}, ${characteristic?.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} "
             )
+            when (characteristic) {
+                BUTTON_PRESS_Characteristic -> {
+                    if (status == BluetoothGatt.GATT_SUCCESS && buttonPressState) {
+                        writeFinderButtonPressUpEvent()
+                    }
+                }
+            }
         }
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
@@ -309,10 +321,12 @@ class BleService : Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.i(TAG, "onStartCommand: ")
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
+        Log.i(TAG, "onBind: ")
         return binder
     }
 
@@ -334,24 +348,19 @@ class BleService : Service() {
 
     private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic) {
         val intent = Intent(action)
-        when (characteristic.uuid) {
-            else -> {
-                val data: ByteArray? = characteristic.value
-                if (data?.isNotEmpty() == true) {
-                    val hexString: String = data.joinToString(separator = " ") {
-                        String.format("%02X", it)
-                    }
-                    intent.putExtra(EXTRA_DATA, "$data\n$hexString")
-                }
-                Log.d(TAG, "broadcastUpdate: $characteristic")
-            }
+        val data: ByteArray? = characteristic.value
+        if (data?.isNotEmpty() == true) {
+            val dataString: String = data.decodeToString()
+            intent.putExtra(EXTRA_DATA, dataString)
         }
+        Log.d(TAG, "broadcastUpdate: $characteristic")
         sendBroadcast(intent)
     }
 
     private fun broadcastUpdate(
         action: String, value: String
     ) {
+        Log.i(TAG, "broadcastUpdate: ${action} ${value}")
         val intent = Intent(action)
         intent.data = Uri.parse(value)
         sendBroadcast(intent)
@@ -411,9 +420,102 @@ class BleService : Service() {
         Log.i(TAG, "startHotspot: SSID = $ssid, Password = $password")
         sendMessage(
             HOTSPOT_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.HOTSPOT_CREDS, hotspotSsid = ssid, hotspotPwd = password)
+            BluetoothPayload.Builder(
+                BluetoothPayload.BleCodes.HOTSPOT_CREDS,
+                hotspotSsid = ssid,
+                hotspotPwd = password
+            )
                 .build().getByteArrayBlePayload()
         )
+    }
+
+    fun writeUpButtonPress(longpress: Boolean) {
+        Log.d(TAG, "writeUpButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+                .buttonName(BluetoothPayload.RemoteButtonName.UP).build().getByteArrayBlePayload()
+        )
+    }
+
+    fun writeDownButtonPress(longpress: Boolean) {
+        Log.d(TAG, "writeDownButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+                .buttonName(BluetoothPayload.RemoteButtonName.DOWN).build().getByteArrayBlePayload()
+        )
+    }
+
+    fun writeModeButtonPress(longpress: Boolean) {
+        Log.d(TAG, "writeModeButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+                .buttonName(BluetoothPayload.RemoteButtonName.MODE).build().getByteArrayBlePayload()
+        )
+    }
+
+    fun writeMenuButtonPress(longpress: Boolean) {
+        Log.d(TAG, "writeMenuButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+                .buttonName(BluetoothPayload.RemoteButtonName.MENU).build().getByteArrayBlePayload()
+        )
+    }
+
+    fun writeVolumeUpButtonPress(longpress: Boolean) {
+        Log.d(TAG, "writeVolumeUpButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+                .buttonName(BluetoothPayload.RemoteButtonName.VOL_UP).build()
+                .getByteArrayBlePayload()
+        )
+    }
+
+    fun writeVolumeDownButtonPress(longpress: Boolean) {
+        Log.d(TAG, "writeVolumeDownButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+                .buttonName(BluetoothPayload.RemoteButtonName.VOL_DOWN).build()
+                .getByteArrayBlePayload()
+        )
+    }
+
+    fun writeFinderButtonPressDownEvent() {
+        Log.d(TAG, "writeFinderButtonPress: ")
+        buttonPressState = true
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.FINDER).build()
+                .getByteArrayBlePayload()
+        )
+    }
+
+    fun writeFinderButtonPressUpEvent() {
+        Log.d(TAG, "writeFinderButtonPress: ")
+        buttonPressState = false
+        sendMessage(
+            BUTTON_PRESS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.ACTION_UP).build()
+                .getByteArrayBlePayload()
+        )
+    }
+
+    fun checkIfEshareIsRunning() {
+        Log.i(TAG, "checkIfEshareIsRunning: Reading the eShare Status Characteristic")
+        readCharacteristic(ESHARE_STATUS_Characteristic)
     }
 
     @SuppressLint("MissingPermission")
@@ -479,6 +581,7 @@ class BleService : Service() {
     companion object {
         const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
+        const val ACTION_ESHARE_STATUS = "com.esightcorp.bluetooth.le.ACTION_ESHARE_STATUS"
         const val ACTION_GATT_SERVICES_DISCOVERED =
             "com.esightcorp.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
@@ -489,6 +592,10 @@ class BleService : Service() {
         const val ACTION_WIFI_CONNECTED = "com.esightcorp.wifi.ACTION_WIFI_CONNECTED"
         const val ACTION_WIFI_ERROR = "com.esightcorp.wifi.ACTION_WIFI_ERROR"
         const val ACTION_ERROR = "com.esightcorp.wifi.ACTION_ERROR"
+        const val ACTION_WIFI_CONNECTION_STATUS =
+            "com.esightcorp.wifi.ACTION_WIFI_CONNECTION_STATUS"
+        const val ACTION_HOTSPOT = "com.esightcorp.wifi.ACTION_HOTSPOT"
+
 
         const val ACTION_ESHARE_BUSY = "com.esightcorp.wifi.ACTION_ESHARE_BUSY"
         const val ACTION_ESHARE_ADDR_NOT_AVAILABLE =

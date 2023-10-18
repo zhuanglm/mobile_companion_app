@@ -154,6 +154,15 @@ class EshareConnectedViewModel @Inject constructor(
         }
     }
 
+    fun startEshareConnection(){
+        Log.i(TAG, "startEshareConnection: ")
+        eShareRepository.startEshareConnection()
+    }
+
+    fun onCancelClicked(){
+        eShareRepository.cancelEshareConnection()
+    }
+
     fun onCancelButtonClicked(navController: NavController) {
         Log.i(TAG, "onCancelButtonClicked: ")
         eShareRepository.cancelEshareConnection()
@@ -163,6 +172,33 @@ class EshareConnectedViewModel @Inject constructor(
             }
             launchSingleTop = true
         }
+    }
+
+    fun upButtonPress(){
+        eShareRepository.writeUpButtonPress(false)
+    }
+    fun downButtonPress(){
+        eShareRepository.writeDownButtonPress(false)
+    }
+
+    fun volUpButtonPress(){
+        eShareRepository.writeVolumeUpButtonPress(false)
+    }
+
+    fun volDownButtonPress(){
+        eShareRepository.writeVolumeDownButtonPress(false)
+    }
+
+    fun modeButtonPress(){
+        eShareRepository.writeModeButtonPress(false)
+    }
+
+    fun menuButtonPress(){
+        eShareRepository.writeMenuButtonPress(false)
+    }
+
+    fun finderButtonPress(){
+        eShareRepository.writeFinderButtonPress(false)
     }
 
     companion object{

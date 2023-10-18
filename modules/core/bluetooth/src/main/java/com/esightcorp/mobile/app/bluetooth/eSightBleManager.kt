@@ -83,6 +83,7 @@ object eSightBleManager {
     @SuppressLint("MissingPermission")
     fun addToBleDeviceList(device: BluetoothDevice):Boolean{
         return if(this.bleDeviceList.contains(device) || !device.name.contains("eGo")){
+            Log.i(TAG, "addToBleDeviceList: dropping this from the list ... ${device.name}")
             false;
         } else{
             Log.d(TAG, "addToBleDeviceList: ${device.name}")

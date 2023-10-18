@@ -48,10 +48,18 @@ fun EshareConnectedRoute(
             textureViewListener = vm,
             uiState = uiState,
             navController = navController,
+            startEshareConnection = vm::startEshareConnection,
             navigateToStoppedRoute = vm::navigateToStoppedRoute,
             navigateToUnableToConnectRoute = vm::navigateToUnableToConnectRoute,
             navigateToBusyRoute = vm::navigateToBusyRoute,
-            onCancelButtonClicked = vm::onCancelButtonClicked
+            onCancelButtonClicked = vm::onCancelButtonClicked,
+            upButtonPress = vm::upButtonPress,
+            downButtonPress = vm::downButtonPress,
+            menuButtonPress = vm::menuButtonPress,
+            modeButtonPress = vm::modeButtonPress,
+            volUpButtonPress = vm::volUpButtonPress,
+            volDownButtonPress = vm::volDownButtonPress,
+            finderButtonPress = vm::finderButtonPress,
 
         )
     }
@@ -66,10 +74,19 @@ fun eShareConnectedScreen(
     uiState: EshareConnectedUiState,
     modifier: Modifier = Modifier,
     navController: NavController,
+    startEshareConnection: () -> Unit,
     navigateToStoppedRoute: (NavController) -> Unit,
     navigateToUnableToConnectRoute: (NavController) -> Unit,
     navigateToBusyRoute: (NavController) -> Unit,
-    onCancelButtonClicked: (NavController) -> Unit
+    onCancelButtonClicked: (NavController) -> Unit,
+    upButtonPress:() -> Unit = {},
+    downButtonPress:() -> Unit = {},
+    menuButtonPress:() -> Unit = {},
+    modeButtonPress:() -> Unit = {},
+    volUpButtonPress:() -> Unit = {},
+    volDownButtonPress:() -> Unit = {},
+    finderButtonPress:() -> Unit = {},
+    actionUpButtonPress:() -> Unit = {},
 ) {
     Log.i(TAG, "eShareConnectedScreen: ")
     Row {
@@ -83,7 +100,15 @@ fun eShareConnectedScreen(
             Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
 
         })
-        EshareRemote()
+        EshareRemote(
+            onFinderButtonPressed = finderButtonPress,
+            onModeButtonPressed = modeButtonPress,
+            onUpButtonPressed = upButtonPress,
+            onDownButtonPressed = downButtonPress,
+            onVolumeUpButtonPressed = volUpButtonPress,
+            onVolumeDownButtonPressed = volDownButtonPress,
+            onMenuButtonPressed = menuButtonPress,
+            )
     }
 
 
@@ -93,7 +118,6 @@ fun eShareConnectedScreen(
         eShareConnectionStatus.Connected -> {
             Log.i(TAG, "eShareConnectedScreen: We are now connected to HMD ")
             RotateToLandscape()
-
         }
 
         eShareConnectionStatus.Initiated -> {
@@ -133,8 +157,20 @@ fun eShareConnectedScreen(
             }
         }
 
-        else -> {
-            Log.e(TAG, "eShareConnectedScreen: Should not hit here")
+        eShareConnectionStatus.Failed ->  {
+            Log.e(TAG, "eShareConnectedScreen: FAILED", )
+        }
+        eShareConnectionStatus.ReceivedUserRejection -> {
+            Log.e(TAG, "eShareConnectedScreen: User rejection", )
+        }
+        eShareConnectionStatus.Timeout -> {
+            Log.e(TAG, "eShareConnectedScreen: TImoeut", )
+        }
+        eShareConnectionStatus.Unknown -> {
+            LaunchedEffect(Unit) {
+                Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
+                startEshareConnection()
+            }
         }
     }
 

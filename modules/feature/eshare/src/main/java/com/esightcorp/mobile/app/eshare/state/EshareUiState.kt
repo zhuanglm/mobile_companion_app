@@ -4,22 +4,16 @@ import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 
 data class RadioState(
     val isBtEnabled: Boolean = true,
-    val isWifiEnabled: Boolean = false,
+    val isWifiEnabled: Boolean = true,
 )
 
 data class DeviceConnectionState(
     val isDeviceConnected: Boolean = true
 )
 
-data class EshareConnectingUiState(
-    val radioState: RadioState = RadioState(),
-    val connectionState: eShareConnectionStatus = eShareConnectionStatus.Unknown,
-    val isDeviceConnected: DeviceConnectionState = DeviceConnectionState(),
-)
-
 data class EshareConnectedUiState(
     val radioState: RadioState = RadioState(),
-    val connectionState: eShareConnectionStatus = eShareConnectionStatus.Initiated,
+    val connectionState: eShareConnectionStatus = eShareConnectionStatus.Unknown,
     val deviceConnectionState: DeviceConnectionState = DeviceConnectionState(),
 )
 

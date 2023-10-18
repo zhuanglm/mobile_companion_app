@@ -71,6 +71,4 @@ class HomeRepository @Inject constructor(
     fun getConnectedDevice(): String {
         return eSightBleManager.getConnectedDevice()!!.name
     }
-
-
 }

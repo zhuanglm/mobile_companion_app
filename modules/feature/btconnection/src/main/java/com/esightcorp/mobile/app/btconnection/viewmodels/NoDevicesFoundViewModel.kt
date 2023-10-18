@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
@@ -30,11 +31,9 @@ class NoDevicesFoundViewModel @Inject constructor(
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-            TODO("Not yet implemented")
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            TODO("Not yet implemented")
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {

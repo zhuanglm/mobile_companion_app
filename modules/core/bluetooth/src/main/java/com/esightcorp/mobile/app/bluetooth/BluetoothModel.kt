@@ -43,7 +43,7 @@ class BluetoothModel constructor(
         }
     }
 
-    private fun shutdownReceivers(){
+    fun shutdownReceivers(){
         try{
             context.unregisterReceiver(gattUpdateReceiver)
             context.unregisterReceiver(bluetoothStateReceiver)
@@ -84,6 +84,36 @@ class BluetoothModel constructor(
                 BleService.ACTION_DATA_AVAILABLE -> {
                     Log.d(TAG, "onReceive DATA AVAILABLE: ${intent.extras}")
                 }
+
+
+            }
+
+        }
+    }
+    private val eShareReceiver:BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            Log.i(TAG, "onReceive: eShare status coming through")
+            when(intent.action){
+                BleService.ACTION_ESHARE_STATUS ->{
+                    when(intent.extras?.getString(BleService.EXTRA_DATA)){
+                        "READY" ->{
+                            bleManager.getEshareBluetoothListener().apply {
+                                Log.i(TAG, "onReceive: READY sending eshare ready ")
+                                this?.onEshareReady()
+                            }
+                        }
+                        "RUNNING"->{
+                            bleManager.getEshareBluetoothListener().apply {
+                                this?.onEshareBusy()
+                            }
+                        }
+                        "STOPPED"->{
+                            bleManager.getEshareBluetoothListener().apply {
+                                this?.onEshareStopped()
+                            }
+                        }
+                    }
+                }
                 BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE-> {
                     bleManager.getEshareBluetoothListener()?.let {
                         it.onEshareAddrNotAvailable()
@@ -99,9 +129,18 @@ class BluetoothModel constructor(
                         it.onEshareBusy()
                     }
                 }
-
             }
 
+        }
+    }
+
+    private val hotspotReceiver:BroadcastReceiver = object: BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when(intent?.action){
+                BleService.ACTION_HOTSPOT -> {
+                    Log.i(TAG, "onReceive: HOTSPOT ACTION")
+                }
+            }
         }
     }
 
@@ -138,7 +177,6 @@ class BluetoothModel constructor(
 
     //need to handle the cleanup here... receivers are going bonkers
     init {
-        shutdownReceivers()
         val gattServiceIntent = Intent(context, BleService::class.java)
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
@@ -149,7 +187,40 @@ class BluetoothModel constructor(
             context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
         }
         context.registerReceiver(bluetoothStateReceiver, btStateFilter)
+    }
 
+    fun registerEshareReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(eShareReceiver, makeeShareIntentFilter(),
+                Context.RECEIVER_NOT_EXPORTED)
+        }else{
+            context.registerReceiver(eShareReceiver, makeeShareIntentFilter())
+        }
+    }
+
+    fun unregisterEshareReceiver(){
+        try {
+            context.unregisterReceiver(eShareReceiver)
+        } catch (e: Exception){
+            Log.e(TAG, "deregisterEshareReceiver: ${e.message}")
+        }
+    }
+
+    fun registerHotspotReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(hotspotReceiver, makeHotspotIntentFilter(),
+                Context.RECEIVER_NOT_EXPORTED)
+        }else{
+            context.registerReceiver(hotspotReceiver, makeHotspotIntentFilter())
+        }
+    }
+
+    fun unregisterHotspotReceiver(){
+        try {
+            context.unregisterReceiver(hotspotReceiver)
+        } catch (e: Exception){
+            Log.e(TAG, "deregisterHotspotReceiver: ${e.message}")
+        }
     }
 
     /**
@@ -178,7 +249,6 @@ class BluetoothModel constructor(
      */
     @SuppressLint("MissingPermission")
     private fun scanLeDevices() {
-        Log.d(TAG, "scanLeDevices: ")
         if (!scanning) {
             handler.postDelayed({
                 scanning = false
@@ -207,6 +277,7 @@ class BluetoothModel constructor(
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
+            Log.i(TAG, "onScanFailed: ")
             bleManager.getModelListener()?.onScanFailed(errorCode)
         }
 
@@ -228,6 +299,7 @@ class BluetoothModel constructor(
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
             if (results != null) {
+                Log.i(TAG, "onBatchScanResults: ")
                 bleManager.getModelListener()?.onBatchScanResults(results)
             }
         }
@@ -242,17 +314,31 @@ class BluetoothModel constructor(
         }
     }
 
-    private fun makeGattUpdateIntentFilter(): IntentFilter?{
+    private fun makeGattUpdateIntentFilter(): IntentFilter{
         return IntentFilter().apply {
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
             addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
             addAction(BleService.ACTION_DATA_AVAILABLE)
+        }
+    }
+
+    private fun makeeShareIntentFilter(): IntentFilter{
+        return IntentFilter().apply {
+            addAction(BleService.ACTION_ESHARE_STATUS)
             addAction(BleService.ACTION_ESHARE_IP_NOT_REACHABLE)
             addAction(BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE)
             addAction(BleService.ACTION_ESHARE_BUSY)
         }
     }
+
+    private fun makeHotspotIntentFilter(): IntentFilter{
+        return IntentFilter().apply {
+            addAction(BleService.ACTION_HOTSPOT)
+        }
+    }
+
+
 
     companion object{
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4

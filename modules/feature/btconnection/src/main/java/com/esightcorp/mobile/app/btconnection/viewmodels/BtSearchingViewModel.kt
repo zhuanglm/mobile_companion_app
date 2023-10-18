@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.logging.Handler
 import javax.inject.Inject
 
 
@@ -31,6 +33,10 @@ class BtSearchingViewModel @Inject constructor(
 
         override fun deviceListReady(deviceList: MutableList<String>) {
             Log.i(TAG, "deviceListReady: ")
+            //Once we have a device, wait minimum 2 seconds before showing the list
+            android.os.Handler(Looper.getMainLooper()).postDelayed({
+                updateBtSearchingState(ScanningStatus.Success)
+            }, 2000)
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {

@@ -14,7 +14,9 @@ class BluetoothPayload private constructor(
     val ipAddress: String?,
     val port: String?,
     val hotspotSsid: String?,
-    val hotspotPwd: String?
+    val hotspotPwd: String?,
+    val longPress: Boolean?,
+    val buttonName: RemoteButtonName?
 ) {
 
     data class Builder(
@@ -25,7 +27,9 @@ class BluetoothPayload private constructor(
         private var ipAddress: String? = null,
         private var port: String? = null,
         private var hotspotSsid: String? = null,
-        private var hotspotPwd: String? = null
+        private var hotspotPwd: String? = null,
+        private var longPress: Boolean? = false,
+        private var buttonName: RemoteButtonName? = null
     ) {
         //        fun bleCode(bleCode: BleCodes) = apply { this.bleCode = bleCode }
         fun ssid(ssid: String) = apply { this.SSID = ssid }
@@ -35,16 +39,30 @@ class BluetoothPayload private constructor(
         fun port(port: String) = apply { this.port = port }
         fun hotspotSsid(ssid: String) = apply { this.hotspotSsid = ssid }
         fun hotspotPwd(password: String) = apply { this.hotspotPwd = password }
+        fun longPress(longPress: Boolean) = apply { this.longPress = longPress }
+        fun buttonName(buttonName: RemoteButtonName) = apply { this.buttonName = buttonName }
 
-        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port, hotspotSsid, hotspotPwd)
+        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port, hotspotSsid, hotspotPwd, longPress, buttonName)
     }
 
     enum class BleCodes(val code: String) {
         STREAM_OUT("start_stream_out"),
         STREAM_OUT_SHUTDOWN("stop_stream_out"),
         HOTSPOT_CREDS("0x03"),
-        WIFI_CREDS("0x11")
+        WIFI_CREDS("0x11"),
+        BUTTON_PRESS("0x12")
         //TODO: make this enum class its own file
+    }
+
+    enum class RemoteButtonName( val value: String){
+        FINDER("finder"),
+        MODE("mode"),
+        MENU("menu"),
+        UP("up"),
+        DOWN("down"),
+        VOL_UP("volume_up"),
+        VOL_DOWN("volume_down"),
+        ACTION_UP("action_up"),
     }
 
     /**
@@ -92,19 +110,26 @@ class BluetoothPayload private constructor(
                     Log.i(TAG, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
                 }
             }
+            BleCodes.BUTTON_PRESS ->{
+                if(longPress != null && buttonName != null){
+                    byteArray += buttonName.value.toByteArray(StandardCharsets.UTF_8)
+                    Log.i(TAG, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
+                }
+
+            }
         }
         Log.d(TAG, "getByteArrayBlePayload: ${String(byteArray, charset)}")
         return byteArray
     }
 
     companion object {
-        const val delimiter = ":::"
         const val ssid: String = "ssid"
         const val pwd: String = "pwd"
         const val type: String = "type"
         const val code: String = "command"
         const val portName: String = "port"
         const val ipAddressName: String = "ip"
+        const val buttonNameJsonField: String = "button_name"
     }
 
 }

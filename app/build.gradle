@@ -39,7 +39,6 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ext.config = getProps('../config/release.properties')
-            signingConfig signingConfigs.debug
             ext.config.each{p ->
                 if(p.key == "APPLICATION_ID_SUFFIX"){
                     applicationIdSuffix p.value

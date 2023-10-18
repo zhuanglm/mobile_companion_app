@@ -77,15 +77,6 @@ class BluetoothModel constructor(
                     }
                     bleManager.resetConnectedDevice()
                 }
-                BleService.ACTION_GATT_SERVICES_DISCOVERED -> {
-//                    bleManager.getBleService()?.getSupportedGattServices()?.forEach {
-//                    }
-                }
-                BleService.ACTION_DATA_AVAILABLE -> {
-                    Log.d(TAG, "onReceive DATA AVAILABLE: ${intent.extras}")
-                }
-
-
             }
 
         }
@@ -187,6 +178,23 @@ class BluetoothModel constructor(
             context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
         }
         context.registerReceiver(bluetoothStateReceiver, btStateFilter)
+    }
+
+    fun registerGattUpdateReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(),
+                Context.RECEIVER_NOT_EXPORTED)
+        }else{
+            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        }
+    }
+
+    fun unregisterGattUpdateReceiver(){
+        try {
+            context.unregisterReceiver(gattUpdateReceiver)
+        } catch (e: Exception){
+            Log.e(TAG, "deregisterGattUpdateReceiver: ${e.message}")
+        }
     }
 
     fun registerEshareReceiver(){
@@ -319,7 +327,6 @@ class BluetoothModel constructor(
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
             addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
-            addAction(BleService.ACTION_DATA_AVAILABLE)
         }
     }
 

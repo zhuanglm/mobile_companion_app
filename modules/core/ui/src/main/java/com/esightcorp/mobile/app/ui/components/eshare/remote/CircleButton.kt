@@ -133,17 +133,21 @@ fun RegularCircleButton(
 
 @Composable
 fun ColorContrastButton(
-    onDownEvent: () -> Unit = {},
-    onUpEvent: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    onClick:() -> Unit = {},
     primaryColor: Color,
     secondaryColor: Color,
+    icon: Painter = painterResource(id = DefaultIconResource),
+    size: Dp = RegularButtonSize
 ) {
     CircleButton(
-        onDownEvent = onDownEvent,
-        onUpEvent = onUpEvent,
+        onDownEvent = onClick,
+        onUpEvent = { Unit },
         borderColor = primaryColor,
         backgroundColor = secondaryColor,
-        iconTint = primaryColor
+        iconTint = primaryColor,
+        painter = icon,
+        size = size
     )
 }
 

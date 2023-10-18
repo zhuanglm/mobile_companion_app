@@ -85,8 +85,9 @@ class BluetoothPayload private constructor(
                 }
             }
             BleCodes.STREAM_OUT_SHUTDOWN -> {
-                val code = (BleCodes.STREAM_OUT_SHUTDOWN.code).toByteArray(charset)
-                byteArray += code
+                val outgoingJson = JSONObject()
+                    .put(code, BleCodes.STREAM_OUT_SHUTDOWN.code)
+                    byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
             }
             BleCodes.HOTSPOT_CREDS -> {
                 if(hotspotPwd != null && hotspotSsid != null){

@@ -37,10 +37,13 @@ class EshareConnectedViewModel @Inject constructor(
 
     private var _uiState = MutableStateFlow(EshareConnectedUiState())
     val uiState: StateFlow<EshareConnectedUiState> = _uiState.asStateFlow()
+    private var wasStoppedByMobile: Boolean = false
+
 
 
     init {
         eShareRepository.setupEshareListener(this)
+        wasStoppedByMobile = false
     }
 
 
@@ -130,7 +133,16 @@ class EshareConnectedViewModel @Inject constructor(
     }
 
     fun navigateToStoppedRoute(navController: NavController) {
-        navController.navigate(EshareScreens.EshareConnectionStoppedRoute.route)
+        if(wasStoppedByMobile){
+            navController.navigate(HOME_FIRST_SCREEN){
+                popUpTo(HOME_FIRST_SCREEN){
+                    inclusive = false
+                }
+                launchSingleTop = true
+            }
+        }else{
+            navController.navigate(EshareScreens.EshareConnectionStoppedRoute.route)
+        }
     }
 
     fun navigateToBusyRoute(navController: NavController) {
@@ -159,19 +171,11 @@ class EshareConnectedViewModel @Inject constructor(
         eShareRepository.startEshareConnection()
     }
 
-    fun onCancelClicked(){
-        eShareRepository.cancelEshareConnection()
-    }
-
     fun onCancelButtonClicked(navController: NavController) {
         Log.i(TAG, "onCancelButtonClicked: ")
+        wasStoppedByMobile = true
         eShareRepository.cancelEshareConnection()
-        navController.navigate(HOME_FIRST_SCREEN){
-            popUpTo(HOME_FIRST_SCREEN){
-                inclusive = false
-            }
-            launchSingleTop = true
-        }
+
     }
 
     fun upButtonPress(){

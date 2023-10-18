@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.eshare.composables
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -8,10 +9,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectionStoppedViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.Header1Text
@@ -34,9 +37,9 @@ fun EshareConnectionStoppedRoute(
 
 @Composable
 fun EshareConnectionStoppedScreen(
-    navController: NavController,
+    navController: NavController = rememberNavController(),
     modifier: Modifier = Modifier,
-    onReturnButtonClicked: (navController: NavController) -> Unit,
+    onReturnButtonClicked: (navController: NavController) -> Unit = {},
 ) {
 
     // Retrieve margin values from resources
@@ -52,7 +55,7 @@ fun EshareConnectionStoppedScreen(
         onSettingsButtonInvoked = { /*Unused*/ },
         bottomButton = {Unit}) {
 
-        ConstraintLayout(modifier = modifier.fillMaxWidth()) {
+        ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (icon, header, subheader, button) = createRefs()
             // Set up the big Bluetooth icon
             BigIcon(
@@ -62,7 +65,6 @@ fun EshareConnectionStoppedScreen(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
                 })
 
             // Set up the header text
@@ -106,4 +108,10 @@ fun EshareConnectionStoppedScreen(
 
 
     }
+}
+
+@Preview
+@Composable
+fun ConnectionStoppedPreview() {
+    EshareConnectionStoppedScreen()
 }

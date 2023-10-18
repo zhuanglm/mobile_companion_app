@@ -33,6 +33,10 @@ class HomeRepository @Inject constructor(
         override fun onScanFinished() {
         }
 
+        override fun onScanCancelled() {
+            TODO("Not yet implemented")
+        }
+
         override fun onDeviceDisconnected(device: BluetoothDevice) {
             repoListener.onBluetoothDeviceDisconnected()
         }

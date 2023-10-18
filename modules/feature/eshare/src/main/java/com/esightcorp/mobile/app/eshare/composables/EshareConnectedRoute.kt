@@ -60,7 +60,7 @@ fun EshareConnectedRoute(
             volUpButtonPress = vm::volUpButtonPress,
             volDownButtonPress = vm::volDownButtonPress,
             finderButtonPress = vm::finderButtonPress,
-
+            actionUpButtonPress = vm::actionUpButtonPress,
         )
     }
     
@@ -101,13 +101,21 @@ fun eShareConnectedScreen(
 
         })
         EshareRemote(
-            onFinderButtonPressed = finderButtonPress,
-            onModeButtonPressed = modeButtonPress,
-            onUpButtonPressed = upButtonPress,
-            onDownButtonPressed = downButtonPress,
-            onVolumeUpButtonPressed = volUpButtonPress,
-            onVolumeDownButtonPressed = volDownButtonPress,
-            onMenuButtonPressed = menuButtonPress,
+            onFinderButtonPressedEventDown= finderButtonPress,
+            onFinderButtonPressedEventUp = actionUpButtonPress,
+            onModeButtonPressedEventDown = modeButtonPress,
+            onModeButtonPressedEventUp = actionUpButtonPress,
+            onUpButtonPressedEventDown = upButtonPress,
+            onUpButtonPressedEventUp = actionUpButtonPress,
+            onDownButtonPressedEventDown = downButtonPress,
+            onDownButtonPressedEventUp = actionUpButtonPress,
+            onVolumeUpButtonPressedEventDown = volUpButtonPress,
+            onVolumeUpButtonPressedEventUp = actionUpButtonPress,
+            onVolumeDownButtonPressedEventDown = volDownButtonPress,
+            onVolumeDownButtonPressedEventUp = actionUpButtonPress,
+            onMenuButtonPressedEventDown = menuButtonPress,
+            onMenuButtonPressedEventUp = actionUpButtonPress,
+            onBluetoothButtonPressedEventDown = { onCancelButtonClicked(navController) }
             )
     }
 

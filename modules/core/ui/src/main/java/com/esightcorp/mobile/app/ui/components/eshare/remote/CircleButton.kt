@@ -1,7 +1,7 @@
 package com.esightcorp.mobile.app.ui.components.eshare.remote
 
+import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -11,10 +11,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -30,9 +32,11 @@ import com.esightcorp.mobile.app.ui.R
  * @param contentDescription Description of the icon for accessibility purposes.
  * @param painter Painter object for rendering the icon.
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CircleButton(
-    onClick: () -> Unit,
+    onDownEvent: () -> Unit,
+    onUpEvent: () -> Unit,
     modifier: Modifier = Modifier,
     size: Dp = DefaultButtonSize,
     contentDescription: String? = DefaultContentDescription,
@@ -44,10 +48,25 @@ fun CircleButton(
     ElevatedButton(
         modifier = modifier
             .size(size)
-            .clip(CircleShape),
+            .clip(CircleShape)
+            .pointerInteropFilter {
+                when (it.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        onDownEvent()
+                        true
+                    }
+
+                    MotionEvent.ACTION_UP -> {
+                        onUpEvent()
+                        true
+                    }
+
+                    else -> false
+                }
+            },
         shape = CircleShape,
         border = BorderStroke(DefaultBorderWidth, borderColor),
-        onClick = onClick,
+        onClick = { Unit },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = DefaultElevation,
             pressedElevation = PressedElevation,
@@ -75,8 +94,19 @@ fun CircleButton(
  * @param onClickAction Action to be performed when the button is clicked.
  */
 @Composable
-fun TinyCircleButton(onClickAction: () -> Unit = {}, modifier: Modifier = Modifier) {
-    CircleButton(onClick = onClickAction, size = TinyButtonSize, modifier = modifier)
+fun TinyCircleButton(
+    onDownEvent: () -> Unit = {},
+    onUpEvent: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    icon: Painter = painterResource(id = DefaultIconResource)
+) {
+    CircleButton(
+        onDownEvent = onDownEvent,
+        onUpEvent = onUpEvent,
+        size = TinyButtonSize,
+        modifier = modifier,
+        painter = icon
+    )
 }
 
 /**
@@ -85,17 +115,36 @@ fun TinyCircleButton(onClickAction: () -> Unit = {}, modifier: Modifier = Modifi
  * @param onClickAction Action to be performed when the button is clicked.
  */
 @Composable
-fun RegularCircleButton(onClickAction: () -> Unit = {}, modifier: Modifier = Modifier, size: Dp = RegularButtonSize) {
-    CircleButton( modifier = Modifier, onClick = onClickAction, size = size)
+fun RegularCircleButton(
+    onDownEvent: () -> Unit = {},
+    onUpEvent: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    size: Dp = RegularButtonSize,
+    icon: Painter = painterResource(id = DefaultIconResource)
+) {
+    CircleButton(
+        modifier = Modifier,
+        onDownEvent = onDownEvent,
+        onUpEvent = onUpEvent,
+        size = size,
+        painter = icon
+    )
 }
 
 @Composable
 fun ColorContrastButton(
-    onClickAction: () -> Unit = {},
+    onDownEvent: () -> Unit = {},
+    onUpEvent: () -> Unit = {},
     primaryColor: Color,
     secondaryColor: Color,
 ) {
-    CircleButton(onClick = onClickAction, borderColor = primaryColor, backgroundColor = secondaryColor, iconTint = primaryColor)
+    CircleButton(
+        onDownEvent = onDownEvent,
+        onUpEvent = onUpEvent,
+        borderColor = primaryColor,
+        backgroundColor = secondaryColor,
+        iconTint = primaryColor
+    )
 }
 
 
@@ -105,8 +154,9 @@ fun ColorContrastPreview() {
     Surface {
         ColorContrastButton(primaryColor = Color.Black, secondaryColor = Color.Red)
     }
-    
+
 }
+
 @Preview
 @Composable
 fun TinyCircleButtonPreview() {

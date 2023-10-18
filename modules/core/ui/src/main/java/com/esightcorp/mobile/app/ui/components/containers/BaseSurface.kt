@@ -82,7 +82,7 @@ fun BaseScreen(
                 }
                 .padding(25.dp, 0.dp, 25.dp, 0.dp).fillMaxSize()
             ) {
-                LazyColumn(modifier = modifier) {
+                LazyColumn(modifier = Modifier) {
                     item {
                         everythingElse()
                     }

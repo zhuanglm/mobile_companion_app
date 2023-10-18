@@ -1,6 +1,7 @@
 package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 
+import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,12 +26,14 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -52,11 +55,14 @@ import com.esightcorp.mobile.app.ui.R
  * @param backgroundColor Background color of the button.
  * @param iconTint Tint color of the icon.
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RockerButton(
     modifier: Modifier = Modifier,
-    onVolumeUpPressed: () -> Unit = {Unit},
-    onVolumeDownPressed: () -> Unit = {Unit},
+    onVolumeUpEventDown: () -> Unit = {Unit},
+    onVolumeUpEventUp: () -> Unit = {Unit},
+    onVolumeDownEventDown: () -> Unit = {Unit},
+    onVolumeDownEventUp: () -> Unit = {Unit},
     size: Dp = DefaultOblongButtonHeight,
     contentDescription: String? = DefaultContentDescription,
     painter1: Painter = painterResource(id = DefaultIconResource),
@@ -87,7 +93,19 @@ fun RockerButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
-                    .clickable { onVolumeUpPressed() }
+                    .pointerInteropFilter {
+                        when(it.action){
+                            MotionEvent.ACTION_DOWN -> {
+                                onVolumeUpEventDown()
+                                true
+                            }
+                            MotionEvent.ACTION_UP -> {
+                                onVolumeUpEventUp()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center) {
@@ -104,7 +122,19 @@ fun RockerButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
-                    .clickable { onVolumeDownPressed() }
+                    .pointerInteropFilter {
+                        when(it.action){
+                            MotionEvent.ACTION_DOWN -> {
+                                onVolumeDownEventDown()
+                                true
+                            }
+                            MotionEvent.ACTION_UP -> {
+                                onVolumeDownEventUp()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center

@@ -38,7 +38,6 @@ class BleService : Service() {
     private lateinit var ERROR_Descriptor: BluetoothGattDescriptor
 
     var lastBroadcastTimeEshareError = 0L
-    var buttonPressState: Boolean = false
 
 
     private val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
@@ -246,13 +245,6 @@ class BleService : Service() {
                 TAG,
                 "onCharacteristicWrite: ${gatt?.device?.name}, ${characteristic?.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} "
             )
-            when (characteristic) {
-                BUTTON_PRESS_Characteristic -> {
-                    if (status == BluetoothGatt.GATT_SUCCESS && buttonPressState) {
-                        writeFinderButtonPressUpEvent()
-                    }
-                }
-            }
         }
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
@@ -429,63 +421,64 @@ class BleService : Service() {
         )
     }
 
-    fun writeUpButtonPress(longpress: Boolean) {
+    fun stopEshare(){
+        sendMessage(
+            ESHARE_COMMANDS_Characteristic,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT_SHUTDOWN).build().getByteArrayBlePayload()
+        )
+    }
+
+    fun writeUpButtonPress() {
         Log.d(TAG, "writeUpButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.UP).build().getByteArrayBlePayload()
         )
     }
 
-    fun writeDownButtonPress(longpress: Boolean) {
+    fun writeDownButtonPress() {
         Log.d(TAG, "writeDownButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.DOWN).build().getByteArrayBlePayload()
         )
     }
 
-    fun writeModeButtonPress(longpress: Boolean) {
+    fun writeModeButtonPress() {
         Log.d(TAG, "writeModeButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.MODE).build().getByteArrayBlePayload()
         )
     }
 
-    fun writeMenuButtonPress(longpress: Boolean) {
+    fun writeMenuButtonPress() {
         Log.d(TAG, "writeMenuButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.MENU).build().getByteArrayBlePayload()
         )
     }
 
-    fun writeVolumeUpButtonPress(longpress: Boolean) {
+    fun writeVolumeUpButtonPress() {
         Log.d(TAG, "writeVolumeUpButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.VOL_UP).build()
                 .getByteArrayBlePayload()
         )
     }
 
-    fun writeVolumeDownButtonPress(longpress: Boolean) {
+    fun writeVolumeDownButtonPress() {
         Log.d(TAG, "writeVolumeDownButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS).longPress(longpress)
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.VOL_DOWN).build()
                 .getByteArrayBlePayload()
         )
@@ -493,7 +486,6 @@ class BleService : Service() {
 
     fun writeFinderButtonPressDownEvent() {
         Log.d(TAG, "writeFinderButtonPress: ")
-        buttonPressState = true
         sendMessage(
             BUTTON_PRESS_Characteristic,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
@@ -502,9 +494,8 @@ class BleService : Service() {
         )
     }
 
-    fun writeFinderButtonPressUpEvent() {
+    fun writeActionUpEvent() {
         Log.d(TAG, "writeFinderButtonPress: ")
-        buttonPressState = false
         sendMessage(
             BUTTON_PRESS_Characteristic,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)

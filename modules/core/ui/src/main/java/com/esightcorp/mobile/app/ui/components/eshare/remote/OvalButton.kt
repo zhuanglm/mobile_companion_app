@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.ui.components.eshare.remote
 
+import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -12,12 +13,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -39,9 +42,11 @@ import com.esightcorp.mobile.app.ui.R
 * @param backgroundColor Background color of the button.
 * @param iconTint Tint color of the icon.
 */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OvalButton(
-    onClick: () -> Unit,
+    onDownEvent: () -> Unit = {},
+    onUpEvent: () -> Unit = {},
     modifier: Modifier = Modifier,
     size: Dp = DefaultOblongButtonHeight, // Height of the oblong button
     contentDescription: String? = DefaultContentDescription,
@@ -59,10 +64,23 @@ fun OvalButton(
         modifier = modifier
             .width(width) // Setting the derived width
             .height(size) // Setting the provided height
-            .clip(ovalShape), // Applying the oval shape
+            .clip(ovalShape)
+            .pointerInteropFilter {
+                when(it.action){
+                    MotionEvent.ACTION_DOWN -> {
+                        onDownEvent()
+                        true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        onUpEvent()
+                        true
+                    }
+                    else -> false
+                }
+            }, // Applying the oval shape
         shape = ovalShape,
         border = BorderStroke(DefaultBorderWidth, borderColor),
-        onClick = onClick,
+        onClick = { Unit },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = DefaultElevation,
             pressedElevation = PressedElevation,
@@ -89,7 +107,7 @@ fun OvalButton(
 fun OblongButtonPreview() {
     Surface {
         OvalButton(
-            onClick = {}
+
         )
     }
 }
@@ -104,6 +122,11 @@ private val DefaultBorderWidth = 2.dp
 private val DefaultElevation = 2.dp
 private val PressedElevation = 4.dp
 private val DisabledElevation = 1.dp
-private val FocusedElevation = 3.dp
+private val FocusedElevation
+
+
+
+
+= 3.dp
 private val DefaultPadding = 0.dp
 private const val IconScalingFactor = 0.8f

@@ -175,30 +175,34 @@ class EshareConnectedViewModel @Inject constructor(
     }
 
     fun upButtonPress(){
-        eShareRepository.writeUpButtonPress(false)
+        eShareRepository.writeUpButtonPress()
     }
     fun downButtonPress(){
-        eShareRepository.writeDownButtonPress(false)
+        eShareRepository.writeDownButtonPress()
     }
 
     fun volUpButtonPress(){
-        eShareRepository.writeVolumeUpButtonPress(false)
+        eShareRepository.writeVolumeUpButtonPress()
     }
 
     fun volDownButtonPress(){
-        eShareRepository.writeVolumeDownButtonPress(false)
+        eShareRepository.writeVolumeDownButtonPress()
     }
 
     fun modeButtonPress(){
-        eShareRepository.writeModeButtonPress(false)
+        eShareRepository.writeModeButtonPress()
     }
 
     fun menuButtonPress(){
-        eShareRepository.writeMenuButtonPress(false)
+        eShareRepository.writeMenuButtonPress()
     }
 
     fun finderButtonPress(){
-        eShareRepository.writeFinderButtonPress(false)
+        eShareRepository.writeFinderButtonPress()
+    }
+
+    fun actionUpButtonPress(){
+        eShareRepository.writeActionUpEvent()
     }
 
     companion object{

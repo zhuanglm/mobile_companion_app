@@ -207,6 +207,7 @@ class EshareRepository @Inject constructor(
     fun cancelEshareConnection(){
         Log.i(TAG, "cancelEshareConnection: Nevermind ")
         bluetoothModel.unregisterEshareReceiver()
+        eSightBleManager.getBleService()?.stopEshare()
     }
 
     fun startHotspotOnHMD(){
@@ -226,30 +227,30 @@ class EshareRepository @Inject constructor(
         }
     }
 
-    fun writeUpButtonPress(longpress: Boolean){
+    fun writeUpButtonPress(){
         if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.writeUpButtonPress(longpress)
+                eSightBleManager.getBleService()?.writeUpButtonPress()
             }catch (exception: Exception){
                 Log.e(TAG, "writeUpButtonPress:", exception)
             }
         }
     }
 
-    fun writeDownButtonPress(longpress: Boolean){
+    fun writeDownButtonPress(){
         if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.writeDownButtonPress(longpress)
+                eSightBleManager.getBleService()?.writeDownButtonPress()
             }catch (exception: Exception){
                 Log.e(TAG, "writeDownButtonPress:", exception)
             }
         }
 
     }
-    fun writeModeButtonPress(longpress: Boolean){
+    fun writeModeButtonPress(){
         if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.writeModeButtonPress(longpress)
+                eSightBleManager.getBleService()?.writeModeButtonPress()
             }catch (exception: Exception){
                 Log.e(TAG, "writeDownButtonPress:", exception)
             }
@@ -257,20 +258,20 @@ class EshareRepository @Inject constructor(
 
     }
 
-    fun writeMenuButtonPress(longpress: Boolean) {
+    fun writeMenuButtonPress() {
         if (eSightBleManager.checkIfConnected()) {
             try {
-                eSightBleManager.getBleService()?.writeMenuButtonPress(longpress)
+                eSightBleManager.getBleService()?.writeMenuButtonPress()
             } catch (exception: Exception) {
                 Log.e(TAG, "writeMenuButtonPress:", exception)
             }
         }
     }
 
-    fun writeVolumeUpButtonPress(longpress: Boolean){
+    fun writeVolumeUpButtonPress(){
         if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.writeVolumeUpButtonPress(longpress)
+                eSightBleManager.getBleService()?.writeVolumeUpButtonPress()
             }catch (exception: Exception){
                 Log.e(TAG, "writeVolumeUpButtonPress:", exception)
             }
@@ -278,10 +279,10 @@ class EshareRepository @Inject constructor(
 
     }
 
-    fun writeVolumeDownButtonPress(longpress: Boolean){
+    fun writeVolumeDownButtonPress(){
         if(eSightBleManager.checkIfConnected()){
             try{
-                eSightBleManager.getBleService()?.writeVolumeDownButtonPress(longpress)
+                eSightBleManager.getBleService()?.writeVolumeDownButtonPress()
             }catch (exception: Exception){
                 Log.e(TAG, "writeVolumeDownButtonPress:", exception)
             }
@@ -290,19 +291,26 @@ class EshareRepository @Inject constructor(
 
     }
 
-    fun writeFinderButtonPress(upEvent: Boolean){
+    fun writeFinderButtonPress(){
         if(eSightBleManager.checkIfConnected()){
             try{
-                if(upEvent){
-                    eSightBleManager.getBleService()?.writeFinderButtonPressUpEvent()
-                }else{
-                    eSightBleManager.getBleService()?.writeFinderButtonPressDownEvent()
-                }
+                eSightBleManager.getBleService()?.writeFinderButtonPressDownEvent()
             }catch (exception: Exception){
                 Log.e(TAG, "writeFinderButtonPress:", exception)
             }
         }
     }
+
+    fun writeActionUpEvent(){
+        if(eSightBleManager.checkIfConnected()){
+            try {
+                eSightBleManager.getBleService()?.writeActionUpEvent()
+            }catch (exception: Exception){
+                Log.e(TAG, "writeActionUpEvent:", exception)
+            }
+        }
+    }
+
 
 
 

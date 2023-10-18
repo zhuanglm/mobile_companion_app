@@ -39,11 +39,16 @@ internal fun BtConnectedScreen(
     val homeRoute = stringResource(id = R.string.navigate_to_home)
     val screenTimeout = 5000L //5s in milliseconds
     if (deviceName != null && deviceAddress != null) {
-        val loadingText = stringResource(id = R.string.connected_to) + " ${deviceName}\n" + "Address: $deviceAddress"
+        val loadingText = stringResource(id = R.string.connected_to) + " ${deviceName}"
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
         LaunchedEffect(Unit) {
             delay(screenTimeout)
-            navController.navigate(homeRoute)
+            navController.navigate(homeRoute){
+                popUpTo(homeRoute){
+                    inclusive = false
+                }
+                launchSingleTop = true
+            }
         }
     }else{
         val loadingText = stringResource(id = R.string.something_went_wrong)

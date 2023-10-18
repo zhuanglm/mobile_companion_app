@@ -5,4 +5,5 @@ sealed class ScanningStatus{
     object InProgress : ScanningStatus()
     object Success: ScanningStatus()
     object Unknown: ScanningStatus()
+    object Cancelled: ScanningStatus()
 }

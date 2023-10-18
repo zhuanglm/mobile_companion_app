@@ -14,6 +14,7 @@ import com.juul.kable.State
 
 private const val TAG = "eSightBleManager"
 object eSightBleManager {
+    const val DEVICE_NAME_CRITERION = "eGo"
 
 
     lateinit var bluetoothManager: BluetoothManager
@@ -78,17 +79,17 @@ object eSightBleManager {
      * returns true when device is added to the device list
      * returns false when device is already in the device list OR when device does not contain part of our bt name
      * TODO: Confirm the bluetooth name with Product
+     * BT name shall always include eGo
      * BT name is set in Mobile API Gateway if a reference to what the current one is, is needed.
      */
     @SuppressLint("MissingPermission")
-    fun addToBleDeviceList(device: BluetoothDevice):Boolean{
-        return if(this.bleDeviceList.contains(device) || !device.name.contains("eGo")){
-            Log.i(TAG, "addToBleDeviceList: dropping this from the list ... ${device.name}")
-            false;
-        } else{
+    fun addToBleDeviceList(device: BluetoothDevice): Boolean {
+        return if (bleDeviceList.contains(device) || !device.name.contains(DEVICE_NAME_CRITERION)) {
+            false
+        } else {
             Log.d(TAG, "addToBleDeviceList: ${device.name}")
             this.bleDeviceList.add(device)
-            true;
+            true
         }
     }
 
@@ -145,12 +146,6 @@ object eSightBleManager {
     fun discoverServices(){
         bleService?.discoverServices()
     }
-
-
-
-
-
-
 
 
 }

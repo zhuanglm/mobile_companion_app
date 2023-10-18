@@ -5,7 +5,7 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BtConnectedUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,20 +18,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BtConnectedViewModel @Inject constructor(
-    application: Application, val repository: BtConnectionRepository
+    application: Application, private val repository: BtConnectionRepository
 ) : AndroidViewModel(application) {
 
     private val TAG = "BtConnectedViewModel"
     private var _uiState = MutableStateFlow(BtConnectedUiState())
     val uiState: StateFlow<BtConnectedUiState> = _uiState.asStateFlow()
-    val listener = object : IBtConnectionRepository{
-        override fun scanStatus(isScanning: ScanningStatus) {
+    val listener = object : BluetoothConnectionRepositoryCallback{
+        override fun scanStatus(isScanning: ScanningStatus){
+            //unused by this composable
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
+            //unused by this composable
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+            //unused by this composable
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
@@ -40,12 +43,13 @@ class BtConnectedViewModel @Inject constructor(
     }
 
     init {
+        repository.registerListener(listener)
         getBluetoothDevice()
     }
 
     @SuppressLint("MissingPermission")
     private fun getBluetoothDevice() {
-        var device = repository.getConnectedDevice()
+        val device = repository.getConnectedDevice()
         updateUiState(device?.name, device?.address)
 
     }

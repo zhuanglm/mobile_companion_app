@@ -58,8 +58,8 @@ class BtConnectingViewModel @Inject constructor(
         btConnectionRepository.checkBtEnabledStatus()
     }
 
-    fun navigateToConnectedScreen(navController: NavController, deviceName: String, address: String){
-        navController.navigate(BtConnectionScreens.BtConnectedRoute.route + "/{$address}/{$deviceName}")
+    fun navigateToConnectedScreen(navController: NavController){
+        navController.navigate(BtConnectionScreens.BtConnectedRoute.route)
     }
 
     fun navigateToUnableToConnectScreen(navController: NavController){

@@ -1,8 +1,11 @@
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
+    id 'com.github.triplet.play'
 }
 
 android {
@@ -11,9 +14,9 @@ android {
     defaultConfig {
         applicationId "com.esightcorp.mobile.app.companion"
         minSdk 28
-        targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        targetSdk 33
+        versionCode project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER').toInteger() : 4
+        versionName "0.1." + (project.hasProperty('BUILD_NUMBER') ? project.property('BUILD_NUMBER') : "0")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -21,17 +24,24 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file(KEYSTORE_FILE)
+            storePassword KEYSTORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
+            debuggable false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ext.config = getProps('../config/release.properties')
             signingConfig signingConfigs.debug
             ext.config.each{p ->
-                if(p.key == "APP_NAME"){
-                    resValue "string", "app_name", p.value
-                }
-                else if(p.key == "APPLICATION_ID_SUFFIX"){
+                if(p.key == "APPLICATION_ID_SUFFIX"){
                     applicationIdSuffix p.value
                 }
                 else {
@@ -43,10 +53,7 @@ android {
             debuggable true
             ext.config = getProps('../config/debug.properties')
             ext.config.each{p ->
-                if(p.key == "APP_NAME"){
-                    resValue "string", "app_name", p.value
-                }
-                else if(p.key == "APPLICATION_ID_SUFFIX"){
+                if(p.key == "APPLICATION_ID_SUFFIX"){
                     applicationIdSuffix p.value
                 }
                 else {
@@ -55,6 +62,8 @@ android {
             }
         }
     }
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -82,6 +91,13 @@ android {
             showStandardStreams true
         }
     }
+}
+
+play {
+    serviceAccountCredentials = file(GOOGLE_PLAY_API_KEY)
+    track.set('internal')
+    //TODO- change this after its not a draft app
+    releaseStatus.set(ReleaseStatus.DRAFT)
 }
 
 dependencies {

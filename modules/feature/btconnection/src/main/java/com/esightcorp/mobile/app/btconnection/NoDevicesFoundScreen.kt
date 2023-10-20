@@ -30,16 +30,17 @@ import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 
 @Composable
 fun NoDevicesFoundRoute(
-    navController: NavController, vm: NoDevicesFoundViewModel = hiltViewModel()
+    navController: NavController,
+    vm: NoDevicesFoundViewModel = hiltViewModel()
 ) {
     val btUiState by vm.uiState.collectAsState()
-    vm.setNavController(navController)
     if (btUiState.isBtEnabled) {
         NoDevicesFoundScreen(
             onBackButtonClicked = vm::navigateToNoDevicesConnectedScreen,
             onTryAgainClicked = vm::navigateToSearchingScreen,
+            onBluetoothDisabled = vm::onBluetoothDisabled,
             uiState = btUiState,
-            vm = vm
+            navController = navController
         )
     } else {
         NavigateBluetoothDisabled(navController = navController)
@@ -51,33 +52,38 @@ fun NoDevicesFoundRoute(
 @Composable
 internal fun NoDevicesFoundScreen(
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit,
-    onTryAgainClicked: () -> Unit,
+    onBackButtonClicked: (NavController) -> Unit,
+    onTryAgainClicked: (NavController) -> Unit,
+    onBluetoothDisabled: (NavController) -> Unit,
     uiState: NoDevicesFoundUiState,
-    vm: NoDevicesFoundViewModel
+    navController: NavController
 ) {
     val TAG = "NoDevicesFoundScreen"
     Log.i(TAG, "NoDevicesFoundScreen: ")
-    Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
-
-    }
-
-    BaseScreen(modifier = modifier,
-        showBackButton = true,
-        showSettingsButton = false,
-        onBackButtonInvoked = onBackButtonClicked,
-        onSettingsButtonInvoked = { /*Unused*/ },
-        bottomButton = {
-            CantFindDeviceButton(
-                onHelpClick = { /*TODO: Deeplink needed here*/ }, modifier = modifier
+    if(uiState.isBtEnabled){
+        BaseScreen(modifier = modifier,
+            showBackButton = true,
+            showSettingsButton = false,
+            onBackButtonInvoked = { onBackButtonClicked(navController) },
+            onSettingsButtonInvoked = { /*Unused*/ },
+            bottomButton = {
+                CantFindDeviceButton(
+                    onHelpClick = { /*TODO: Deeplink needed here*/ }, modifier = modifier
+                )
+            }) {
+            NoDevicesFoundBody(
+                modifier = modifier,
+                onTryAgainClicked = { onTryAgainClicked(navController) },
             )
-        }) {
-        NoDevicesFoundBody(
-            modifier = modifier,
-            onTryAgainClicked = onTryAgainClicked,
-        )
 
+        }
+    }else{
+        LaunchedEffect(Unit){
+            onBluetoothDisabled(navController)
+        }
     }
+
+
 }
 
 @Composable

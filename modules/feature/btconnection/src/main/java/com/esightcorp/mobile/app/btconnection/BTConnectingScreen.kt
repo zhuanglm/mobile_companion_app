@@ -42,7 +42,7 @@ internal fun BtConnectingScreen(
             LaunchedEffect(Unit) {
                 Log.i(TAG, "${uiState.deviceName} is connected")
                 vm.navigateToConnectedScreen(
-                    navController, uiState.deviceName, uiState.deviceAddress
+                    navController
                 )
             }
         } else {

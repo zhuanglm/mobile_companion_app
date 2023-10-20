@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +26,7 @@ class BtConnectingViewModel @Inject constructor(
     private val TAG = "BtConnectingViewModel"
     private var _uiState = MutableStateFlow(BtConnectingUiState())
     val uiState: StateFlow<BtConnectingUiState> = _uiState.asStateFlow()
-    private val listener = object : IBtConnectionRepository{
+    private val listener = object : BluetoothConnectionRepositoryCallback{
         override fun scanStatus(isScanning: ScanningStatus) {
             Log.e(TAG, "scanStatus: ", )
         }
@@ -58,8 +58,8 @@ class BtConnectingViewModel @Inject constructor(
         btConnectionRepository.checkBtEnabledStatus()
     }
 
-    fun navigateToConnectedScreen(navController: NavController, deviceName: String, address: String){
-        navController.navigate(BtConnectionScreens.BtConnectedRoute.route + "/{$address}/{$deviceName}")
+    fun navigateToConnectedScreen(navController: NavController){
+        navController.navigate(BtConnectionScreens.BtConnectedRoute.route)
     }
 
     fun navigateToUnableToConnectScreen(navController: NavController){

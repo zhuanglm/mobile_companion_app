@@ -10,6 +10,8 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
@@ -22,7 +24,7 @@ fun LoadingScreenWithIcon(
     loadingText: String = "Loading..."
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-        ConstraintLayout {
+        ConstraintLayout (modifier = modifier.fillMaxSize()){
             val (topAppBar, text, icon) = createRefs()
             ESightTopAppBar(
                 showBackButton = false,
@@ -38,6 +40,7 @@ fun LoadingScreenWithIcon(
 
             Subheader(
                 text = loadingText,
+                textAlign = TextAlign.Center,
                 modifier = modifier.constrainAs(text) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
@@ -48,14 +51,22 @@ fun LoadingScreenWithIcon(
             Icon(
                 Icons.Rounded.Check,
                 contentDescription = "Checkmark",
-                modifier = modifier.size(75.dp)
-                    .constrainAs(icon){
-                    top.linkTo(text.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+                modifier = modifier
+                    .size(75.dp)
+                    .constrainAs(icon) {
+                        top.linkTo(text.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
                 tint = MaterialTheme.colors.primary
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun LoadingScreenWithIconPreview() {
+    LoadingScreenWithIcon()
+    
 }

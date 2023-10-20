@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BtDisabledUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,14 +25,17 @@ class BtDisabledViewModel  @Inject constructor(
 
     private var _uiState = MutableStateFlow(BtDisabledUiState())
     val uiState: StateFlow<BtDisabledUiState> = _uiState.asStateFlow()
-    private val listener = object: IBtConnectionRepository{
+    private val listener = object: BluetoothConnectionRepositoryCallback{
         override fun scanStatus(isScanning: ScanningStatus) {
+            //unused by this composable
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
+            //unused by this composable
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+            //unused by this composable
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
@@ -48,7 +51,12 @@ class BtDisabledViewModel  @Inject constructor(
 
     fun onBackPressed(){
         if(this::navController.isInitialized){
-            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route)
+            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route){
+                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
+                    inclusive = false
+                }
+                launchSingleTop = true
+            }
         }
     }
 

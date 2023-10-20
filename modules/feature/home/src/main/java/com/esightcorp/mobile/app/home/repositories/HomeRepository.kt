@@ -33,6 +33,10 @@ class HomeRepository @Inject constructor(
         override fun onScanFinished() {
         }
 
+        override fun onScanCancelled() {
+            TODO("Not yet implemented")
+        }
+
         override fun onDeviceDisconnected(device: BluetoothDevice) {
             repoListener.onBluetoothDeviceDisconnected()
         }
@@ -71,6 +75,4 @@ class HomeRepository @Inject constructor(
     fun getConnectedDevice(): String {
         return eSightBleManager.getConnectedDevice()!!.name
     }
-
-
 }

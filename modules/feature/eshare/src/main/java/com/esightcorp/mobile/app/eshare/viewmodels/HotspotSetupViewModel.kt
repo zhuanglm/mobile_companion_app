@@ -7,7 +7,6 @@ import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.repositories.HotspotCredentialGenerator
 import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
-import com.esightcorp.mobile.app.eshare.state.EshareConnectingUiState
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
 import com.esightcorp.mobile.app.utils.eShareConnectionStatus

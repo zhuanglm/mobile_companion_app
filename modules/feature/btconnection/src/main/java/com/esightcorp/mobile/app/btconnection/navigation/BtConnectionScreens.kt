@@ -13,14 +13,6 @@ sealed class BtConnectionScreens(val route: String){
     object UnableToConnectRoute: BtConnectionScreens("unable_to_connect_bt")
     object NoDevicesFoundRoute: BtConnectionScreens("no_devices_found_bt")
 
-    object BtConnectedRoute: BtConnectionScreens("bt_connected"){
-        const val nameArg = "deviceName"
-        const val addrArg = "deviceAddress"
-        val routeWithArgs = "${route}/{$addrArg}/{$nameArg}"
-        val arguments = listOf(
-            navArgument(nameArg){type = NavType.StringType},
-            navArgument(addrArg){type = NavType.StringType}
-        )
-    }
+    object BtConnectedRoute: BtConnectionScreens("bt_connected")
 
 }

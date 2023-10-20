@@ -62,6 +62,13 @@ class WifiModel(
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             when (intent.action) {
+                BleService.ACTION_DATA_AVAILABLE ->{
+                    when(intent.data.toString()){
+                        else ->{
+                            Log.i(TAG, "onReceive: ${intent.data.toString()}")
+                        }
+                    }
+                }
                 BleService.ACTION_GATT_CONNECTED -> {
                 Log.e(TAG, "onReceive: CONNECTED")
                 }
@@ -123,11 +130,9 @@ class WifiModel(
 
         }
     }
-
-    private fun makeGattUpdateIntentFilter(): IntentFilter? {
+    private fun makeWifiBleIntentFilter(): IntentFilter? {
         return IntentFilter().apply {
-            addAction(BleService.ACTION_GATT_CONNECTED)
-            addAction(BleService.ACTION_GATT_DISCONNECTED)
+            addAction(BleService.ACTION_WIFI_CONNECTION_STATUS)
             addAction(BleService.ACTION_WIFI_ERROR)
             addAction(BleService.ACTION_WIFI_CONNECTED)
             addAction(BleService.ACTION_ERROR)
@@ -141,7 +146,7 @@ class WifiModel(
 
     init {
         context.registerReceiver(wifiScanReceiver, makeWifiIntentFilter)
-        context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        context.registerReceiver(gattUpdateReceiver, makeWifiBleIntentFilter())
         context.registerReceiver(wifiStateChangeReceiver, wifiStateIntentFilter)
     }
 
@@ -186,6 +191,7 @@ class WifiModel(
     }
 
     fun isWifiEnabled():Boolean{
+        Log.i(TAG, "isWifiEnabled: ${wifiManager.isWifiEnabled}")
        return wifiManager.isWifiEnabled
     }
 
@@ -212,7 +218,7 @@ class WifiModel(
         return "WIFI:S:${WifiCache.credentials.getNetwork().SSID};T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
     }
 
-    fun connectToEshare(createSocketListener: CreateSocketListener, inputStreamListener: InputStreamListener){
+    fun openSocket(createSocketListener: CreateSocketListener, inputStreamListener: InputStreamListener){
         getMyIpAddress()?.let { eShareCache.setIpAddress(it) }
         getPortToConnectOn { port ->
             if (port != null) {

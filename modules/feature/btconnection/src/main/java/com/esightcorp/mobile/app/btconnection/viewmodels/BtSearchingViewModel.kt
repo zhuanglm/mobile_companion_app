@@ -2,10 +2,13 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
-import com.esightcorp.mobile.app.btconnection.repositories.IBtConnectionRepository
+import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BtSearchingUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.logging.Handler
 import javax.inject.Inject
 
 
@@ -23,7 +27,7 @@ class BtSearchingViewModel @Inject constructor(
     private val TAG = "BtSearchingViewModel"
     private var _uiState = MutableStateFlow(BtSearchingUiState())
     val uiState: StateFlow<BtSearchingUiState> = _uiState.asStateFlow()
-    private val btRepositoryListener = object : IBtConnectionRepository {
+    private val btRepositoryListener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
             Log.i(TAG, "Scan status received from Bluetooth Repository")
             updateBtSearchingState(isScanning)
@@ -31,6 +35,10 @@ class BtSearchingViewModel @Inject constructor(
 
         override fun deviceListReady(deviceList: MutableList<String>) {
             Log.i(TAG, "deviceListReady: ")
+            //Once we have a device, wait minimum 2 seconds before showing the list
+            android.os.Handler(Looper.getMainLooper()).postDelayed({
+                updateBtSearchingState(ScanningStatus.Success)
+            }, 2000)
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
@@ -69,10 +77,27 @@ class BtSearchingViewModel @Inject constructor(
             ScanningStatus.Unknown -> {
                 Log.d(TAG, "updateBtSearchingState: ${ScanningStatus.Unknown}")
             }
+
+            ScanningStatus.Cancelled -> {
+                Log.d(TAG, "updateBtSearchingState: ${ScanningStatus.Cancelled}")
+            }
         }
 
         _uiState.update {
             it.copy(isScanning = status)
         }
+    }
+
+    fun onCancelButtonClicked(navController: NavController){
+        //navigate back to the 'no devices connected screen'
+        navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route){
+            popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
+                inclusive = false
+            }
+            launchSingleTop = true
+        }
+        //cleanup bluetooth scanning
+        btConnectionRepository.cancelBleScan()
+        
     }
 }

@@ -46,7 +46,7 @@ fun NoDeviceConnectedRoute(
         // If Bluetooth is enabled and there is no device connected, show the no device connected screen
         Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
         NoDeviceConnectedScreen(
-            onSettingsButtonPressed = { },
+            onSettingsButtonPressed = { navController.navigate("settings") },
             onFeedbackButtonPressed = { },
             onConnectToDeviceButtonPressed = { },
             onTermsAndConditionsPressed = { },

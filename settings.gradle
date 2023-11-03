@@ -22,4 +22,4 @@ include ':modules:feature:home'
 include ':modules:feature:eshare'
 include ':modules:feature:btconnection'
 include ':modules:feature:wificonnection'
-
+include ':modules:feature:settings'

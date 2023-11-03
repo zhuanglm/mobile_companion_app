@@ -87,4 +87,22 @@
     <string name="still_unable_to_connect_button" translatable="true">Still unable to connect?</string>
 
     <string name="eshare_loading_text" translatable="true">Connecting to eSight</string>
+
+    <!-- region Settings -->
+    <string name="label_settings">@string/settings</string>
+
+    <string name="label_settings_my_esight">My eSight</string>
+    <string name="label_settings_btn_create_wifi_code">@string/wifi_advanced_QR_finishButton</string>
+    <string name="label_settings_btn_disconnect_esight">Disconnect eSight</string>
+
+    <string name="label_settings_help">Help</string>
+    <string name="label_settings_btn_tutorials">Tutorials</string>
+    <string name="label_settings_btn_feedback">@string/feedback</string>
+
+    <string name="label_settings_about">About eSight</string>
+    <string name="label_settings_btn_visit_website">Visit website</string>
+    <string name="label_settings_btn_privacy_policy">Privacy policy</string>
+
+    <string name="label_settings_version_format">Version %1$s</string>
+    <!-- endregion -->
 </resources>

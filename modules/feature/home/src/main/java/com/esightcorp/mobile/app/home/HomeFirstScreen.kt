@@ -1,12 +1,12 @@
 package com.esightcorp.mobile.app.home
 
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,10 +21,8 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
 import com.esightcorp.mobile.app.ui.components.DeviceCard
-import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
-import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 
@@ -51,8 +49,8 @@ internal fun BaseHomeScreen(
     homeUiState: HomeUiState,
     navController: NavController,
     device: String = "0123456",
-    modifier: Modifier = Modifier, 
-    onSettingsButtonInvoked: () -> Unit = { Log.e(TAG, "BaseHomeScreen: OnSettingsButtonInvoked", ) }
+    modifier: Modifier = Modifier,
+    onSettingsButtonInvoked: () -> Unit = { navController.navigate("settings") }
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
         LaunchedEffect(Unit) {
@@ -63,8 +61,7 @@ internal fun BaseHomeScreen(
             vm.navigateToBluetoothDisabled(navController)
         }
     } else {
-        HomeBaseScreen(
-            modifier = modifier,
+        HomeBaseScreen(modifier = modifier,
             showBackButton = false,
             showSettingsButton = true,
             onBackButtonInvoked = { /*Unused*/ },
@@ -75,15 +72,10 @@ internal fun BaseHomeScreen(
                 }
             }) {
             HomeScreenBody(
-                modifier = modifier,
-                device = device,
-                navController = navController,
-                vm = vm
+                modifier = modifier, device = device, navController = navController, vm = vm
             )
         }
     }
-
-   
 }
 
 @Composable
@@ -101,18 +93,18 @@ private fun HomeScreenBody(
             modifier = modifier.constrainAs(personalGreeting) {
                 top.linkTo(parent.top, margin = 32.dp)
                 start.linkTo(parent.start)
-            }, connected = true
+            },
+            connected = true,
         )
         DeviceCard(
-            modifier = modifier
-                .constrainAs(deviceCard) {
-                    top.linkTo(personalGreeting.bottom, margin = 25.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+            modifier = modifier.constrainAs(deviceCard) {
+                top.linkTo(personalGreeting.bottom, margin = 25.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
             onClick = { Unit },
             deviceModel = device.substringBeforeLast('-'),
-            serialNumber = device.substringAfterLast('-')
+            serialNumber = device.substringAfterLast('-'),
         )
 
         SquareTileCardLayout(
@@ -123,9 +115,9 @@ private fun HomeScreenBody(
                 bottom.linkTo(parent.bottom)
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
-            }, navController = navController, vm = vm
+            },
+            navController = navController, vm = vm,
         )
-
     }
 }
 
@@ -150,19 +142,15 @@ fun SquareTileCardLayout(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(25.dp)
+        horizontalArrangement = Arrangement.spacedBy(25.dp),
     ) {
         itemsIndexed(cards) { _, card ->
             IconAndTextSquareButton(
                 text = card.text,
                 painter = painterResource(id = card.iconResId),
                 onClick = card.onClick,
-                modifier = modifier.padding(0.dp, 25.dp, 0.dp, 0.dp)
+                modifier = modifier.padding(0.dp, 25.dp, 0.dp, 0.dp),
             )
         }
     }
 }
-
-
-
-

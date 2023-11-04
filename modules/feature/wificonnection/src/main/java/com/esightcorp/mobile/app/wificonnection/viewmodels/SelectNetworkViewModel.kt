@@ -21,15 +21,15 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectNetworkViewModel @Inject constructor(
     application: Application,
-  val  wifiRepository: WifiConnectionRepository
-): AndroidViewModel(application) {
+    private val wifiRepository: WifiConnectionRepository
+) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(SelectNetworkUiState())
     val uiState: StateFlow<SelectNetworkUiState> = _uiState.asStateFlow()
-    val TAG = "SelectNetworkViewModel"
-    val scanListener = object : WifiNetworkScanListener{
+    private val scanListener = object : WifiNetworkScanListener {
         override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.e(TAG, "onBluetoothStatusUpdate: ", )
+            Log.e(_tag, "onBluetoothStatusUpdate: ")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
@@ -38,14 +38,13 @@ class SelectNetworkViewModel @Inject constructor(
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             list.forEach {
-                Log.d("SelectNetworkViewModel", "onNetworkListUpdated: ${it.SSID}")
-
+                Log.d(_tag, "onNetworkListUpdated: ${it.SSID}")
             }
             updateNetworkList(list)
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
-            Log.i(TAG, "onScanStatusUpdated: ")
+            Log.i(_tag, "onScanStatusUpdated: ")
         }
     }
 
@@ -54,34 +53,34 @@ class SelectNetworkViewModel @Inject constructor(
         wifiRepository.getCachedWifiList()
     }
 
-    fun updateNetworkList(list: MutableList<ScanResult>){
-        _uiState.update {state ->
+    fun updateNetworkList(list: MutableList<ScanResult>) {
+        _uiState.update { state ->
             state.copy(networkList = list)
         }
     }
 
-    private fun updateWifiEnabledState(enabled: Boolean){
+    private fun updateWifiEnabledState(enabled: Boolean) {
         _uiState.update { state -> state.copy(isWifiEnabled = enabled) }
 
     }
 
-    fun selectNetwork(network:ScanResult){
+    fun selectNetwork(network: ScanResult) {
         wifiRepository.setSelectedNetwork(network)
     }
 
-    fun navigateToPasswordScreen(navController: NavController){
+    fun navigateToPasswordScreen(navController: NavController) {
         navController.navigate(WifiConnectionScreens.EnterPasswordRoute.route)
     }
 
-    fun onBackButtonClicked(navController: NavController){
-        navController.popBackStack("home_first", false)
+    fun onBackButtonClicked(navController: NavController) {
+        navController.popBackStack()
     }
 
-    fun navigateToNoNetworksFoundScreen(navController: NavController){
+    fun navigateToNoNetworksFoundScreen(navController: NavController) {
         navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route)
     }
 
-    fun onAdvancedButtonClicked(navController: NavController){
+    fun onAdvancedButtonClicked(navController: NavController) {
         navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
     }
 }

@@ -9,9 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
@@ -53,6 +51,7 @@ internal fun SearchingForNetworksScreen(
     when(uiState.scanningStatus){
         ScanningStatus.Failed -> {
             Log.e("SearchingForNetworksScreen", "SearchingForNetworksScreen: SCAN STATUS FAILED")
+            //TODO: implement this!
         }
         ScanningStatus.Success -> {
             Log.d("TAG", "SearchingForNetworksScreen: SUCCESS")

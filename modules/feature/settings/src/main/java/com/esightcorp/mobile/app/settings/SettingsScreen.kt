@@ -10,11 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -57,18 +58,20 @@ internal fun SettingsScreenBody(
     Column {
         Header1Text(stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings), modifier)
 
-        ItemSpacer(20)
+        val spacer = dimensionResource(R.dimen.settings_section_spacer)
+
+        ItemSpacer(spacer)
         SettingsMyESight(modifier, navController, vwModel)
 
-        ItemSpacer(20)
+        ItemSpacer(spacer)
         SettingsHelp(modifier, navController)
 
-        ItemSpacer(20)
+        ItemSpacer(spacer)
         SettingsAbout(modifier, navController)
 
         val uiState = vwModel?.settingsUiState?.collectAsState()?.value
         uiState?.appVersion?.let {
-            ItemSpacer(20)
+            ItemSpacer(spacer)
             SettingsVersion(modifier, it)
         }
     }
@@ -82,7 +85,7 @@ internal fun SettingsMyESight(
 ) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_my_esight),
-        modifier.subtitlePadding(),
+        modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
 
@@ -112,7 +115,7 @@ internal fun SettingsHelp(
 ) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_help),
-        modifier.subtitlePadding(),
+        modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
 
@@ -139,7 +142,7 @@ internal fun SettingsAbout(
 ) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_about),
-        modifier.subtitlePadding(),
+        modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
 
@@ -172,8 +175,7 @@ internal fun SettingsVersion(modifier: Modifier = Modifier, version: String) =
     )
 
 @Composable
-internal fun ItemSpacer(space: Int = 10) = Spacer(modifier = Modifier.height(space.dp))
-
-private fun Modifier.subtitlePadding() = padding(bottom = 15.dp, top = 15.dp)
+internal fun ItemSpacer(space: Dp = dimensionResource(R.dimen.settings_item_spacer)) =
+    Spacer(modifier = Modifier.height(space))
 
 //endregion

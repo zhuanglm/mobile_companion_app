@@ -50,7 +50,7 @@ internal fun BaseHomeScreen(
     navController: NavController,
     device: String = "0123456",
     modifier: Modifier = Modifier,
-    onSettingsButtonInvoked: () -> Unit = { navController.navigate("settings") }
+    onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) }
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
         LaunchedEffect(Unit) {

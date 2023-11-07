@@ -87,4 +87,5 @@ class HomeViewModel @Inject constructor(
         navController.navigate("eshare")
     }
 
+    fun navigateToSettings(navController: NavController) = navController.navigate("settings")
 }

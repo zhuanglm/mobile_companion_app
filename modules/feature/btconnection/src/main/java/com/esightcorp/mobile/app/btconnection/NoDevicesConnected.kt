@@ -2,10 +2,7 @@ package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +43,7 @@ fun NoDeviceConnectedRoute(
         // If Bluetooth is enabled and there is no device connected, show the no device connected screen
         Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
         NoDeviceConnectedScreen(
-            onSettingsButtonPressed = { },
+            onSettingsButtonPressed = { vm.navigateToSettings(navController) },
             onFeedbackButtonPressed = { },
             onConnectToDeviceButtonPressed = { },
             onTermsAndConditionsPressed = { },
@@ -118,7 +115,7 @@ private fun NoDevicesBody(
     navController: NavController
 ) {
     ConstraintLayout(modifier = modifier) {
-        val (greeting, deviceButton, spacer,terms) = createRefs()
+        val (greeting, deviceButton, spacer, terms) = createRefs()
 
         // Set up greeting message
         PersonalGreeting(

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="settings_subtitle_padding">15dp</dimen>
+    <dimen name="settings_section_spacer">20dp</dimen>
+    <dimen name="settings_item_spacer">10dp</dimen>
+</resources>

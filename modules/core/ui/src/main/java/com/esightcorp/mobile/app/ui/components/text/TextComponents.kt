@@ -69,7 +69,8 @@ fun BodyText(
 fun FineText(
     text: String,
     modifier: Modifier,
-    color: Color = MaterialTheme.colors.onPrimary
+    color: Color = MaterialTheme.colors.onPrimary,
+    textAlign: TextAlign? = null,
 ){
     Text(
         text = text,
@@ -77,7 +78,8 @@ fun FineText(
         color = color,
         fontFamily = FontFamily.SansSerif,
         fontSize = 20.sp,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        textAlign = textAlign,
     )
 }
 

@@ -6,6 +6,7 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
@@ -46,6 +47,7 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
     }
 
+    fun navigateToSettings(nav: NavController) = nav.navigate("settings")
 
     /**
      * Interface to receive callbacks from the bluetooth repository

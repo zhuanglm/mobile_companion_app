@@ -1,17 +1,18 @@
 plugins {
     id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 28
-        targetSdk 33
+        targetSdk 32
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -26,17 +27,15 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-
     }
-
     buildFeatures {
+        viewBinding true
         compose true
     }
-
     composeOptions {
-        kotlinCompilerExtensionVersion "1.3.0"
+        kotlinCompilerExtensionVersion '1.3.0'
     }
-    namespace 'com.esightcorp.mobile.app.ui'
+    namespace 'com.esightcorp.mobile.app.settings'
 }
 
 dependencies {
@@ -49,42 +48,39 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_ui_ktx"
     implementation "androidx.compose.ui:ui:$compose"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
-
-// to make preview behave properly
-    debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0"
+    testImplementation "junit:junit:$junit_testimpl"
+    androidTestImplementation "androidx.test.ext:junit:$junit_android"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
 
 // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"
 // Compose Material Design
     implementation "androidx.compose.material:material:$compose_material"
-    implementation "androidx.compose.material3:material3:1.0.1"
-    implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
-
 // Animations
     implementation "androidx.compose.animation:animation:$animations"
 // Tooling support (Previews, etc.)
     implementation "androidx.compose.ui:ui-tooling:$ui_tooling"
 // Integration with ViewModels
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
+
+    //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.27.0"
 // UI Tests
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
     debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+    //hilt dependencies
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
+    implementation 'com.google.accompanist:accompanist-pager:0.20.2'
 
-    implementation "androidx.compose.runtime:runtime:$compose"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
-    implementation "com.google.accompanist:accompanist-drawablepainter:0.27.0"
-    implementation 'com.google.zxing:core:3.4.1'
 
+    implementation("androidx.navigation:navigation-compose:$nav")
 
-    //Testing CPIII
-    testImplementation 'androidx.ui:ui-test:1.0.0-alpha07'
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.7.10"
-    testImplementation "org.mockito:mockito-core:2.15.0"
-    implementation 'androidx.test.ext:junit-ktx:1.1.5'
-    testImplementation "junit:junit:$junit_testimpl"
-    androidTestImplementation "androidx.test.ext:junit:$junit_android"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
+    implementation(project(":modules:feature:btconnection"))
+//    implementation(project(":modules:core:bluetooth"))
+    implementation(project(":modules:core:utils"))
+    implementation(project(":modules:core:ui"))
 }

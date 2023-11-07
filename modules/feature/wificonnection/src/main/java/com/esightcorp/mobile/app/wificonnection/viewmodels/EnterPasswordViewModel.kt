@@ -18,47 +18,54 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-
 @HiltViewModel
 class EnterPasswordViewModel @Inject constructor(
-    application: Application, val repository: WifiConnectionRepository
+    application: Application,
+    private val repository: WifiConnectionRepository,
 ) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiCredentialsUiState())
     val uiState: StateFlow<WifiCredentialsUiState> = _uiState.asStateFlow()
-    val TAG = "EnterPasswordViewModel"
 
-    val scanListener = object : WifiNetworkScanListener {
+    private val scanListener = object : WifiNetworkScanListener {
         override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.i(TAG, "onBluetoothStatusUpdate: ")
+            Log.i(_tag, "onBluetoothStatusUpdate: ")
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            Log.i(TAG, "onNetworkListUpdated: ")
+            Log.i(_tag, "onNetworkListUpdated: ")
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
-            Log.i(TAG, "onScanStatusUpdated: ")
+            Log.i(_tag, "onScanStatusUpdated: ")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
-            Log.i(TAG, "onWifiStatusUpdate: ")
+            Log.i(_tag, "onWifiStatusUpdate: ")
         }
     }
-
 
     init {
         repository.registerListener(scanListener)
         updateWifiFlow(repository.getCurrentWifiFlow())
     }
 
+    companion object {
+        private const val MIN_PASSWORD_LENGTH = 8
+    }
+
     fun updatePassword(password: String) {
         Log.d("WifiCredentialsViewModel", "updatePassword: $password")
         _uiState.update { state ->
-            state.copy(password = password)
+            state.copy(
+                password = password,
+                isPasswordValid = password.length >= MIN_PASSWORD_LENGTH,
+            )
         }
     }
-    fun updateWifiFlow(flow: WifiCache.WifiFlow){
+
+    private fun updateWifiFlow(flow: WifiCache.WifiFlow) {
         _uiState.update { state ->
             state.copy(wifiFlow = flow)
         }
@@ -69,13 +76,12 @@ class EnterPasswordViewModel @Inject constructor(
             state.copy(passwordSubmitted = true)
         }
         repository.setWifiPassword(_uiState.value.password)
-        if(_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow){
+        if (_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow) {
             sendWifiCredsViaBluetooth()
             navigateToConnectingScreen(navController)
-        }else if(_uiState.value.wifiFlow == WifiCache.WifiFlow.QrFlow){
+        } else if (_uiState.value.wifiFlow == WifiCache.WifiFlow.QrFlow) {
             navigateToQrScreen(navController)
         }
-        
     }
 
     fun onAdvancedButtonPressed(navController: NavController) {
@@ -86,20 +92,18 @@ class EnterPasswordViewModel @Inject constructor(
         navController.popBackStack()
     }
 
-    fun sendWifiCredsViaBluetooth() {
+    private fun sendWifiCredsViaBluetooth() {
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
         repository.sendWifiCreds(_uiState.value.password, _uiState.value.wifiType)
     }
 
     private fun navigateToConnectingScreen(navController: NavController) {
-        Log.i(TAG, "navigateToConnectingScreen: Bluetooth route selected")
+        Log.i(_tag, "navigateToConnectingScreen: Bluetooth route selected")
         navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
     }
-    
-    private fun navigateToQrScreen(navController: NavController){
-        Log.i(TAG, "navigateToQrScreen: QR Route selected")
+
+    private fun navigateToQrScreen(navController: NavController) {
+        Log.i(_tag, "navigateToQrScreen: QR Route selected")
         navController.navigate(WifiConnectionScreens.WifiQRCodeRoute.route)
     }
-
-
 }

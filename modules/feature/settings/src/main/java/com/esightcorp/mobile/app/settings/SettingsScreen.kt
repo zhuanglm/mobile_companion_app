@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -25,8 +26,6 @@ import com.esightcorp.mobile.app.ui.components.FineText
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
-
-private const val TAG = "SettingsScreen"
 
 @Composable
 fun SettingsScreen(navController: NavController, vwModel: SettingsViewModel = hiltViewModel()) =
@@ -52,8 +51,8 @@ internal fun SettingsScreenBody(
     showBackButton = true,
     showSettingsButton = false,
     onBackButtonInvoked = { navController.popBackStack() },
-    onSettingsButtonInvoked = { /*TODO*/ },
-    bottomButton = { /*TODO*/ },
+    onSettingsButtonInvoked = { },
+    bottomButton = { },
 ) {
     Column {
         Header1Text(stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings), modifier)
@@ -64,10 +63,10 @@ internal fun SettingsScreenBody(
         SettingsMyESight(modifier, navController, vwModel)
 
         ItemSpacer(spacer)
-        SettingsHelp(modifier, navController)
+        SettingsHelp(modifier)
 
         ItemSpacer(spacer)
-        SettingsAbout(modifier, navController)
+        SettingsAbout(modifier)
 
         val uiState = vwModel?.settingsUiState?.collectAsState()?.value
         uiState?.appVersion?.let {
@@ -90,7 +89,7 @@ internal fun SettingsMyESight(
     )
 
     IconAndTextRectangularButton(
-        onClick = { /*TODO*/ },
+        onClick = { navController.navigate("searching_for_networks/qr") },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24),
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_create_wifi_code)
@@ -109,18 +108,17 @@ internal fun SettingsMyESight(
 }
 
 @Composable
-internal fun SettingsHelp(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-) = Column {
+internal fun SettingsHelp(modifier: Modifier = Modifier) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_help),
         modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
 
+    val uriHandler = LocalUriHandler.current
+
     IconAndTextRectangularButton(
-        onClick = { /*TODO*/ },
+        onClick = { uriHandler.openUri(URL_ESIGHT_HOME) },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_question_mark_24),
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_tutorials)
@@ -128,7 +126,7 @@ internal fun SettingsHelp(
 
     ItemSpacer()
     IconAndTextRectangularButton(
-        onClick = { /*TODO*/ },
+        onClick = { uriHandler.openUri(URL_ESIGHT_HOME) },
         modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_chat_bubble_outline_24),
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_feedback)
@@ -136,18 +134,17 @@ internal fun SettingsHelp(
 }
 
 @Composable
-internal fun SettingsAbout(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-) = Column {
+internal fun SettingsAbout(modifier: Modifier = Modifier) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_about),
         modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
 
+    val uriHandler = LocalUriHandler.current
+
     IconAndTextRectangularButton(
-        onClick = { /*TODO*/ },
+        onClick = { uriHandler.openUri(URL_ESIGHT_HOME) },
         modifier = modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_website_24,
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_visit_website)
@@ -155,7 +152,7 @@ internal fun SettingsAbout(
 
     ItemSpacer()
     IconAndTextRectangularButton(
-        onClick = { /*TODO*/ },
+        onClick = { uriHandler.openUri(URL_ESIGHT_PRIVACY_POLICY) },
         modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_privacy_24,
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_privacy_policy)
@@ -163,19 +160,20 @@ internal fun SettingsAbout(
 }
 
 @Composable
-internal fun SettingsVersion(modifier: Modifier = Modifier, version: String) =
-    FineText(
-        text = stringResource(
-            com.esightcorp.mobile.app.ui.R.string.label_settings_version_format,
-            version
-        ),
-        modifier = modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colors.onSurface
-    )
+internal fun SettingsVersion(modifier: Modifier = Modifier, version: String) = FineText(
+    text = stringResource(
+        com.esightcorp.mobile.app.ui.R.string.label_settings_version_format, version
+    ),
+    modifier = modifier.fillMaxWidth(),
+    textAlign = TextAlign.Center,
+    color = MaterialTheme.colors.onSurface
+)
 
 @Composable
 internal fun ItemSpacer(space: Dp = dimensionResource(R.dimen.settings_item_spacer)) =
     Spacer(modifier = Modifier.height(space))
+
+private const val URL_ESIGHT_HOME = "https://www.esighteyewear.com/"
+private const val URL_ESIGHT_PRIVACY_POLICY = "https://www.esighteyewear.com/privacy-policy/"
 
 //endregion

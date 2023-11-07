@@ -20,30 +20,31 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiSearchingViewModel @Inject constructor(
     application: Application,
-   val repository: WifiConnectionRepository
-): AndroidViewModel(application) {
-    private val TAG = "WifiSearchingViewModel"
+    private val repository: WifiConnectionRepository
+) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
+
     private var _uiState = MutableStateFlow(WifiSearchingUiState())
     val uiState: StateFlow<WifiSearchingUiState> = _uiState.asStateFlow()
 
-    val repoListener = object : WifiNetworkScanListener{
+    private val repoListener = object : WifiNetworkScanListener {
         override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.i(TAG, "onBluetoothStatusUpdate: ")
+            Log.i(_tag, "onBluetoothStatusUpdate: ")
             updateBtEnabledState(status)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            Log.d(TAG, "onNetworkListUpdated: " )
+            Log.d(_tag, "onNetworkListUpdated: ")
             updateScanningStatus(ScanningStatus.Success)
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
-            Log.d(TAG, "onScanStatusUpdated: $status")
+            Log.d(_tag, "onScanStatusUpdated: $status")
             updateScanningStatus(status)
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
-            Log.d(TAG, "onWifiStatusUpdate: " + status)
+            Log.d(_tag, "onWifiStatusUpdate: $status")
             updateWifiEnabledState(status)
         }
     }
@@ -53,31 +54,33 @@ class WifiSearchingViewModel @Inject constructor(
         repository.startWifiScan()
     }
 
-    private fun updateScanningStatus(scanningStatus: ScanningStatus){
+    private fun updateScanningStatus(scanningStatus: ScanningStatus) {
         _uiState.update { state ->
             state.copy(scanningStatus = scanningStatus)
         }
     }
 
-    private fun updateWifiEnabledState(enabled: Boolean){
+    private fun updateWifiEnabledState(enabled: Boolean) {
         _uiState.update { state ->
             state.copy(isWifiEnabled = enabled)
         }
     }
 
-    private fun updateBtEnabledState(enabled: Boolean){
+    private fun updateBtEnabledState(enabled: Boolean) {
         _uiState.update { state ->
             state.copy(isBtEnabled = enabled)
         }
     }
 
-    fun navigateToWifiNetworksScreen(navController: NavController){
-        Log.d(TAG, "navigateToWifiNetworksScreen: ")
-        navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route)
+    fun navigateToWifiNetworksScreen(navController: NavController) {
+        navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route) {
+            popUpTo(WifiConnectionScreens.IncomingNavigationRoute.route) {
+                inclusive = true
+            }
+        }
     }
 
-    fun setWifiFlow(flow: String?){
+    fun setWifiFlow(flow: String?) {
         repository.setWifiFlow(flow!!)
     }
-
 }

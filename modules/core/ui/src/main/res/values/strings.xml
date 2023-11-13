@@ -35,7 +35,7 @@
     <string name="wifi_no_networks_2" translatable="true">Turn your router off and then back on again</string>
     <string name="wifi_no_networks_button" translatable="true">Try again</string>
     <string name="wifi_select_network_header" translatable="true">Select a Wi-Fi network</string>
-    <string name="wifi_unable_to_connect_header"  translatable="true">Unable to Connect</string>
+    <string name="wifi_unable_to_connect_header" translatable="true">Unable to Connect</string>
     <string name="wifi_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
     <string name="wifi_unable_to_connect_1" translatable="true">Make sure your Wi-Fi password is correct.</string>
     <string name="wifi_unable_to_connect_2" translatable="true">Make sure your eSight is within range.</string>
@@ -104,5 +104,9 @@
     <string name="label_settings_btn_privacy_policy">Privacy policy</string>
 
     <string name="label_settings_version_format">Version %1$s</string>
+
+    <string name="settings_disconnect_esight_confirm">Are you sure you want to disconnect?</string>
+    <string name="label_btn_disconnect">Disconnect</string>
+    <string name="label_settings_disconnecting_esight">Disconnecting to eSight</string>
     <!-- endregion -->
 </resources>

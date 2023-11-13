@@ -1,15 +1,15 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
-
 import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
+import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,12 +18,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-
 @HiltViewModel
 class NoDevicesConnectedViewModel @Inject constructor(
     application: Application,
-    private val btConnectionRepository: BtConnectionRepository
+    btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
 
     /**
      * Object which is used by the compose UI to track UI State
@@ -47,7 +47,7 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
     }
 
-    fun navigateToSettings(nav: NavController) = nav.navigate("settings")
+    fun navigateToSettings(nav: NavController) = nav.navigate(SettingsNavigation.IncomingRoute.path)
 
     /**
      * Interface to receive callbacks from the bluetooth repository
@@ -67,10 +67,9 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
-            Log.d("TAG", "onBtStateUpdate: " + enabled)
+            Log.d(_tag, "onBtStateUpdate: $enabled")
             updateBtEnabledState(enabled)
         }
-
     }
 
 //    private fun checkBtEnabledStatus() {
@@ -82,12 +81,9 @@ class NoDevicesConnectedViewModel @Inject constructor(
     /**
      * First constructor is init{}
      */
-
     init {
-        Log.d("TAG", ": INIT NoDevicesConnectedViewModel")
+        Log.d(_tag, ": INIT NoDevicesConnectedViewModel")
         btConnectionRepository.registerListener(btRepositoryListener)
         btConnectionRepository.setupBtModelListener()
     }
-
-
 }

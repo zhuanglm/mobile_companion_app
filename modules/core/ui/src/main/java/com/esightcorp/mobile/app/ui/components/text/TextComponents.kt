@@ -16,17 +16,19 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Header1Text(
-    text: String, 
+    text: String,
     modifier: Modifier,
-    color: Color = MaterialTheme.colors.onSurface
-){
+    color: Color = MaterialTheme.colors.onSurface,
+    textAlign: TextAlign? = TextAlign.Start
+) {
     Text(
         text = text,
         modifier = modifier,
         fontWeight = FontWeight.ExtraBold,
         fontSize = 30.sp,
         fontFamily = FontFamily.SansSerif,
-        color = color
+        color = color,
+        textAlign = textAlign
     )
 }
 
@@ -37,7 +39,7 @@ fun Subheader(
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onSurface,
     textAlign: TextAlign? = TextAlign.Start
-){
+) {
     Log.d("TAG", "Subheader: " + color.toString())
     Text(
         text = text,
@@ -49,12 +51,13 @@ fun Subheader(
         color = color
     )
 }
+
 @Composable
 fun BodyText(
-    text: String, 
-    modifier: Modifier, 
+    text: String,
+    modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary
-){
+) {
     Text(
         text = text,
         modifier = modifier,
@@ -71,7 +74,7 @@ fun FineText(
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary,
     textAlign: TextAlign? = null,
-){
+) {
     Text(
         text = text,
         modifier = modifier,
@@ -89,7 +92,7 @@ fun ClickableBodyText(
     modifier: Modifier,
     onClick: (Int) -> Unit,
     color: Color = MaterialTheme.colors.onPrimary
-){
+) {
     ClickableText(
         text = AnnotatedString(text),
         modifier = modifier,
@@ -106,8 +109,9 @@ fun ClickableBodyText(
 fun ButtonText(
     text: String,
     modifier: Modifier,
-    color: Color = MaterialTheme.colors.onPrimary
-){
+    color: Color = MaterialTheme.colors.onPrimary,
+    textAlign: TextAlign? = null,
+) {
     Text(
         text = text,
         color = color,
@@ -115,8 +119,8 @@ fun ButtonText(
         fontWeight = FontWeight.Bold,
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,
-        maxLines = 1
-
+        maxLines = 1,
+        textAlign = textAlign,
     )
 }
 
@@ -125,7 +129,7 @@ fun WrappableButtonText(
     text: String,
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary
-){
+) {
     Text(
         text = text,
         color = color,
@@ -142,7 +146,7 @@ fun Button2Text(
     modifier: Modifier,
     text: String = "Text goes here",
     color: Color = MaterialTheme.colors.onPrimary
-){
+) {
     Text(
         text = text,
         modifier = modifier,
@@ -160,7 +164,7 @@ fun WrappableButton2Text(
     modifier: Modifier = Modifier,
     text: String = "Text goes here",
     color: Color = MaterialTheme.colors.onPrimary
-){
+) {
     Text(
         text = text,
         modifier = modifier,

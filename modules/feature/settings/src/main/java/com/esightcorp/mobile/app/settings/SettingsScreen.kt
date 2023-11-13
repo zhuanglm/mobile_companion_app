@@ -99,7 +99,7 @@ internal fun SettingsMyESight(
     if (settingState?.isConnected == true) {
         ItemSpacer()
         IconAndTextRectangularButton(
-            onClick = { /*TODO*/ },
+            onClick = { vwModel.navigateToDisconnect(navController) },
             modifier,
             iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_disconnected_24,
             text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_disconnect_esight),

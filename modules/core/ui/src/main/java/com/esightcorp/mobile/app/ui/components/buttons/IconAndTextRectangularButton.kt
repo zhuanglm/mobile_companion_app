@@ -15,8 +15,10 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -67,6 +69,7 @@ fun TextRectangularButton(
     modifier: Modifier,
     text: String,
     enabled: Boolean = true,
+    textAlign: TextAlign? = null,
 ) {
     ElevatedButton(
         onClick = onClick,
@@ -83,7 +86,9 @@ fun TextRectangularButton(
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         ButtonText(
-            text = text, modifier = modifier.weight(1f)
+            text = text,
+            modifier = modifier.weight(1f),
+            textAlign = textAlign,
         )
     }
 }
@@ -93,6 +98,8 @@ fun OutlinedTextRectangularButton(
     onClick: () -> Unit,
     modifier: Modifier,
     text: String,
+    textAlign: TextAlign? = null,
+    textColor: Color? = null,
 ) {
     ElevatedButton(
         onClick = onClick,
@@ -101,15 +108,24 @@ fun OutlinedTextRectangularButton(
         colors = ButtonDefaults.elevatedButtonColors(
             containerColor = MaterialTheme.colors.surface,
             contentColor = MaterialTheme.colors.onSurface,
-            ),
+        ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(4.dp, MaterialTheme.colors.primary),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
-        ButtonText(
-            text = text, modifier = modifier.weight(1f)
-        )
+        when (textColor) {
+            null -> ButtonText(
+                text, modifier.weight(1f),
+                textAlign = textAlign,
+            )
+
+            else -> ButtonText(
+                text, modifier.weight(1f),
+                textAlign = textAlign,
+                color = textColor,
+            )
+        }
     }
 }
 

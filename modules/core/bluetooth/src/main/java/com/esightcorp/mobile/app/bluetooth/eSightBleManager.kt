@@ -3,14 +3,10 @@ package com.esightcorp.mobile.app.bluetooth
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
-import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.util.Log
-import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.juul.kable.State
 
 private const val TAG = "eSightBleManager"
 object eSightBleManager {

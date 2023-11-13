@@ -60,6 +60,9 @@ class DeviceDisconnectViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             delay(DISCONNECTING_DELAY)
+
+            if (!btConnRepo.disconnectToDevice())
+                _disconnectUiState.update { it.copy(disconnectState = null) }
         }
     }
 

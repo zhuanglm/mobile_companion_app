@@ -9,6 +9,7 @@ import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepositor
 import com.esightcorp.mobile.app.settings.repositories.SettingsRepository
 import com.esightcorp.mobile.app.settings.state.SettingsUiState
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
+import com.esightcorp.mobile.app.ui.navigation.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,8 +49,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun navigateToDisconnect(navController: NavController) = navController.navigate(
-        SettingsNavigation.DisconnectRoute.path
-    )
+    fun navigateToDisconnect(navController: NavController) =
+        navController.navigate(SettingsNavigation.DisconnectRoute)
 
 }

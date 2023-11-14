@@ -10,6 +10,7 @@ import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRe
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
+import com.esightcorp.mobile.app.ui.navigation.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,7 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
     }
 
-    fun navigateToSettings(nav: NavController) = nav.navigate(SettingsNavigation.IncomingRoute.path)
+    fun navigateToSettings(nav: NavController) = nav.navigate(SettingsNavigation.IncomingRoute)
 
     /**
      * Interface to receive callbacks from the bluetooth repository

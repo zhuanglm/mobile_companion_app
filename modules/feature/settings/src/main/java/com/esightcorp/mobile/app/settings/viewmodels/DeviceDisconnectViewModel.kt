@@ -11,6 +11,7 @@ import com.esightcorp.mobile.app.settings.state.DisconnectUiState
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
+import com.esightcorp.mobile.app.ui.navigation.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -68,13 +69,10 @@ class DeviceDisconnectViewModel @Inject constructor(
 
     fun navigateBack(navController: NavController) = navController.popBackStack()
 
-    fun navigateToDisconnectedScreen(navController: NavController) {
-        // Pop all Settings stack first
-        navController.popBackStack(route = SettingsNavigation.IncomingRoute.path, true)
-
-        // Then navigate to the disconnected screen
-        navController.navigate(BtConnectionNavigation.IncomingRoute.path)
-    }
+    fun navigateToDisconnectedScreen(navController: NavController) = navController.navigate(
+        BtConnectionNavigation.IncomingRoute,
+        SettingsNavigation.IncomingRoute
+    )
 
     companion object {
         /**

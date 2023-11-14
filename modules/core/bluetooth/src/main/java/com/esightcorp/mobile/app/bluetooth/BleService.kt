@@ -46,18 +46,22 @@ class BleService : Service() {
     //gatt callback
     @SuppressLint("MissingPermission")
     private val bluetoothGattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            when (newState) {
+                BluetoothProfile.STATE_CONNECTED -> {
+                    Log.d(
+                        _tag, "onConnectionStateChange - STATE_CONNECTED")
+                    bluetoothGatt = gatt
+                    connectionState = STATE_CONNECTED
+                    gatt.requestMtu(REQUEST_MTU_SIZE)
+                }
 
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.d(_tag, "onConnectionStateChange: State connected")
-                bluetoothGatt = gatt
-                connectionState = STATE_CONNECTED
-                gatt?.requestMtu(REQUEST_MTU_SIZE)
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.d(_tag, "onConnectionStateChange: State disconnected")
-                connectionState = STATE_DISCONNECTED
-                bluetoothGatt = null
-                broadcastUpdate(ACTION_GATT_DISCONNECTED)
+                BluetoothProfile.STATE_DISCONNECTED -> {
+                    Log.d(_tag, "onConnectionStateChange - STATE_DISCONNECTED")
+                    close()
+                    connectionState = STATE_DISCONNECTED
+                    broadcastUpdate(ACTION_GATT_DISCONNECTED)
+                }
             }
         }
 
@@ -298,7 +302,7 @@ class BleService : Service() {
             try {
                 val device = adapter.getRemoteDevice(address)
                 Log.d(_tag, "connect: $address")
-                bluetoothGatt = device.connectGatt(baseContext, false, bluetoothGattCallback)
+                device.connectGatt(baseContext, false, bluetoothGattCallback)
             } catch (exception: IllegalArgumentException) {
                 Log.w(_tag, "connect: Device not found with provided address.")
                 return false

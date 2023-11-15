@@ -47,7 +47,7 @@ fun NoDeviceConnectedRoute(
         Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
         NoDeviceConnectedScreen(
             onSettingsButtonPressed = { },
-            onFeedbackButtonPressed = { },
+            onFeedbackButtonPressed = vm::showFeedbackPage,
             onConnectToDeviceButtonPressed = { },
             onTermsAndConditionsPressed = { },
             onPrivacyPolicyPressed = { },

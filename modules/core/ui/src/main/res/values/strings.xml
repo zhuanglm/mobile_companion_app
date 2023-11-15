@@ -87,4 +87,8 @@
     <string name="still_unable_to_connect_button" translatable="true">Still unable to connect?</string>
 
     <string name="eshare_loading_text" translatable="true">Connecting to eSight</string>
+
+    <!-- region External URL -->
+    <string name="url_esight_feedback" translatable="false">https://20vycous4b4.typeform.com/to/dP3zzlVw</string>
+    <!-- endregion -->
 </resources>

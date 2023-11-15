@@ -9,6 +9,8 @@ import androidx.lifecycle.AndroidViewModel
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
+import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoDevicesConnectedViewModel @Inject constructor(
-    application: Application,
+    private val application: Application,
     private val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
 
@@ -87,5 +89,8 @@ class NoDevicesConnectedViewModel @Inject constructor(
         btConnectionRepository.setupBtModelListener()
     }
 
+    fun showFeedbackPage() = with(application.applicationContext) {
+        openExternalUrl(getString(R.string.url_esight_feedback))
+    }
 
 }

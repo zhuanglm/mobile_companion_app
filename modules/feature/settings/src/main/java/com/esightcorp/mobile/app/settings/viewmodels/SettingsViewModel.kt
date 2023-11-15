@@ -3,10 +3,13 @@ package com.esightcorp.mobile.app.settings.viewmodels
 import android.app.Application
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.settings.repositories.SettingsRepository
 import com.esightcorp.mobile.app.settings.state.SettingsUiState
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
+import com.esightcorp.mobile.app.ui.navigation.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,4 +48,8 @@ class SettingsViewModel @Inject constructor(
             setupBtModelListener()
         }
     }
+
+    fun navigateToDisconnect(navController: NavController) =
+        navController.navigate(SettingsNavigation.DisconnectRoute)
+
 }

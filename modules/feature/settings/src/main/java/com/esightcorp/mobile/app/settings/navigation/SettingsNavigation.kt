@@ -4,13 +4,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.esightcorp.mobile.app.settings.DeviceDisconnectRoute
 import com.esightcorp.mobile.app.settings.SettingsScreen
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.*
 
 fun NavGraphBuilder.addSettingsNavigation(navController: NavController) {
-    navigation(
-        startDestination = SettingsScreens.SettingsEntranceRoute.route,
-        route = SettingsScreens.IncomingNavigatorRoute.route,
-    ) {
-        composable(SettingsScreens.SettingsEntranceRoute.route) { SettingsScreen(navController) }
+    navigation(startDestination = EntranceRoute.path, route = IncomingRoute.path) {
+        composable(EntranceRoute.path) { SettingsScreen(navController) }
+
+        composable(DisconnectRoute.path) { DeviceDisconnectRoute(navController) }
     }
 }

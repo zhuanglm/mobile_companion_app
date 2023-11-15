@@ -12,14 +12,13 @@ import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-private const val TAG = "BtConnectionRepository"
-
 class BtConnectionRepository @Inject constructor(
     @ApplicationContext context: Context
-){
+) {
+    private val _tag = this.javaClass.simpleName
+
     private val bluetoothModel: BluetoothModel
     private lateinit var bluetoothConnectionRepositoryCallback: BluetoothConnectionRepositoryCallback
-
 
     /**
      * Interface to receive callbacks from BluetoothModel
@@ -27,27 +26,27 @@ class BtConnectionRepository @Inject constructor(
     private val bluetoothModelListener = object : BluetoothModelListener {
 
         override fun listOfDevicesUpdated() {
-            Log.d(TAG, "listOfDevicesUpdated: ")
+            Log.d(_tag, "listOfDevicesUpdated: ")
             getMapOfDevices()
         }
 
         override fun onBatchScanResults(results: List<ScanResult>) {
-            Log.e(TAG, "onBatchScanResults: ")
+            Log.e(_tag, "onBatchScanResults: ")
         }
 
         override fun onScanFailed(error: Int) {
-            scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Failed)
-            Log.e(TAG, "onScanFailed: Error code - $error")
+            scanStatus(ScanningStatus.Failed)
+            Log.e(_tag, "onScanFailed: Error code - $error")
         }
 
         override fun onScanStarted() {
-            Log.i(TAG, "onScanStarted: ")
-            scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.InProgress)
+            Log.i(_tag, "onScanStarted: ")
+            scanStatus(ScanningStatus.InProgress)
         }
 
         override fun onScanFinished() {
-            Log.d(TAG, "onScanFinished: ")
-            scanStatus(com.esightcorp.mobile.app.utils.ScanningStatus.Success)
+            Log.d(_tag, "onScanFinished: ")
+            scanStatus(ScanningStatus.Success)
         }
 
         override fun onScanCancelled() {
@@ -63,7 +62,7 @@ class BtConnectionRepository @Inject constructor(
         }
 
         override fun onConnectionStateQueried(state: Boolean) {
-            Log.i(TAG, "onConnectionStateQueried: $state")
+            Log.i(_tag, "onConnectionStateQueried: $state")
         }
 
         override fun onBluetoothEnabled() {
@@ -75,9 +74,8 @@ class BtConnectionRepository @Inject constructor(
         }
 
         override fun onBluetoothStateQueried(state: Boolean) {
-            Log.i(TAG, "onBluetoothStateQueried: $state")
+            Log.i(_tag, "onBluetoothStateQueried: $state")
         }
-
     }
 
     /**
@@ -87,36 +85,33 @@ class BtConnectionRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
     }
 
-    fun checkBtEnabledStatus(){
-        if(this::bluetoothConnectionRepositoryCallback.isInitialized){
-            Log.d(TAG, "checkBtEnabledStatus: ")
+    fun checkBtEnabledStatus() {
+        if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
+            Log.d(_tag, "checkBtEnabledStatus: ")
             bluetoothConnectionRepositoryCallback.onBtStateUpdate(eSightBleManager.checkIfEnabled())
         }
     }
 
-    fun setupBtModelListener(){
+    fun setupBtModelListener() {
         eSightBleManager.setModelListener(bluetoothModelListener)
         bluetoothModel.checkForConnection()
     }
 
-
-
-
     /**
      * Triggers the BLE scan on the backend
      */
-    fun triggerBleScan(){
+    fun triggerBleScan() {
         bluetoothModel.triggerBleScan()
     }
 
     /**
      * Cancel a scan if one is running
      */
-    fun cancelBleScan(){
+    fun cancelBleScan() {
         bluetoothModel.stopScan()
     }
 
-    fun getConnectedDevice(): BluetoothDevice?{
+    fun getConnectedDevice(): BluetoothDevice? {
         return eSightBleManager.getConnectedDevice()
     }
 
@@ -124,12 +119,12 @@ class BtConnectionRepository @Inject constructor(
      * Strips out the bluetoothDevice object, and passes a map of <String, Boolean>
      */
     @SuppressLint("MissingPermission")
-    fun getMapOfDevices(){
+    fun getMapOfDevices() {
         val strippedList = mutableListOf<String>()
         for (bluetoothDevice in eSightBleManager.getBleDeviceList()) {
-            if(eSightBleManager.checkIfEnabled()){
+            if (eSightBleManager.checkIfEnabled()) {
                 strippedList.add(bluetoothDevice.name)
-            }else{
+            } else {
                 bluetoothConnectionRepositoryCallback.onBtStateUpdate(eSightBleManager.checkIfEnabled())
                 return
             }
@@ -137,12 +132,11 @@ class BtConnectionRepository @Inject constructor(
         bluetoothConnectionRepositoryCallback.deviceListReady(strippedList)
     }
 
-
     /**
      * how we communicate between repo and viewmodel
      */
-    fun registerListener(listener: BluetoothConnectionRepositoryCallback){
-        Log.d(TAG, "registerListener: ")
+    fun registerListener(listener: BluetoothConnectionRepositoryCallback) {
+        Log.d(_tag, "registerListener: ")
         this.bluetoothConnectionRepositoryCallback = listener
         this.checkBtEnabledStatus()
     }
@@ -152,41 +146,38 @@ class BtConnectionRepository @Inject constructor(
      * key  = the BluetoothDevice object you want to connect to
      */
     @SuppressLint("MissingPermission")
-    fun connectToDevice(device: String){
+    fun connectToDevice(device: String) {
         eSightBleManager.getBleDeviceList().forEach { key ->
-            if(key.name.equals(device)){
+            if (key.name.equals(device)) {
                 bluetoothModel.connectToDevice(key)
             }
         }
     }
 
+    fun disconnectToDevice(): Boolean = bluetoothModel.disconnectToDevice()
+
     /**
      * Overridden here to be able to call from within the interface
      * gets map of devices once scanning is done
      */
-    private fun scanStatus(isScanning: com.esightcorp.mobile.app.utils.ScanningStatus) {
-        if(isScanning == com.esightcorp.mobile.app.utils.ScanningStatus.Success){
+    private fun scanStatus(isScanning: ScanningStatus) {
+        if (isScanning == ScanningStatus.Success) {
             getMapOfDevices()
         }
-        if(this::bluetoothConnectionRepositoryCallback.isInitialized){
+        if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
             bluetoothConnectionRepositoryCallback.scanStatus(isScanning)
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun deviceConnected(device: BluetoothDevice, connected: Boolean){
-        Log.d(TAG, "onDeviceConnected: ${device.name}")
-        if(this::bluetoothConnectionRepositoryCallback.isInitialized){
+    private fun deviceConnected(device: BluetoothDevice, connected: Boolean) {
+        Log.d(_tag, "onDeviceConnected: ${device.name}, isConnected: $connected")
+        if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
             bluetoothConnectionRepositoryCallback.onDeviceConnected(device, connected)
         }
     }
 
-    fun resetBtDeviceList(){
+    fun resetBtDeviceList() {
         eSightBleManager.resetDeviceList()
     }
-
-
-
-
-
 }

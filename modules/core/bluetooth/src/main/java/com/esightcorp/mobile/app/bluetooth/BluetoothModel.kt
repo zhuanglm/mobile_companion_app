@@ -13,12 +13,12 @@ import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
 import java.util.*
 
-private const val TAG = "BluetoothModel"
-
 @SuppressLint("MissingPermission")
 class BluetoothModel constructor(
     val context: Context
-){
+) {
+    private val _tag = this.javaClass.simpleName
+
     private var scanning = false
     private val handler = Handler(Looper.getMainLooper())
     private val bleManager = eSightBleManager
@@ -26,51 +26,52 @@ class BluetoothModel constructor(
     /**
      * Service lifecycle callback
      */
-    private val serviceConnection: ServiceConnection = object : ServiceConnection{
+    private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
             bleManager.setupBleService((service as LocalBinder).getService())
-            bleManager.getBleService()?.let {bluetooth ->
-                if(!bluetooth.initialize()){
-                    Log.e(TAG, "onServiceConnected: Unable to initialize bluetooth" )
+            bleManager.getBleService()?.let { bluetooth ->
+                if (!bluetooth.initialize()) {
+                    Log.e(_tag, "onServiceConnected: Unable to initialize bluetooth")
                 }
                 //perform device connection
-                Log.d(TAG, "onServiceConnected: Perform device connection")
+                Log.d(_tag, "onServiceConnected: Perform device connection")
             }
         }
+
         override fun onServiceDisconnected(p0: ComponentName?) {
             bleManager.resetBleService()
             context.unregisterReceiver(gattUpdateReceiver)
         }
     }
 
-    fun shutdownReceivers(){
-        try{
+    fun shutdownReceivers() {
+        try {
             context.unregisterReceiver(gattUpdateReceiver)
             context.unregisterReceiver(bluetoothStateReceiver)
-        } catch (e: Exception){
-            Log.e(TAG, "shutdownReceivers: ${e.message}")
+        } catch (e: Exception) {
+            Log.e(_tag, "shutdownReceivers: ${e.message}")
         }
     }
 
     /**
      * receiver to capture changes to the connection state
      */
-    private val gattUpdateReceiver: BroadcastReceiver = object: BroadcastReceiver(){
+    private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            Log.i(TAG, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
-            when (intent.action){
+            Log.i(_tag, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
+            when (intent.action) {
                 BleService.ACTION_GATT_CONNECTED -> {
                     bleManager.setConnectedDevice(bleManager.getConnectedDevice()!!, true)
-                    Log.e(TAG, "onReceive: CONNECTED" )
-                    bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
-                    bleManager.getBluetoothConnectionListener()?.let {
-                        it.onDeviceConnected(bleManager.getConnectedDevice()!!)
-                    }
+                    Log.e(_tag, "onReceive: CONNECTED")
+                    bleManager.getModelListener()
+                        ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
+                    bleManager.getBluetoothConnectionListener()
+                        ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
                     bleManager.discoverServices()
-
                 }
+
                 BleService.ACTION_GATT_DISCONNECTED -> {
-                    Log.e(TAG, "onReceive: DISCONNECTED" )
+                    Log.e(_tag, "onReceive: DISCONNECTED")
                     bleManager.getConnectedDevice()?.let {
                         bleManager.getModelListener()?.onDeviceDisconnected(it)
                         bleManager.getBluetoothConnectionListener()?.onDeviceDisconnected(it)
@@ -78,85 +79,88 @@ class BluetoothModel constructor(
                     bleManager.resetConnectedDevice()
                 }
             }
-
         }
     }
-    private val eShareReceiver:BroadcastReceiver = object : BroadcastReceiver() {
+
+    private val eShareReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            Log.i(TAG, "onReceive: eShare status coming through")
-            when(intent.action){
-                BleService.ACTION_ESHARE_STATUS ->{
-                    when(intent.extras?.getString(BleService.EXTRA_DATA)){
-                        "READY" ->{
+            Log.i(_tag, "onReceive: eShare status coming through")
+            when (intent.action) {
+                BleService.ACTION_ESHARE_STATUS -> {
+                    when (intent.extras?.getString(BleService.EXTRA_DATA)) {
+                        "READY" -> {
                             bleManager.getEshareBluetoothListener().apply {
-                                Log.i(TAG, "onReceive: READY sending eshare ready ")
+                                Log.i(_tag, "onReceive: READY sending eshare ready ")
                                 this?.onEshareReady()
                             }
                         }
-                        "RUNNING"->{
+
+                        "RUNNING" -> {
                             bleManager.getEshareBluetoothListener().apply {
                                 this?.onEshareBusy()
                             }
                         }
-                        "STOPPED"->{
+
+                        "STOPPED" -> {
                             bleManager.getEshareBluetoothListener().apply {
                                 this?.onEshareStopped()
                             }
                         }
                     }
                 }
-                BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE-> {
-                    bleManager.getEshareBluetoothListener()?.let {
-                        it.onEshareAddrNotAvailable()
-                    }
+
+                BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE -> {
+                    bleManager.getEshareBluetoothListener()?.onEshareAddrNotAvailable()
                 }
+
                 BleService.ACTION_ESHARE_IP_NOT_REACHABLE -> {
-                    bleManager.getEshareBluetoothListener()?.let {
-                        it.onEshareIpNotReachable()
-                    }
+                    bleManager.getEshareBluetoothListener()?.onEshareIpNotReachable()
                 }
+
                 BleService.ACTION_ESHARE_BUSY -> {
-                    bleManager.getEshareBluetoothListener()?.let {
-                        it.onEshareBusy()
-                    }
+                    bleManager.getEshareBluetoothListener()?.onEshareBusy()
                 }
             }
-
         }
     }
 
-    private val hotspotReceiver:BroadcastReceiver = object: BroadcastReceiver(){
+    private val hotspotReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            when(intent?.action){
+            when (intent?.action) {
                 BleService.ACTION_HOTSPOT -> {
-                    Log.i(TAG, "onReceive: HOTSPOT ACTION")
+                    Log.i(_tag, "onReceive: HOTSPOT ACTION")
                 }
             }
         }
     }
 
-    private val bluetoothStateReceiver: BroadcastReceiver = object: BroadcastReceiver(){
+    private val bluetoothStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             when (intent.action) {
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
-                    val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
-                    when (state) {
+                    when (intent.getIntExtra(
+                        BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR
+                    )) {
                         BluetoothAdapter.STATE_OFF -> {
                             // Bluetooth is disabled
-                            Log.d(TAG, "onReceive: Bluetooth is disabled")
+                            Log.d(_tag, "onReceive: Bluetooth is disabled")
                             eSightBleManager.getModelListener()?.onBluetoothDisabled()
                         }
+
                         BluetoothAdapter.STATE_TURNING_OFF -> {
-                            Log.d(TAG, "onReceive: Bluetooth is turning off ")
+                            Log.d(_tag, "onReceive: Bluetooth is turning off ")
                             // Bluetooth is turning off
                         }
+
                         BluetoothAdapter.STATE_ON -> {
                             // Bluetooth is enabled
-                            Log.d(TAG, "onReceive: Bluetooth is Enabled")
+                            Log.d(_tag, "onReceive: Bluetooth is Enabled")
                             eSightBleManager.getModelListener()?.onBluetoothEnabled()
                         }
+
                         BluetoothAdapter.STATE_TURNING_ON -> {
-                            Log.d(TAG, "onReceive: Bluetooth is turning on")
+                            Log.d(_tag, "onReceive: Bluetooth is turning on")
                             // Bluetooth is turning on
                         }
                     }
@@ -172,62 +176,66 @@ class BluetoothModel constructor(
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(),
-                Context.RECEIVER_NOT_EXPORTED)
-        }else{
+            context.registerReceiver(
+                gattUpdateReceiver, makeGattUpdateIntentFilter(), Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
             context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
         }
         context.registerReceiver(bluetoothStateReceiver, btStateFilter)
     }
 
-    fun registerGattUpdateReceiver(){
+    fun registerGattUpdateReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(),
-                Context.RECEIVER_NOT_EXPORTED)
-        }else{
+            context.registerReceiver(
+                gattUpdateReceiver, makeGattUpdateIntentFilter(), Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
             context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
         }
     }
 
-    fun unregisterGattUpdateReceiver(){
+    fun unregisterGattUpdateReceiver() {
         try {
             context.unregisterReceiver(gattUpdateReceiver)
-        } catch (e: Exception){
-            Log.e(TAG, "deregisterGattUpdateReceiver: ${e.message}")
+        } catch (e: Exception) {
+            Log.e(_tag, "deregisterGattUpdateReceiver: ${e.message}")
         }
     }
 
-    fun registerEshareReceiver(){
+    fun registerEshareReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(eShareReceiver, makeeShareIntentFilter(),
-                Context.RECEIVER_NOT_EXPORTED)
-        }else{
+            context.registerReceiver(
+                eShareReceiver, makeeShareIntentFilter(), Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
             context.registerReceiver(eShareReceiver, makeeShareIntentFilter())
         }
     }
 
-    fun unregisterEshareReceiver(){
+    fun unregisterEshareReceiver() {
         try {
             context.unregisterReceiver(eShareReceiver)
-        } catch (e: Exception){
-            Log.e(TAG, "deregisterEshareReceiver: ${e.message}")
+        } catch (e: Exception) {
+            Log.e(_tag, "deregisterEshareReceiver: ${e.message}")
         }
     }
 
-    fun registerHotspotReceiver(){
+    fun registerHotspotReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(hotspotReceiver, makeHotspotIntentFilter(),
-                Context.RECEIVER_NOT_EXPORTED)
-        }else{
+            context.registerReceiver(
+                hotspotReceiver, makeHotspotIntentFilter(), Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
             context.registerReceiver(hotspotReceiver, makeHotspotIntentFilter())
         }
     }
 
-    fun unregisterHotspotReceiver(){
+    fun unregisterHotspotReceiver() {
         try {
             context.unregisterReceiver(hotspotReceiver)
-        } catch (e: Exception){
-            Log.e(TAG, "deregisterHotspotReceiver: ${e.message}")
+        } catch (e: Exception) {
+            Log.e(_tag, "deregisterHotspotReceiver: ${e.message}")
         }
     }
 
@@ -235,9 +243,10 @@ class BluetoothModel constructor(
      * Listener coming in from view model, should be used to send data back to respository
      */
     fun checkForConnection() {
-        val connectedDeviceList = bleManager.bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
-        Log.d(TAG, "Are there any connected devices?  $connectedDeviceList ")
-        if(connectedDeviceList.isNotEmpty()){
+        val connectedDeviceList =
+            bleManager.bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
+        Log.d(_tag, "Are there any connected devices?  $connectedDeviceList ")
+        if (connectedDeviceList.isNotEmpty()) {
             bleManager.setConnectedDevice(connectedDeviceList[0], true)
             bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
         }
@@ -246,10 +255,9 @@ class BluetoothModel constructor(
     /**
      * Scan and then trigger callback to repository when ready
      */
-    fun triggerBleScan(){
+    fun triggerBleScan() {
         scanLeDevices()
     }
-
 
     /**
      * Used to scan for ble devices
@@ -273,7 +281,7 @@ class BluetoothModel constructor(
         }
     }
 
-    fun stopScan(){
+    fun stopScan() {
         bleManager.bluetoothLeScanner.stopScan(leScanCallback)
         scanning = false
         bleManager.getModelListener()?.onScanCancelled()
@@ -285,7 +293,7 @@ class BluetoothModel constructor(
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            Log.i(TAG, "onScanFailed: ")
+            Log.i(_tag, "onScanFailed: ")
             bleManager.getModelListener()?.onScanFailed(errorCode)
         }
 
@@ -294,9 +302,9 @@ class BluetoothModel constructor(
             super.onScanResult(callbackType, result)
             if (result != null) {
                 if ((result.device != null)) {
-                    if(result.device.name != null){
-                        if(bleManager.addToBleDeviceList(result.device)){
-                            Log.d(TAG, "onScanResult: ${result.device.name}")
+                    if (result.device.name != null) {
+                        if (bleManager.addToBleDeviceList(result.device)) {
+                            Log.d(_tag, "onScanResult: ${result.device.name}")
                             bleManager.getModelListener()?.listOfDevicesUpdated()
                         }
                     }
@@ -307,22 +315,23 @@ class BluetoothModel constructor(
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
             if (results != null) {
-                Log.i(TAG, "onBatchScanResults: ")
+                Log.i(_tag, "onBatchScanResults: ")
                 bleManager.getModelListener()?.onBatchScanResults(results)
             }
         }
-
     }
 
-    fun connectToDevice(device: BluetoothDevice){
+    fun connectToDevice(device: BluetoothDevice) {
         val result = bleManager.getBleService()?.connect(device.address)
-        if(result == true){
+        if (result == true) {
             bleManager.setConnectedDevice(device, status = false)
             stopScan()
         }
     }
 
-    private fun makeGattUpdateIntentFilter(): IntentFilter{
+    fun disconnectToDevice(): Boolean = (bleManager.getBleService()?.disconnect() ?: false)
+
+    private fun makeGattUpdateIntentFilter(): IntentFilter {
         return IntentFilter().apply {
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
@@ -330,7 +339,7 @@ class BluetoothModel constructor(
         }
     }
 
-    private fun makeeShareIntentFilter(): IntentFilter{
+    private fun makeeShareIntentFilter(): IntentFilter {
         return IntentFilter().apply {
             addAction(BleService.ACTION_ESHARE_STATUS)
             addAction(BleService.ACTION_ESHARE_IP_NOT_REACHABLE)
@@ -339,17 +348,13 @@ class BluetoothModel constructor(
         }
     }
 
-    private fun makeHotspotIntentFilter(): IntentFilter{
+    private fun makeHotspotIntentFilter(): IntentFilter {
         return IntentFilter().apply {
             addAction(BleService.ACTION_HOTSPOT)
         }
     }
 
-
-
-    companion object{
+    companion object {
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4
     }
-
-
 }

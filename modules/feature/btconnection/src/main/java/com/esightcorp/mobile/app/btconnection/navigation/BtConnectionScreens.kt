@@ -3,6 +3,7 @@ package com.esightcorp.mobile.app.btconnection.navigation
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
+@Deprecated("Use BtConnectionNavigation")
 sealed class BtConnectionScreens(val route: String){
     object NoDevicesConnectedRoute: BtConnectionScreens("btconnection_home")
     object IncomingNavigationRoute: BtConnectionScreens("btconnection")

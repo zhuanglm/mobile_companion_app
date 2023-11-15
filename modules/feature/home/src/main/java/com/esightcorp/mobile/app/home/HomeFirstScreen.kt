@@ -69,11 +69,8 @@ internal fun BaseHomeScreen(
             showSettingsButton = true,
             onBackButtonInvoked = { /*Unused*/ },
             onSettingsButtonInvoked = onSettingsButtonInvoked,
-            bottomButton = {
-                FeedbackButton(modifier = modifier) {
-                    Log.e(TAG, "BaseHomeScreen: On feedback pressed")
-                }
-            }) {
+            bottomButton = { FeedbackButton(modifier, vm::showFeedbackPage) },
+        ) {
             HomeScreenBody(
                 modifier = modifier,
                 device = device,

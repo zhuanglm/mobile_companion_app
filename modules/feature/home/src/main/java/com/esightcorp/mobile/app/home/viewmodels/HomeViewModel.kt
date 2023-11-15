@@ -4,9 +4,11 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
 import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import com.esightcorp.mobile.app.home.state.HomeUiState
+import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +18,7 @@ import javax.inject.Inject
 private const val TAG = "HomeViewModel"
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    application: Application,
+    private val application: Application,
     homeRepository: HomeRepository,
 ): AndroidViewModel(application) {
 
@@ -86,5 +88,10 @@ class HomeViewModel @Inject constructor(
     fun navigateToShareYourView(navController: NavController){
         navController.navigate("eshare")
     }
+
+    fun showFeedbackPage() = with(application.applicationContext) {
+        openExternalUrl(getString(R.string.url_esight_feedback))
+    }
+
 
 }

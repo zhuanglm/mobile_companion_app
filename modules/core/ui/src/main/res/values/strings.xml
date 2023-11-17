@@ -111,6 +111,8 @@
     <!-- endregion -->
 
     <!-- region External URL -->
+    <string name="url_esight_home">https://www.esighteyewear.com/</string>
+    <string name="url_esight_privacy_policy">https://www.esighteyewear.com/privacy-policy/</string>
     <string name="url_esight_feedback" translatable="false">https://20vycous4b4.typeform.com/to/dP3zzlVw</string>
     <!-- endregion -->
 </resources>

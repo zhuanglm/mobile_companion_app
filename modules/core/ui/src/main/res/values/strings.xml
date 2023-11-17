@@ -109,4 +109,8 @@
     <string name="label_btn_disconnect">Disconnect</string>
     <string name="label_settings_disconnecting_esight">Disconnecting to eSight</string>
     <!-- endregion -->
+
+    <!-- region External URL -->
+    <string name="url_esight_feedback" translatable="false">https://20vycous4b4.typeform.com/to/dP3zzlVw</string>
+    <!-- endregion -->
 </resources>

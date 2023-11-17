@@ -4,11 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
 import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
 import com.esightcorp.mobile.app.ui.navigation.navigate
+import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +22,7 @@ private const val TAG = "HomeViewModel"
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    application: Application,
+    private val application: Application,
     homeRepository: HomeRepository,
 ) : AndroidViewModel(application) {
 
@@ -93,4 +95,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToSettings(navController: NavController) = navController.navigate(IncomingRoute)
+
+    fun showFeedbackPage() = with(application.applicationContext) {
+        openExternalUrl(getString(R.string.url_esight_feedback))
+    }
 }

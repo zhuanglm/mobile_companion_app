@@ -2,10 +2,7 @@ package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,13 +16,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
-import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.AddDeviceButton
 import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import com.esightcorp.mobile.app.ui.components.toStringList
 
 private const val TAG = "BluetoothScreens"
 
@@ -46,12 +43,11 @@ fun NoDeviceConnectedRoute(
         // If Bluetooth is enabled and there is no device connected, show the no device connected screen
         Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
         NoDeviceConnectedScreen(
+            onScanESightPressed = vm::navigateToScanESight,
             onSettingsButtonPressed = { },
             onFeedbackButtonPressed = vm::showFeedbackPage,
-            onConnectToDeviceButtonPressed = { },
             onTermsAndConditionsPressed = { },
             onPrivacyPolicyPressed = { },
-            btUiState = btUiState,
             navController = navController
         )
     } else {
@@ -62,18 +58,18 @@ fun NoDeviceConnectedRoute(
 
 @Composable
 internal fun NoDeviceConnectedScreen(
+    modifier: Modifier = Modifier,
+    onScanESightPressed: (NavController) -> Unit,
     onSettingsButtonPressed: () -> Unit,
     onFeedbackButtonPressed: () -> Unit,
-    onConnectToDeviceButtonPressed: () -> Unit,
     onTermsAndConditionsPressed: (Int) -> Unit,
     onPrivacyPolicyPressed: (Int) -> Unit,
-    btUiState: BluetoothUiState,
     navController: NavController,
-    modifier: Modifier = Modifier
 ) {
     // Set up UI using ConstraintLayout
 
-    BaseScreen(modifier = modifier,
+    BaseScreen(
+        modifier = modifier,
         showBackButton = false,
         showSettingsButton = true,
         onBackButtonInvoked = { /*Unused*/ },
@@ -82,14 +78,15 @@ internal fun NoDeviceConnectedScreen(
             FeedbackButton(
                 onFeedbackClick = onFeedbackButtonPressed, modifier = modifier
             )
-        }) {
+        },
+    ) {
         NoDevicesBody(
             modifier = modifier,
             onPrivacyPolicyPressed = onPrivacyPolicyPressed,
             onTermsAndConditionsPressed = onTermsAndConditionsPressed,
+            onScanESightPressed = onScanESightPressed,
             navController = navController
         )
-
     }
 }
 
@@ -98,12 +95,11 @@ internal fun NoDeviceConnectedScreen(
 fun NoDeviceConnectedScreenPreview() {
     MaterialTheme {
         NoDeviceConnectedScreen(
+            onScanESightPressed = {},
             onSettingsButtonPressed = { /* implement dummy action for preview */ },
             onFeedbackButtonPressed = { /* implement dummy action for preview */ },
-            onConnectToDeviceButtonPressed = { /* implement dummy action for preview */ },
             onTermsAndConditionsPressed = { /* implement dummy action for preview */ },
             onPrivacyPolicyPressed = { /* implement dummy action for preview */ },
-            btUiState = BluetoothUiState(), // provide dummy state
             navController = rememberNavController(), // Note: this won't actually navigate in preview
             modifier = Modifier
         )
@@ -115,10 +111,16 @@ private fun NoDevicesBody(
     modifier: Modifier,
     onPrivacyPolicyPressed: (Int) -> Unit,
     onTermsAndConditionsPressed: (Int) -> Unit,
+    onScanESightPressed: (NavController) -> Unit,
     navController: NavController
 ) {
     ConstraintLayout(modifier = modifier) {
-        val (greeting, deviceButton, spacer,terms) = createRefs()
+        val (greeting, deviceButton, spacer, terms) = createRefs()
+
+//        Log.w(
+//            TAG,
+//            "Back-stack:\n${navController.currentBackStack.collectAsState().value.toStringList()}"
+//        )
 
         // Set up greeting message
         PersonalGreeting(
@@ -131,21 +133,25 @@ private fun NoDevicesBody(
         )
 
         // Set up device button to navigate to Bluetooth searching screen
-        AddDeviceButton(onClick = { navController.navigate(BtConnectionScreens.BtSearchingRoute.route) },
+        AddDeviceButton(
+            onClick = { onScanESightPressed.invoke(navController) },
             modifier = modifier.constrainAs(deviceButton) {
                 top.linkTo(greeting.bottom, margin = 16.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            })
+            },
+        )
 
-        Spacer(modifier = modifier
-            .height(300.dp)
-            .constrainAs(spacer) {
-                top.linkTo(deviceButton.bottom, margin = 16.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+        Spacer(
+            modifier = modifier
+                .height(300.dp)
+                .constrainAs(spacer) {
+                    top.linkTo(deviceButton.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
 
-            })
+                },
+        )
 
         // Set up terms and policy buttons
         TermsAndPolicy(
@@ -159,10 +165,7 @@ private fun NoDevicesBody(
             },
             textColor = MaterialTheme.colors.onSurface
         )
-
-
     }
-
 }
 
 @Preview(showBackground = true)
@@ -173,6 +176,7 @@ fun NoDevicesBodyPreview() {
             modifier = Modifier,
             onPrivacyPolicyPressed = { /* implement dummy action for preview */ },
             onTermsAndConditionsPressed = { /* implement dummy action for preview */ },
+            onScanESightPressed = {},
             navController = rememberNavController() // Note: this won't actually navigate in preview
         )
     }

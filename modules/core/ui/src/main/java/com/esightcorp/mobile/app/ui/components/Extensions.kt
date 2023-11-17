@@ -20,3 +20,5 @@ fun Context.openExternalUrl(url: String) = try {
 } catch (err: Throwable) {
     err.printStackTrace()
 }
+
+fun <T> List<T>.toStringList(separator: String = "\n"): String = joinToString(separator = separator)

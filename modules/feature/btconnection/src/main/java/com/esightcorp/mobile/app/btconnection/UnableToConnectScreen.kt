@@ -10,13 +10,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.UnableToConnectViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.*
+import com.esightcorp.mobile.app.ui.components.BodyText
+import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
+import com.esightcorp.mobile.app.ui.components.Header1Text
+import com.esightcorp.mobile.app.ui.components.Subheader
+import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 
@@ -30,26 +35,37 @@ fun UnableToConnectRoute(
         UnableToConnectScreen(
             onBackButtonClicked = vm::navigateToNoDevicesConnectedScreen,
             onTryAgainClicked = vm::navigateToBtSearchingScreen,
-            vm = vm
+            onConnectClicked = vm::showHowToConnectPage,
         )
     } else {
         NavigateBluetoothDisabled(navController = navController)
     }
-
 }
 
+@Preview
+@Composable
+fun UnableToConnectScreenPreview() = MaterialTheme {
+    UnableToConnectScreen(
+        onBackButtonClicked = {},
+        onTryAgainClicked = {},
+        onConnectClicked = {},
+    )
+}
+
+//region Internal implementation
 @Composable
 internal fun UnableToConnectScreen(
     modifier: Modifier = Modifier,
     onBackButtonClicked: () -> Unit,
     onTryAgainClicked: () -> Unit,
-    vm: UnableToConnectViewModel
+    onConnectClicked: () -> Unit,
 ) {
     Log.i("UnableToConnectScreen", "UnableToConnectScreen: ")
     Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (topBar, header, subtitle, help1, help2, button, footerButton, footerText) = createRefs()
-            ESightTopAppBar(showBackButton = true,
+            ESightTopAppBar(
+                showBackButton = true,
                 showSettingsButton = false,
                 onBackButtonInvoked = onBackButtonClicked,
                 onSettingsButtonInvoked = { /*Unused*/ },
@@ -57,24 +73,31 @@ internal fun UnableToConnectScreen(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                })
+                },
+            )
 
-            Header1Text(text = stringResource(id = R.string.bt_unable_to_connect_header),
+            Header1Text(
+                text = stringResource(id = R.string.bt_unable_to_connect_header),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(header) {
                         top.linkTo(topBar.bottom, margin = 50.dp)
                         start.linkTo(parent.start)
-                    })
+                    },
+            )
 
-            Subheader(text = stringResource(id = R.string.bt_unable_to_connect_subtitle),
+            Subheader(
+                text = stringResource(id = R.string.bt_unable_to_connect_subtitle),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(subtitle) {
                         top.linkTo(header.bottom, margin = 8.dp)
                         start.linkTo(parent.start)
-                    })
-            NumberedHelpItem(number = 1,
+                    },
+            )
+
+            NumberedHelpItem(
+                number = 1,
                 text = stringResource(id = R.string.bt_unable_to_connect_1),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
@@ -82,8 +105,11 @@ internal fun UnableToConnectScreen(
                         top.linkTo(subtitle.bottom, margin = 35.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
-            NumberedHelpItem(number = 2,
+                    },
+            )
+
+            NumberedHelpItem(
+                number = 2,
                 text = stringResource(id = R.string.bt_unable_to_connect_2),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
@@ -91,7 +117,8 @@ internal fun UnableToConnectScreen(
                         top.linkTo(help1.bottom, margin = 35.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
+                    },
+            )
 
             TextRectangularButton(
                 onClick = onTryAgainClicked,
@@ -105,7 +132,8 @@ internal fun UnableToConnectScreen(
                 text = stringResource(id = R.string.bt_unable_to_connect_button)
             )
 
-            BodyText(text = stringResource(id = R.string.bt_unable_to_connect_footer),
+            BodyText(
+                text = stringResource(id = R.string.bt_unable_to_connect_footer),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
@@ -113,16 +141,18 @@ internal fun UnableToConnectScreen(
                         bottom.linkTo(footerButton.top, margin = 35.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
+                    },
+            )
 
-            HowToConnectButton(onConnectClick = { /*TODO: Deeplink needed here*/ },
+            HowToConnectButton(
+                onConnectClick = onConnectClicked,
                 modifier = modifier.constrainAs(footerButton) {
                     bottom.linkTo(parent.bottom, margin = 13.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                })
-
-
+                },
+            )
         }
     }
 }
+//endregion

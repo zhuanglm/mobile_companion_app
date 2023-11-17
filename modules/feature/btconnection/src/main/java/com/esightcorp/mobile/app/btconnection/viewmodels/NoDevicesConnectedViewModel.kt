@@ -6,6 +6,8 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.navigation.NavController
+import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
@@ -93,4 +95,9 @@ class NoDevicesConnectedViewModel @Inject constructor(
         openExternalUrl(getString(R.string.url_esight_feedback))
     }
 
+    fun navigateToScanESight(nav: NavController) = with(nav) {
+        navigate(BtConnectionScreens.BtSearchingRoute.route) {
+            popUpTo(BtConnectionScreens.IncomingNavigationRoute.route) { inclusive = false }
+        }
+    }
 }

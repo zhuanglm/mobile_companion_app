@@ -1,15 +1,17 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.state.BtSearchingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtSearchingViewModel
 import com.esightcorp.mobile.app.ui.R
@@ -18,7 +20,8 @@ import com.esightcorp.mobile.app.utils.ScanningStatus
 
 @Composable
 fun BtSearchingRoute(
-    navController: NavController, vm: BtSearchingViewModel = hiltViewModel()
+    navController: NavController,
+    vm: BtSearchingViewModel = hiltViewModel(),
 ) {
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
@@ -28,45 +31,61 @@ fun BtSearchingRoute(
             modifier = Modifier,
             navController = navController,
             uiState = uiState,
-            vm = vm,
-            onCancelButtonClicked = vm::onCancelButtonClicked
+            onCancelButtonClicked = vm::onCancelButtonClicked,
+            onStartScanning = vm::triggerScan,
+            onScanSuccess = vm::onScanSuccess,
         )
     }
-
 }
+
+@Preview
+@Composable
+fun BtSearchingScreenPreview() = MaterialTheme {
+    BtSearchingScreen(
+        modifier = Modifier,
+        navController = rememberNavController(),
+        uiState = BtSearchingUiState(isBtEnabled = true),
+        onCancelButtonClicked = {},
+        onStartScanning = {},
+        onScanSuccess = {},
+    )
+}
+
+//region Internal implementation
+
+private const val TAG = "BtSearchingScreen"
 
 @Composable
 internal fun BtSearchingScreen(
     modifier: Modifier,
     navController: NavController,
     uiState: BtSearchingUiState,
-    vm: BtSearchingViewModel,
-    onCancelButtonClicked: (NavController) -> Unit
+    onCancelButtonClicked: (NavController) -> Unit,
+    onStartScanning: () -> Unit,
+    onScanSuccess: (NavController) -> Unit,
 ) {
-    val TAG = "BtSearchingScreen"
-
     when (uiState.isScanning) {
         ScanningStatus.Failed -> {
             Log.e(TAG, "Bluetooth Scanning has failed. Show the error screen")
+            //TODO: implement this!!!
         }
 
         ScanningStatus.Success -> {
             Log.i(TAG, "BtSearchingScreen: Navigating to devices route")
-            LaunchedEffect(Unit) {
-                navController.navigate(BtConnectionScreens.BtDevicesScreen.route)
-            }
+
+            LaunchedEffect(Unit) { onScanSuccess.invoke(navController) }
         }
 
         else -> {
-            LoadingScreenWithSpinner(loadingText = stringResource(id = R.string.bt_searching_text),
+            LoadingScreenWithSpinner(
+                loadingText = stringResource(id = R.string.bt_searching_text),
                 modifier = modifier,
-                onCancelButtonClicked = { onCancelButtonClicked(navController) })
+                onCancelButtonClicked = { onCancelButtonClicked(navController) },
+            )
             if (uiState.isScanning == ScanningStatus.Unknown) {
-                vm.triggerScan()
+                onStartScanning.invoke()
             }
         }
     }
-
-
 }
-
+//endregion

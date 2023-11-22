@@ -35,7 +35,7 @@
     <string name="wifi_no_networks_2" translatable="true">Turn your router off and then back on again</string>
     <string name="wifi_no_networks_button" translatable="true">Try again</string>
     <string name="wifi_select_network_header" translatable="true">Select a Wi-Fi network</string>
-    <string name="wifi_unable_to_connect_header"  translatable="true">Unable to Connect</string>
+    <string name="wifi_unable_to_connect_header" translatable="true">Unable to Connect</string>
     <string name="wifi_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
     <string name="wifi_unable_to_connect_1" translatable="true">Make sure your Wi-Fi password is correct.</string>
     <string name="wifi_unable_to_connect_2" translatable="true">Make sure your eSight is within range.</string>
@@ -43,18 +43,25 @@
     <string name="wifi_unable_to_connect_button" translatable="true">Try again</string>
     <string name="wifi_unable_to_connect_footer" translatable="true">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
     <string name="wifi_unable_to_connect_footer_button" translatable="true">How to connect</string>
+
     <string name="bt_unable_to_connect_header" translatable="true">Unable to connect</string>
-    <string name="bt_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
-    <string name="bt_unable_to_connect_1" translatable="true">Make sure your eSight is within range.</string>
-    <string name="bt_unable_to_connect_2" translatable="true">Make sure your eSight has sufficient charge</string>
+    <string name="bt_unable_to_connect_subtitle" translatable="true">Please make sure:</string>
+    <string name="bt_unable_to_connect_1" translatable="true">eSight is within range.</string>
+    <string name="bt_unable_to_connect_2" translatable="true">eSight has sufficient charge.</string>
     <string name="bt_unable_to_connect_footer" translatable="true">If connecting to Bluetooth continues to fail, please visit the link below for more information or contact Support</string>
     <string name="bt_unable_to_connect_button" translatable="true">Try again</string>
-    <string name="bt_no_devices_found_header" translatable="true">No eSight devices found</string>
+    <string name="bt_unable_to_connect_footer_button">How to connect</string>
+
+    <string name="bt_no_devices_found_header" translatable="true">Unable to find an eSight</string>
     <string name="bt_no_devices_found_subtitle" translatable="true">Please try the following:</string>
     <string name="bt_no_devices_found_1" translatable="true">Turn your eSight off and then back on again.</string>
     <string name="bt_no_devices_found_2" translatable="true">Make sure your eSight is within range.</string>
     <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
     <string name="bt_no_devices_found_button" translatable="true">Try again</string>
+    <string name="bt_no_devices_footer_button">Unable to connect?</string>
+
+    <string name="bt_label_unable_to_find_help">Can’t find your eSight?</string>
+
     <string name="wifi_searching_for_networks_header" translatable="true">Searching for Wi-Fi networks</string>
     <string name="wifi_advanced_ssidHeader" translatable="true">Enter Wi-Fi name</string>
     <string name="wifi_advanced_pwdHeader" translatable="true">Enter Wi-Fi password</string>
@@ -90,5 +97,6 @@
 
     <!-- region External URL -->
     <string name="url_esight_feedback" translatable="false">https://20vycous4b4.typeform.com/to/dP3zzlVw</string>
+    <string name="url_esight_support" translatable="false">https://www.esighteyewear.com/support/</string>
     <!-- endregion -->
 </resources>

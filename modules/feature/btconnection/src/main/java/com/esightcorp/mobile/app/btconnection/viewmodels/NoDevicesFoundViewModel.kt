@@ -2,12 +2,11 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
-import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
+import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.NoDevicesFoundUiState
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,12 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoDevicesFoundViewModel @Inject constructor(
-    application: Application, val btConnectionRepository: BtConnectionRepository
+    application: Application,
+    btConnectionRepository: BtConnectionRepository,
 ) : AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(NoDevicesFoundUiState())
     val uiState: StateFlow<NoDevicesFoundUiState> = _uiState.asStateFlow()
-    private val listener = object : BluetoothConnectionRepositoryCallback{
+    private val listener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
             //unused by this composable
         }
@@ -47,35 +47,36 @@ class NoDevicesFoundViewModel @Inject constructor(
         btConnectionRepository.setupBtModelListener()
     }
 
-    private fun updateIsBtEnabledState(enabled: Boolean){
+    private fun updateIsBtEnabledState(enabled: Boolean) {
         _uiState.update { state -> state.copy(isBtEnabled = enabled) }
     }
 
 
-    fun navigateToNoDevicesConnectedScreen(navController: NavController){
-        navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route){
-            popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                inclusive = false
-            }
+    fun navigateToNoDevicesConnectedScreen(navController: NavController) {
+        navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route) {
+            popUpTo(BtConnectionScreens.NoDevicesFoundRoute.route) { inclusive = true }
             launchSingleTop = true
         }
     }
 
-    fun navigateToSearchingScreen(navController: NavController){
-        navController.navigate(BtConnectionScreens.BtSearchingRoute.route){
-            popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                inclusive = false
-            }
-            launchSingleTop = true
-        }
-    }
-    fun onBluetoothDisabled(navController: NavController){
-        navController.navigate(BtConnectionScreens.BtDisabledScreen.route){
-            popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                inclusive = false
-            }
+    fun navigateToSearchingScreen(navController: NavController) {
+        navController.navigate(BtConnectionScreens.BtSearchingRoute.route) {
+            popUpTo(BtConnectionScreens.NoDevicesFoundRoute.route) { inclusive = true }
             launchSingleTop = true
         }
     }
 
+    fun navigateToUnableToConnectScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionScreens.UnableToConnectRoute.route) {
+            popUpTo(BtConnectionScreens.NoDevicesFoundRoute.route) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
+    fun onBluetoothDisabled(navController: NavController) {
+        navController.navigate(BtConnectionScreens.BtDisabledScreen.route) {
+            popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route) { inclusive = false }
+            launchSingleTop = true
+        }
+    }
 }

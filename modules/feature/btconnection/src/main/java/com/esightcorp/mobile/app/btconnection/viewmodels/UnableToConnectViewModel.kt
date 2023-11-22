@@ -5,9 +5,10 @@ import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
-import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
+import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.UnableToConnectUiState
+import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,14 +19,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UnableToConnectViewModel @Inject constructor(
-    application: Application, val btConnectionRepository: BtConnectionRepository
+    private val application: Application,
+    btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
 
     private var _uiState = MutableStateFlow(UnableToConnectUiState())
     val uiState: StateFlow<UnableToConnectUiState> = _uiState.asStateFlow()
     private lateinit var navController: NavController
 
-    private val listener = object : BluetoothConnectionRepositoryCallback{
+    private val listener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
             //unused by this composable
         }
@@ -47,36 +49,36 @@ class UnableToConnectViewModel @Inject constructor(
         btConnectionRepository.registerListener(listener)
         btConnectionRepository.setupBtModelListener()
     }
-    private fun updateBtEnabledState(enabled: Boolean){
-        _uiState.update {state ->
+
+    private fun updateBtEnabledState(enabled: Boolean) {
+        _uiState.update { state ->
             state.copy(isBtEnabled = enabled)
         }
     }
 
-    fun setNavController(navController: NavController){
+    fun setNavController(navController: NavController) {
         this.navController = navController
     }
 
-    fun navigateToNoDevicesConnectedScreen(){
-        if(this::navController.isInitialized){
-            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                    inclusive = false
-                }
+    fun navigateToNoDevicesConnectedScreen() {
+        if (this::navController.isInitialized) {
+            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route) {
+                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route) { inclusive = false }
                 launchSingleTop = true
             }
         }
     }
 
-    fun navigateToBtSearchingScreen(){
-        if(this::navController.isInitialized){
-            navController.navigate(BtConnectionScreens.BtSearchingRoute.route){
-                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                    inclusive = false
-                }
+    fun navigateToBtSearchingScreen() {
+        if (this::navController.isInitialized) {
+            navController.navigate(BtConnectionScreens.BtSearchingRoute.route) {
+                popUpTo(BtConnectionScreens.UnableToConnectRoute.route) { inclusive = true }
                 launchSingleTop = true
             }
         }
     }
 
+    fun showHowToConnectPage() = with(application.applicationContext) {
+        openExternalUrl(getString(com.esightcorp.mobile.app.ui.R.string.url_esight_support))
+    }
 }

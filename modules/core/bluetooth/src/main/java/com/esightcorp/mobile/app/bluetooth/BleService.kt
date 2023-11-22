@@ -21,9 +21,189 @@ class BleService : Service() {
     private var bluetoothGatt: BluetoothGatt? = null
     private var connectionState = STATE_DISCONNECTED
 
-    var lastBroadcastTimeEshareError = 0L
+    private var lastBroadcastTimeEshareError = 0L
 
-    //gatt callback
+    //region Service implementation
+
+    inner class LocalBinder : Binder() {
+        fun getService(): BleService {
+            return this@BleService
+        }
+    }
+
+    fun initialize(): Boolean {
+        bluetoothAdapter =
+            (baseContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
+        if (bluetoothAdapter == null) {
+            Log.e(_tag, "initialize: Unable to obtain a BluetoothAdapter.")
+            return false
+        }
+
+        return true
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        Log.i(_tag, "onBind: ")
+        return binder
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        close()
+        return super.onUnbind(intent)
+    }
+    //endregion
+
+    //region ESight BLE functionality
+
+    @SuppressLint("MissingPermission")
+    fun connect(address: String): Boolean {
+        bluetoothAdapter?.let { adapter ->
+            try {
+                val device = adapter.getRemoteDevice(address)
+                Log.d(_tag, "connect: $address")
+                device.connectGatt(baseContext, false, bluetoothGattCallback)
+            } catch (exception: IllegalArgumentException) {
+                Log.w(_tag, "connect: Device not found with provided address.")
+                return false
+            }
+        } ?: kotlin.run {
+            Log.e(_tag, "connect: Bluetooth Adapter not initialized")
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Request a disconnection to the current bluetooth GATT
+     *
+     * @return true if the request **CAN** be executed, otherwise false.
+     * Note: the actual disconnect status will be notified later through `ACTION_GATT_DISCONNECTED`
+     */
+    @SuppressLint("MissingPermission")
+    fun disconnect(): Boolean = when (bluetoothGatt) {
+        null -> false
+        else -> {
+            bluetoothGatt!!.disconnect()
+            true
+        }
+    }
+
+    fun sendWifiCreds(ssid: String, pwd: String, type: String) {
+        Log.i(_tag, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
+        sendMessage(
+            ESightCharacteristic.WIFI_INFO,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.WIFI_CREDS).ssid(ssid).wifiPwd(pwd)
+                .wifiType(type).build()
+        )
+    }
+
+    fun sendPortAndIp(port: Int, ip: String) {
+        Log.i(_tag, "sendPortAndIp: Port = $port, IP = $ip")
+        sendMessage(
+            ESightCharacteristic.ESHARE_COMMANDS,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT).port(port.toString())
+                .ipAddress(ip).build()
+        )
+    }
+
+    fun startHotspot(ssid: String, password: String) {
+        Log.i(_tag, "startHotspot: SSID = $ssid, Password = $password")
+        sendMessage(
+            ESightCharacteristic.HOTSPOT,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.HOTSPOT_CREDS, ssid, password)
+                .build()
+        )
+    }
+
+    fun stopEshare() {
+        sendMessage(
+            ESightCharacteristic.ESHARE_COMMANDS,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT_SHUTDOWN).build()
+        )
+    }
+
+    fun writeUpButtonPress() {
+        Log.d(_tag, "writeUpButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.UP).build()
+        )
+    }
+
+    fun writeDownButtonPress() {
+        Log.d(_tag, "writeDownButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.DOWN).build()
+        )
+    }
+
+    fun writeModeButtonPress() {
+        Log.d(_tag, "writeModeButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.MODE).build()
+        )
+    }
+
+    fun writeMenuButtonPress() {
+        Log.d(_tag, "writeMenuButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.MENU).build()
+        )
+    }
+
+    fun writeVolumeUpButtonPress() {
+        Log.d(_tag, "writeVolumeUpButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.VOL_UP).build()
+        )
+    }
+
+    fun writeVolumeDownButtonPress() {
+        Log.d(_tag, "writeVolumeDownButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.VOL_DOWN).build()
+        )
+    }
+
+    fun writeFinderButtonPressDownEvent() {
+        Log.d(_tag, "writeFinderButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.FINDER).build()
+        )
+    }
+
+    fun writeActionUpEvent() {
+        Log.d(_tag, "writeFinderButtonPress: ")
+        sendMessage(
+            ESightCharacteristic.BUTTON_PRESSED,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
+                .buttonName(BluetoothPayload.RemoteButtonName.ACTION_UP).build()
+        )
+    }
+
+    fun checkIfEshareIsRunning() {
+        Log.i(_tag, "checkIfEshareIsRunning: Reading the eShare Status Characteristic")
+        readCharacteristic(ESightCharacteristic.ESHARE_STATUS)
+    }
+    //endregion
+
+    //region Internal implementation
+
+    //region GATT implementation
+
     @SuppressLint("MissingPermission")
     private val bluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
@@ -65,7 +245,7 @@ class BleService : Service() {
             Log.w(_tag, "onServicesDiscovered - success")
 
             ESightCharacteristic.values().forEach { chType ->
-                configureCharacteristicNotification(chType, gatt)
+                configureCharacteristicNotification(gatt, chType)
             }
 
             broadcastUpdate(ACTION_GATT_CONNECTED)
@@ -202,8 +382,8 @@ class BleService : Service() {
     @SuppressLint("MissingPermission")
     @Suppress("Deprecation")
     private fun configureCharacteristicNotification(
-        chType: ESightCharacteristic,
         gatt: BluetoothGatt,
+        chType: ESightCharacteristic,
     ): Boolean = when (val descriptor = chType.getNotifyDescriptor(gatt)) {
         null -> false
         else -> {
@@ -214,96 +394,6 @@ class BleService : Service() {
             gatt.writeDescriptor(descriptor)
             gatt.setCharacteristicNotification(characteristic, true)
         }
-    }
-
-    fun initialize(): Boolean {
-        bluetoothAdapter =
-            (baseContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
-        if (bluetoothAdapter == null) {
-            Log.e(_tag, "initialize: Unable to obtain a BluetoothAdapter.")
-            return false
-        }
-        return true
-    }
-
-    @SuppressLint("MissingPermission")
-    fun connect(address: String): Boolean {
-        bluetoothAdapter?.let { adapter ->
-            try {
-                val device = adapter.getRemoteDevice(address)
-                Log.d(_tag, "connect: $address")
-                device.connectGatt(baseContext, false, bluetoothGattCallback)
-            } catch (exception: IllegalArgumentException) {
-                Log.w(_tag, "connect: Device not found with provided address.")
-                return false
-            }
-        } ?: kotlin.run {
-            Log.e(_tag, "connect: Bluetooth Adapter not initialized")
-            return false
-        }
-        return true
-    }
-
-    /**
-     * Request a disconnection to the current bluetooth GATT
-     *
-     * @return true if the request **CAN** be executed, otherwise false.
-     * Note: the actual disconnect status will be notified later through `ACTION_GATT_DISCONNECTED`
-     */
-    @SuppressLint("MissingPermission")
-    fun disconnect(): Boolean = when (bluetoothGatt) {
-        null -> false
-        else -> {
-            bluetoothGatt!!.disconnect()
-            true
-        }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i(_tag, "onStartCommand: ")
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun onBind(intent: Intent?): IBinder {
-        Log.i(_tag, "onBind: ")
-        return binder
-    }
-
-    inner class LocalBinder : Binder() {
-        fun getService(): BleService {
-            return this@BleService
-        }
-    }
-
-    /**
-     * Broadcast update methods
-     *
-     * multiple overloads on this one
-     */
-    private fun broadcastUpdate(action: String) {
-        val intent = Intent(action)
-        sendBroadcast(intent)
-    }
-
-    private fun broadcastUpdate(action: String, data: ByteArray?) {
-        val intent = Intent(action)
-        if (data?.isNotEmpty() == true) {
-            val dataString: String = data.decodeToString()
-            intent.putExtra(EXTRA_DATA, dataString)
-        }
-        sendBroadcast(intent)
-    }
-
-    private fun broadcastUpdate(action: String, value: String) {
-        Log.i(_tag, "broadcastUpdate: $action $value")
-        val intent = Intent(action)
-        intent.data = Uri.parse(value)
-        sendBroadcast(intent)
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        close()
-        return super.onUnbind(intent)
     }
 
     @SuppressLint("MissingPermission")
@@ -325,131 +415,21 @@ class BleService : Service() {
         }
     }
 
-    fun sendWifiCreds(ssid: String, pwd: String, type: String) {
-        Log.i(_tag, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
-        sendMessage(
-            ESightCharacteristic.WIFI_INFO,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.WIFI_CREDS).ssid(ssid).wifiPwd(pwd)
-                .wifiType(type).build()
-        )
-    }
-
-    fun sendPortAndIp(port: Int, ip: String) {
-        Log.i(_tag, "sendPortAndIp: Port = $port, IP = $ip")
-        sendMessage(
-            ESightCharacteristic.ESHARE_COMMANDS,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT).port(port.toString())
-                .ipAddress(ip).build()
-        )
-    }
-
-    fun startHotspot(ssid: String, password: String) {
-        Log.i(_tag, "startHotspot: SSID = $ssid, Password = $password")
-        sendMessage(
-            ESightCharacteristic.HOTSPOT,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.HOTSPOT_CREDS, ssid, password)
-                .build()
-        )
-    }
-
-    fun stopEshare() {
-        sendMessage(
-            ESightCharacteristic.ESHARE_COMMANDS,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT_SHUTDOWN).build()
-        )
-    }
-
-    fun writeUpButtonPress() {
-        Log.d(_tag, "writeUpButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.UP).build()
-        )
-    }
-
-    fun writeDownButtonPress() {
-        Log.d(_tag, "writeDownButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.DOWN).build()
-        )
-    }
-
-    fun writeModeButtonPress() {
-        Log.d(_tag, "writeModeButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.MODE).build()
-        )
-    }
-
-    fun writeMenuButtonPress() {
-        Log.d(_tag, "writeMenuButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.MENU).build()
-        )
-    }
-
-    fun writeVolumeUpButtonPress() {
-        Log.d(_tag, "writeVolumeUpButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.VOL_UP).build()
-        )
-    }
-
-    fun writeVolumeDownButtonPress() {
-        Log.d(_tag, "writeVolumeDownButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.VOL_DOWN).build()
-        )
-    }
-
-    fun writeFinderButtonPressDownEvent() {
-        Log.d(_tag, "writeFinderButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.FINDER).build()
-        )
-    }
-
-    fun writeActionUpEvent() {
-        Log.d(_tag, "writeFinderButtonPress: ")
-        sendMessage(
-            ESightCharacteristic.BUTTON_PRESSED,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.ACTION_UP).build()
-        )
-    }
-
-    fun checkIfEshareIsRunning() {
-        Log.i(_tag, "checkIfEshareIsRunning: Reading the eShare Status Characteristic")
-        readCharacteristic(ESightCharacteristic.ESHARE_STATUS)
-    }
-
     @SuppressLint("MissingPermission")
     @Suppress("Deprecation")
     private fun sendMessage(chType: ESightCharacteristic, payload: BluetoothPayload): Boolean {
-        var intResult = -1
         var boolResult = false
 
         val data = payload.getByteArrayBlePayload()
         chType.getCharacteristic(bluetoothGatt)?.let { characteristic ->
             when (Build.VERSION.SDK_INT >= 33) {
                 true -> {
-                    intResult = bluetoothGatt!!.writeCharacteristic(
+                    val intResult = bluetoothGatt!!.writeCharacteristic(
                         characteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                     )
                     boolResult = decodeSendMessageResult(intResult)
+
+                    Log.d(_tag, "sendMessage - intResult: $intResult")
                 }
 
                 false -> {
@@ -458,7 +438,7 @@ class BleService : Service() {
                 }
             }
         }
-        Log.d(_tag, "sendMessage: SDK 33 ${intResult}, else $boolResult")
+        Log.d(_tag, "sendMessage - result: $boolResult")
 
         return boolResult
     }
@@ -501,40 +481,40 @@ class BleService : Service() {
         return false
     }
 
-    companion object {
-        const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
-        const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
-        const val ACTION_ESHARE_STATUS = "com.esightcorp.bluetooth.le.ACTION_ESHARE_STATUS"
+    //endregion
 
-        const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
+    //region Broadcast utilities
 
-        const val EXTRA_DATA = "com.esightcorp.bluetooth.le.EXTRA_DATA"
-        const val DEVICE = "com.esightcorp.bluetooth.le.DEVICE"
-
-        const val ACTION_WIFI_CONNECTED = "com.esightcorp.wifi.ACTION_WIFI_CONNECTED"
-        const val ACTION_WIFI_ERROR = "com.esightcorp.wifi.ACTION_WIFI_ERROR"
-        const val ACTION_ERROR = "com.esightcorp.wifi.ACTION_ERROR"
-        const val ACTION_WIFI_CONNECTION_STATUS =
-            "com.esightcorp.wifi.ACTION_WIFI_CONNECTION_STATUS"
-        const val ACTION_HOTSPOT = "com.esightcorp.wifi.ACTION_HOTSPOT"
-
-
-        const val ACTION_ESHARE_BUSY = "com.esightcorp.wifi.ACTION_ESHARE_BUSY"
-        const val ACTION_ESHARE_ADDR_NOT_AVAILABLE =
-            "com.esightcorp.wifi.ACTION_ESHARE_ADDR_NOT_AVAILABLE"
-        const val ACTION_ESHARE_IP_NOT_REACHABLE =
-            "com.esightcorp.wifi.ACTION_ESHARE_IP_NOT_REACHABLE"
-
-        private const val REQUEST_MTU_SIZE = 200
-
-        private const val BROADCAST_DEBOUNCE_TIME = 1000  // 1 second
-        private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
-        private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
-
-        val SERVICE_UUID: UUID = UUID.fromString("0000b81d-0000-1000-8000-00805f9b34fb")
+    /**
+     * Broadcast update methods
+     *
+     * multiple overloads on this one
+     */
+    private fun broadcastUpdate(action: String) {
+        val intent = Intent(action)
+        sendBroadcast(intent)
     }
 
+    private fun broadcastUpdate(action: String, data: ByteArray?) {
+        val intent = Intent(action)
+        if (data?.isNotEmpty() == true) {
+            val dataString: String = data.decodeToString()
+            intent.putExtra(EXTRA_DATA, dataString)
+        }
+        sendBroadcast(intent)
+    }
+
+    private fun broadcastUpdate(action: String, value: String) {
+        Log.i(_tag, "broadcastUpdate: $action $value")
+        val intent = Intent(action)
+        intent.data = Uri.parse(value)
+        sendBroadcast(intent)
+    }
+
+    //endregion
+
     //region Characteristic definition
+
     private enum class ESightCharacteristic(
         val uuid: String,
         private val notifyDescriptorUuid: String? = null,
@@ -588,5 +568,41 @@ class BleService : Service() {
                 values().find { it.uuid == characteristic.uuid.toString() }
         }
     }
+
     //endregion
+
+    //endregion
+
+    companion object {
+        const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
+        const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
+        const val ACTION_ESHARE_STATUS = "com.esightcorp.bluetooth.le.ACTION_ESHARE_STATUS"
+
+        const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
+
+        const val EXTRA_DATA = "com.esightcorp.bluetooth.le.EXTRA_DATA"
+        const val DEVICE = "com.esightcorp.bluetooth.le.DEVICE"
+
+        const val ACTION_WIFI_CONNECTED = "com.esightcorp.wifi.ACTION_WIFI_CONNECTED"
+        const val ACTION_WIFI_ERROR = "com.esightcorp.wifi.ACTION_WIFI_ERROR"
+        const val ACTION_ERROR = "com.esightcorp.wifi.ACTION_ERROR"
+        const val ACTION_WIFI_CONNECTION_STATUS =
+            "com.esightcorp.wifi.ACTION_WIFI_CONNECTION_STATUS"
+        const val ACTION_HOTSPOT = "com.esightcorp.wifi.ACTION_HOTSPOT"
+
+
+        const val ACTION_ESHARE_BUSY = "com.esightcorp.wifi.ACTION_ESHARE_BUSY"
+        const val ACTION_ESHARE_ADDR_NOT_AVAILABLE =
+            "com.esightcorp.wifi.ACTION_ESHARE_ADDR_NOT_AVAILABLE"
+        const val ACTION_ESHARE_IP_NOT_REACHABLE =
+            "com.esightcorp.wifi.ACTION_ESHARE_IP_NOT_REACHABLE"
+
+        private const val REQUEST_MTU_SIZE = 200
+
+        private const val BROADCAST_DEBOUNCE_TIME = 1000  // 1 second
+        private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
+        private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
+
+        private val SERVICE_UUID: UUID = UUID.fromString("0000b81d-0000-1000-8000-00805f9b34fb")
+    }
 }

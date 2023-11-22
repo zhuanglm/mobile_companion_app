@@ -105,7 +105,6 @@ class BluetoothPayload private constructor(
                         .put(ssid, hotspotSsid)
                         .put(pwd, hotspotPwd)
                     byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
-                    Log.i(_tag, "getByteArrayBlePayload: outgoingJSON -> $outgoingJson")
                 }
             }
 
@@ -118,19 +117,17 @@ class BluetoothPayload private constructor(
                             .put(pwd, wifiPwd)
                             .put(type, wifiType)
                     byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
-                    Log.i(_tag, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
                 }
             }
 
             BleCodes.BUTTON_PRESS -> {
                 if (longPress != null && buttonName != null) {
                     byteArray += buttonName.value.toByteArray(StandardCharsets.UTF_8)
-                    Log.i(_tag, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
                 }
             }
         }
 
-        Log.d(_tag, "getByteArrayBlePayload: ${String(byteArray, StandardCharsets.UTF_8)}")
+        Log.d(_tag, "getByteArrayBlePayload: \nSize: ${byteArray.size}\nPayload: ${String(byteArray, StandardCharsets.UTF_8)}")
 
         return byteArray
     }

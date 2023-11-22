@@ -8,6 +8,7 @@ import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRe
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.settings.repositories.SettingsRepository
 import com.esightcorp.mobile.app.settings.state.SettingsUiState
+import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.ui.navigation.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    application: Application,
+    private val application: Application,
     settingsRepo: SettingsRepository,
     btConnRepo: BtConnectionRepository,
 ) : AndroidViewModel(application) {
@@ -52,4 +53,6 @@ class SettingsViewModel @Inject constructor(
     fun navigateToDisconnect(navController: NavController) =
         navController.navigate(SettingsNavigation.DisconnectRoute)
 
+    fun showExternalUrl(urlId: Int) =
+        with(application.applicationContext) { openExternalUrl(getString(urlId)) }
 }

@@ -13,38 +13,47 @@ class StreamOutThread(
     private val streamOutListener: StreamOutListener
 ) : Thread() {
 
-    private var isReadingData = false;
+    private val _tag = this.javaClass.simpleName
+
+    private var isReadingData = false
+        @Synchronized get
+        @Synchronized set
+
     private val mHandler = Handler(Looper.getMainLooper())
+
     private val timeoutRunnable = Runnable {
         if (isReadingData) {
             isReadingData = false
             restartTimeout()
         } else {
+            Log.e(_tag, "Worker thread read timeout!", Exception())
             streamOutListener.onConnectionTimeout()
         }
     }
 
+    @Synchronized
     private fun restartTimeout() {
         mHandler.removeCallbacks(timeoutRunnable)
         mHandler.postDelayed(timeoutRunnable, TIMEOUT)
     }
 
     override fun run() {
+        Log.e(_tag, "Worker thread started ...")
+
         restartTimeout()
         try {
             val decoder = ParsingDecoder(DecoderImpl(surface))
             val buffer = ByteArray(BUFFER_SIZE)
             while (!isInterrupted) {
-                Log.d(TAG, "run: reading data")
                 isReadingData = true
                 val read = inputStream.read(buffer)
                 if (read == -1 || read == 0) {
-                    Log.d(TAG, "run: read -1 or 0  ")
+                    Log.e(_tag, "Input stream read result: $read")
                     streamOutListener.onConnectionClosed()
                     SocketManager.close()
                     break
                 }
-                Log.d(TAG, "run: read $read bytes")
+//                Log.d(_tag, "Received bytes: $read")
                 decoder.consume(buffer.copyOf(read))
             }
         } catch (e: Exception) {
@@ -53,10 +62,11 @@ class StreamOutThread(
         } finally {
             mHandler.removeCallbacks(timeoutRunnable)
         }
+
+        Log.e(_tag, "Worker thread stopped!!!")
     }
 
     companion object {
-        private const val TAG = "StreamOutThread"
         private const val TIMEOUT = 10000L
         private const val BUFFER_SIZE = 1024 * 2
     }

@@ -9,7 +9,6 @@ abstract class Decoder (
     protected val mSurface: Surface?
 ): Closeable {
 
-
     companion object{
         const val TAG = "Decoder"
         const val mMime = "video/avc"
@@ -21,7 +20,7 @@ abstract class Decoder (
     protected abstract var mDecoder: MediaCodec?
     protected abstract var isConfigured: Boolean
     protected abstract var mMediaInfo: MediaCodec.BufferInfo
-    var onSizeChanged: OnSizeChanged? = null
+    protected var onSizeChanged: OnSizeChanged? = null
 
     interface OnSizeChanged{
         fun onSizeChanged(width: Int, height: Int)
@@ -32,6 +31,4 @@ abstract class Decoder (
     abstract override fun close()
     abstract fun readFrame(dataInput: ByteArray, length: Int)
     abstract fun getDecoder(format: MediaFormat): MediaCodec
-
-
 }

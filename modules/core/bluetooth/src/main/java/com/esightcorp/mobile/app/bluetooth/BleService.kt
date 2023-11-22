@@ -39,18 +39,13 @@ class BleService : Service() {
     var lastBroadcastTimeEshareError = 0L
 
 
-    private val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
-        hashMapOf()
-
-
     //gatt callback
     @SuppressLint("MissingPermission")
     private val bluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
-                    Log.d(
-                        _tag, "onConnectionStateChange - STATE_CONNECTED")
+                    Log.d(_tag, "onConnectionStateChange - STATE_CONNECTED")
                     bluetoothGatt = gatt
                     connectionState = STATE_CONNECTED
                     gatt.requestMtu(REQUEST_MTU_SIZE)
@@ -65,76 +60,88 @@ class BleService : Service() {
             }
         }
 
+        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
+            Log.d(_tag, "onMtuChanged: ${gatt.device?.name}  $mtu")
+            gatt.discoverServices()
+        }
+
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            Log.i(
-                _tag,
-                "onServicesDiscovered: device ${gatt.device.name} and status is success? ${status == BluetoothGatt.GATT_SUCCESS}"
-            )
-
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED)
-
-                val service = gatt.getService(SERVICE_UUID) ?: return
-                BUTTON_PRESS_Characteristic =
-                    service.getCharacteristic(UUID_CHARACTERISTIC_BUTTON_PRESSED)
-                WIFI_INFO_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_INFO)
-                WIFI_INFO_Characteristic.getDescriptor(UUID_DESCRIPTOR_WIFI_INFO)?.let {
-                    WIFI_INFO_Descriptor = it
-                    characteristicToDescriptorMap[WIFI_INFO_Characteristic] = it
-                }
-
-                ERROR_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_ERROR)
-                ERROR_Characteristic.getDescriptor(UUID_DESCRIPTOR_ERROR)?.let {
-                    Log.i(_tag, "onServicesDiscovered: ERROR CHARACTERTISTIC SETTING DESCRIPTOR")
-                    ERROR_Descriptor = it
-                    characteristicToDescriptorMap[ERROR_Characteristic] = it
-                }
-
-                HOTSPOT_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_HOTSPOT)
-                HOTSPOT_Characteristic.getDescriptor(UUID_DESCRIPTOR_HOTSPOT)?.let {
-                    HOTSPOT_Descriptor = it
-                    characteristicToDescriptorMap[HOTSPOT_Characteristic] = it
-                }
-
-                WIFI_CONNECTION_STATUS_Characteristic =
-                    service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS)
-                WIFI_CONNECTION_STATUS_Characteristic.getDescriptor(
-                    UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS
-                )?.let {
-                    WIFI_CONNECTION_STATUS_Descriptor = it
-                    characteristicToDescriptorMap[WIFI_CONNECTION_STATUS_Characteristic] = it
-                }
-
-                ESHARE_COMMANDS_Characteristic =
-                    service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_COMMANDS)
-                ESHARE_COMMANDS_Characteristic.getDescriptor(UUID_DESCRIPTOR_ESHARE_COMMANDS)
-                    ?.let {
-                        ESHARE_COMMANDS_Descriptor = it
-                        characteristicToDescriptorMap[ESHARE_COMMANDS_Characteristic] = it
-                    }
-
-                ESHARE_STATUS_Characteristic =
-                    service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_STATUS)
-                ESHARE_STATUS_Characteristic.getDescriptor(UUID_DESCRIPTOR_ESHARE_STATUS)?.let {
-                    ESHARE_STATUS_Descriptor = it
-                    characteristicToDescriptorMap[ESHARE_STATUS_Characteristic] = it
-                }
-
-                while (characteristicToDescriptorMap.isNotEmpty()) {
-                    setCharacteristicEnabledNotification(
-                        characteristicToDescriptorMap.keys.first(),
-                        characteristicToDescriptorMap.values.first(),
-                        gatt
-                    )
-                    characteristicToDescriptorMap.remove(characteristicToDescriptorMap.keys.first())
-                }
-            } else {
-                Log.e(
-                    _tag,
-                    "onServicesDiscovered received GATT_FAILURE ? ${status == BluetoothGatt.GATT_FAILURE}"
-                )
+            Log.i(_tag, "onServicesDiscovered - device: ${gatt.device.name}, status: $status")
+            if (status != BluetoothGatt.GATT_SUCCESS) {
+                Log.e(_tag, "onServicesDiscovered failed", Exception())
+                return
             }
+
+            val service = gatt.getService(SERVICE_UUID) ?: run {
+                Log.e(_tag, "Failed to discover service: $SERVICE_UUID")
+                return
+            }
+
+            Log.w(_tag, "onServicesDiscovered - success")
+
+            val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
+                hashMapOf()
+
+            BUTTON_PRESS_Characteristic =
+                service.getCharacteristic(UUID_CHARACTERISTIC_BUTTON_PRESSED)
+            WIFI_INFO_Characteristic =
+                service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_INFO)
+            WIFI_INFO_Characteristic.getDescriptor(UUID_DESCRIPTOR_WIFI_INFO)?.let {
+                WIFI_INFO_Descriptor = it
+                characteristicToDescriptorMap[WIFI_INFO_Characteristic] = it
+            }
+
+            ERROR_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_ERROR)
+            ERROR_Characteristic.getDescriptor(UUID_DESCRIPTOR_ERROR)?.let {
+                Log.i(
+                    _tag,
+                    "onServicesDiscovered: ERROR CHARACTERTISTIC SETTING DESCRIPTOR"
+                )
+                ERROR_Descriptor = it
+                characteristicToDescriptorMap[ERROR_Characteristic] = it
+            }
+
+            HOTSPOT_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_HOTSPOT)
+            HOTSPOT_Characteristic.getDescriptor(UUID_DESCRIPTOR_HOTSPOT)?.let {
+                HOTSPOT_Descriptor = it
+                characteristicToDescriptorMap[HOTSPOT_Characteristic] = it
+            }
+
+            WIFI_CONNECTION_STATUS_Characteristic =
+                service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS)
+            WIFI_CONNECTION_STATUS_Characteristic.getDescriptor(
+                UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS
+            )?.let {
+                WIFI_CONNECTION_STATUS_Descriptor = it
+                characteristicToDescriptorMap[WIFI_CONNECTION_STATUS_Characteristic] = it
+            }
+
+            ESHARE_COMMANDS_Characteristic =
+                service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_COMMANDS)
+            ESHARE_COMMANDS_Characteristic.getDescriptor(UUID_DESCRIPTOR_ESHARE_COMMANDS)
+                ?.let {
+                    ESHARE_COMMANDS_Descriptor = it
+                    characteristicToDescriptorMap[ESHARE_COMMANDS_Characteristic] = it
+                }
+
+            ESHARE_STATUS_Characteristic =
+                service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_STATUS)
+            ESHARE_STATUS_Characteristic.getDescriptor(UUID_DESCRIPTOR_ESHARE_STATUS)?.let {
+                ESHARE_STATUS_Descriptor = it
+                characteristicToDescriptorMap[ESHARE_STATUS_Characteristic] = it
+            }
+
+            while (characteristicToDescriptorMap.isNotEmpty()) {
+                setCharacteristicEnabledNotification(
+                    characteristicToDescriptorMap.keys.first(),
+                    characteristicToDescriptorMap.values.first(),
+                    gatt
+                )
+                characteristicToDescriptorMap.remove(characteristicToDescriptorMap.keys.first())
+            }
+
+            broadcastUpdate(ACTION_GATT_CONNECTED)
         }
 
         override fun onCharacteristicRead(
@@ -143,26 +150,35 @@ class BleService : Service() {
             value: ByteArray,
             status: Int
         ) {
-            Log.d(_tag, "onCharacteristicRead: unknown status ")
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.e(
-                    _tag,
-                    "onCharacteristicRead: ${value.decodeToString()}"
-                )
-                when (characteristic) {
-                    ESHARE_STATUS_Characteristic -> {
-                        broadcastUpdate(ACTION_ESHARE_STATUS, characteristic)
-                    }
+            Log.d(_tag, "onCharacteristicRead - ${characteristic.uuid}, status: $status")
+            if (status != BluetoothGatt.GATT_SUCCESS) return
 
-                    else -> {
-                        broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
-                    }
-                }
+            Log.e(_tag, "onCharacteristicRead: $characteristic -> ${value.decodeToString()}")
+            val notifyingAction = when (characteristic) {
+                ESHARE_STATUS_Characteristic -> ACTION_ESHARE_STATUS
+                else -> ACTION_DATA_AVAILABLE
             }
+
+            broadcastUpdate(notifyingAction, value)
+        }
+
+        @Deprecated(
+            "Deprecated in Java",
+            ReplaceWith("onCharacteristicRead(gatt, characteristic, characteristic.value, status)")
+        )
+        @Suppress("Deprecation")
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            onCharacteristicRead(gatt, characteristic, characteristic.value, status)
         }
 
         override fun onCharacteristicChanged(
-            gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray,
         ) {
             val incoming = String(value, StandardCharsets.UTF_8)
             Log.d(
@@ -170,7 +186,6 @@ class BleService : Service() {
                 "onCharacteristicChanged: ${gatt.device?.name}, ${characteristic.uuid}, $incoming"
             )
             when (characteristic.uuid) {
-
                 UUID_CHARACTERISTIC_WIFI_INFO -> {
                     when (incoming) {
                         "WIFI_SUCCESS" -> {
@@ -192,7 +207,6 @@ class BleService : Service() {
                     Log.i(_tag, "onCharacteristicChanged: Error $incoming")
                     when (incoming) {
                         "ERROR_IP_NOT_REACHABLE" -> {
-                            val BROADCAST_DEBOUNCE_TIME = 1000  // 1 second
                             val currentTime = System.currentTimeMillis()
                             if (currentTime - lastBroadcastTimeEshareError > BROADCAST_DEBOUNCE_TIME) {
                                 broadcastUpdate(ACTION_ESHARE_IP_NOT_REACHABLE)
@@ -217,7 +231,6 @@ class BleService : Service() {
 
                 UUID_CHARACTERISTIC_BUTTON_PRESSED -> {
                     Log.i(_tag, "onCharacteristicChanged: Button pressed  $incoming")
-
                 }
 
                 UUID_CHARACTERISTIC_HOTSPOT -> {
@@ -235,52 +248,42 @@ class BleService : Service() {
                 else -> {
                     Log.i(_tag, "onCharacteristicChanged: not handling this")
                 }
-
             }
         }
 
+        @Deprecated(
+            "Deprecated in Java",
+            ReplaceWith("onCharacteristicChanged(gatt, characteristic, characteristic.value)")
+        )
+        @Suppress("Deprecation")
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic
+        ) {
+            onCharacteristicChanged(gatt, characteristic, characteristic.value)
+        }
 
         override fun onCharacteristicWrite(
-            gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
         ) {
-            super.onCharacteristicWrite(gatt, characteristic, status)
             Log.d(
                 _tag,
-                "onCharacteristicWrite: ${gatt?.device?.name}, ${characteristic?.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} "
+                "onCharacteristicWrite: ${gatt.device?.name}, ${characteristic.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} "
             )
         }
-
-        override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
-            super.onMtuChanged(gatt, mtu, status)
-            Log.d(_tag, "onMtuChanged: ${gatt?.device?.name}  ${mtu}")
-            broadcastUpdate(ACTION_GATT_CONNECTED)
-        }
-
-
-        override fun onDescriptorRead(
-            gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor?, status: Int
-        ) {
-            super.onDescriptorRead(gatt, descriptor, status)
-            Log.e(_tag, "onDescriptorRead: ")
-        }
-
-        override fun onDescriptorWrite(
-            gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor?, status: Int
-        ) {
-        }
-
-
     }
 
-    @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission")
+    @Suppress("Deprecation")
     private fun setCharacteristicEnabledNotification(
         characteristic: BluetoothGattCharacteristic,
         descriptor: BluetoothGattDescriptor,
         gatt: BluetoothGatt,
     ) {
         Log.i(_tag, "setCharacteristicEnabledNotification: ${characteristic.uuid} ")
-        characteristic.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+        characteristic.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
         gatt.writeDescriptor(descriptor)
         gatt.setCharacteristicNotification(characteristic, true)
     }
@@ -355,21 +358,17 @@ class BleService : Service() {
         sendBroadcast(intent)
     }
 
-    private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic) {
+    private fun broadcastUpdate(action: String, data: ByteArray?) {
         val intent = Intent(action)
-        val data: ByteArray? = characteristic.value
         if (data?.isNotEmpty() == true) {
             val dataString: String = data.decodeToString()
             intent.putExtra(EXTRA_DATA, dataString)
         }
-        Log.d(_tag, "broadcastUpdate: $characteristic")
         sendBroadcast(intent)
     }
 
-    private fun broadcastUpdate(
-        action: String, value: String
-    ) {
-        Log.i(_tag, "broadcastUpdate: ${action} ${value}")
+    private fun broadcastUpdate(action: String, value: String) {
+        Log.i(_tag, "broadcastUpdate: $action $value")
         val intent = Intent(action)
         intent.data = Uri.parse(value)
         sendBroadcast(intent)
@@ -378,16 +377,6 @@ class BleService : Service() {
     override fun onUnbind(intent: Intent?): Boolean {
         close()
         return super.onUnbind(intent)
-    }
-
-    @SuppressLint("MissingPermission")
-    fun getSupportedGattServices(): List<BluetoothGattService>? {
-        return bluetoothGatt?.services
-    }
-
-    @SuppressLint("MissingPermission")
-    fun discoverServices(): Boolean {
-        return bluetoothGatt?.discoverServices() ?: false
     }
 
     @SuppressLint("MissingPermission")
@@ -526,8 +515,10 @@ class BleService : Service() {
     }
 
     @SuppressLint("MissingPermission")
+    @Suppress("Deprecation")
     private fun sendMessage(
-        characteristic: BluetoothGattCharacteristic, byteArray: ByteArray
+        characteristic: BluetoothGattCharacteristic,
+        byteArray: ByteArray
     ): Boolean {
         var intResult = -1
         var boolResult = false
@@ -543,7 +534,7 @@ class BleService : Service() {
                 boolResult = gatt.writeCharacteristic(characteristic)
             }
         }
-        Log.d(_tag, "sendMessage: SDK 33${intResult}, else $boolResult")
+        Log.d(_tag, "sendMessage: SDK 33 ${intResult}, else $boolResult")
         return boolResult
     }
 
@@ -589,8 +580,7 @@ class BleService : Service() {
         const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
         const val ACTION_ESHARE_STATUS = "com.esightcorp.bluetooth.le.ACTION_ESHARE_STATUS"
-        const val ACTION_GATT_SERVICES_DISCOVERED =
-            "com.esightcorp.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED"
+
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
 
         const val EXTRA_DATA = "com.esightcorp.bluetooth.le.EXTRA_DATA"
@@ -612,6 +602,7 @@ class BleService : Service() {
 
         const val REQUEST_MTU_SIZE = 200
 
+        private const val BROADCAST_DEBOUNCE_TIME = 1000  // 1 second
         private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
         private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
 
@@ -646,5 +637,4 @@ class BleService : Service() {
             UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
 
     }
-
 }

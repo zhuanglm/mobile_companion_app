@@ -67,7 +67,6 @@ class BluetoothModel constructor(
                         ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
                     bleManager.getBluetoothConnectionListener()
                         ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
-                    bleManager.discoverServices()
                 }
 
                 BleService.ACTION_GATT_DISCONNECTED -> {
@@ -335,7 +334,6 @@ class BluetoothModel constructor(
         return IntentFilter().apply {
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
-            addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
         }
     }
 

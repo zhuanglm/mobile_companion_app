@@ -11,11 +11,11 @@ import android.util.Log
 object eSightBleManager {
     private val _tag = this.javaClass.simpleName
 
-    const val DEVICE_NAME_CRITERION = "eGo"
+    private const val DEVICE_NAME_CRITERION = "eGo"
 
 
     lateinit var bluetoothManager: BluetoothManager
-    lateinit var bluetoothAdapter: BluetoothAdapter
+    private lateinit var bluetoothAdapter: BluetoothAdapter
     lateinit var bluetoothLeScanner: BluetoothLeScanner
     private var bleService: BleService? = null
     private var bleConnectionStatus = false
@@ -145,9 +145,5 @@ object eSightBleManager {
 
     fun checkIfEnabled(): Boolean {
         return bluetoothAdapter.isEnabled
-    }
-
-    fun discoverServices() {
-        bleService?.discoverServices()
     }
 }

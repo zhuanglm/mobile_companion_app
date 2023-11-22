@@ -21,23 +21,7 @@ class BleService : Service() {
     private var bluetoothGatt: BluetoothGatt? = null
     private var connectionState = STATE_DISCONNECTED
 
-    private lateinit var WIFI_INFO_Characteristic: BluetoothGattCharacteristic
-    private lateinit var BUTTON_PRESS_Characteristic: BluetoothGattCharacteristic
-    private lateinit var ERROR_Characteristic: BluetoothGattCharacteristic
-    private lateinit var HOTSPOT_Characteristic: BluetoothGattCharacteristic
-    private lateinit var WIFI_CONNECTION_STATUS_Characteristic: BluetoothGattCharacteristic
-    private lateinit var ESHARE_COMMANDS_Characteristic: BluetoothGattCharacteristic
-    private lateinit var ESHARE_STATUS_Characteristic: BluetoothGattCharacteristic
-
-    private lateinit var ESHARE_STATUS_Descriptor: BluetoothGattDescriptor
-    private lateinit var ESHARE_COMMANDS_Descriptor: BluetoothGattDescriptor
-    private lateinit var WIFI_CONNECTION_STATUS_Descriptor: BluetoothGattDescriptor
-    private lateinit var HOTSPOT_Descriptor: BluetoothGattDescriptor
-    private lateinit var WIFI_INFO_Descriptor: BluetoothGattDescriptor
-    private lateinit var ERROR_Descriptor: BluetoothGattDescriptor
-
     var lastBroadcastTimeEshareError = 0L
-
 
     //gatt callback
     @SuppressLint("MissingPermission")
@@ -73,72 +57,15 @@ class BleService : Service() {
                 return
             }
 
-            val service = gatt.getService(SERVICE_UUID) ?: run {
+            gatt.getService(SERVICE_UUID) ?: run {
                 Log.e(_tag, "Failed to discover service: $SERVICE_UUID")
                 return
             }
 
             Log.w(_tag, "onServicesDiscovered - success")
 
-            val characteristicToDescriptorMap: HashMap<BluetoothGattCharacteristic, BluetoothGattDescriptor> =
-                hashMapOf()
-
-            BUTTON_PRESS_Characteristic =
-                service.getCharacteristic(UUID_CHARACTERISTIC_BUTTON_PRESSED)
-            WIFI_INFO_Characteristic =
-                service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_INFO)
-            WIFI_INFO_Characteristic.getDescriptor(UUID_DESCRIPTOR_WIFI_INFO)?.let {
-                WIFI_INFO_Descriptor = it
-                characteristicToDescriptorMap[WIFI_INFO_Characteristic] = it
-            }
-
-            ERROR_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_ERROR)
-            ERROR_Characteristic.getDescriptor(UUID_DESCRIPTOR_ERROR)?.let {
-                Log.i(
-                    _tag,
-                    "onServicesDiscovered: ERROR CHARACTERTISTIC SETTING DESCRIPTOR"
-                )
-                ERROR_Descriptor = it
-                characteristicToDescriptorMap[ERROR_Characteristic] = it
-            }
-
-            HOTSPOT_Characteristic = service.getCharacteristic(UUID_CHARACTERISTIC_HOTSPOT)
-            HOTSPOT_Characteristic.getDescriptor(UUID_DESCRIPTOR_HOTSPOT)?.let {
-                HOTSPOT_Descriptor = it
-                characteristicToDescriptorMap[HOTSPOT_Characteristic] = it
-            }
-
-            WIFI_CONNECTION_STATUS_Characteristic =
-                service.getCharacteristic(UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS)
-            WIFI_CONNECTION_STATUS_Characteristic.getDescriptor(
-                UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS
-            )?.let {
-                WIFI_CONNECTION_STATUS_Descriptor = it
-                characteristicToDescriptorMap[WIFI_CONNECTION_STATUS_Characteristic] = it
-            }
-
-            ESHARE_COMMANDS_Characteristic =
-                service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_COMMANDS)
-            ESHARE_COMMANDS_Characteristic.getDescriptor(UUID_DESCRIPTOR_ESHARE_COMMANDS)
-                ?.let {
-                    ESHARE_COMMANDS_Descriptor = it
-                    characteristicToDescriptorMap[ESHARE_COMMANDS_Characteristic] = it
-                }
-
-            ESHARE_STATUS_Characteristic =
-                service.getCharacteristic(UUID_CHARACTERISTIC_ESHARE_STATUS)
-            ESHARE_STATUS_Characteristic.getDescriptor(UUID_DESCRIPTOR_ESHARE_STATUS)?.let {
-                ESHARE_STATUS_Descriptor = it
-                characteristicToDescriptorMap[ESHARE_STATUS_Characteristic] = it
-            }
-
-            while (characteristicToDescriptorMap.isNotEmpty()) {
-                setCharacteristicEnabledNotification(
-                    characteristicToDescriptorMap.keys.first(),
-                    characteristicToDescriptorMap.values.first(),
-                    gatt
-                )
-                characteristicToDescriptorMap.remove(characteristicToDescriptorMap.keys.first())
+            ESightCharacteristic.values().forEach { chType ->
+                configureCharacteristicNotification(chType, gatt)
             }
 
             broadcastUpdate(ACTION_GATT_CONNECTED)
@@ -154,8 +81,8 @@ class BleService : Service() {
             if (status != BluetoothGatt.GATT_SUCCESS) return
 
             Log.e(_tag, "onCharacteristicRead: $characteristic -> ${value.decodeToString()}")
-            val notifyingAction = when (characteristic) {
-                ESHARE_STATUS_Characteristic -> ACTION_ESHARE_STATUS
+            val notifyingAction = when (characteristic.uuid.toString()) {
+                ESightCharacteristic.ESHARE_STATUS.uuid -> ACTION_ESHARE_STATUS
                 else -> ACTION_DATA_AVAILABLE
             }
 
@@ -170,7 +97,7 @@ class BleService : Service() {
         override fun onCharacteristicRead(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
-            status: Int
+            status: Int,
         ) {
             onCharacteristicRead(gatt, characteristic, characteristic.value, status)
         }
@@ -185,8 +112,9 @@ class BleService : Service() {
                 _tag,
                 "onCharacteristicChanged: ${gatt.device?.name}, ${characteristic.uuid}, $incoming"
             )
-            when (characteristic.uuid) {
-                UUID_CHARACTERISTIC_WIFI_INFO -> {
+
+            when (ESightCharacteristic.from(characteristic)) {
+                ESightCharacteristic.WIFI_INFO -> {
                     when (incoming) {
                         "WIFI_SUCCESS" -> {
                             broadcastUpdate(ACTION_WIFI_CONNECTED)
@@ -194,7 +122,7 @@ class BleService : Service() {
 
                         "WIFI_ERROR" -> {
                             broadcastUpdate(ACTION_WIFI_ERROR)
-                            gatt.readCharacteristic(ERROR_Characteristic)
+                            readCharacteristic(ESightCharacteristic.ERROR_INFO)
                         }
 
                         else -> {
@@ -203,7 +131,7 @@ class BleService : Service() {
                     }
                 }
 
-                UUID_CHARACTERISTIC_ERROR -> {
+                ESightCharacteristic.ERROR_INFO -> {
                     Log.i(_tag, "onCharacteristicChanged: Error $incoming")
                     when (incoming) {
                         "ERROR_IP_NOT_REACHABLE" -> {
@@ -229,24 +157,20 @@ class BleService : Service() {
                     }
                 }
 
-                UUID_CHARACTERISTIC_BUTTON_PRESSED -> {
-                    Log.i(_tag, "onCharacteristicChanged: Button pressed  $incoming")
-                }
-
-                UUID_CHARACTERISTIC_HOTSPOT -> {
+                ESightCharacteristic.HOTSPOT -> {
                     broadcastUpdate(ACTION_HOTSPOT, incoming)
                 }
 
-                UUID_CHARACTERISTIC_ESHARE_STATUS -> {
+                ESightCharacteristic.ESHARE_STATUS -> {
                     broadcastUpdate(ACTION_ESHARE_STATUS, incoming)
                 }
 
-                UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS -> {
+                ESightCharacteristic.WIFI_CONNECTION_STATUS -> {
                     broadcastUpdate(ACTION_WIFI_CONNECTION_STATUS, incoming)
                 }
 
                 else -> {
-                    Log.i(_tag, "onCharacteristicChanged: not handling this")
+                    Log.i(_tag, "onCharacteristicChanged: not handling!")
                 }
             }
         }
@@ -258,7 +182,7 @@ class BleService : Service() {
         @Suppress("Deprecation")
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic
+            characteristic: BluetoothGattCharacteristic,
         ) {
             onCharacteristicChanged(gatt, characteristic, characteristic.value)
         }
@@ -266,7 +190,7 @@ class BleService : Service() {
         override fun onCharacteristicWrite(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
-            status: Int
+            status: Int,
         ) {
             Log.d(
                 _tag,
@@ -277,17 +201,20 @@ class BleService : Service() {
 
     @SuppressLint("MissingPermission")
     @Suppress("Deprecation")
-    private fun setCharacteristicEnabledNotification(
-        characteristic: BluetoothGattCharacteristic,
-        descriptor: BluetoothGattDescriptor,
+    private fun configureCharacteristicNotification(
+        chType: ESightCharacteristic,
         gatt: BluetoothGatt,
-    ) {
-        Log.i(_tag, "setCharacteristicEnabledNotification: ${characteristic.uuid} ")
-        characteristic.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-        gatt.writeDescriptor(descriptor)
-        gatt.setCharacteristicNotification(characteristic, true)
-    }
+    ): Boolean = when (val descriptor = chType.getNotifyDescriptor(gatt)) {
+        null -> false
+        else -> {
+            val characteristic = chType.getCharacteristic(gatt)!!.apply {
+                value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            }
 
+            gatt.writeDescriptor(descriptor)
+            gatt.setCharacteristicNotification(characteristic, true)
+        }
+    }
 
     fun initialize(): Boolean {
         bluetoothAdapter =
@@ -380,9 +307,13 @@ class BleService : Service() {
     }
 
     @SuppressLint("MissingPermission")
-    fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
-        bluetoothGatt?.readCharacteristic(characteristic) ?: run {
-            Log.w(_tag, "readCharacteristic: BluetoothGatt not initialized")
+    private fun readCharacteristic(chType: ESightCharacteristic) {
+        bluetoothGatt?.let { gatt ->
+            chType.getCharacteristic(gatt)?.let { gatt.readCharacteristic(it) } ?: run {
+                Log.e(_tag, "readCharacteristic - Could not find characteristic: ${chType.uuid}")
+            }
+        } ?: run {
+            Log.e(_tag, "readCharacteristic - BluetoothGatt not initialized")
         }
     }
 
@@ -397,144 +328,138 @@ class BleService : Service() {
     fun sendWifiCreds(ssid: String, pwd: String, type: String) {
         Log.i(_tag, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
         sendMessage(
-            WIFI_INFO_Characteristic,
+            ESightCharacteristic.WIFI_INFO,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.WIFI_CREDS).ssid(ssid).wifiPwd(pwd)
-                .wifiType(type).build().getByteArrayBlePayload()
+                .wifiType(type).build()
         )
     }
 
     fun sendPortAndIp(port: Int, ip: String) {
         Log.i(_tag, "sendPortAndIp: Port = $port, IP = $ip")
         sendMessage(
-            ESHARE_COMMANDS_Characteristic,
+            ESightCharacteristic.ESHARE_COMMANDS,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT).port(port.toString())
-                .ipAddress(ip).build().getByteArrayBlePayload()
+                .ipAddress(ip).build()
         )
     }
 
     fun startHotspot(ssid: String, password: String) {
         Log.i(_tag, "startHotspot: SSID = $ssid, Password = $password")
         sendMessage(
-            HOTSPOT_Characteristic,
-            BluetoothPayload.Builder(
-                BluetoothPayload.BleCodes.HOTSPOT_CREDS,
-                hotspotSsid = ssid,
-                hotspotPwd = password
-            )
-                .build().getByteArrayBlePayload()
+            ESightCharacteristic.HOTSPOT,
+            BluetoothPayload.Builder(BluetoothPayload.BleCodes.HOTSPOT_CREDS, ssid, password)
+                .build()
         )
     }
 
     fun stopEshare() {
         sendMessage(
-            ESHARE_COMMANDS_Characteristic,
+            ESightCharacteristic.ESHARE_COMMANDS,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT_SHUTDOWN).build()
-                .getByteArrayBlePayload()
         )
     }
 
     fun writeUpButtonPress() {
         Log.d(_tag, "writeUpButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.UP).build().getByteArrayBlePayload()
+                .buttonName(BluetoothPayload.RemoteButtonName.UP).build()
         )
     }
 
     fun writeDownButtonPress() {
         Log.d(_tag, "writeDownButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.DOWN).build().getByteArrayBlePayload()
+                .buttonName(BluetoothPayload.RemoteButtonName.DOWN).build()
         )
     }
 
     fun writeModeButtonPress() {
         Log.d(_tag, "writeModeButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.MODE).build().getByteArrayBlePayload()
+                .buttonName(BluetoothPayload.RemoteButtonName.MODE).build()
         )
     }
 
     fun writeMenuButtonPress() {
         Log.d(_tag, "writeMenuButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
-                .buttonName(BluetoothPayload.RemoteButtonName.MENU).build().getByteArrayBlePayload()
+                .buttonName(BluetoothPayload.RemoteButtonName.MENU).build()
         )
     }
 
     fun writeVolumeUpButtonPress() {
         Log.d(_tag, "writeVolumeUpButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.VOL_UP).build()
-                .getByteArrayBlePayload()
         )
     }
 
     fun writeVolumeDownButtonPress() {
         Log.d(_tag, "writeVolumeDownButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.VOL_DOWN).build()
-                .getByteArrayBlePayload()
         )
     }
 
     fun writeFinderButtonPressDownEvent() {
         Log.d(_tag, "writeFinderButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.FINDER).build()
-                .getByteArrayBlePayload()
         )
     }
 
     fun writeActionUpEvent() {
         Log.d(_tag, "writeFinderButtonPress: ")
         sendMessage(
-            BUTTON_PRESS_Characteristic,
+            ESightCharacteristic.BUTTON_PRESSED,
             BluetoothPayload.Builder(BluetoothPayload.BleCodes.BUTTON_PRESS)
                 .buttonName(BluetoothPayload.RemoteButtonName.ACTION_UP).build()
-                .getByteArrayBlePayload()
         )
     }
 
     fun checkIfEshareIsRunning() {
         Log.i(_tag, "checkIfEshareIsRunning: Reading the eShare Status Characteristic")
-        readCharacteristic(ESHARE_STATUS_Characteristic)
+        readCharacteristic(ESightCharacteristic.ESHARE_STATUS)
     }
 
     @SuppressLint("MissingPermission")
     @Suppress("Deprecation")
-    private fun sendMessage(
-        characteristic: BluetoothGattCharacteristic,
-        byteArray: ByteArray
-    ): Boolean {
+    private fun sendMessage(chType: ESightCharacteristic, payload: BluetoothPayload): Boolean {
         var intResult = -1
         var boolResult = false
 
-        bluetoothGatt?.let { gatt ->
-            if (Build.VERSION.SDK_INT >= 33) {
-                intResult = gatt.writeCharacteristic(
-                    characteristic, byteArray, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                )
-                boolResult = decodeSendMessageResult(intResult)
-            } else {
-                characteristic.value = byteArray
-                boolResult = gatt.writeCharacteristic(characteristic)
+        val data = payload.getByteArrayBlePayload()
+        chType.getCharacteristic(bluetoothGatt)?.let { characteristic ->
+            when (Build.VERSION.SDK_INT >= 33) {
+                true -> {
+                    intResult = bluetoothGatt!!.writeCharacteristic(
+                        characteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                    )
+                    boolResult = decodeSendMessageResult(intResult)
+                }
+
+                false -> {
+                    characteristic.value = data
+                    boolResult = bluetoothGatt!!.writeCharacteristic(characteristic)
+                }
             }
         }
         Log.d(_tag, "sendMessage: SDK 33 ${intResult}, else $boolResult")
+
         return boolResult
     }
 
@@ -600,41 +525,68 @@ class BleService : Service() {
         const val ACTION_ESHARE_IP_NOT_REACHABLE =
             "com.esightcorp.wifi.ACTION_ESHARE_IP_NOT_REACHABLE"
 
-        const val REQUEST_MTU_SIZE = 200
+        private const val REQUEST_MTU_SIZE = 200
 
         private const val BROADCAST_DEBOUNCE_TIME = 1000  // 1 second
         private const val STATE_DISCONNECTED = BluetoothGatt.STATE_DISCONNECTED
         private const val STATE_CONNECTED = BluetoothGatt.STATE_CONNECTED
 
         val SERVICE_UUID: UUID = UUID.fromString("0000b81d-0000-1000-8000-00805f9b34fb")
-
-        val UUID_DESCRIPTOR_WIFI_INFO: UUID =
-            UUID.fromString("6b90805b2-08f9-4168-86f6-d49f5046f7b3")
-        val UUID_DESCRIPTOR_ERROR: UUID = UUID.fromString("f385809a-2e27-4630-b189-7ea51b79c058")
-        val UUID_DESCRIPTOR_HOTSPOT: UUID = UUID.fromString("7a786414-d6ec-466d-80ca-d9f6a51c2ad1")
-        val UUID_DESCRIPTOR_ESHARE_COMMANDS: UUID =
-            UUID.fromString("11235813-2134-5589-1442-ac3cf6d01c7d")
-        val UUID_DESCRIPTOR_ESHARE_STATUS: UUID =
-            UUID.fromString("68daeef1-e849-4530-8bf4-d7c10d6fc3ac")
-        val UUID_DESCRIPTOR_WIFI_CONNECTION_STATUS: UUID =
-            UUID.fromString("f38a6f74-8e88-456e-aa85-92d28b2c4823")
-
-        val UUID_CHARACTERISTIC_HOTSPOT: UUID =
-            UUID.fromString("76a70d9c-276e-4230-9eb0-ea302fdd3c3d")
-        val UUID_CHARACTERISTIC_ESHARE_COMMANDS: UUID =
-            UUID.fromString("72330422-8c4d-3eca-1234-e2bafeb7dd0d")
-        val UUID_CHARACTERISTIC_ESHARE_STATUS: UUID =
-            UUID.fromString("72330422-8c4d-3eca-1234-e2bafeb7dd0e")
-        val UUID_CHARACTERISTIC_BUTTON_PRESSED: UUID =
-            UUID.fromString("603a8cf2-fdad-480b-b1c1-feef15f05260")
-
-        val UUID_CHARACTERISTIC_ERROR: UUID =
-            UUID.fromString("2b0605b2-08f9-4168-86f6-d49f5046f7a1")
-
-        val UUID_CHARACTERISTIC_WIFI_CONNECTION_STATUS: UUID =
-            UUID.fromString("1530e059-4d5e-46a8-947b-a6714f9ee5b2")
-        val UUID_CHARACTERISTIC_WIFI_INFO: UUID =
-            UUID.fromString("00001111-2222-6666-9999-00805f9b34fd")
-
     }
+
+    //region Characteristic definition
+    private enum class ESightCharacteristic(
+        val uuid: String,
+        private val notifyDescriptorUuid: String? = null,
+    ) {
+        WIFI_INFO(
+            "00001111-2222-6666-9999-00805f9b34fd",
+            "6b90805b2-08f9-4168-86f6-d49f5046f7b3",
+        ),
+
+        ERROR_INFO(
+            "2b0605b2-08f9-4168-86f6-d49f5046f7a1",
+            "f385809a-2e27-4630-b189-7ea51b79c058",
+        ),
+
+        HOTSPOT(
+            "76a70d9c-276e-4230-9eb0-ea302fdd3c3d",
+            "7a786414-d6ec-466d-80ca-d9f6a51c2ad1",
+        ),
+
+        ESHARE_COMMANDS(
+            "72330422-8c4d-3eca-1234-e2bafeb7dd0d",
+            "11235813-2134-5589-1442-ac3cf6d01c7d",
+        ),
+
+        ESHARE_STATUS(
+            "72330422-8c4d-3eca-1234-e2bafeb7dd0e",
+            "68daeef1-e849-4530-8bf4-d7c10d6fc3ac",
+        ),
+
+        WIFI_CONNECTION_STATUS(
+            "1530e059-4d5e-46a8-947b-a6714f9ee5b2",
+            "f38a6f74-8e88-456e-aa85-92d28b2c4823",
+        ),
+
+        BUTTON_PRESSED("603a8cf2-fdad-480b-b1c1-feef15f05260"),
+
+        ;
+
+        fun getCharacteristic(gatt: BluetoothGatt?) = when (gatt) {
+            null -> null
+            else -> gatt.getService(SERVICE_UUID)?.getCharacteristic(UUID.fromString(uuid))
+        }
+
+        fun getNotifyDescriptor(gatt: BluetoothGatt?) = when (notifyDescriptorUuid) {
+            null -> null
+            else -> getCharacteristic(gatt)?.getDescriptor(UUID.fromString(notifyDescriptorUuid))
+        }
+
+        companion object {
+            fun from(characteristic: BluetoothGattCharacteristic): ESightCharacteristic? =
+                values().find { it.uuid == characteristic.uuid.toString() }
+        }
+    }
+    //endregion
 }

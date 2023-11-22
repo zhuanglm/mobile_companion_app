@@ -4,20 +4,20 @@ import android.util.Log
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 
-private const val TAG = "BluetoothPayload"
-
 class BluetoothPayload private constructor(
-    val bleCode: BleCodes,
-    val SSID: String?,
-    val wifiPwd: String?,
-    val wifiType: String?,
-    val ipAddress: String?,
-    val port: String?,
-    val hotspotSsid: String?,
-    val hotspotPwd: String?,
-    val longPress: Boolean?,
-    val buttonName: RemoteButtonName?
+    private val bleCode: BleCodes,
+    private val SSID: String?,
+    private val wifiPwd: String?,
+    private val wifiType: String?,
+    private val ipAddress: String?,
+    private val port: String?,
+    private val hotspotSsid: String?,
+    private val hotspotPwd: String?,
+    private val longPress: Boolean?,
+    private val buttonName: RemoteButtonName?
 ) {
+
+    private val _tag = this.javaClass.simpleName
 
     data class Builder(
         private var bleCode: BleCodes,
@@ -42,7 +42,18 @@ class BluetoothPayload private constructor(
         fun longPress(longPress: Boolean) = apply { this.longPress = longPress }
         fun buttonName(buttonName: RemoteButtonName) = apply { this.buttonName = buttonName }
 
-        fun build() = BluetoothPayload(bleCode, SSID, wifiPwd, wifiType, ipAddress, port, hotspotSsid, hotspotPwd, longPress, buttonName)
+        fun build() = BluetoothPayload(
+            bleCode,
+            SSID,
+            wifiPwd,
+            wifiType,
+            ipAddress,
+            port,
+            hotspotSsid,
+            hotspotPwd,
+            longPress,
+            buttonName,
+        )
     }
 
     enum class BleCodes(val code: String) {
@@ -54,7 +65,7 @@ class BluetoothPayload private constructor(
         //TODO: make this enum class its own file
     }
 
-    enum class RemoteButtonName( val value: String){
+    enum class RemoteButtonName(val value: String) {
         FINDER("finder"),
         MODE("mode"),
         MENU("menu"),
@@ -67,16 +78,12 @@ class BluetoothPayload private constructor(
 
     /**
      * Payloads need to go out as a JSON -> ByteArray
-     *
-     *
      */
-
     fun getByteArrayBlePayload(): ByteArray {
         var byteArray = byteArrayOf()
-        val charset = Charsets.UTF_8
         when (bleCode) {
             BleCodes.STREAM_OUT -> {
-                if(port != null && ipAddress != null){
+                if (port != null && ipAddress != null) {
                     val outgoingJson = JSONObject()
                         .put(code, BleCodes.STREAM_OUT.code)
                         .put(portName, port)
@@ -84,21 +91,24 @@ class BluetoothPayload private constructor(
                     byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
                 }
             }
+
             BleCodes.STREAM_OUT_SHUTDOWN -> {
                 val outgoingJson = JSONObject()
                     .put(code, BleCodes.STREAM_OUT_SHUTDOWN.code)
-                    byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
+                byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
             }
+
             BleCodes.HOTSPOT_CREDS -> {
-                if(hotspotPwd != null && hotspotSsid != null){
+                if (hotspotPwd != null && hotspotSsid != null) {
                     val outgoingJson = JSONObject()
                         .put(code, BleCodes.HOTSPOT_CREDS.code)
                         .put(ssid, hotspotSsid)
                         .put(pwd, hotspotPwd)
                     byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
-                    Log.i(TAG, "getByteArrayBlePayload: outgoingJSON -> ${outgoingJson.toString()}")
+                    Log.i(_tag, "getByteArrayBlePayload: outgoingJSON -> $outgoingJson")
                 }
             }
+
             BleCodes.WIFI_CREDS -> {
                 if (SSID != null && wifiPwd != null && wifiType != null) {
                     val outgoingJson =
@@ -108,18 +118,20 @@ class BluetoothPayload private constructor(
                             .put(pwd, wifiPwd)
                             .put(type, wifiType)
                     byteArray += outgoingJson.toString().toByteArray(StandardCharsets.UTF_8)
-                    Log.i(TAG, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
+                    Log.i(_tag, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
                 }
             }
-            BleCodes.BUTTON_PRESS ->{
-                if(longPress != null && buttonName != null){
-                    byteArray += buttonName.value.toByteArray(StandardCharsets.UTF_8)
-                    Log.i(TAG, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
-                }
 
+            BleCodes.BUTTON_PRESS -> {
+                if (longPress != null && buttonName != null) {
+                    byteArray += buttonName.value.toByteArray(StandardCharsets.UTF_8)
+                    Log.i(_tag, "getByteArrayBlePayload: size of byte array -> ${byteArray.size}")
+                }
             }
         }
-        Log.d(TAG, "getByteArrayBlePayload: ${String(byteArray, charset)}")
+
+        Log.d(_tag, "getByteArrayBlePayload: ${String(byteArray, StandardCharsets.UTF_8)}")
+
         return byteArray
     }
 
@@ -132,5 +144,4 @@ class BluetoothPayload private constructor(
         const val ipAddressName: String = "ip"
         const val buttonNameJsonField: String = "button_name"
     }
-
 }

@@ -13,7 +13,10 @@ import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
-import com.esightcorp.mobile.app.utils.eShareConnectionStatus
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

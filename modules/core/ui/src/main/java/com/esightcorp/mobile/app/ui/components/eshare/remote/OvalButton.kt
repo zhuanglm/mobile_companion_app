@@ -23,8 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
-
-
+import com.esightcorp.mobile.app.ui.extensions.gestureHandler
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 
 /**

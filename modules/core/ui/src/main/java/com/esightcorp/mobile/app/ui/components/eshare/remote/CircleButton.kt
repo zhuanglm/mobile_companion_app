@@ -1,6 +1,5 @@
 package com.esightcorp.mobile.app.ui.components.eshare.remote
 
-import android.view.MotionEvent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
@@ -11,17 +10,17 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.extensions.gestureHandler
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 /**
  * Represents a circular button with a customizable icon.
@@ -31,15 +30,14 @@ import com.esightcorp.mobile.app.ui.R
  * @param contentDescription Description of the icon for accessibility purposes.
  * @param painter Painter object for rendering the icon.
  */
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CircleButton(
     modifier: Modifier = Modifier,
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
     size: Dp = DefaultButtonSize,
-    contentDescription: String? = DefaultContentDescription,
-    painter: Painter = painterResource(id = DefaultIconResource),
+    contentDescription: String? = null,
+    painter: Painter = painterResource(DefaultIconResource),
     borderColor: Color = MaterialTheme.colors.secondaryVariant,
     backgroundColor: Color = MaterialTheme.colors.secondary,
     iconTint: Color = Color.Black
@@ -48,21 +46,7 @@ fun CircleButton(
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .pointerInteropFilter {
-                when (it.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        onDownEvent()
-                        true
-                    }
-
-                    MotionEvent.ACTION_UP -> {
-                        onUpEvent()
-                        true
-                    }
-
-                    else -> false
-                }
-            },
+            .gestureHandler(onDownEvent, onUpEvent),
         shape = CircleShape,
         border = BorderStroke(DefaultBorderWidth, borderColor),
         onClick = { },
@@ -113,10 +97,10 @@ fun RegularCircleButton(
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
     size: Dp = RegularButtonSize,
-    icon: Painter = painterResource(id = DefaultIconResource)
+    icon: Painter = painterResource(DefaultIconResource)
 ) {
     CircleButton(
-        modifier = Modifier,
+        modifier = modifier,
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
         size = size,
@@ -130,10 +114,11 @@ fun ColorContrastButton(
     onClick: OnActionCallback? = null,
     primaryColor: Color,
     secondaryColor: Color,
-    icon: Painter = painterResource(id = DefaultIconResource),
+    icon: Painter = painterResource(DefaultIconResource),
     size: Dp = RegularButtonSize
 ) {
     CircleButton(
+        modifier = modifier,
         onDownEvent = onClick,
         borderColor = primaryColor,
         backgroundColor = secondaryColor,
@@ -146,7 +131,7 @@ fun ColorContrastButton(
 
 @Preview
 @Composable
-fun ColorContrastPreview() {
+internal fun ColorContrastPreview() {
     Surface {
         ColorContrastButton(primaryColor = Color.Black, secondaryColor = Color.Red)
     }
@@ -154,7 +139,7 @@ fun ColorContrastPreview() {
 
 @Preview
 @Composable
-fun TinyCircleButtonPreview() {
+internal fun TinyCircleButtonPreview() {
     Surface {
         TinyCircleButton()
     }
@@ -162,7 +147,7 @@ fun TinyCircleButtonPreview() {
 
 @Preview
 @Composable
-fun RegularCircleButtonPreview() {
+internal fun RegularCircleButtonPreview() {
     Surface {
         RegularCircleButton()
     }
@@ -170,7 +155,6 @@ fun RegularCircleButtonPreview() {
 
 // Constants for externalized values
 private val DefaultButtonSize = 25.dp
-private val DefaultContentDescription: String? = null
 private val DefaultIconResource = R.drawable.round_question_mark_24
 private val DefaultBorderWidth = 2.dp
 private val DefaultElevation = 2.dp

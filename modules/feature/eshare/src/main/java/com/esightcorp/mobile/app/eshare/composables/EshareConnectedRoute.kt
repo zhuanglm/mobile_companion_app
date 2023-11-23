@@ -3,6 +3,7 @@ package com.esightcorp.mobile.app.eshare.composables
 import android.graphics.SurfaceTexture
 import android.util.Log
 import android.view.TextureView
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -116,7 +117,7 @@ internal fun EShareConnectedScreen(
         TextureViewAndCancelButton(
             textureViewListener = textureViewListener,
             modifier = Modifier.weight(1f),
-            onCancelButtonClicked = onCancelButtonClicked,
+            onClick = onCancelButtonClicked,
         )
 
         EshareRemote(
@@ -192,8 +193,6 @@ internal fun EShareConnectedScreen(
 
         EShareConnectionStatus.Timeout -> {
             Log.e(TAG, "eShareConnectedScreen: TImoeut")
-            //TODO: is this implementation OK?
-            onCancelButtonClicked?.invoke()
         }
 
         EShareConnectionStatus.Unknown -> {
@@ -210,28 +209,21 @@ internal fun EShareConnectedScreen(
 internal fun TextureViewAndCancelButton(
     textureViewListener: TextureView.SurfaceTextureListener,
     modifier: Modifier = Modifier,
-    onCancelButtonClicked: OnActionCallback? = null,
+    onClick: OnActionCallback? = null,
 ) {
     Box(modifier = Modifier.fillMaxHeight()) {
         AndroidView(
             factory = { context ->
-                AutoFitTextureView(context).apply {
-                    surfaceTextureListener = textureViewListener
-                }
+                AutoFitTextureView(context).apply { surfaceTextureListener = textureViewListener }
             },
             modifier = modifier.fillMaxHeight(),
-            update = { view ->
-                view.surfaceTextureListener = textureViewListener
-                Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
-
-            },
         )
 
         StopEshareButton(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .offset(40.dp, 40.dp),
-            onCancelButtonClicked = onCancelButtonClicked,
+            onClick = onClick,
         )
     }
 }
@@ -239,11 +231,11 @@ internal fun TextureViewAndCancelButton(
 @Composable
 internal fun StopEshareButton(
     modifier: Modifier = Modifier,
-    onCancelButtonClicked: OnActionCallback? = null,
+    onClick: OnActionCallback? = null,
 ) {
     ColorContrastButton(
         modifier = modifier,
-        onClick = onCancelButtonClicked,
+        onClick = onClick,
         primaryColor = Color.White,
         secondaryColor = Color.Red,
         icon = painterResource(R.drawable.close_eshare_button),
@@ -258,16 +250,13 @@ internal fun EShareConnectedScreenPreview() = MaterialTheme {
         uiState = EshareConnectedUiState(connectionState = EShareConnectionStatus.Connected),
         navController = rememberNavController(),
         textureViewListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
-            }
+            override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {}
 
-            override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture, p1: Int, p2: Int) {
-            }
+            override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture, p1: Int, p2: Int) {}
 
             override fun onSurfaceTextureDestroyed(p0: SurfaceTexture): Boolean = false
 
-            override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {
-            }
+            override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {}
         }
     )
 }

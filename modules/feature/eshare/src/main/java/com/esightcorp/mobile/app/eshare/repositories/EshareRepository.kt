@@ -1,4 +1,5 @@
 package com.esightcorp.mobile.app.eshare.repositories
+
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.util.Log
@@ -15,21 +16,23 @@ import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
 import com.esightcorp.mobile.app.networking.sockets.SocketManager
 import com.esightcorp.mobile.app.networking.storage.eShareCache
 import com.esightcorp.mobile.app.networking.streaming.StreamOutListener
+import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.utils.eShareConnectionStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.InputStream
 import javax.inject.Inject
 
 class EshareRepository @Inject constructor(
     @ApplicationContext context: Context
-): BluetoothRadioListener, BluetoothConnectionListener, SystemStatusListener, EshareBluetoothModelListener {
+) : BluetoothRadioListener, BluetoothConnectionListener, SystemStatusListener,
+    EshareBluetoothModelListener {
 
-    private val TAG = "EshareRepository"
+    private val _tag = this.javaClass.simpleName
+
     private val bluetoothModel: BluetoothModel
     private val wifiModel: WifiModel
     private lateinit var eShareRepositoryListener: EshareRepositoryListener
-    private var state: eShareConnectionStatus = eShareConnectionStatus.Unknown
+    private var state: EShareConnectionStatus = EShareConnectionStatus.Unknown
 
     //BluetoothModelListener overrides
     override fun onDeviceDisconnected(device: BluetoothDevice) {
@@ -43,11 +46,11 @@ class EshareRepository @Inject constructor(
     }
 
     override fun onConnectionStateQueried(state: Boolean) {
-        Log.i(TAG, "onConnectionStateQueried: $state")
+        Log.i(_tag, "onConnectionStateQueried: $state")
     }
 
     override fun onBluetoothEnabled() {
-       //this should always be enabled at this point
+        //this should always be enabled at this point
     }
 
     override fun onBluetoothDisabled() {
@@ -55,85 +58,84 @@ class EshareRepository @Inject constructor(
     }
 
     override fun onBluetoothStateQueried(state: Boolean) {
-        Log.i(TAG, "onBluetoothStateQueried: $state")
+        Log.i(_tag, "onBluetoothStateQueried: $state")
     }
 
-    private val createSocketListener = object: CreateSocketListener{
+    private val createSocketListener = object : CreateSocketListener {
         override fun onSocketCreated() {
             //send ip and port over bt
             if (eSightBleManager.checkIfConnected()) {
                 checkIfEshareIsRunningAlready()
             } else {
-                Log.d(TAG, "sendPortAndIp: No bt connection")
+                Log.d(_tag, "sendPortAndIp: No bt connection")
             }
         }
 
         override fun onSocketClosed() {
-            state = eShareConnectionStatus.Disconnected
-            Log.i(TAG, "onSocketClosed: ")
+            state = EShareConnectionStatus.Disconnected
+            Log.i(_tag, "onSocketClosed: ")
         }
 
         override fun onSocketError() {
-            state = eShareConnectionStatus.Disconnected
-            Log.e(TAG, "onSocketError: ")
+            state = EShareConnectionStatus.Disconnected
+            Log.e(_tag, "onSocketError: ")
         }
     }
 
-    private val inputStreamListener = object : InputStreamListener{
+    private val inputStreamListener = object : InputStreamListener {
         override fun onInputStreamCreated(inputStream: InputStream) {
             //start reading from input stream
-            Log.i(TAG, "onInputStreamCreated: ")
-            state = eShareConnectionStatus.Connected
-            updateEshareState(eShareConnectionStatus.Connected)
+            Log.i(_tag, "onInputStreamCreated: ")
+            state = EShareConnectionStatus.Connected
+            updateEshareState(EShareConnectionStatus.Connected)
             updateInputStream(inputStream)
         }
 
         override fun onInputStreamClosed() {
-            Log.i(TAG, "onInputStreamClosed: ")
+            Log.i(_tag, "onInputStreamClosed: ")
             //close socket
         }
 
         override fun onInputStreamError() {
             //close socket
         }
-
     }
-
 
     init {
         bluetoothModel = BluetoothModel(context)
         eSightBleManager.setEshareBluetoothListener(this)
         wifiModel = WifiModel(context)
     }
+
     fun setupEshareListener(eshareRepositoryListener: EshareRepositoryListener) {
         this.eShareRepositoryListener = eshareRepositoryListener
         eShareRepositoryListener.onWifiStateChanged(wifiModel.isWifiEnabled())
     }
-    
-    fun startEshareConnection(){
-        Log.i(TAG, "startEshareConnection: Lets get this thing going!!! ")
-        if(wifiModel.isWifiEnabled()){
+
+    fun startEshareConnection() {
+        Log.i(_tag, "startEshareConnection: Lets get this thing going!!! ")
+        if (wifiModel.isWifiEnabled()) {
             bluetoothModel.registerEshareReceiver()
             wifiModel.openSocket(createSocketListener, inputStreamListener)
-            state = eShareConnectionStatus.Initiated
-            updateEshareState(eShareConnectionStatus.Initiated)
-        }else{
+            state = EShareConnectionStatus.Initiated
+            updateEshareState(EShareConnectionStatus.Initiated)
+        } else {
             eShareRepositoryListener.onWifiStateChanged(false)
         }
 
     }
 
-    private fun checkIfEshareIsRunningAlready(){
+    private fun checkIfEshareIsRunningAlready() {
         //check if eshare is running already
-        try{
+        try {
             eSightBleManager.getBleService()?.checkIfEshareIsRunning()
-        }catch (e: Exception){
-            Log.e(TAG, "checkIfEshareIsRunningAlready: ", e )
+        } catch (e: Exception) {
+            Log.e(_tag, "checkIfEshareIsRunningAlready: ", e)
         }
     }
 
-    private fun writeStreamOutPortIpToHMD(){
-        Log.i(TAG, "writeStreamOutPortIpToHMD: ")
+    private fun writeStreamOutPortIpToHMD() {
+        Log.i(_tag, "writeStreamOutPortIpToHMD: ")
         try {
             eSightBleManager.getBleService()
                 ?.sendPortAndIp(
@@ -141,121 +143,110 @@ class EshareRepository @Inject constructor(
                     ip = eShareCache.getIpAddress()
                 )
         } catch (exception: NullPointerException) {
-            Log.e(TAG, "sendPortAndIp: BleService has not been initialized ", exception)
+            Log.e(_tag, "sendPortAndIp: BleService has not been initialized ", exception)
         } catch (exception: UninitializedPropertyAccessException) {
-            Log.e(TAG, "sendPortAndIp: BleService has not been initialized ", exception)
+            Log.e(_tag, "sendPortAndIp: BleService has not been initialized ", exception)
         }
     }
 
 
-
-
-    private fun updateEshareState(state: eShareConnectionStatus){
-        if(eShareRepositoryListener != null){
-            eShareRepositoryListener.onEshareStateChanged(state)
-        }
+    private fun updateEshareState(state: EShareConnectionStatus) {
+        eShareRepositoryListener.onEshareStateChanged(state)
     }
 
-    private fun updateInputStream(inputStream: InputStream){
-        if(eShareRepositoryListener != null){
-            eShareRepositoryListener.onInputStreamCreated(inputStream)
-        }
+    private fun updateInputStream(inputStream: InputStream) {
+        eShareRepositoryListener.onInputStreamCreated(inputStream)
     }
 
-    private fun updateBluetoothDeviceDisconnected(){
-        if(eShareRepositoryListener != null){
-            eShareRepositoryListener.onBluetoothDeviceDisconnected()
-        }
+    private fun updateBluetoothDeviceDisconnected() {
+        eShareRepositoryListener.onBluetoothDeviceDisconnected()
     }
 
-    private fun updateBluetoothRadioDisabled(){
-        if(eShareRepositoryListener != null){
-            eShareRepositoryListener.onBluetoothDisabled()
-        }
+    private fun updateBluetoothRadioDisabled() {
+        eShareRepositoryListener.onBluetoothDisabled()
     }
 
 
-
-    fun startStreamFromHMD(surface: Surface, inputStream: InputStream){
-        Log.i(TAG, "startStreamFromHMD: ")
+    fun startStreamFromHMD(surface: Surface, inputStream: InputStream) {
+        Log.i(_tag, "startStreamFromHMD: ")
         SocketManager.startStreamingFromHMD(surface, inputStream, streamOutListener)
 
     }
 
-    private val streamOutListener = object : StreamOutListener{
+    private val streamOutListener = object : StreamOutListener {
         override fun onConnectionEstablished() {
-            Log.d(TAG, "onConnectionEstablished: ")
-            updateEshareState(eShareConnectionStatus.Connected)
+            Log.d(_tag, "onConnectionEstablished: ")
+            updateEshareState(EShareConnectionStatus.Connected)
         }
 
         override fun onConnectionClosed() {
-            Log.d(TAG, "onConnectionClosed: ")
-            updateEshareState(eShareConnectionStatus.Disconnected)
+            Log.d(_tag, "onConnectionClosed: ")
+            updateEshareState(EShareConnectionStatus.Disconnected)
         }
 
         override fun onConnectionError() {
-            Log.d(TAG, "onConnectionError: ")
+            Log.d(_tag, "onConnectionError: ")
 
         }
 
         override fun onConnectionTimeout() {
-            Log.d(TAG, "onConnectionTimeout: ")
-            updateEshareState(eShareConnectionStatus.Timeout)
+            Log.d(_tag, "onConnectionTimeout: ")
+            updateEshareState(EShareConnectionStatus.Timeout)
         }
     }
 
-    fun cancelEshareConnection(){
-        Log.i(TAG, "cancelEshareConnection: Nevermind ")
+    fun cancelEshareConnection() {
+        Log.i(_tag, "cancelEshareConnection: Nevermind ")
         bluetoothModel.unregisterEshareReceiver()
         eSightBleManager.getBleService()?.stopEshare()
     }
 
-    fun startHotspotOnHMD(){
-        Log.i(TAG, "startHotspotOnHMD: ")
+    fun startHotspotOnHMD() {
+        Log.i(_tag, "startHotspotOnHMD: ")
         bluetoothModel.registerHotspotReceiver()
-        if(eSightBleManager.checkIfConnected()){
+        if (eSightBleManager.checkIfConnected()) {
             try {
                 eSightBleManager.getBleService()?.startHotspot(
                     ssid = HotspotCredentialGenerator.generateHotspotName(),
                     password = HotspotCredentialGenerator.generateHotspotPassword()
                 )
             } catch (exception: NullPointerException) {
-                Log.e(TAG, "startHotspotOnHMD: BleService has not been initialized ", exception)
+                Log.e(_tag, "startHotspotOnHMD: BleService has not been initialized ", exception)
             } catch (exception: UninitializedPropertyAccessException) {
-                Log.e(TAG, "startHotspotOnHMD: BleService has not been initialized ", exception)
+                Log.e(_tag, "startHotspotOnHMD: BleService has not been initialized ", exception)
             }
         }
     }
 
-    fun writeUpButtonPress(){
-        if(eSightBleManager.checkIfConnected()){
-            try{
+    fun writeUpButtonPress() {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
                 eSightBleManager.getBleService()?.writeUpButtonPress()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeUpButtonPress:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeUpButtonPress:", exception)
             }
         }
     }
 
-    fun writeDownButtonPress(){
-        if(eSightBleManager.checkIfConnected()){
-            try{
+    fun writeDownButtonPress() {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
                 eSightBleManager.getBleService()?.writeDownButtonPress()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeDownButtonPress:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeDownButtonPress:", exception)
             }
         }
 
     }
-    fun writeModeButtonPress(){
-        if(eSightBleManager.checkIfConnected()){
-            try{
+
+    fun writeModeButtonPress() {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
                 eSightBleManager.getBleService()?.writeModeButtonPress()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeDownButtonPress:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeDownButtonPress:", exception)
             }
         }
-
     }
 
     fun writeMenuButtonPress() {
@@ -263,56 +254,50 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeMenuButtonPress()
             } catch (exception: Exception) {
-                Log.e(TAG, "writeMenuButtonPress:", exception)
+                Log.e(_tag, "writeMenuButtonPress:", exception)
             }
         }
     }
 
-    fun writeVolumeUpButtonPress(){
-        if(eSightBleManager.checkIfConnected()){
-            try{
+    fun writeVolumeUpButtonPress() {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
                 eSightBleManager.getBleService()?.writeVolumeUpButtonPress()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeVolumeUpButtonPress:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeVolumeUpButtonPress:", exception)
             }
         }
-
     }
 
-    fun writeVolumeDownButtonPress(){
-        if(eSightBleManager.checkIfConnected()){
-            try{
+    fun writeVolumeDownButtonPress() {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
                 eSightBleManager.getBleService()?.writeVolumeDownButtonPress()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeVolumeDownButtonPress:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeVolumeDownButtonPress:", exception)
             }
         }
-
-
     }
 
-    fun writeFinderButtonPress(){
-        if(eSightBleManager.checkIfConnected()){
-            try{
+    fun writeFinderButtonPress() {
+        if (eSightBleManager.checkIfConnected()) {
+            try {
                 eSightBleManager.getBleService()?.writeFinderButtonPressDownEvent()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeFinderButtonPress:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeFinderButtonPress:", exception)
             }
         }
     }
 
-    fun writeActionUpEvent(){
-        if(eSightBleManager.checkIfConnected()){
+    fun writeActionUpEvent() {
+        if (eSightBleManager.checkIfConnected()) {
             try {
                 eSightBleManager.getBleService()?.writeActionUpEvent()
-            }catch (exception: Exception){
-                Log.e(TAG, "writeActionUpEvent:", exception)
+            } catch (exception: Exception) {
+                Log.e(_tag, "writeActionUpEvent:", exception)
             }
         }
     }
-
-
-
 
 
     override fun onScanStatusUpdated(status: ScanningStatus) {
@@ -336,34 +321,32 @@ class EshareRepository @Inject constructor(
     }
 
     override fun onEshareIpNotReachable() {
-        updateEshareState(eShareConnectionStatus.IP_NOT_REACHABLE)
+        updateEshareState(EShareConnectionStatus.IpNotReachable)
         bluetoothModel.unregisterEshareReceiver()
     }
 
     override fun onEshareAddrNotAvailable() {
-        updateEshareState(eShareConnectionStatus.ADDR_NOT_AVAILABLE)
+        updateEshareState(EShareConnectionStatus.AddressNotAvailable)
         bluetoothModel.unregisterEshareReceiver()
     }
 
     override fun onEshareBusy() {
-        updateEshareState(eShareConnectionStatus.BUSY)
+        updateEshareState(EShareConnectionStatus.Busy)
         bluetoothModel.unregisterEshareReceiver()
     }
 
     override fun onEshareReady() {
-        Log.i(TAG, "onEshareReady: repo")
+        Log.i(_tag, "onEshareReady: repo")
         writeStreamOutPortIpToHMD()
     }
 
     override fun onEshareStopped() {
-        updateEshareState(eShareConnectionStatus.Disconnected)
+        updateEshareState(EShareConnectionStatus.Disconnected)
         bluetoothModel.unregisterEshareReceiver()
     }
 
     override fun onUserCancelled() {
-        updateEshareState(eShareConnectionStatus.Disconnected)
+        updateEshareState(EShareConnectionStatus.Disconnected)
         bluetoothModel.unregisterEshareReceiver()
     }
-
-
 }

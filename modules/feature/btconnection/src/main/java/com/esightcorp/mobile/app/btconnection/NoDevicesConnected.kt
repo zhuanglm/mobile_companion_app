@@ -22,6 +22,8 @@ import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
+import com.esightcorp.mobile.app.ui.extensions.navigate
 
 private const val TAG = "BluetoothScreens"
 
@@ -182,14 +184,8 @@ fun NoDevicesBodyPreview() {
 }
 
 @Composable
-fun NavigateHome(
-    navController: NavController, device: String
-) {
-// Use LaunchedEffect to navigate to home screen after a delay
-    LaunchedEffect(Unit) {
-        navController.navigate("home_first")
-    }
-}
+fun NavigateHome(navController: NavController, device: String) =
+    LaunchedEffect(Unit) { navController.navigate(HomeNavigation.FirstScreenRoute) }
 
 @Composable
 fun NavigateBluetoothDisabled(

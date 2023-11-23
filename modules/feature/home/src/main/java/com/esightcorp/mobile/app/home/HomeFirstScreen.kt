@@ -61,7 +61,8 @@ internal fun BaseHomeScreen(
             vm.navigateToBluetoothDisabled(navController)
         }
     } else {
-        HomeBaseScreen(modifier = modifier,
+        HomeBaseScreen(
+            modifier = modifier,
             showBackButton = false,
             showSettingsButton = true,
             onBackButtonInvoked = { /*Unused*/ },

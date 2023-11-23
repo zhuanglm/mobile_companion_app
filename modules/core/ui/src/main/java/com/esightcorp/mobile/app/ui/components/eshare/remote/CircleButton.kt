@@ -26,7 +26,6 @@ import com.esightcorp.mobile.app.ui.R
 /**
  * Represents a circular button with a customizable icon.
  *
- * @param onClick Action to be performed when the button is clicked.
  * @param modifier Modifier to be applied to the button.
  * @param size Diameter of the circular button.
  * @param contentDescription Description of the icon for accessibility purposes.
@@ -35,9 +34,9 @@ import com.esightcorp.mobile.app.ui.R
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CircleButton(
-    onDownEvent: () -> Unit,
-    onUpEvent: () -> Unit,
     modifier: Modifier = Modifier,
+    onDownEvent: OnActionCallback? = null,
+    onUpEvent: OnActionCallback? = null,
     size: Dp = DefaultButtonSize,
     contentDescription: String? = DefaultContentDescription,
     painter: Painter = painterResource(id = DefaultIconResource),
@@ -66,16 +65,14 @@ fun CircleButton(
             },
         shape = CircleShape,
         border = BorderStroke(DefaultBorderWidth, borderColor),
-        onClick = { Unit },
+        onClick = { },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = DefaultElevation,
             pressedElevation = PressedElevation,
             disabledElevation = DisabledElevation,
             focusedElevation = FocusedElevation
         ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
-        ),
+        colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         contentPadding = PaddingValues(DefaultPadding)
     ) {
         val iconSize = size * IconScalingFactor
@@ -90,15 +87,13 @@ fun CircleButton(
 
 /**
  * Represents a smaller variant of the [CircleButton].
- *
- * @param onClickAction Action to be performed when the button is clicked.
  */
 @Composable
 fun TinyCircleButton(
-    onDownEvent: () -> Unit = {},
-    onUpEvent: () -> Unit = {},
     modifier: Modifier = Modifier,
-    icon: Painter = painterResource(id = DefaultIconResource)
+    onDownEvent: OnActionCallback? = null,
+    onUpEvent: OnActionCallback? = null,
+    icon: Painter = painterResource(DefaultIconResource)
 ) {
     CircleButton(
         onDownEvent = onDownEvent,
@@ -111,14 +106,12 @@ fun TinyCircleButton(
 
 /**
  * Represents a regular-sized variant of the [CircleButton].
- *
- * @param onClickAction Action to be performed when the button is clicked.
  */
 @Composable
 fun RegularCircleButton(
-    onDownEvent: () -> Unit = {},
-    onUpEvent: () -> Unit = {},
     modifier: Modifier = Modifier,
+    onDownEvent: OnActionCallback? = null,
+    onUpEvent: OnActionCallback? = null,
     size: Dp = RegularButtonSize,
     icon: Painter = painterResource(id = DefaultIconResource)
 ) {
@@ -134,7 +127,7 @@ fun RegularCircleButton(
 @Composable
 fun ColorContrastButton(
     modifier: Modifier = Modifier,
-    onClick:() -> Unit = {},
+    onClick: OnActionCallback? = null,
     primaryColor: Color,
     secondaryColor: Color,
     icon: Painter = painterResource(id = DefaultIconResource),
@@ -142,7 +135,6 @@ fun ColorContrastButton(
 ) {
     CircleButton(
         onDownEvent = onClick,
-        onUpEvent = { Unit },
         borderColor = primaryColor,
         backgroundColor = secondaryColor,
         iconTint = primaryColor,
@@ -158,7 +150,6 @@ fun ColorContrastPreview() {
     Surface {
         ColorContrastButton(primaryColor = Color.Black, secondaryColor = Color.Red)
     }
-
 }
 
 @Preview

@@ -12,23 +12,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.components.buttons.CancelButton
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun LoadingScreenWithSpinner(
     modifier: Modifier = Modifier,
     loadingText: String = "Loading...",
     cancelButtonNeeded: Boolean = true,
-    onCancelButtonClicked: () -> Unit = {},
+    onCancelButtonClicked: OnActionCallback? = null,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topAppBar, text, spinner, cancelButton) = createRefs()
             ESightTopAppBar(
                 showBackButton = false,
-                showSettingsButton = false ,
+                showSettingsButton = false,
                 onBackButtonInvoked = { /*Unused*/ },
                 onSettingsButtonInvoked = { /*Unused*/ },
-                modifier = modifier.constrainAs(topAppBar){
+                modifier = modifier.constrainAs(topAppBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
@@ -55,11 +56,13 @@ fun LoadingScreenWithSpinner(
                 strokeWidth = 10.dp
             )
 
-            if(cancelButtonNeeded){
-                CancelButton(onClick = onCancelButtonClicked, modifier = modifier.constrainAs(cancelButton){
-                    start.linkTo(parent.start, margin= 25.dp)
-                    bottom.linkTo(parent.bottom, margin = 25.dp)
-                } )
+            if (cancelButtonNeeded) {
+                CancelButton(
+                    onClick = onCancelButtonClicked,
+                    modifier = modifier.constrainAs(cancelButton) {
+                        start.linkTo(parent.start, margin = 25.dp)
+                        bottom.linkTo(parent.bottom, margin = 25.dp)
+                    })
             }
         }
     }
@@ -67,6 +70,6 @@ fun LoadingScreenWithSpinner(
 
 @Preview
 @Composable
-fun LoadingScreenWithSpinnerPreview(){
+fun LoadingScreenWithSpinnerPreview() {
     LoadingScreenWithSpinner()
 }

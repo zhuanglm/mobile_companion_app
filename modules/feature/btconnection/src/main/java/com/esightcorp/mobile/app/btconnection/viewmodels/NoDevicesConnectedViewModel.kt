@@ -13,7 +13,7 @@ import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
-import com.esightcorp.mobile.app.ui.navigation.navigate
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

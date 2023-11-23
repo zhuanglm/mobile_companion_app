@@ -1,24 +1,19 @@
 package com.esightcorp.mobile.app.home.navigation
 
-import android.util.Log
-import androidx.navigation.*
-import androidx.navigation.compose.composable
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.navigation
 import com.esightcorp.mobile.app.home.HomeFirstScreen
 import com.esightcorp.mobile.app.home.HomePermissionScreen
-import com.esightcorp.mobile.app.home.navigation.HomeScreens.HomeFirstScreen.arguments
-import com.esightcorp.mobile.app.home.navigation.HomeScreens.HomeFirstScreen.deviceArg
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation.FirstScreenRoute
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation.IncomingRoute
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation.PermissionRoute
+import com.esightcorp.mobile.app.ui.extensions.composable
 
 fun NavGraphBuilder.addHomeNavigation(navController: NavController) {
-    navigation(startDestination = HomeScreens.HomePermissionScreen.route, route= HomeScreens.IncomingNavigationRoute.route){
-        composable(
-            route =HomeScreens.HomePermissionScreen.route){
-            HomePermissionScreen(navController = navController)
-        }
-        composable(
-            route = HomeScreens.HomeFirstScreen.route,
-        ){
-            HomeFirstScreen(navController = navController)
-        }
+    navigation(startDestination = PermissionRoute.path, route = IncomingRoute.path) {
+        composable(PermissionRoute) { HomePermissionScreen(navController) }
 
+        composable(FirstScreenRoute) { HomeFirstScreen(navController) }
     }
 }

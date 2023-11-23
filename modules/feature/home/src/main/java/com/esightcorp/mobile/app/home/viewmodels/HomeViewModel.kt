@@ -9,7 +9,7 @@ import com.esightcorp.mobile.app.home.repositories.HomeRepository
 import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
-import com.esightcorp.mobile.app.ui.navigation.navigate
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -83,28 +83,17 @@ class BluetoothModel constructor(
 
     private val eShareReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            Log.i(_tag, "onReceive: eShare status coming through")
+            Log.i(_tag, "eShareReceiver - ${intent.action}")
             when (intent.action) {
                 BleService.ACTION_ESHARE_STATUS -> {
-                    when (intent.extras?.getString(BleService.EXTRA_DATA)) {
-                        "READY" -> {
-                            bleManager.getEshareBluetoothListener().apply {
-                                Log.i(_tag, "onReceive: READY sending eshare ready ")
-                                this?.onEshareReady()
-                            }
-                        }
+                    val status = intent.extras?.getString(BleService.EXTRA_DATA)
+                    Log.i(_tag, "eShareReceiver - Status: $status")
+                    when (status) {
+                        "READY" -> bleManager.getEshareBluetoothListener()?.onEshareReady()
 
-                        "RUNNING" -> {
-                            bleManager.getEshareBluetoothListener().apply {
-                                this?.onEshareBusy()
-                            }
-                        }
+                        "RUNNING" -> bleManager.getEshareBluetoothListener()?.onEshareBusy()
 
-                        "STOPPED" -> {
-                            bleManager.getEshareBluetoothListener().apply {
-                                this?.onEshareStopped()
-                            }
-                        }
+                        "STOPPED" -> bleManager.getEshareBluetoothListener()?.onEshareStopped()
                     }
                 }
 

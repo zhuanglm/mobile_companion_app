@@ -138,9 +138,8 @@ object eSightBleManager {
         return this.bleService
     }
 
-    fun checkIfConnected(): Boolean {
-        Log.d(_tag, "checkIfConnected: $bleConnectionStatus")
-        return bleConnectionStatus
+    fun checkIfConnected(): Boolean = bleConnectionStatus.also {
+//        Log.d(_tag, "checkIfConnected: $it")
     }
 
     fun checkIfEnabled(): Boolean {

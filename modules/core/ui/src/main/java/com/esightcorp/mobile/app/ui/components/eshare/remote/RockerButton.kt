@@ -59,10 +59,10 @@ import com.esightcorp.mobile.app.ui.R
 @Composable
 fun RockerButton(
     modifier: Modifier = Modifier,
-    onVolumeUpEventDown: () -> Unit = {Unit},
-    onVolumeUpEventUp: () -> Unit = {Unit},
-    onVolumeDownEventDown: () -> Unit = {Unit},
-    onVolumeDownEventUp: () -> Unit = {Unit},
+    onVolumeUpEventDown: OnActionCallback? = null,
+    onVolumeUpEventUp: OnActionCallback? = null,
+    onVolumeDownEventDown: OnActionCallback? = null,
+    onVolumeDownEventUp: OnActionCallback? = null,
     size: Dp = DefaultOblongButtonHeight,
     contentDescription: String? = DefaultContentDescription,
     painter1: Painter = painterResource(id = DefaultIconResource),
@@ -153,10 +153,8 @@ fun RockerButton(
 
 @Preview
 @Composable
-fun RockerButtonPreview() {
-    Surface{
-        RockerButton()
-    }
+internal fun RockerButtonPreview() = Surface {
+    RockerButton()
 }
 
 // Additional constants

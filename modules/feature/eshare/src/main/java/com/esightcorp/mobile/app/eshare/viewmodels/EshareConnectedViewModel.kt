@@ -7,9 +7,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
@@ -28,7 +26,7 @@ import javax.inject.Inject
 class EshareConnectedViewModel @Inject constructor(
     application: Application,
     private val eShareRepository: EshareRepository
-) : AndroidViewModel(application), EshareRepositoryListener, SurfaceTextureListener {
+) : ESightBaseViewModel(application), EshareRepositoryListener, SurfaceTextureListener {
 
     private val _tag = this.javaClass.simpleName
 
@@ -38,53 +36,41 @@ class EshareConnectedViewModel @Inject constructor(
     val uiState: StateFlow<EshareConnectedUiState> = _uiState.asStateFlow()
     private var wasStoppedByMobile: Boolean = false
 
-
     init {
         eShareRepository.setupEshareListener(this)
         wasStoppedByMobile = false
     }
 
+    private fun updateConnectionState(state: EShareConnectionStatus) =
+        _uiState.update { it.copy(connectionState = state) }
 
-    private fun updateConnectionState(state: eShareConnectionStatus) {
-        _uiState.update { uiState ->
-            uiState.copy(connectionState = state)
-        }
-    }
+    private fun updateBluetoothDeviceState(state: Boolean) =
+        _uiState.update { it.copy(deviceConnectionState = DeviceConnectionState(state)) }
 
-    private fun updateBluetoothDeviceState(state: Boolean) {
-        _uiState.update { uiState ->
-            uiState.copy(deviceConnectionState = DeviceConnectionState(state))
-        }
-    }
-
-    private fun updateBluetoothRadioState(state: Boolean) {
-        _uiState.update { uiState ->
-            uiState.copy(
-                radioState = RadioState(
-                    isBtEnabled = state,
-                    isWifiEnabled = uiState.radioState.isWifiEnabled
-                )
+    private fun updateBluetoothRadioState(state: Boolean) = _uiState.update {
+        it.copy(
+            radioState = RadioState(
+                isBtEnabled = state,
+                isWifiEnabled = it.radioState.isWifiEnabled
             )
-        }
+        )
     }
 
-    private fun updateWifiRadioState(state: Boolean) {
-        _uiState.update { uiState ->
-            uiState.copy(
-                radioState = RadioState(
-                    isBtEnabled = uiState.radioState.isBtEnabled,
-                    isWifiEnabled = state
-                )
+    private fun updateWifiRadioState(state: Boolean) = _uiState.update {
+        it.copy(
+            radioState = RadioState(
+                isBtEnabled = it.radioState.isBtEnabled,
+                isWifiEnabled = state
             )
-        }
+        )
     }
 
-    override fun onEshareStateChanged(state: eShareConnectionStatus) {
+    override fun onEshareStateChanged(state: EShareConnectionStatus) {
         Log.i(_tag, "onEshareStateChanged: $state")
         updateConnectionState(state)
     }
 
-    override fun onEshareStateRequested(state: eShareConnectionStatus) {
+    override fun onEshareStateRequested(state: EShareConnectionStatus) {
         updateConnectionState(state)
     }
 
@@ -134,38 +120,17 @@ class EshareConnectedViewModel @Inject constructor(
 //        Log.i(_tag, "onSurfaceTextureUpdated: ")
     }
 
-    fun navigateToStoppedRoute(navController: NavController) {
-        if (wasStoppedByMobile) {
-            navController.navigate(HOME_FIRST_SCREEN) {
-                popUpTo(HOME_FIRST_SCREEN) {
-                    inclusive = false
-                }
-                launchSingleTop = true
-            }
-        } else {
-            navController.navigate(EshareScreens.EshareConnectionStoppedRoute.route)
-        }
+    fun navigateToStoppedRoute(navController: NavController) = when (wasStoppedByMobile) {
+        true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
+        false -> navController.navigate(EShareNavigation.ConnectionStoppedRoute)
     }
 
-    fun navigateToBusyRoute(navController: NavController) {
-        Log.i(_tag, "navigateToBusyRoute: ")
-        navController.navigate(EshareScreens.EshareBusyRoute.route) {
-            popUpTo(EshareScreens.IncomingNavigationRoute.route) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
-
+    fun navigateToBusyRoute(navController: NavController) = with(navController) {
+        navigate(EShareNavigation.RemoteBusyRoute, EShareNavigation.ConnectedRoute)
     }
 
-    fun navigateToUnableToConnectRoute(navController: NavController) {
-        Log.i(_tag, "navigateToUnableToConnectRoute: ")
-        navController.navigate(EshareScreens.EshareUnableToConnectRoute.route) {
-            popUpTo(EshareScreens.IncomingNavigationRoute.route) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
+    fun navigateToUnableToConnectRoute(navController: NavController) = with(navController) {
+        navigate(EShareNavigation.UnableToConnectRoute, EShareNavigation.ConnectedRoute)
     }
 
     fun startEshareConnection() {
@@ -177,7 +142,6 @@ class EshareConnectedViewModel @Inject constructor(
         Log.i(_tag, "onCancelButtonClicked: ")
         wasStoppedByMobile = true
         eShareRepository.cancelEshareConnection()
-
     }
 
     fun upButtonPress() {
@@ -210,9 +174,5 @@ class EshareConnectedViewModel @Inject constructor(
 
     fun actionUpButtonPress() {
         eShareRepository.writeActionUpEvent()
-    }
-
-    companion object {
-        const val HOME_FIRST_SCREEN = "home_first"
     }
 }

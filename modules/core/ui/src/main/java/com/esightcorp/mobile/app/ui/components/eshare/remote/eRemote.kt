@@ -21,26 +21,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun EshareRemote(
     modifier: Modifier = Modifier,
-    onFinderButtonPressedEventDown: () -> Unit = { },
-    onFinderButtonPressedEventUp: () -> Unit = { },
-    onBluetoothButtonPressedEventDown: () -> Unit = { },
-    onBluetoothButtonPressedEventUp: () -> Unit = { },
-    onModeButtonPressedEventDown: () -> Unit = { },
-    onModeButtonPressedEventUp: () -> Unit = { },
-    onUpButtonPressedEventUp: () -> Unit = { },
-    onUpButtonPressedEventDown: () -> Unit = { },
-    onDownButtonPressedEventUp: () -> Unit = { },
-    onDownButtonPressedEventDown: () -> Unit = { },
-    onVolumeUpButtonPressedEventUp: () -> Unit = { },
-    onVolumeUpButtonPressedEventDown: () -> Unit = { },
-    onVolumeDownButtonPressedEventUp: () -> Unit = { },
-    onVolumeDownButtonPressedEventDown: () -> Unit = { },
-    onMenuButtonPressedEventUp: () -> Unit = { },
-    onMenuButtonPressedEventDown: () -> Unit = { },
+    onFinderButtonPressedEventDown: OnActionCallback? = null,
+    onFinderButtonPressedEventUp: OnActionCallback? = null,
+    onBluetoothButtonPressedEventDown: OnActionCallback? = null,
+    onBluetoothButtonPressedEventUp: OnActionCallback? = null,
+    onModeButtonPressedEventDown: OnActionCallback? = null,
+    onModeButtonPressedEventUp: OnActionCallback? = null,
+    onUpButtonPressedEventUp: OnActionCallback? = null,
+    onUpButtonPressedEventDown: OnActionCallback? = null,
+    onDownButtonPressedEventUp: OnActionCallback? = null,
+    onDownButtonPressedEventDown: OnActionCallback? = null,
+    onVolumeUpButtonPressedEventUp: OnActionCallback? = null,
+    onVolumeUpButtonPressedEventDown: OnActionCallback? = null,
+    onVolumeDownButtonPressedEventUp: OnActionCallback? = null,
+    onVolumeDownButtonPressedEventDown: OnActionCallback? = null,
+    onMenuButtonPressedEventUp: OnActionCallback? = null,
+    onMenuButtonPressedEventDown: OnActionCallback? = null,
 ) {
     Surface(
         modifier = modifier
@@ -62,16 +63,12 @@ fun EshareRemote(
                 TinyCircleButton(
                     onDownEvent = onFinderButtonPressedEventDown,
                     onUpEvent = onFinderButtonPressedEventUp,
-                    icon = painterResource(
-                        id = R.drawable.round_qr_code_24
-                    )
+                    icon = painterResource(R.drawable.round_qr_code_24)
                 )
                 TinyCircleButton(
                     onDownEvent = onBluetoothButtonPressedEventDown,
                     onUpEvent = onBluetoothButtonPressedEventUp,
-                    icon = painterResource(
-                        id = R.drawable.baseline_bluetooth_24
-                    )
+                    icon = painterResource(R.drawable.baseline_bluetooth_24)
                 )
             }
             Row(
@@ -81,7 +78,7 @@ fun EshareRemote(
                 OvalButton(
                     onDownEvent = onModeButtonPressedEventDown,
                     onUpEvent = onModeButtonPressedEventUp,
-                    painter = painterResource(id = R.drawable.circle_mode_button)
+                    painter = painterResource(R.drawable.circle_mode_button)
                 )
             }
             VolumeRockerAndUpDownButtons(
@@ -97,14 +94,11 @@ fun EshareRemote(
             Row {//row for menu button
                 OvalButton(
                     onDownEvent = onMenuButtonPressedEventDown,
-                    onUpEvent = onMenuButtonPressedEventUp, 
+                    onUpEvent = onMenuButtonPressedEventUp,
                     painter = painterResource(id = R.drawable.menu_button)
                 )
-
             }
         }
-
-
     }
 }
 
@@ -112,15 +106,14 @@ fun EshareRemote(
 fun VolumeRockerAndUpDownButtons(
     //TODO: Resizing this causes some issues. Need to debug this further
     size: Dp = 70.dp,
-    onUpButtonPressedEventUp: () -> Unit = { Unit },
-    onUpButtonPressedEventDown: () -> Unit = { Unit },
-    onDownButtonPressedEventDown: () -> Unit = { Unit },
-    onDownButtonPressedEventUp: () -> Unit = { Unit },
-    onVolumeDownButtonPressedEventUp: () -> Unit = { Unit },
-    onVolumeDownButtonPressedEventDown: () -> Unit = { Unit },
-    onVolumeUpButtonPressedEventUp: () -> Unit = { Unit },
-    onVolumeUpButtonPressedEventDown: () -> Unit = { Unit }
-
+    onUpButtonPressedEventUp: OnActionCallback? = null,
+    onUpButtonPressedEventDown: OnActionCallback? = null,
+    onDownButtonPressedEventDown: OnActionCallback? = null,
+    onDownButtonPressedEventUp: OnActionCallback? = null,
+    onVolumeDownButtonPressedEventUp: OnActionCallback? = null,
+    onVolumeDownButtonPressedEventDown: OnActionCallback? = null,
+    onVolumeUpButtonPressedEventUp: OnActionCallback? = null,
+    onVolumeUpButtonPressedEventDown: OnActionCallback? = null,
 ) {
     val circleButtonSpacerSize = size.times(0.5f)
     val betweenColumnSpacerSize = size.times(0.1f)
@@ -139,7 +132,7 @@ fun VolumeRockerAndUpDownButtons(
             RegularCircleButton(
                 size = size,
                 onUpEvent = onUpButtonPressedEventUp,
-                onDownEvent = onUpButtonPressedEventDown, 
+                onDownEvent = onUpButtonPressedEventDown,
                 icon = painterResource(id = R.drawable.arrow_up_button)
             )
             Spacer(modifier = Modifier.height(circleButtonSpacerSize))
@@ -158,7 +151,7 @@ fun VolumeRockerAndUpDownButtons(
             onVolumeDownEventUp = onVolumeDownButtonPressedEventUp,
             onVolumeUpEventDown = onVolumeUpButtonPressedEventDown,
             onVolumeUpEventUp = onVolumeUpButtonPressedEventUp,
-            size = rockerButtonSize, 
+            size = rockerButtonSize,
             painter1 = painterResource(id = R.drawable.volume_up_button),
             painter2 = painterResource(id = R.drawable.volume_down_button)
         )
@@ -172,7 +165,6 @@ fun VolumeRockerAndUpDownButtonsPreview() {
     Surface {
         VolumeRockerAndUpDownButtons(size = 100.dp)
     }
-
 }
 
 @Preview(name = "landscape", widthDp = 800, heightDp = 360)
@@ -183,6 +175,5 @@ fun EshareRemotePreview() {
             Spacer(modifier = Modifier.weight(2f))
             EshareRemote(modifier = Modifier.weight(1f))
         }
-
     }
 }

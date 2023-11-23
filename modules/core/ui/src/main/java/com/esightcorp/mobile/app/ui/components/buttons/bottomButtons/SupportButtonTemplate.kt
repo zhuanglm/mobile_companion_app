@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 
 //TODO: Create previews for everything
@@ -38,38 +39,37 @@ import com.esightcorp.mobile.app.ui.R
  * @see SupportButtonIcon
  * @sample SupportButtonTemplatePreview
  */
-
 @Composable
 fun SupportButtonTemplate(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    painter: Painter = painterResource(id = R.drawable.glasses),
+    onClick: OnActionCallback? = null,
+    painter: Painter = painterResource(R.drawable.glasses),
     text: String = "Override me",
     textColor: Color = MaterialTheme.colors.onSurface
 ) {
     ExtendedFloatingActionButton(
         text = { BodyText(text = text, modifier = modifier, color = textColor) },
         icon = { SupportButtonIcon(onClick = { }, modifier = modifier, painter = painter) },
-        onClick = onClick,
+        onClick = { onClick?.invoke() },
         containerColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
         modifier = modifier.fillMaxWidth(),
         elevation = FloatingActionButtonDefaults.elevation(
-            dimensionResource(id = R.dimen.zero),
-            dimensionResource(id = R.dimen.zero),
-            dimensionResource(id = R.dimen.zero),
-            dimensionResource(id = R.dimen.zero)
+            dimensionResource(R.dimen.zero),
+            dimensionResource(R.dimen.zero),
+            dimensionResource(R.dimen.zero),
+            dimensionResource(R.dimen.zero)
         ),
     )
 }
+
 @Preview(showBackground = true)
 @Composable
 fun SupportButtonTemplatePreview() {
     MaterialTheme {
         SupportButtonTemplate(
-            onClick = {},
             modifier = Modifier.padding(16.dp),
-            painter = painterResource(id = R.drawable.glasses),
+            painter = painterResource(R.drawable.glasses),
             text = "Support Button",
             textColor = MaterialTheme.colors.onSurface
         )
@@ -90,13 +90,12 @@ fun SupportButtonTemplatePreview() {
  */
 @Composable
 private fun SupportButtonIcon(
-    onClick: () -> Unit,
+    onClick: OnActionCallback? = null,
     modifier: Modifier,
     painter: Painter,
-
-    ) {
+) {
     FilledIconButton(
-        onClick = onClick,
+        onClick = { onClick?.invoke() },
         modifier = modifier,
         enabled = true,
         shape = IconButtonDefaults.filledShape,
@@ -107,8 +106,8 @@ private fun SupportButtonIcon(
     ) {
         Icon(
             painter = painter,
-            contentDescription = stringResource(id = R.string.feedback),
-            modifier = Modifier.size(dimensionResource(id = R.dimen.filled_icon_bottom_button_size))
+            contentDescription = stringResource(R.string.feedback),
+            modifier = Modifier.size(dimensionResource(R.dimen.filled_icon_bottom_button_size))
         )
     }
 }
@@ -118,9 +117,8 @@ private fun SupportButtonIcon(
 fun SupportButtonIconPreview() {
     MaterialTheme {
         SupportButtonIcon(
-            onClick = {},
             modifier = Modifier.padding(16.dp),
-            painter = painterResource(id = R.drawable.glasses)
+            painter = painterResource(R.drawable.glasses)
         )
     }
 }

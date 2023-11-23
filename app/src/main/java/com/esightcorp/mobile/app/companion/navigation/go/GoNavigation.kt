@@ -7,12 +7,13 @@ import com.esightcorp.mobile.app.btconnection.navigation.addBtConnectionNavigati
 import com.esightcorp.mobile.app.companion.navigation.toplevel.SupportedProducts
 import com.esightcorp.mobile.app.eshare.navigation.addEshareNavigation
 import com.esightcorp.mobile.app.home.navigation.addHomeNavigation
-import com.esightcorp.mobile.app.wificonnection.navigation.addWifiConnectionNavigation
 import com.esightcorp.mobile.app.settings.navigation.addSettingsNavigation
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
+import com.esightcorp.mobile.app.wificonnection.navigation.addWifiConnectionNavigation
 
 fun NavGraphBuilder.addGoNavigation(navController: NavController) {
     navigation(
-        startDestination = GoScreens.HomeScreen.route,
+        startDestination = HomeNavigation.IncomingRoute.path,
         route = SupportedProducts.GoProduct.route,
     ) {
         addEshareNavigation(navController)

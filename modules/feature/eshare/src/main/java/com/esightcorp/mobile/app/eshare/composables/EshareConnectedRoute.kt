@@ -1,13 +1,13 @@
 package com.esightcorp.mobile.app.eshare.composables
 
+import android.graphics.SurfaceTexture
 import android.util.Log
 import android.view.TextureView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,10 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectedViewModel
 import com.esightcorp.mobile.app.ui.R
@@ -29,9 +31,11 @@ import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
 import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
 import com.esightcorp.mobile.app.utils.NavigateToDeviceDisconnected
-import com.esightcorp.mobile.app.utils.eShareConnectionStatus
+import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 
 @Composable
 fun EshareConnectedRoute(
@@ -42,6 +46,7 @@ fun EshareConnectedRoute(
     if (!uiState.radioState.isBtEnabled) {
         Log.i(TAG, "EshareConnectedRoute: Bluetooth is disabled right now")
         NavigateToBluetoothDisabled(navController = navController)
+        return
     }
 
     if (!uiState.radioState.isWifiEnabled) {
@@ -51,9 +56,16 @@ fun EshareConnectedRoute(
     if (!uiState.deviceConnectionState.isDeviceConnected) {
         Log.i(TAG, "EshareConnectedRoute: Device is not connected")
         NavigateToDeviceDisconnected(navController = navController)
+        return
     }
+
     if (uiState.radioState.isBtEnabled && uiState.deviceConnectionState.isDeviceConnected) {
-        eShareConnectedScreen(
+        BackHandler {
+            vm.onCancelButtonClicked()
+            vm.gotoMainScreen(navController)
+        }
+
+        EShareConnectedScreen(
             textureViewListener = vm,
             uiState = uiState,
             navController = navController,
@@ -71,39 +83,42 @@ fun EshareConnectedRoute(
             finderButtonPress = vm::finderButtonPress,
             actionUpButtonPress = vm::actionUpButtonPress,
         )
+        return
     }
-
 }
+
+//region Internal implementation
 
 private const val TAG = "EshareConnectedRoute"
 
 @Composable
-fun eShareConnectedScreen(
+internal fun EShareConnectedScreen(
     textureViewListener: TextureView.SurfaceTextureListener,
     uiState: EshareConnectedUiState,
-    modifier: Modifier = Modifier,
     navController: NavController,
-    startEshareConnection: () -> Unit,
-    navigateToStoppedRoute: (NavController) -> Unit,
-    navigateToUnableToConnectRoute: (NavController) -> Unit,
-    navigateToBusyRoute: (NavController) -> Unit,
-    onCancelButtonClicked: () -> Unit,
-    upButtonPress: () -> Unit = {},
-    downButtonPress: () -> Unit = {},
-    menuButtonPress: () -> Unit = {},
-    modeButtonPress: () -> Unit = {},
-    volUpButtonPress: () -> Unit = {},
-    volDownButtonPress: () -> Unit = {},
-    finderButtonPress: () -> Unit = {},
-    actionUpButtonPress: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    startEshareConnection: OnActionCallback? = null,
+    navigateToStoppedRoute: OnNavigationCallback? = null,
+    navigateToUnableToConnectRoute: OnNavigationCallback? = null,
+    navigateToBusyRoute: OnNavigationCallback? = null,
+    onCancelButtonClicked: OnActionCallback? = null,
+    upButtonPress: OnActionCallback? = null,
+    downButtonPress: OnActionCallback? = null,
+    menuButtonPress: OnActionCallback? = null,
+    modeButtonPress: OnActionCallback? = null,
+    volUpButtonPress: OnActionCallback? = null,
+    volDownButtonPress: OnActionCallback? = null,
+    finderButtonPress: OnActionCallback? = null,
+    actionUpButtonPress: OnActionCallback? = null,
 ) {
     Log.i(TAG, "eShareConnectedScreen: ")
     Row {
         TextureViewAndCancelButton(
             textureViewListener = textureViewListener,
             modifier = Modifier.weight(1f),
-            onCancelButtonClicked = onCancelButtonClicked
+            onCancelButtonClicked = onCancelButtonClicked,
         )
+
         EshareRemote(
             onFinderButtonPressedEventDown = finderButtonPress,
             onFinderButtonPressedEventUp = actionUpButtonPress,
@@ -122,122 +137,138 @@ fun eShareConnectedScreen(
         )
     }
 
-
-
     when (uiState.connectionState) {
-
-        eShareConnectionStatus.Connected -> {
+        EShareConnectionStatus.Connected -> {
             Log.i(TAG, "eShareConnectedScreen: We are now connected to HMD ")
             RotateToLandscape()
         }
 
-        eShareConnectionStatus.Initiated -> {
-            LoadingScreenWithSpinner(loadingText = stringResource(R.string.eshare_loading_text),
+        EShareConnectionStatus.Initiated -> {
+            LoadingScreenWithSpinner(
+                loadingText = stringResource(R.string.eshare_loading_text),
                 modifier = modifier,
                 cancelButtonNeeded = true,
-                onCancelButtonClicked = {
-                    onCancelButtonClicked()
-                })
+                onCancelButtonClicked = onCancelButtonClicked,
+            )
         }
 
-        eShareConnectionStatus.Disconnected -> {
+        EShareConnectionStatus.Disconnected -> {
             Log.i(TAG, "eShareConnectedScreen: We are now disconnected from HMD ")
             LaunchedEffect(Unit) {
-                navigateToStoppedRoute(navController)
+                navigateToStoppedRoute?.invoke(navController)
             }
         }
 
-        eShareConnectionStatus.IP_NOT_REACHABLE -> {
+        EShareConnectionStatus.IpNotReachable -> {
             Log.i(TAG, "eShareConnectedScreen: IP not reachable")
             LaunchedEffect(Unit) {
-                navigateToUnableToConnectRoute(navController)
+                navigateToUnableToConnectRoute?.invoke(navController)
             }
         }
 
-        eShareConnectionStatus.ADDR_NOT_AVAILABLE -> {
+        EShareConnectionStatus.AddressNotAvailable -> {
             Log.i(TAG, "eShareConnectedScreen: Address not available")
             LaunchedEffect(Unit) {
-                navigateToUnableToConnectRoute(navController)
+                navigateToUnableToConnectRoute?.invoke(navController)
             }
         }
 
-        eShareConnectionStatus.BUSY -> {
+        EShareConnectionStatus.Busy -> {
             Log.i(TAG, "eShareConnectedScreen: HMD has a session running already")
+            onCancelButtonClicked?.invoke()
+
             LaunchedEffect(Unit) {
-                navigateToBusyRoute(navController)
+                navigateToBusyRoute?.invoke(navController)
             }
         }
 
-        eShareConnectionStatus.Failed -> {
+        EShareConnectionStatus.Failed -> {
             Log.e(TAG, "eShareConnectedScreen: FAILED")
         }
 
-        eShareConnectionStatus.ReceivedUserRejection -> {
+        EShareConnectionStatus.ReceivedUserRejection -> {
             Log.e(TAG, "eShareConnectedScreen: User rejection")
         }
 
-        eShareConnectionStatus.Timeout -> {
+        EShareConnectionStatus.Timeout -> {
             Log.e(TAG, "eShareConnectedScreen: TImoeut")
+            //TODO: is this implementation OK?
+            onCancelButtonClicked?.invoke()
         }
 
-        eShareConnectionStatus.Unknown -> {
+        EShareConnectionStatus.Unknown -> {
             LaunchedEffect(Unit) {
                 Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
-                startEshareConnection()
+                startEshareConnection?.invoke()
             }
         }
     }
-
-
 }
 
 
 @Composable
-fun TextureViewAndCancelButton(
+internal fun TextureViewAndCancelButton(
     textureViewListener: TextureView.SurfaceTextureListener,
     modifier: Modifier = Modifier,
-    onCancelButtonClicked: () -> Unit,
+    onCancelButtonClicked: OnActionCallback? = null,
 ) {
     Box(modifier = Modifier.fillMaxHeight()) {
-        AndroidView(factory = { context ->
-            AutoFitTextureView(context).apply {
-                surfaceTextureListener = textureViewListener
-            }
-        }, modifier = modifier
-            .fillMaxHeight(), update = { view ->
-            view.surfaceTextureListener = textureViewListener
-            Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
+        AndroidView(
+            factory = { context ->
+                AutoFitTextureView(context).apply {
+                    surfaceTextureListener = textureViewListener
+                }
+            },
+            modifier = modifier.fillMaxHeight(),
+            update = { view ->
+                view.surfaceTextureListener = textureViewListener
+                Log.i(TAG, "eShareConnectedScreen: TextureView updated ${view.isAvailable}")
 
-        })
+            },
+        )
+
         StopEshareButton(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .offset(40.dp, 40.dp),
-            onCancelButtonClicked = {
-                onCancelButtonClicked()
-            })
+            onCancelButtonClicked = onCancelButtonClicked,
+        )
     }
-
 }
 
 @Composable
-fun StopEshareButton(
+internal fun StopEshareButton(
     modifier: Modifier = Modifier,
-    onCancelButtonClicked: () -> Unit = {}
+    onCancelButtonClicked: OnActionCallback? = null,
 ) {
     ColorContrastButton(
         modifier = modifier,
         onClick = onCancelButtonClicked,
         primaryColor = Color.White,
         secondaryColor = Color.Red,
-        icon = painterResource(id = R.drawable.close_eshare_button),
+        icon = painterResource(R.drawable.close_eshare_button),
         size = 40.dp
-
     )
-
 }
 
+@Preview
+@Composable
+internal fun EShareConnectedScreenPreview() = MaterialTheme {
+    EShareConnectedScreen(
+        uiState = EshareConnectedUiState(connectionState = EShareConnectionStatus.Connected),
+        navController = rememberNavController(),
+        textureViewListener = object : TextureView.SurfaceTextureListener {
+            override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
+            }
 
+            override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture, p1: Int, p2: Int) {
+            }
 
+            override fun onSurfaceTextureDestroyed(p0: SurfaceTexture): Boolean = false
 
-
+            override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {
+            }
+        }
+    )
+}
+//endregion

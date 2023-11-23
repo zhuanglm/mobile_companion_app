@@ -1,7 +1,6 @@
 package com.esightcorp.mobile.app.eshare.composables
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,44 +21,45 @@ import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 
 @Composable
 fun EshareConnectionStoppedRoute(
     navController: NavController,
-    vm: EshareConnectionStoppedViewModel = hiltViewModel()
+    vm: EshareConnectionStoppedViewModel = hiltViewModel(),
 ) {
     EshareConnectionStoppedScreen(
         navController = navController,
-        onReturnButtonClicked = vm::navigateToNoDevicesConnectedScreen
+        onReturnButtonClicked = vm::gotoMainScreen,
     )
 }
 
+//region Internal implementation
 @Composable
-fun EshareConnectionStoppedScreen(
-    navController: NavController = rememberNavController(),
+internal fun EshareConnectionStoppedScreen(
     modifier: Modifier = Modifier,
-    onReturnButtonClicked: (navController: NavController) -> Unit = {},
+    navController: NavController = rememberNavController(),
+    onReturnButtonClicked: OnNavigationCallback? = null,
 ) {
-
     // Retrieve margin values from resources
-    val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
-    val bodyTopMargin = dimensionResource(id = R.dimen.bt_disabled_body_top_margin)
-
+    val headerTopMargin = dimensionResource(R.dimen.bt_disabled_header_top_margin)
+    val bodyTopMargin = dimensionResource(R.dimen.bt_disabled_body_top_margin)
 
     //TODO: Make this into a reusable component
-    BaseScreen(modifier = modifier,
+    BaseScreen(
+        modifier = modifier,
         showBackButton = false,
         showSettingsButton = false,
-        onBackButtonInvoked = { Unit },
-        onSettingsButtonInvoked = { /*Unused*/ },
-        bottomButton = {Unit}) {
-
+        onBackButtonInvoked = { },
+        onSettingsButtonInvoked = { },
+        bottomButton = { },
+    ) {
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (icon, header, subheader, button) = createRefs()
+
             // Set up the big Bluetooth icon
-            BigIcon(
-                painter = painterResource(id = R.drawable.link_off),
+            BigIcon(painter = painterResource(R.drawable.link_off),
                 contentDescription = "Disconnected chain link",
                 modifier = modifier.constrainAs(icon) {
                     top.linkTo(parent.top)
@@ -69,22 +69,21 @@ fun EshareConnectionStoppedScreen(
 
             // Set up the header text
             Header1Text(
-                text = stringResource(id = R.string.eshare_stopped_header),
+                text = stringResource(R.string.eshare_stopped_header),
                 modifier = modifier.constrainAs(header) {
                     top.linkTo(icon.bottom, margin = headerTopMargin)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                })
+                },
+            )
 
             // Set up the body text
             Subheader(
-                text = stringResource(id = R.string.eshare_stopped_subheader),
+                text = stringResource(R.string.eshare_stopped_subheader),
                 modifier = modifier
                     .padding(
-                        dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),
-                        dimensionResource(
-                            id = R.dimen.zero
-                        )
+                        dimensionResource(R.dimen.bt_disabled_horizontal_padding),
+                        dimensionResource(R.dimen.zero)
                     )
                     .constrainAs(subheader) {
                         top.linkTo(header.bottom, margin = bodyTopMargin)
@@ -92,26 +91,25 @@ fun EshareConnectionStoppedScreen(
                         end.linkTo(parent.end)
                     },
                 textAlign = TextAlign.Center
-
             )
 
-            TextRectangularButton(onClick = { onReturnButtonClicked(navController) }, modifier = modifier.constrainAs(button){
-                top.linkTo(subheader.bottom, margin = 50.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+            TextRectangularButton(
+                onClick = { onReturnButtonClicked?.invoke(navController) },
+                modifier = modifier.constrainAs(button) {
+                    top.linkTo(subheader.bottom, margin = 50.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
 
-            }, text = stringResource(id = R.string.eshare_stopped_button))
-
-
+                },
+                text = stringResource(R.string.eshare_stopped_button)
+            )
         }
-
-
-
     }
 }
 
 @Preview
 @Composable
-fun ConnectionStoppedPreview() {
+internal fun ConnectionStoppedPreview() {
     EshareConnectionStoppedScreen()
 }
+//endregion

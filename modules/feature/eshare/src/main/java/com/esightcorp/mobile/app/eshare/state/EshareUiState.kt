@@ -1,6 +1,6 @@
 package com.esightcorp.mobile.app.eshare.state
 
-import com.esightcorp.mobile.app.utils.eShareConnectionStatus
+import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 
 data class RadioState(
     val isBtEnabled: Boolean = true,
@@ -13,7 +13,7 @@ data class DeviceConnectionState(
 
 data class EshareConnectedUiState(
     val radioState: RadioState = RadioState(),
-    val connectionState: eShareConnectionStatus = eShareConnectionStatus.Unknown,
+    val connectionState: EShareConnectionStatus = EShareConnectionStatus.Unknown,
     val deviceConnectionState: DeviceConnectionState = DeviceConnectionState(),
 )
 

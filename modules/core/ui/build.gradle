@@ -67,8 +67,6 @@ dependencies {
 // Integration with ViewModels
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
 // UI Tests
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
-    debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
 

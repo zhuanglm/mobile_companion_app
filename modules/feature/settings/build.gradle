@@ -66,13 +66,11 @@ dependencies {
     //accompanist permissions- Library for Compose UI by google, specifically in this instance for permissions
     implementation "com.google.accompanist:accompanist-permissions:0.27.0"
 // UI Tests
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
-    debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
     //hilt dependencies
     implementation "com.google.dagger:hilt-android:2.42"
-    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    kapt "com.google.dagger:hilt-android-compiler:2.42"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
     implementation 'com.google.accompanist:accompanist-pager:0.20.2'
 

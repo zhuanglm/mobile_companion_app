@@ -29,7 +29,7 @@ fun NavController.navigate(
     popUntil: Navigation? = null,
     popIncluded: Boolean = true,
 ): Boolean {
-    val isPopSuccess = popUntil?.let { popBackStack(it.path, popIncluded) } ?: true
+    val isPopSuccess = popUntil?.let { popBackStack(it.path, popIncluded) } ?: popBackStack()
     navigate(target.path)
 
     return isPopSuccess

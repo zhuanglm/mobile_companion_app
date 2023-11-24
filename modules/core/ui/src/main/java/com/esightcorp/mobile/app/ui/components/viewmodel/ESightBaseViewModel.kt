@@ -3,9 +3,9 @@ package com.esightcorp.mobile.app.ui.components.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
 import com.esightcorp.mobile.app.ui.navigation.Navigation
-import com.esightcorp.mobile.app.ui.extensions.navigate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -19,4 +19,6 @@
     <dimen name="add_device_content_padding_horiz">20dp</dimen>
 
 
+    <dimen name="screen_item_spacer">10dp</dimen>
+
 </resources>

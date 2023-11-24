@@ -1,9 +1,7 @@
 package com.esightcorp.mobile.app.settings
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -15,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +21,7 @@ import com.esightcorp.mobile.app.ui.components.BodyText
 import com.esightcorp.mobile.app.ui.components.FineText
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 
 @Composable
@@ -169,8 +167,4 @@ internal fun SettingsVersion(modifier: Modifier = Modifier, version: String) = F
     textAlign = TextAlign.Center,
     color = MaterialTheme.colors.onSurface
 )
-
-@Composable
-internal fun ItemSpacer(space: Dp = dimensionResource(R.dimen.settings_item_spacer)) =
-    Spacer(modifier = Modifier.height(space))
 //endregion

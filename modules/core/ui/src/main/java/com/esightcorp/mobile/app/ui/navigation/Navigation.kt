@@ -37,4 +37,5 @@ sealed class EShareNavigation(override val path: String) : Navigation(path) {
     object UnableToConnectRoute : EShareNavigation("eshare_unable_to_connect")
     object HotspotSetupRoute : EShareNavigation("hotspot_setup")
     object RemoteBusyRoute : EShareNavigation("eshare_busy")
+    object WifiDisabledRoute : EShareNavigation("eshare_wifi_disabled")
 }

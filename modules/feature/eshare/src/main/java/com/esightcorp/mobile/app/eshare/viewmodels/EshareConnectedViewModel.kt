@@ -44,29 +44,7 @@ class EshareConnectedViewModel @Inject constructor(
         wasStoppedByMobile = false
     }
 
-    private fun updateConnectionState(state: EShareConnectionStatus) =
-        _uiState.update { it.copy(connectionState = state) }
-
-    private fun updateBluetoothDeviceState(state: Boolean) =
-        _uiState.update { it.copy(deviceConnectionState = DeviceConnectionState(state)) }
-
-    private fun updateBluetoothRadioState(state: Boolean) = _uiState.update {
-        it.copy(
-            radioState = RadioState(
-                isBtEnabled = state,
-                isWifiEnabled = it.radioState.isWifiEnabled
-            )
-        )
-    }
-
-    private fun updateWifiRadioState(state: Boolean) = _uiState.update {
-        it.copy(
-            radioState = RadioState(
-                isBtEnabled = it.radioState.isBtEnabled,
-                isWifiEnabled = state
-            )
-        )
-    }
+    //region EshareRepositoryListener
 
     override fun onEshareStateChanged(state: EShareConnectionStatus) {
         Log.i(_tag, "onEshareStateChanged: $state")
@@ -101,6 +79,10 @@ class EshareConnectedViewModel @Inject constructor(
         }
     }
 
+    //endregion
+
+    //region SurfaceTextureListener
+
     override fun onSurfaceTextureAvailable(
         surfaceTexture: SurfaceTexture,
         width: Int,
@@ -123,18 +105,7 @@ class EshareConnectedViewModel @Inject constructor(
 //        Log.i(_tag, "onSurfaceTextureUpdated: ")
     }
 
-    fun navigateToStoppedRoute(navController: NavController) = when (wasStoppedByMobile) {
-        true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
-        false -> navController.navigate(EShareNavigation.ConnectionStoppedRoute)
-    }
-
-    fun navigateToBusyRoute(navController: NavController) = with(navController) {
-        navigate(EShareNavigation.RemoteBusyRoute, EShareNavigation.ConnectedRoute)
-    }
-
-    fun navigateToUnableToConnectRoute(navController: NavController) = with(navController) {
-        navigate(EShareNavigation.UnableToConnectRoute, EShareNavigation.ConnectedRoute)
-    }
+    //endregion
 
     fun startEshareConnection() {
         Log.i(_tag, "startEshareConnection: ")
@@ -149,35 +120,64 @@ class EshareConnectedViewModel @Inject constructor(
         navController.popBackStack()
     }
 
-    fun upButtonPress() {
-        eShareRepository.writeUpButtonPress()
+    fun upButtonPress() = eShareRepository.writeUpButtonPress()
+
+    fun downButtonPress() = eShareRepository.writeDownButtonPress()
+
+    fun volUpButtonPress() = eShareRepository.writeVolumeUpButtonPress()
+
+    fun volDownButtonPress() = eShareRepository.writeVolumeDownButtonPress()
+
+    fun modeButtonPress() = eShareRepository.writeModeButtonPress()
+
+    fun menuButtonPress() = eShareRepository.writeMenuButtonPress()
+
+    fun finderButtonPress() = eShareRepository.writeFinderButtonPress()
+
+    fun actionUpButtonPress() = eShareRepository.writeActionUpEvent()
+
+    //region Navigation
+
+    fun navigateToStoppedRoute(navController: NavController) = when (wasStoppedByMobile) {
+        true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
+        false -> navController.navigate(EShareNavigation.ConnectionStoppedRoute)
     }
 
-    fun downButtonPress() {
-        eShareRepository.writeDownButtonPress()
+    fun navigateToBusyRoute(navController: NavController) =
+        navController.navigate(EShareNavigation.RemoteBusyRoute)
+
+    fun navigateToUnableToConnectRoute(navController: NavController) =
+        navController.navigate(EShareNavigation.UnableToConnectRoute)
+
+    fun navigateToWifiDisabledRoute(navController: NavController) =
+        navController.navigate(EShareNavigation.WifiDisabledRoute)
+    //endregion
+
+    //region Internal implementation
+
+    private fun updateConnectionState(state: EShareConnectionStatus) =
+        _uiState.update { it.copy(connectionState = state) }
+
+    private fun updateBluetoothDeviceState(state: Boolean) =
+        _uiState.update { it.copy(deviceConnectionState = DeviceConnectionState(state)) }
+
+    private fun updateBluetoothRadioState(state: Boolean) = _uiState.update {
+        it.copy(
+            radioState = RadioState(
+                isBtEnabled = state,
+                isWifiEnabled = it.radioState.isWifiEnabled
+            )
+        )
     }
 
-    fun volUpButtonPress() {
-        eShareRepository.writeVolumeUpButtonPress()
+    private fun updateWifiRadioState(state: Boolean) = _uiState.update {
+        it.copy(
+            radioState = RadioState(
+                isBtEnabled = it.radioState.isBtEnabled,
+                isWifiEnabled = state
+            )
+        )
     }
 
-    fun volDownButtonPress() {
-        eShareRepository.writeVolumeDownButtonPress()
-    }
-
-    fun modeButtonPress() {
-        eShareRepository.writeModeButtonPress()
-    }
-
-    fun menuButtonPress() {
-        eShareRepository.writeMenuButtonPress()
-    }
-
-    fun finderButtonPress() {
-        eShareRepository.writeFinderButtonPress()
-    }
-
-    fun actionUpButtonPress() {
-        eShareRepository.writeActionUpEvent()
-    }
+    //endregion
 }

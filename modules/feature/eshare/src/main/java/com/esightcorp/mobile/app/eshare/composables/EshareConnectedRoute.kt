@@ -52,6 +52,8 @@ fun EshareConnectedRoute(
 
     if (!uiState.radioState.isWifiEnabled) {
         Log.i(TAG, "EshareConnectedRoute: Wifi is disabled right now")
+        LaunchedEffect(Unit) { vm.navigateToWifiDisabledRoute(navController) }
+        return
     }
 
     if (!uiState.deviceConnectionState.isDeviceConnected) {
@@ -109,7 +111,6 @@ internal fun EShareConnectedScreen(
     finderButtonPress: OnActionCallback? = null,
     actionUpButtonPress: OnActionCallback? = null,
 ) {
-    Log.i(TAG, "eShareConnectedScreen: ")
     Row {
         TextureViewAndCancelButton(
             textureViewListener = textureViewListener,
@@ -136,6 +137,7 @@ internal fun EShareConnectedScreen(
         )
     }
 
+    Log.e(TAG, "eShare-connection state: ${uiState.connectionState}")
     when (uiState.connectionState) {
         EShareConnectionStatus.Initiated -> {
             LoadingScreenWithSpinner(
@@ -147,36 +149,23 @@ internal fun EShareConnectedScreen(
         }
 
         EShareConnectionStatus.Connected -> {
-            Log.i(TAG, "eShareConnectedScreen: We are now connected to HMD ")
             RotateToLandscape()
         }
 
         EShareConnectionStatus.Disconnected -> {
-            Log.i(TAG, "eShareConnectedScreen: We are now disconnected from HMD ")
-            LaunchedEffect(Unit) {
-                navigateToStoppedRoute?.invoke(navController)
-            }
+            LaunchedEffect(Unit) { navigateToStoppedRoute?.invoke(navController) }
         }
 
         EShareConnectionStatus.IpNotReachable -> {
-            Log.i(TAG, "eShareConnectedScreen: IP not reachable")
-            LaunchedEffect(Unit) {
-                navigateToUnableToConnectRoute?.invoke(navController)
-            }
+            LaunchedEffect(Unit) { navigateToUnableToConnectRoute?.invoke(navController) }
         }
 
         EShareConnectionStatus.AddressNotAvailable -> {
-            Log.i(TAG, "eShareConnectedScreen: Address not available")
-            LaunchedEffect(Unit) {
-                navigateToUnableToConnectRoute?.invoke(navController)
-            }
+            LaunchedEffect(Unit) { navigateToUnableToConnectRoute?.invoke(navController) }
         }
 
         EShareConnectionStatus.Busy -> {
-            Log.i(TAG, "eShareConnectedScreen: HMD has a session running already")
-            LaunchedEffect(Unit) {
-                navigateToBusyRoute?.invoke(navController)
-            }
+            LaunchedEffect(Unit) { navigateToBusyRoute?.invoke(navController) }
         }
 
         EShareConnectionStatus.Failed -> {
@@ -188,14 +177,13 @@ internal fun EShareConnectedScreen(
         }
 
         EShareConnectionStatus.Timeout -> {
-            Log.e(TAG, "eShareConnectedScreen: TImoeut")
+            Log.e(TAG, "eShareConnectedScreen: Timeout")
         }
 
         EShareConnectionStatus.Unknown -> {
-            LaunchedEffect(Unit) {
-                Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
-                startEshareConnection?.invoke()
-            }
+            Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
+
+            LaunchedEffect(Unit) { startEshareConnection?.invoke() }
         }
     }
 }

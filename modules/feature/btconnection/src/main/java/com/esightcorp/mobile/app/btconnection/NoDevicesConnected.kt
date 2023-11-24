@@ -22,7 +22,6 @@ import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
-import com.esightcorp.mobile.app.ui.components.toStringList
 
 private const val TAG = "BluetoothScreens"
 
@@ -44,7 +43,7 @@ fun NoDeviceConnectedRoute(
         Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
         NoDeviceConnectedScreen(
             onScanESightPressed = vm::navigateToScanESight,
-            onSettingsButtonPressed = { },
+            onSettingsButtonPressed = { vm.navigateToSettings(navController) },
             onFeedbackButtonPressed = vm::showFeedbackPage,
             onTermsAndConditionsPressed = { },
             onPrivacyPolicyPressed = { },

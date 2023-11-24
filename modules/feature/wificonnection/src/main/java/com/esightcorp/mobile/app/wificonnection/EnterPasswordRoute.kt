@@ -23,11 +23,10 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PasswordEditText
 import com.esightcorp.mobile.app.wificonnection.viewmodels.EnterPasswordViewModel
 
-private const val TAG = "WifiCredentialsRoute"
-
 @Composable
 fun EnterPasswordRoute(
-    navController: NavController, viewModel: EnterPasswordViewModel = hiltViewModel()
+    navController: NavController,
+    viewModel: EnterPasswordViewModel = hiltViewModel()
 ) {
     Log.d(TAG, "EnterPasswordRoute:")
     EnterPasswordScreen(
@@ -43,6 +42,7 @@ fun EnterPasswordScreenPreview() = MaterialTheme {
 }
 
 //region Private implementation
+private const val TAG = "WifiCredentialsRoute"
 
 @Composable
 internal fun EnterPasswordScreen(

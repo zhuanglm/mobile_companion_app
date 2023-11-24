@@ -75,6 +75,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime:$compose"
     implementation "androidx.compose.runtime:runtime-livedata:$compose"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
+    implementation "com.google.accompanist:accompanist-drawablepainter:0.27.0"
     implementation 'com.google.zxing:core:3.4.1'
 
 

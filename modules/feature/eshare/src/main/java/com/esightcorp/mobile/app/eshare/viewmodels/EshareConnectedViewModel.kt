@@ -141,10 +141,12 @@ class EshareConnectedViewModel @Inject constructor(
         eShareRepository.startEshareConnection()
     }
 
-    fun onCancelButtonClicked() {
-        Log.i(_tag, "onCancelButtonClicked: ")
+    fun onCancelButtonClicked(navController: NavController) {
+        Log.i(_tag, "onCancelButtonClicked")
         wasStoppedByMobile = true
         eShareRepository.cancelEshareConnection()
+
+        navController.popBackStack()
     }
 
     fun upButtonPress() {

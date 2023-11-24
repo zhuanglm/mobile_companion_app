@@ -34,9 +34,9 @@ import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
+import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
 import com.esightcorp.mobile.app.utils.NavigateToDeviceDisconnected
-import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 
 @Composable
 fun EshareConnectedRoute(
@@ -61,10 +61,7 @@ fun EshareConnectedRoute(
     }
 
     if (uiState.radioState.isBtEnabled && uiState.deviceConnectionState.isDeviceConnected) {
-        BackHandler {
-            vm.onCancelButtonClicked()
-            vm.gotoMainScreen(navController)
-        }
+        BackHandler { vm.onCancelButtonClicked(navController) }
 
         EShareConnectedScreen(
             textureViewListener = vm,
@@ -102,7 +99,7 @@ internal fun EShareConnectedScreen(
     navigateToStoppedRoute: OnNavigationCallback? = null,
     navigateToUnableToConnectRoute: OnNavigationCallback? = null,
     navigateToBusyRoute: OnNavigationCallback? = null,
-    onCancelButtonClicked: OnActionCallback? = null,
+    onCancelButtonClicked: OnNavigationCallback? = null,
     upButtonPress: OnActionCallback? = null,
     downButtonPress: OnActionCallback? = null,
     menuButtonPress: OnActionCallback? = null,
@@ -117,6 +114,7 @@ internal fun EShareConnectedScreen(
         TextureViewAndCancelButton(
             textureViewListener = textureViewListener,
             modifier = Modifier.weight(1f),
+            navController = navController,
             onClick = onCancelButtonClicked,
         )
 
@@ -139,18 +137,18 @@ internal fun EShareConnectedScreen(
     }
 
     when (uiState.connectionState) {
-        EShareConnectionStatus.Connected -> {
-            Log.i(TAG, "eShareConnectedScreen: We are now connected to HMD ")
-            RotateToLandscape()
-        }
-
         EShareConnectionStatus.Initiated -> {
             LoadingScreenWithSpinner(
                 loadingText = stringResource(R.string.eshare_loading_text),
                 modifier = modifier,
                 cancelButtonNeeded = true,
-                onCancelButtonClicked = onCancelButtonClicked,
+                onCancelButtonClicked = { onCancelButtonClicked?.invoke(navController) },
             )
+        }
+
+        EShareConnectionStatus.Connected -> {
+            Log.i(TAG, "eShareConnectedScreen: We are now connected to HMD ")
+            RotateToLandscape()
         }
 
         EShareConnectionStatus.Disconnected -> {
@@ -176,8 +174,6 @@ internal fun EShareConnectedScreen(
 
         EShareConnectionStatus.Busy -> {
             Log.i(TAG, "eShareConnectedScreen: HMD has a session running already")
-            onCancelButtonClicked?.invoke()
-
             LaunchedEffect(Unit) {
                 navigateToBusyRoute?.invoke(navController)
             }
@@ -208,8 +204,9 @@ internal fun EShareConnectedScreen(
 @Composable
 internal fun TextureViewAndCancelButton(
     textureViewListener: TextureView.SurfaceTextureListener,
+    navController: NavController,
     modifier: Modifier = Modifier,
-    onClick: OnActionCallback? = null,
+    onClick: OnNavigationCallback? = null,
 ) {
     Box(modifier = Modifier.fillMaxHeight()) {
         AndroidView(
@@ -219,28 +216,17 @@ internal fun TextureViewAndCancelButton(
             modifier = modifier.fillMaxHeight(),
         )
 
-        StopEshareButton(
+        ColorContrastButton(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .offset(40.dp, 40.dp),
-            onClick = onClick,
+            primaryColor = Color.White,
+            secondaryColor = Color.Red,
+            icon = painterResource(R.drawable.close_eshare_button),
+            size = 40.dp,
+            onClick = { onClick?.invoke(navController) },
         )
     }
-}
-
-@Composable
-internal fun StopEshareButton(
-    modifier: Modifier = Modifier,
-    onClick: OnActionCallback? = null,
-) {
-    ColorContrastButton(
-        modifier = modifier,
-        onClick = onClick,
-        primaryColor = Color.White,
-        secondaryColor = Color.Red,
-        icon = painterResource(R.drawable.close_eshare_button),
-        size = 40.dp
-    )
 }
 
 @Preview

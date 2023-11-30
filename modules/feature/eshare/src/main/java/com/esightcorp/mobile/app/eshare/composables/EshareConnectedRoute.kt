@@ -24,6 +24,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectedViewModel
 import com.esightcorp.mobile.app.ui.R
@@ -32,6 +33,7 @@ import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
 import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
@@ -43,6 +45,8 @@ fun EshareConnectedRoute(
     navController: NavController,
     vm: EshareConnectedViewModel = hiltViewModel()
 ) {
+//    BackStackLogger(navController, TAG)
+
     val uiState by vm.uiState.collectAsState()
     if (!uiState.radioState.isBtEnabled) {
         Log.i(TAG, "EshareConnectedRoute: Bluetooth is disabled right now")
@@ -70,9 +74,9 @@ fun EshareConnectedRoute(
             uiState = uiState,
             navController = navController,
             startEshareConnection = vm::startEshareConnection,
+            cancelEshareConnection = vm::cancelEshareConnection,
             navigateToStoppedRoute = vm::navigateToStoppedRoute,
             navigateToUnableToConnectRoute = vm::navigateToUnableToConnectRoute,
-            navigateToBusyRoute = vm::navigateToBusyRoute,
             onCancelButtonClicked = vm::onCancelButtonClicked,
             upButtonPress = vm::upButtonPress,
             downButtonPress = vm::downButtonPress,
@@ -98,9 +102,9 @@ internal fun EShareConnectedScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     startEshareConnection: OnActionCallback? = null,
-    navigateToStoppedRoute: OnNavigationCallback? = null,
+    cancelEshareConnection: OnActionCallback? = null,
+    navigateToStoppedRoute: ((NavController, EShareStoppedReason?) -> Unit)? = null,
     navigateToUnableToConnectRoute: OnNavigationCallback? = null,
-    navigateToBusyRoute: OnNavigationCallback? = null,
     onCancelButtonClicked: OnNavigationCallback? = null,
     upButtonPress: OnActionCallback? = null,
     downButtonPress: OnActionCallback? = null,
@@ -139,6 +143,15 @@ internal fun EShareConnectedScreen(
 
     Log.e(TAG, "eShare-connection state: ${uiState.connectionState}")
     when (uiState.connectionState) {
+        // 1st state
+        EShareConnectionStatus.Unknown -> {
+            LaunchedEffect(Unit) {
+                Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
+                startEshareConnection?.invoke()
+            }
+        }
+
+        // Waiting for remote connection
         EShareConnectionStatus.Initiated -> {
             LoadingScreenWithSpinner(
                 loadingText = stringResource(R.string.eshare_loading_text),
@@ -153,37 +166,43 @@ internal fun EShareConnectedScreen(
         }
 
         EShareConnectionStatus.Disconnected -> {
-            LaunchedEffect(Unit) { navigateToStoppedRoute?.invoke(navController) }
-        }
-
-        EShareConnectionStatus.IpNotReachable -> {
-            LaunchedEffect(Unit) { navigateToUnableToConnectRoute?.invoke(navController) }
-        }
-
-        EShareConnectionStatus.AddressNotAvailable -> {
-            LaunchedEffect(Unit) { navigateToUnableToConnectRoute?.invoke(navController) }
+            LaunchedEffect(Unit) {
+                navigateToStoppedRoute?.invoke(
+                    navController,
+                    EShareStoppedReason.REMOTE_STOPPED
+                )
+            }
         }
 
         EShareConnectionStatus.Busy -> {
-            LaunchedEffect(Unit) { navigateToBusyRoute?.invoke(navController) }
-        }
-
-        EShareConnectionStatus.Failed -> {
-            Log.e(TAG, "eShareConnectedScreen: FAILED")
+            LaunchedEffect(Unit) {
+                navigateToStoppedRoute?.invoke(
+                    navController,
+                    EShareStoppedReason.EXISTING_ACTIVE_SESSION
+                )
+            }
         }
 
         EShareConnectionStatus.ReceivedUserRejection -> {
-            Log.e(TAG, "eShareConnectedScreen: User rejection")
+            LaunchedEffect(Unit) {
+                navigateToStoppedRoute?.invoke(
+                    navController,
+                    EShareStoppedReason.USER_DECLINED
+                )
+            }
         }
 
-        EShareConnectionStatus.Timeout -> {
-            Log.e(TAG, "eShareConnectedScreen: Timeout")
-        }
+        EShareConnectionStatus.Timeout,
+        EShareConnectionStatus.IpNotReachable,
+        EShareConnectionStatus.AddressNotAvailable -> {
+            BackStackLogger(navController, TAG)
 
-        EShareConnectionStatus.Unknown -> {
-            Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
+            LaunchedEffect(Unit) {
+                // Send stop command to clean up current session
+                cancelEshareConnection?.invoke()
 
-            LaunchedEffect(Unit) { startEshareConnection?.invoke() }
+                navigateToUnableToConnectRoute?.invoke(navController)
+            }
         }
     }
 }

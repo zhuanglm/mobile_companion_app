@@ -6,28 +6,35 @@ import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
 
-private const val TAG = "CreateSocket"
 class CreateSocket(
-    private val port:Int,
+    private val port: Int,
     private val createSocketListener: CreateSocketListener,
     private val inputStreamListener: InputStreamListener
-): Thread(), Closeable {
+) : Thread(), Closeable {
+    private val _tag = this.javaClass.simpleName
+
     private var socket: Socket? = null
     private var inputStream: InputStream? = null
     private var serverSocket: ServerSocket? = null
 
     override fun run() {
         try {
-            Log.i(TAG, (if (serverSocket != null) serverSocket.hashCode().toString() else "") + " <><><> starting server on port $port <><><>")
             serverSocket = ServerSocket(port)
+
+            Log.i(
+                _tag,
+                "<><><> starting server on port $port (socket: ${serverSocket.hashCode()}) <><><>"
+            )
+
             createSocketListener.onSocketCreated()
-            Log.i(TAG, "run: <><><> waiting for client <><><>")
+            Log.i(_tag, "run: <><><> waiting for client <><><>")
             socket = serverSocket!!.accept()
-            Log.i(TAG, "run: <><><> accepted client <><><>")
-            inputStream = socket!!.getInputStream()
-            if(inputStream != null){
-                inputStreamListener.onInputStreamCreated(inputStream!!)
-            }else{
+            Log.i(_tag, "run: <><><> accepted client <><><>")
+
+            socket?.getInputStream()?.let {
+                inputStream = it
+                inputStreamListener.onInputStreamCreated(it)
+            } ?: run {
                 inputStreamListener.onInputStreamError()
             }
         } catch (e: Exception) {
@@ -38,12 +45,13 @@ class CreateSocket(
 
 
     override fun close() {
-        if(inputStream != null){
-            inputStream!!.close()
+        inputStream?.let {
+            it.close()
             inputStreamListener.onInputStreamClosed()
         }
-        if(socket != null){
-            socket!!.close()
+
+        socket?.let {
+            it.close()
             createSocketListener.onSocketClosed()
         }
     }

@@ -5,7 +5,6 @@ import android.app.Service
 import android.bluetooth.*
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -257,16 +256,18 @@ class BleService : Service() {
             value: ByteArray,
             status: Int
         ) {
-            Log.d(_tag, "onCharacteristicRead - ${characteristic.uuid}, status: $status")
+            logCharacteristic("onCharacteristicRead", characteristic, value, status)
+
             if (status != BluetoothGatt.GATT_SUCCESS) return
 
-            Log.e(_tag, "onCharacteristicRead: $characteristic -> ${value.decodeToString()}")
-            val notifyingAction = when (characteristic.uuid.toString()) {
-                ESightCharacteristic.ESHARE_STATUS.uuid -> ACTION_ESHARE_STATUS
-                else -> ACTION_DATA_AVAILABLE
-            }
+            when (ESightCharacteristic.from(characteristic)) {
+                ESightCharacteristic.ESHARE_STATUS -> broadcastUpdate(
+                    EShareAction.StatusChanged,
+                    value
+                )
 
-            broadcastUpdate(notifyingAction, value)
+                else -> broadcastUpdate(ACTION_DATA_AVAILABLE, value)
+            }
         }
 
         @Deprecated(
@@ -288,12 +289,9 @@ class BleService : Service() {
             value: ByteArray,
         ) {
             val incoming = String(value, StandardCharsets.UTF_8)
-            Log.d(
-                _tag,
-                "onCharacteristicChanged: ${gatt.device?.name}, ${characteristic.uuid}, $incoming"
-            )
+            logCharacteristic("onCharacteristicChanged", characteristic, value)
 
-            when (ESightCharacteristic.from(characteristic)) {
+            when (val chType = ESightCharacteristic.from(characteristic)) {
                 ESightCharacteristic.WIFI_INFO -> {
                     when (incoming) {
                         "WIFI_SUCCESS" -> {
@@ -317,19 +315,16 @@ class BleService : Service() {
                         "ERROR_IP_NOT_REACHABLE" -> {
                             val currentTime = System.currentTimeMillis()
                             if (currentTime - lastBroadcastTimeEshareError > BROADCAST_DEBOUNCE_TIME) {
-                                broadcastUpdate(ACTION_ESHARE_IP_NOT_REACHABLE)
+                                broadcastUpdate(EShareAction.IpNotReachable.name)
                                 lastBroadcastTimeEshareError = currentTime
                             }
-
                         }
 
-                        "ERROR_BUSY" -> {
-                            broadcastUpdate(ACTION_ESHARE_BUSY)
-                        }
+                        "ERROR_BUSY" -> broadcastUpdate(EShareAction.Busy)
 
-                        "ERROR_ADDR_NOT_FOUND" -> {
-                            broadcastUpdate(ACTION_ESHARE_ADDR_NOT_AVAILABLE)
-                        }
+                        "ERROR_ADDR_NOT_FOUND" -> broadcastUpdate(EShareAction.AddressNotAvailable)
+
+                        "ERROR_ESHARE_DENIED" -> broadcastUpdate(EShareAction.UserDenied)
 
                         else -> {
                             broadcastUpdate(ACTION_ERROR, incoming)
@@ -341,16 +336,17 @@ class BleService : Service() {
                     broadcastUpdate(ACTION_HOTSPOT, incoming)
                 }
 
-                ESightCharacteristic.ESHARE_STATUS -> {
-                    broadcastUpdate(ACTION_ESHARE_STATUS, incoming)
-                }
+                //TODO: check again if we need this
+//                ESightCharacteristic.ESHARE_STATUS -> {
+//                    broadcastUpdate(ACTION_ESHARE_STATUS, incoming)
+//                }
 
                 ESightCharacteristic.WIFI_CONNECTION_STATUS -> {
                     broadcastUpdate(ACTION_WIFI_CONNECTION_STATUS, incoming)
                 }
 
                 else -> {
-                    Log.i(_tag, "onCharacteristicChanged: not handling!")
+                    Log.e(_tag, "onCharacteristicChanged: not handling!\n$chType, data: $incoming")
                 }
             }
         }
@@ -372,10 +368,27 @@ class BleService : Service() {
             characteristic: BluetoothGattCharacteristic,
             status: Int,
         ) {
-            Log.d(
-                _tag,
-                "onCharacteristicWrite: ${gatt.device?.name}, ${characteristic.uuid}, is success? ${status == BluetoothGatt.GATT_SUCCESS} "
-            )
+            logCharacteristic("onCharacteristicWrite", characteristic, status = status)
+        }
+
+        /**
+         * Log characteristic callback info, for debugging purpose
+         */
+        private fun logCharacteristic(
+            tag: String,
+            characteristic: BluetoothGattCharacteristic,
+            data: ByteArray? = null,
+            status: Int? = null,
+        ) {
+            val log = StringBuffer("$tag: ")
+
+            log.append("${ESightCharacteristic.from(characteristic)}(${characteristic.uuid}) ")
+
+            data?.let { log.append(" ->> data: ${String(data, StandardCharsets.UTF_8)}, ") }
+
+            status?.let { log.append("success: ${status == BluetoothGatt.GATT_SUCCESS}($status)") }
+
+            Log.w(_tag, log.toString())
         }
     }
 
@@ -415,7 +428,7 @@ class BleService : Service() {
         }
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "NewApi")
     @Suppress("Deprecation")
     private fun sendMessage(chType: ESightCharacteristic, payload: BluetoothPayload): Boolean {
         var boolResult = false
@@ -485,16 +498,33 @@ class BleService : Service() {
 
     //region Broadcast utilities
 
+    @Synchronized
+    private fun broadcastUpdate(action: IAction, data: String? = null) {
+        Log.i(_tag, "broadcastUpdate: $action ->> $data")
+
+        sendBroadcast(
+            Intent(action.actionName()).apply {
+                data?.let { putExtra(EXTRA_DATA, it) }
+            },
+        )
+    }
+
+    private fun broadcastUpdate(action: IAction, data: ByteArray?) =
+        broadcastUpdate(action, data?.decodeToString())
+
     /**
      * Broadcast update methods
      *
      * multiple overloads on this one
      */
+    @Synchronized
     private fun broadcastUpdate(action: String) {
         val intent = Intent(action)
         sendBroadcast(intent)
     }
 
+    @Deprecated("")
+    @Synchronized
     private fun broadcastUpdate(action: String, data: ByteArray?) {
         val intent = Intent(action)
         if (data?.isNotEmpty() == true) {
@@ -504,10 +534,13 @@ class BleService : Service() {
         sendBroadcast(intent)
     }
 
+    @Deprecated("")
+    @Synchronized
     private fun broadcastUpdate(action: String, value: String) {
-        Log.i(_tag, "broadcastUpdate: $action $value")
-        val intent = Intent(action)
-        intent.data = Uri.parse(value)
+        Log.i(_tag, "broadcastUpdate: $action ->> $value")
+        val intent = Intent(action).apply {
+            putExtra(EXTRA_DATA, value)
+        }
         sendBroadcast(intent)
     }
 
@@ -576,7 +609,6 @@ class BleService : Service() {
     companion object {
         const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
-        const val ACTION_ESHARE_STATUS = "com.esightcorp.bluetooth.le.ACTION_ESHARE_STATUS"
 
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
 
@@ -589,13 +621,6 @@ class BleService : Service() {
         const val ACTION_WIFI_CONNECTION_STATUS =
             "com.esightcorp.wifi.ACTION_WIFI_CONNECTION_STATUS"
         const val ACTION_HOTSPOT = "com.esightcorp.wifi.ACTION_HOTSPOT"
-
-
-        const val ACTION_ESHARE_BUSY = "com.esightcorp.wifi.ACTION_ESHARE_BUSY"
-        const val ACTION_ESHARE_ADDR_NOT_AVAILABLE =
-            "com.esightcorp.wifi.ACTION_ESHARE_ADDR_NOT_AVAILABLE"
-        const val ACTION_ESHARE_IP_NOT_REACHABLE =
-            "com.esightcorp.wifi.ACTION_ESHARE_IP_NOT_REACHABLE"
 
         private const val REQUEST_MTU_SIZE = 200
 

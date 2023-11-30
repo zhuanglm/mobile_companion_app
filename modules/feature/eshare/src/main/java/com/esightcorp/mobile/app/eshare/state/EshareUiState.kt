@@ -17,6 +17,11 @@ data class EshareConnectedUiState(
     val deviceConnectionState: DeviceConnectionState = DeviceConnectionState(),
 )
 
+data class EshareStoppedUiState(
+    val titleId: Int = -1,
+    val descriptionId: Int = -1,
+)
+
 data class HotspotSetupUiState(
     val radioState: RadioState = RadioState(),
     val networkName: String = "",

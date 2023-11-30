@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.eshare.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.eshare.composables.EshareBusyRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectedRoute
@@ -10,6 +11,7 @@ import com.esightcorp.mobile.app.eshare.composables.EshareUnableToConnectRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareWifiDisabledRoute
 import com.esightcorp.mobile.app.eshare.composables.HotspotSetupRoute
 import com.esightcorp.mobile.app.ui.extensions.composable
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionRejectedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionStoppedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.HotspotSetupRoute
@@ -23,7 +25,14 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
     navigation(startDestination = ConnectedRoute.path, route = IncomingRoute.path) {
         composable(ConnectedRoute) { EshareConnectedRoute(navController) }
 
-        composable(ConnectionStoppedRoute) { EshareConnectionStoppedRoute(navController) }
+        composable(
+            ConnectionStoppedRoute.routeWithArgs, arguments = ConnectionStoppedRoute.arguments
+        ) {
+            EshareConnectionStoppedRoute(
+                navController,
+                reason = EShareStoppedReason.from(it.arguments?.getString(ConnectionStoppedRoute.reason))
+            )
+        }
 
         composable(UnableToConnectRoute) { EshareUnableToConnectRoute(navController) }
 
@@ -32,5 +41,18 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
         composable(RemoteBusyRoute) { EshareBusyRoute(navController) }
 
         composable(WifiDisabledRoute) { EshareWifiDisabledRoute(navController) }
+        composable(ConnectionRejectedRoute) { EshareConnectedRoute(navController) }
+    }
+}
+
+enum class EShareStoppedReason {
+    USER_DECLINED,
+    EXISTING_ACTIVE_SESSION,
+    REMOTE_STOPPED,
+
+    ;
+
+    companion object {
+        fun from(value: String?) = values().find { it.name == value }
     }
 }

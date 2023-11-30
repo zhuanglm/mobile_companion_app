@@ -27,6 +27,13 @@ class StreamOutThread(
             restartTimeout()
         } else {
             Log.e(_tag, "Worker thread read timeout!", Exception())
+            this@StreamOutThread.interrupt()
+
+            try {
+                inputStream.close()
+            } catch (_: Throwable) {
+            }
+
             streamOutListener.onConnectionTimeout()
         }
     }

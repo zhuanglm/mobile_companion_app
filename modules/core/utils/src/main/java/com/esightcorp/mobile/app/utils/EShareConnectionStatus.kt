@@ -5,7 +5,6 @@ enum class EShareConnectionStatus {
 
     Connected,
     Disconnected,
-    Failed,
     Initiated,
     ReceivedUserRejection,
     Timeout,

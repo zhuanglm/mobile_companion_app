@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.eshare.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -30,6 +32,8 @@ fun EshareUnableToConnectRoute(
     navController: NavController,
     vm: EshareViewModel = hiltViewModel(),
 ) {
+    BackStackLogger(navController = navController, TAG)
+
     EshareUnableToConnectScreen(
         modifier = Modifier,
         navController = navController,
@@ -40,6 +44,8 @@ fun EshareUnableToConnectRoute(
 }
 
 //region Internal implementation
+
+private const val TAG = "EshareUnableToConnectRoute"
 
 @Composable
 internal fun EshareUnableToConnectScreen(
@@ -117,9 +123,11 @@ internal fun EshareUnableToConnectScreen(
 
             BodyText(
                 text = stringResource(R.string.label_eshare_instruction_footer),
-                modifier = modifier.constrainAs(footer) {
-                    bottom.linkTo(parent.bottom, margin = 10.dp)
-                },
+                modifier = modifier
+                    .padding(top = 10.dp)
+                    .constrainAs(footer) {
+                        bottom.linkTo(parent.bottom, margin = 10.dp)
+                    },
                 MaterialTheme.colors.onSurface,
             )
         }

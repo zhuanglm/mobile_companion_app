@@ -8,14 +8,15 @@ import android.util.Log
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
-import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,14 +69,17 @@ class EshareConnectedViewModel @Inject constructor(
     }
 
     override fun onInputStreamCreated(inputStream: InputStream) {
-        Log.i(_tag, "onInputStreamCreated: ")
-        if (surfaceTexture != null) {
-            Log.d(_tag, "onInputStreamCreated: surfaceTexture is not null")
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({
-                Log.d(_tag, "onInputStreamCreated: starting stream")
-                eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
-            }, 1000)
+        Log.i(_tag, "onInputStreamCreated")
+        surfaceTexture?.let {
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    Log.d(_tag, "onInputStreamCreated: starting stream")
+                    eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
+                },
+                1000,
+            )
+        } ?: run {
+            Log.e(_tag, "surfaceTexture is NULL", Exception())
         }
     }
 
@@ -107,15 +111,14 @@ class EshareConnectedViewModel @Inject constructor(
 
     //endregion
 
-    fun startEshareConnection() {
-        Log.i(_tag, "startEshareConnection: ")
-        eShareRepository.startEshareConnection()
-    }
+    fun startEshareConnection() = eShareRepository.startEshareConnection()
+
+    fun cancelEshareConnection() = eShareRepository.cancelEshareConnection()
 
     fun onCancelButtonClicked(navController: NavController) {
         Log.i(_tag, "onCancelButtonClicked")
         wasStoppedByMobile = true
-        eShareRepository.cancelEshareConnection()
+        cancelEshareConnection()
 
         navController.popBackStack()
     }
@@ -138,13 +141,18 @@ class EshareConnectedViewModel @Inject constructor(
 
     //region Navigation
 
-    fun navigateToStoppedRoute(navController: NavController) = when (wasStoppedByMobile) {
-        true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
-        false -> navController.navigate(EShareNavigation.ConnectionStoppedRoute)
-    }
+    fun navigateToStoppedRoute(navController: NavController, reason: EShareStoppedReason? = null) {
+        when (wasStoppedByMobile) {
+            true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
+            false -> {
+                val navStoppedPath =
+                    reason?.let { "${EShareNavigation.ConnectionStoppedRoute.path}/${it.name}" } ?: EShareNavigation.ConnectionStoppedRoute.path
 
-    fun navigateToBusyRoute(navController: NavController) =
-        navController.navigate(EShareNavigation.RemoteBusyRoute)
+                navController.popBackStack()
+                navController.navigate(navStoppedPath)
+            }
+        }
+    }
 
     fun navigateToUnableToConnectRoute(navController: NavController) =
         navController.navigate(EShareNavigation.UnableToConnectRoute)

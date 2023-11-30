@@ -32,7 +32,6 @@ class EshareRepository @Inject constructor(
     private val bluetoothModel: BluetoothModel
     private val wifiModel: WifiModel
     private lateinit var eShareRepositoryListener: EshareRepositoryListener
-    private var state: EShareConnectionStatus = EShareConnectionStatus.Unknown
 
     //BluetoothModelListener overrides
     override fun onDeviceDisconnected(device: BluetoothDevice) {
@@ -72,13 +71,13 @@ class EshareRepository @Inject constructor(
         }
 
         override fun onSocketClosed() {
-            state = EShareConnectionStatus.Disconnected
-            Log.i(_tag, "onSocketClosed: ")
+            Log.i(_tag, "onSocketClosed")
+            updateEshareState(EShareConnectionStatus.Disconnected)
         }
 
         override fun onSocketError() {
-            state = EShareConnectionStatus.Disconnected
-            Log.e(_tag, "onSocketError: ")
+            Log.e(_tag, "onSocketError")
+            updateEshareState(EShareConnectionStatus.Disconnected)
         }
     }
 
@@ -86,7 +85,6 @@ class EshareRepository @Inject constructor(
         override fun onInputStreamCreated(inputStream: InputStream) {
             //start reading from input stream
             Log.i(_tag, "onInputStreamCreated: ")
-            state = EShareConnectionStatus.Connected
             updateEshareState(EShareConnectionStatus.Connected)
             updateInputStream(inputStream)
         }
@@ -113,16 +111,14 @@ class EshareRepository @Inject constructor(
     }
 
     fun startEshareConnection() {
-        Log.i(_tag, "startEshareConnection: Lets get this thing going!!! ")
+        Log.w(_tag, "startEshareConnection: Lets get this thing going!!!")
         if (wifiModel.isWifiEnabled()) {
             bluetoothModel.registerEshareReceiver()
             wifiModel.openSocket(createSocketListener, inputStreamListener)
-            state = EShareConnectionStatus.Initiated
             updateEshareState(EShareConnectionStatus.Initiated)
         } else {
             eShareRepositoryListener.onWifiStateChanged(false)
         }
-
     }
 
     private fun checkIfEshareIsRunningAlready() {
@@ -135,13 +131,11 @@ class EshareRepository @Inject constructor(
     }
 
     private fun writeStreamOutPortIpToHMD() {
-        Log.i(_tag, "writeStreamOutPortIpToHMD: ")
+        Log.i(_tag, "writeStreamOutPortIpToHMD")
         try {
-            eSightBleManager.getBleService()
-                ?.sendPortAndIp(
-                    port = eShareCache.getPort(),
-                    ip = eShareCache.getIpAddress()
-                )
+            eSightBleManager.getBleService()?.sendPortAndIp(
+                port = eShareCache.getPort(), ip = eShareCache.getIpAddress()
+            )
         } catch (exception: NullPointerException) {
             Log.e(_tag, "sendPortAndIp: BleService has not been initialized ", exception)
         } catch (exception: UninitializedPropertyAccessException) {
@@ -150,59 +144,52 @@ class EshareRepository @Inject constructor(
     }
 
 
-    private fun updateEshareState(state: EShareConnectionStatus) {
+    private fun updateEshareState(state: EShareConnectionStatus) =
         eShareRepositoryListener.onEshareStateChanged(state)
-    }
 
-    private fun updateInputStream(inputStream: InputStream) {
+    private fun updateInputStream(inputStream: InputStream) =
         eShareRepositoryListener.onInputStreamCreated(inputStream)
-    }
 
-    private fun updateBluetoothDeviceDisconnected() {
+    private fun updateBluetoothDeviceDisconnected() =
         eShareRepositoryListener.onBluetoothDeviceDisconnected()
-    }
 
-    private fun updateBluetoothRadioDisabled() {
-        eShareRepositoryListener.onBluetoothDisabled()
-    }
-
+    private fun updateBluetoothRadioDisabled() = eShareRepositoryListener.onBluetoothDisabled()
 
     fun startStreamFromHMD(surface: Surface, inputStream: InputStream) {
         Log.i(_tag, "startStreamFromHMD: ")
         SocketManager.startStreamingFromHMD(surface, inputStream, streamOutListener)
-
     }
 
     private val streamOutListener = object : StreamOutListener {
         override fun onConnectionEstablished() {
-            Log.d(_tag, "onConnectionEstablished: ")
+            Log.d(_tag, "onConnectionEstablished")
             updateEshareState(EShareConnectionStatus.Connected)
         }
 
         override fun onConnectionClosed() {
-            Log.d(_tag, "onConnectionClosed: ")
+            Log.d(_tag, "onConnectionClosed")
             updateEshareState(EShareConnectionStatus.Disconnected)
         }
 
         override fun onConnectionError() {
-            Log.d(_tag, "onConnectionError: ")
+            Log.d(_tag, "onConnectionError")
 
         }
 
         override fun onConnectionTimeout() {
-            Log.d(_tag, "onConnectionTimeout: ")
+            Log.d(_tag, "onConnectionTimeout")
             updateEshareState(EShareConnectionStatus.Timeout)
         }
     }
 
     fun cancelEshareConnection() {
-        Log.i(_tag, "cancelEshareConnection: Nevermind ")
+        Log.i(_tag, "cancelEshareConnection: Never mind")
         bluetoothModel.unregisterEshareReceiver()
         eSightBleManager.getBleService()?.stopEshare()
     }
 
     fun startHotspotOnHMD() {
-        Log.i(_tag, "startHotspotOnHMD: ")
+        Log.i(_tag, "startHotspotOnHMD")
         bluetoothModel.registerHotspotReceiver()
         if (eSightBleManager.checkIfConnected()) {
             try {
@@ -223,7 +210,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeUpButtonPress()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeUpButtonPress:", exception)
+                Log.e(_tag, "writeUpButtonPress", exception)
             }
         }
     }
@@ -233,7 +220,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeDownButtonPress()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeDownButtonPress:", exception)
+                Log.e(_tag, "writeDownButtonPress", exception)
             }
         }
 
@@ -244,7 +231,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeModeButtonPress()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeDownButtonPress:", exception)
+                Log.e(_tag, "writeDownButtonPress", exception)
             }
         }
     }
@@ -254,7 +241,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeMenuButtonPress()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeMenuButtonPress:", exception)
+                Log.e(_tag, "writeMenuButtonPress", exception)
             }
         }
     }
@@ -264,7 +251,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeVolumeUpButtonPress()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeVolumeUpButtonPress:", exception)
+                Log.e(_tag, "writeVolumeUpButtonPress", exception)
             }
         }
     }
@@ -274,7 +261,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeVolumeDownButtonPress()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeVolumeDownButtonPress:", exception)
+                Log.e(_tag, "writeVolumeDownButtonPress", exception)
             }
         }
     }
@@ -284,7 +271,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeFinderButtonPressDownEvent()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeFinderButtonPress:", exception)
+                Log.e(_tag, "writeFinderButtonPress", exception)
             }
         }
     }
@@ -294,7 +281,7 @@ class EshareRepository @Inject constructor(
             try {
                 eSightBleManager.getBleService()?.writeActionUpEvent()
             } catch (exception: Exception) {
-                Log.e(_tag, "writeActionUpEvent:", exception)
+                Log.e(_tag, "writeActionUpEvent", exception)
             }
         }
     }
@@ -320,6 +307,13 @@ class EshareRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    //region EShare callback
+
+    override fun onEshareReady() {
+        Log.i(_tag, "onEshareReady: repo")
+        writeStreamOutPortIpToHMD()
+    }
+
     override fun onEshareIpNotReachable() {
         updateEshareState(EShareConnectionStatus.IpNotReachable)
         bluetoothModel.unregisterEshareReceiver()
@@ -335,18 +329,15 @@ class EshareRepository @Inject constructor(
         bluetoothModel.unregisterEshareReceiver()
     }
 
-    override fun onEshareReady() {
-        Log.i(_tag, "onEshareReady: repo")
-        writeStreamOutPortIpToHMD()
-    }
-
     override fun onEshareStopped() {
         updateEshareState(EShareConnectionStatus.Disconnected)
         bluetoothModel.unregisterEshareReceiver()
     }
 
     override fun onUserCancelled() {
-        updateEshareState(EShareConnectionStatus.Disconnected)
+        updateEshareState(EShareConnectionStatus.ReceivedUserRejection)
         bluetoothModel.unregisterEshareReceiver()
     }
+
+    //endregion
 }

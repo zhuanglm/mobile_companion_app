@@ -33,9 +33,17 @@ sealed class EShareNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : EShareNavigation("eshare")
 
     object ConnectedRoute : EShareNavigation("eshare_connected")
-    object ConnectionStoppedRoute : EShareNavigation("eshare_connection_stopped")
+    object ConnectionStoppedRoute : EShareNavigation("eshare_connection_stopped") {
+        const val reason = "reason"
+
+        val routeWithArgs = "$path/{$reason}"
+        val arguments = listOf(navArgument(reason) { type = NavType.StringType })
+    }
+
     object UnableToConnectRoute : EShareNavigation("eshare_unable_to_connect")
     object HotspotSetupRoute : EShareNavigation("hotspot_setup")
     object RemoteBusyRoute : EShareNavigation("eshare_busy")
+
     object WifiDisabledRoute : EShareNavigation("eshare_wifi_disabled")
+    object ConnectionRejectedRoute : EShareNavigation("eshare_connection_rejected")
 }

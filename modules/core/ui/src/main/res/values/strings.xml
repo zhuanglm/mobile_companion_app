@@ -20,7 +20,7 @@
 
     <string name="eshare_stopped_header">Connection Stopped</string>
     <string name="eshare_stopped_subheader">The eSight wearer has stopped the session</string>
-    <string name="eshare_stopped_button">Return</string>
+
 
     <string name="bt_searching_text">Searching for eSight devices</string>
     <string name="wifi_already_connected_header">Connected to Wi-Fi</string>
@@ -85,7 +85,8 @@
     <!-- region EShare -->
     <string name="label_eshare_footer_setup_hotspot">Set up a hotspot</string>
     <string name="label_eshare_try_again">Try again</string>
-    <string name="label_eshare_retry">Retry</string>
+    <string name="label_eshare_btn_retry">Retry</string>
+    <string name="label_eshare_btn_return">Return</string>
 
     <string name="label_eshare_unable_to_connect_title">Unable to connect</string>
     <string name="label_eshare_instruction_general">Please make sure:</string>
@@ -97,6 +98,15 @@
 
     <string name="label_eshare_wifi_disabled_title">Turn on Wi-Fi</string>
     <string name="label_eshare_wifi_disabled_instruction">Open Settings on your phone, and turn on Wi-Fi to connect</string>
+
+    <string name="label_eshare_stopped_user_declined_title">Connection unsuccessful</string>
+    <string name="label_eshare_stopped_user_declined_message">The eSight wearer has declined the viewing request.\n\nPlease try again later</string>
+    
+    <string name="label_eshare_stopped_busy_title">Connection unavailable</string>
+    <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
+
+    <string name="label_eshare_stopped_title">Connection stopped</string>
+    <string name="label_eshare_stopped_message">The eSight wearer has stopped the session.</string>
 
     <!-- endregion -->
 

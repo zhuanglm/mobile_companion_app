@@ -77,7 +77,7 @@ internal fun EshareWifiDisabledScreen(
         TextRectangularButton(
             onClick = { onRetryPressed?.invoke(navController) },
             modifier = modifier,
-            text = stringResource(R.string.label_eshare_retry),
+            text = stringResource(R.string.label_eshare_btn_retry),
             textAlign = TextAlign.Center,
         )
     }

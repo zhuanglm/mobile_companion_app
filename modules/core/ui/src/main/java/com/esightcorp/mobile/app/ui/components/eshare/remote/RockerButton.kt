@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -51,7 +50,6 @@ fun RockerButton(
     contentDescription: String? = null,
     painter1: Painter = painterResource(R.drawable.round_question_mark_24),
     painter2: Painter = painterResource(R.drawable.round_question_mark_24),
-    borderColor: Color = MaterialTheme.colors.secondaryVariant,
     backgroundColor: Color = MaterialTheme.colors.secondary,
     iconTint: Color = Color.Black
 ) {
@@ -63,8 +61,7 @@ fun RockerButton(
         modifier = modifier
             .height(height)
             .width(size)
-            .clip(rockerShape)
-            .border(DefaultBorderWidth, borderColor, rockerShape),
+            .clip(rockerShape),
         shape = rockerShape
     ) {
         Column(
@@ -122,5 +119,4 @@ internal fun RockerButtonPreview() = Surface {
 // Additional constants
 private val DefaultOblongButtonHeight = 100.dp
 private const val OblongWidthFactor = 2.6f // Adjust this factor to change the oblong shape
-private val DefaultBorderWidth = 2.dp
-private const val IconScalingFactor = 0.8f
+private const val IconScalingFactor = 0.7f

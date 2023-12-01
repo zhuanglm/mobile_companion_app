@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,7 +51,7 @@ fun EshareRemote(
             .fillMaxHeight()
             .wrapContentWidth(),
         shape = RoundedCornerShape(0.9f),
-        color = Color.Gray
+        color = darkColors().background
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -190,9 +192,11 @@ internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
 
 @Preview(name = "landscape", widthDp = 800, heightDp = 360)
 @Composable
-internal fun EshareRemotePreview() = Surface {
-    Row {
-        Spacer(modifier = Modifier.weight(2f))
-        EshareRemote(modifier = Modifier.weight(1f))
+internal fun EshareRemotePreview() = MaterialTheme {
+    Surface {
+        Row {
+            Spacer(modifier = Modifier.weight(2f))
+            EshareRemote(modifier = Modifier.weight(1f))
+        }
     }
 }

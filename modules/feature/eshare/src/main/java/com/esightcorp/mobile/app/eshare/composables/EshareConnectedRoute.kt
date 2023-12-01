@@ -232,7 +232,7 @@ internal fun TextureViewAndCancelButton(
         ColorContrastButton(
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .offset(40.dp, 40.dp),
+                .offset(20.dp, 20.dp),
             primaryColor = Color.White,
             secondaryColor = Color.Red,
             icon = R.drawable.close_eshare_button,

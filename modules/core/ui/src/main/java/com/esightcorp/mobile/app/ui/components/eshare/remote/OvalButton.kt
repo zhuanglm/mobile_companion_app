@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -21,9 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -51,7 +48,6 @@ fun OvalButton(
     size: Dp = DefaultOblongButtonHeight, // Height of the oblong button
     contentDescription: String? = null,
     @DrawableRes iconDrawableId: Int = DefaultIconResource,
-    borderColor: Color = MaterialTheme.colors.secondaryVariant,
     backgroundColor: Color = MaterialTheme.colors.secondary,
     iconTint: Color = Color.Black,
     contentPadding: PaddingValues = PaddingValues(),
@@ -66,7 +62,6 @@ fun OvalButton(
             .clip(ovalShape)
             .gestureHandler(onDownEvent, onUpEvent),
         shape = ovalShape,
-        border = BorderStroke(DefaultBorderWidth, borderColor),
         onClick = { },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = DefaultElevation,
@@ -101,9 +96,8 @@ internal fun OblongButtonPreview() = Surface {
 private val DefaultOblongButtonHeight = 50.dp
 private const val OblongWidthFactor = 1.6f // Adjust this factor to change the oblong shape
 private val DefaultIconResource = R.drawable.round_question_mark_24
-private val DefaultBorderWidth = 2.dp
 private val DefaultElevation = 2.dp
 private val PressedElevation = 4.dp
 private val DisabledElevation = 1.dp
 private val FocusedElevation = 3.dp
-private const val IconScalingFactor = 0.8f
+private const val IconScalingFactor = 0.7f

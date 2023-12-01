@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -116,14 +115,21 @@ internal fun EShareConnectedScreen(
     actionUpButtonPress: OnActionCallback? = null,
 ) {
     Row {
-        TextureViewAndCancelButton(
-            textureViewListener = textureViewListener,
-            modifier = Modifier.weight(1f),
-            navController = navController,
-            onClick = onCancelButtonClicked,
-        )
+        Box(
+            modifier = Modifier
+                .weight(3f)
+                .fillMaxHeight()
+        ) {
+            TextureViewAndCancelButton(
+                textureViewListener = textureViewListener,
+                modifier = modifier,
+                navController = navController,
+                onClick = onCancelButtonClicked,
+            )
+        }
 
         EshareRemote(
+            modifier = Modifier.weight(1f),
             onFinderButtonPressedEventDown = finderButtonPress,
             onFinderButtonPressedEventUp = actionUpButtonPress,
             onModeButtonPressedEventDown = modeButtonPress,
@@ -220,7 +226,7 @@ internal fun TextureViewAndCancelButton(
             factory = { context ->
                 AutoFitTextureView(context).apply { surfaceTextureListener = textureViewListener }
             },
-            modifier = modifier.fillMaxHeight(),
+            modifier = modifier.align(Alignment.Center)
         )
 
         ColorContrastButton(
@@ -229,14 +235,14 @@ internal fun TextureViewAndCancelButton(
                 .offset(40.dp, 40.dp),
             primaryColor = Color.White,
             secondaryColor = Color.Red,
-            icon = painterResource(R.drawable.close_eshare_button),
+            icon = R.drawable.close_eshare_button,
             size = 40.dp,
             onClick = { onClick?.invoke(navController) },
         )
     }
 }
 
-@Preview
+@Preview(name = "landscape", widthDp = 800, heightDp = 360)
 @Composable
 internal fun EShareConnectedScreenPreview() = MaterialTheme {
     EShareConnectedScreen(

@@ -1,7 +1,11 @@
 package com.esightcorp.mobile.app.ui.components.eshare.remote
 
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -13,14 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.extensions.gestureHandler
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 /**
  * Represents a circular button with a customizable icon.
@@ -28,7 +32,7 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
  * @param modifier Modifier to be applied to the button.
  * @param size Diameter of the circular button.
  * @param contentDescription Description of the icon for accessibility purposes.
- * @param painter Painter object for rendering the icon.
+ * @param iconId Painter object for rendering the icon.
  */
 @Composable
 fun CircleButton(
@@ -37,10 +41,11 @@ fun CircleButton(
     onUpEvent: OnActionCallback? = null,
     size: Dp = DefaultButtonSize,
     contentDescription: String? = null,
-    painter: Painter = painterResource(DefaultIconResource),
+    @DrawableRes iconId: Int = DefaultIconResource,
     borderColor: Color = MaterialTheme.colors.secondaryVariant,
     backgroundColor: Color = MaterialTheme.colors.secondary,
-    iconTint: Color = Color.Black
+    iconTint: Color = Color.Black,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
     ElevatedButton(
         modifier = modifier
@@ -59,13 +64,18 @@ fun CircleButton(
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         contentPadding = PaddingValues(DefaultPadding)
     ) {
-        val iconSize = size * IconScalingFactor
-        Icon(
-            painter = painter,
-            tint = iconTint,
-            contentDescription = contentDescription,
-            modifier = Modifier.size(iconSize)
-        )
+        Box(modifier = Modifier.padding(contentPadding)) {
+            val iconSize = size * IconScalingFactor
+
+            Icon(
+                painter = rememberDrawablePainter(
+                    AppCompatResources.getDrawable(LocalContext.current, iconId)
+                ),
+                tint = iconTint,
+                contentDescription = contentDescription,
+                modifier = Modifier.size(iconSize)
+            )
+        }
     }
 }
 
@@ -77,14 +87,16 @@ fun TinyCircleButton(
     modifier: Modifier = Modifier,
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
-    icon: Painter = painterResource(DefaultIconResource)
+    @DrawableRes icon: Int = DefaultIconResource,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
     CircleButton(
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
         size = TinyButtonSize,
         modifier = modifier,
-        painter = icon
+        iconId = icon,
+        contentPadding = contentPadding,
     )
 }
 
@@ -97,14 +109,16 @@ fun RegularCircleButton(
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
     size: Dp = RegularButtonSize,
-    icon: Painter = painterResource(DefaultIconResource)
+    @DrawableRes icon: Int = DefaultIconResource,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
     CircleButton(
         modifier = modifier,
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
         size = size,
-        painter = icon
+        iconId = icon,
+        contentPadding = contentPadding,
     )
 }
 
@@ -114,7 +128,7 @@ fun ColorContrastButton(
     onClick: OnActionCallback? = null,
     primaryColor: Color,
     secondaryColor: Color,
-    icon: Painter = painterResource(DefaultIconResource),
+    @DrawableRes icon: Int = DefaultIconResource,
     size: Dp = RegularButtonSize
 ) {
     CircleButton(
@@ -123,7 +137,7 @@ fun ColorContrastButton(
         borderColor = primaryColor,
         backgroundColor = secondaryColor,
         iconTint = primaryColor,
-        painter = icon,
+        iconId = icon,
         size = size
     )
 }
@@ -149,7 +163,7 @@ internal fun TinyCircleButtonPreview() {
 @Composable
 internal fun RegularCircleButtonPreview() {
     Surface {
-        RegularCircleButton()
+        RegularCircleButton(icon = R.drawable.arrow_down_button)
     }
 }
 
@@ -163,5 +177,5 @@ private val DisabledElevation = 1.dp
 private val FocusedElevation = 3.dp
 private val DefaultPadding = 0.dp
 private const val IconScalingFactor = 0.8f
-private val TinyButtonSize = 50.dp
+private val TinyButtonSize = 40.dp
 private val RegularButtonSize = 75.dp

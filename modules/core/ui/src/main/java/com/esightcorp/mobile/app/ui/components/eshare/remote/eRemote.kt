@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -55,22 +56,30 @@ fun EshareRemote(
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            //region Row 1
             Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(0.8f),
             ) {
                 //row for little round buttons
                 TinyCircleButton(
                     onDownEvent = onFinderButtonPressedEventDown,
                     onUpEvent = onFinderButtonPressedEventUp,
-                    icon = painterResource(R.drawable.round_qr_code_24)
+                    icon = R.drawable.finder_icon,
+                    contentPadding = PaddingValues(10.dp),
                 )
+
                 TinyCircleButton(
                     onDownEvent = onBluetoothButtonPressedEventDown,
                     onUpEvent = onBluetoothButtonPressedEventUp,
-                    icon = painterResource(R.drawable.baseline_bluetooth_24)
+                    icon = R.drawable.baseline_bluetooth_24,
+                    contentPadding = PaddingValues(10.dp),
                 )
             }
+            //endregion
+
+            //region Row 2
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -78,9 +87,13 @@ fun EshareRemote(
                 OvalButton(
                     onDownEvent = onModeButtonPressedEventDown,
                     onUpEvent = onModeButtonPressedEventUp,
-                    painter = painterResource(R.drawable.circle_mode_button)
+                    iconDrawableId = R.drawable.remote_button_home,
+                    contentPadding = PaddingValues(1.dp),
                 )
             }
+            //endregion
+
+            //region Row 3
             VolumeRockerAndUpDownButtons(
                 onUpButtonPressedEventUp = onUpButtonPressedEventUp,
                 onUpButtonPressedEventDown = onUpButtonPressedEventDown,
@@ -91,20 +104,24 @@ fun EshareRemote(
                 onVolumeUpButtonPressedEventDown = onVolumeUpButtonPressedEventDown,
                 onVolumeUpButtonPressedEventUp = onVolumeUpButtonPressedEventUp
             )
+            //endregion
+
+            //region Row 4
             Row {//row for menu button
                 OvalButton(
                     onDownEvent = onMenuButtonPressedEventDown,
                     onUpEvent = onMenuButtonPressedEventUp,
-                    painter = painterResource(id = R.drawable.menu_button)
+                    iconDrawableId = R.drawable.menu_button,
+                    contentPadding = PaddingValues(1.dp),
                 )
             }
+            //endregion
         }
     }
 }
 
 @Composable
 fun VolumeRockerAndUpDownButtons(
-    //TODO: Resizing this causes some issues. Need to debug this further
     size: Dp = 70.dp,
     onUpButtonPressedEventUp: OnActionCallback? = null,
     onUpButtonPressedEventDown: OnActionCallback? = null,
@@ -116,7 +133,7 @@ fun VolumeRockerAndUpDownButtons(
     onVolumeUpButtonPressedEventDown: OnActionCallback? = null,
 ) {
     val circleButtonSpacerSize = size.times(0.5f)
-    val betweenColumnSpacerSize = size.times(0.1f)
+    val betweenColumnSpacerSize = size.times(0.3f)
     val rockerButtonSize = size.times(1f)
 
     Row(
@@ -124,7 +141,7 @@ fun VolumeRockerAndUpDownButtons(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.wrapContentWidth()
     ) {
-        // Column for Circle Buttons
+        // region Up-Down controller
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -133,47 +150,49 @@ fun VolumeRockerAndUpDownButtons(
                 size = size,
                 onUpEvent = onUpButtonPressedEventUp,
                 onDownEvent = onUpButtonPressedEventDown,
-                icon = painterResource(id = R.drawable.arrow_up_button)
+                icon = R.drawable.arrow_up_button,
+                contentPadding = PaddingValues(bottom = 5.dp),
             )
             Spacer(modifier = Modifier.height(circleButtonSpacerSize))
             RegularCircleButton(
                 size = size,
                 onUpEvent = onDownButtonPressedEventUp,
                 onDownEvent = onDownButtonPressedEventDown,
-                icon = painterResource(id = R.drawable.arrow_down_button)
+                icon = R.drawable.arrow_down_button,
+                contentPadding = PaddingValues(top = 5.dp),
             )
         }
+        //endregion
+
         Spacer(modifier = Modifier.width(betweenColumnSpacerSize))
 
-        // Rocker Button
+        //region Volume controller
         RockerButton(
             onVolumeDownEventDown = onVolumeDownButtonPressedEventDown,
             onVolumeDownEventUp = onVolumeDownButtonPressedEventUp,
             onVolumeUpEventDown = onVolumeUpButtonPressedEventDown,
             onVolumeUpEventUp = onVolumeUpButtonPressedEventUp,
             size = rockerButtonSize,
-            painter1 = painterResource(id = R.drawable.volume_up_button),
-            painter2 = painterResource(id = R.drawable.volume_down_button)
+            backgroundColor = Color.White,
+            painter1 = painterResource(R.drawable.volume_up_button),
+            painter2 = painterResource(R.drawable.volume_down_button)
         )
+        //endregion
     }
 }
 
 
 @Preview
 @Composable
-fun VolumeRockerAndUpDownButtonsPreview() {
-    Surface {
-        VolumeRockerAndUpDownButtons(size = 100.dp)
-    }
+internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
+    VolumeRockerAndUpDownButtons(size = 100.dp)
 }
 
 @Preview(name = "landscape", widthDp = 800, heightDp = 360)
 @Composable
-fun EshareRemotePreview() {
-    Surface() {
-        Row {
-            Spacer(modifier = Modifier.weight(2f))
-            EshareRemote(modifier = Modifier.weight(1f))
-        }
+internal fun EshareRemotePreview() = Surface {
+    Row {
+        Spacer(modifier = Modifier.weight(2f))
+        EshareRemote(modifier = Modifier.weight(1f))
     }
 }

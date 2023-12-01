@@ -64,12 +64,13 @@ fun RockerButton(
             .height(height)
             .width(size)
             .clip(rockerShape)
-            .background(backgroundColor, rockerShape)
             .border(DefaultBorderWidth, borderColor, rockerShape),
         shape = rockerShape
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor),
             verticalArrangement = Arrangement.Center,
         ) {
             // Volume Up
@@ -115,7 +116,7 @@ fun RockerButton(
 @Preview
 @Composable
 internal fun RockerButtonPreview() = Surface {
-    RockerButton()
+    RockerButton(backgroundColor = Color.Cyan)
 }
 
 // Additional constants

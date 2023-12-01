@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.eshare.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -83,9 +82,8 @@ internal fun EshareUnableToConnectScreen(
             Column(
                 modifier = modifier
                     .constrainAs(instruction) {
-                        top.linkTo(subtitle.bottom, margin = 20.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
+                        top.linkTo(subtitle.bottom, margin = 15.dp)
+                        bottom.linkTo(footer.top, margin = 15.dp)
                     }
             ) {
                 NumberedHelpItem(
@@ -124,9 +122,8 @@ internal fun EshareUnableToConnectScreen(
             BodyText(
                 text = stringResource(R.string.label_eshare_instruction_footer),
                 modifier = modifier
-                    .padding(top = 10.dp)
                     .constrainAs(footer) {
-                        bottom.linkTo(parent.bottom, margin = 10.dp)
+                        bottom.linkTo(parent.bottom, margin = 5.dp)
                     },
                 MaterialTheme.colors.onSurface,
             )

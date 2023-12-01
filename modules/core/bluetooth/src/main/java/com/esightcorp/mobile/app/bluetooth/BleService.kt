@@ -90,27 +90,30 @@ class BleService : Service() {
     fun sendWifiCreds(ssid: String, pwd: String, type: String) {
         Log.i(_tag, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
         sendMessage(
-            ESightCharacteristic.WIFI_INFO,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.WIFI_CREDS).ssid(ssid).wifiPwd(pwd)
-                .wifiType(type).build()
+            ESightCharacteristic.WIFI_INFO, BluetoothPayload.Builder(
+                BluetoothPayload.BleCodes.WIFI_CREDS,
+                SSID = ssid,
+                wifiPwd = pwd,
+                wifiType = type,
+            ).build()
         )
     }
 
     fun sendPortAndIp(port: Int, ip: String) {
         Log.i(_tag, "sendPortAndIp: Port = $port, IP = $ip")
         sendMessage(
-            ESightCharacteristic.ESHARE_COMMANDS,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.STREAM_OUT).port(port.toString())
-                .ipAddress(ip).build()
+            ESightCharacteristic.ESHARE_COMMANDS, BluetoothPayload.Builder(
+                BluetoothPayload.BleCodes.STREAM_OUT, port = port.toString(), ipAddress = ip,
+            ).build()
         )
     }
 
     fun startHotspot(ssid: String, password: String) {
         Log.i(_tag, "startHotspot: SSID = $ssid, Password = $password")
         sendMessage(
-            ESightCharacteristic.HOTSPOT,
-            BluetoothPayload.Builder(BluetoothPayload.BleCodes.HOTSPOT_CREDS, ssid, password)
-                .build()
+            ESightCharacteristic.HOTSPOT, BluetoothPayload.Builder(
+                BluetoothPayload.BleCodes.HOTSPOT_CREDS, hotspotSsid = ssid, hotspotPwd = password,
+            ).build()
         )
     }
 
@@ -262,8 +265,7 @@ class BleService : Service() {
 
             when (ESightCharacteristic.from(characteristic)) {
                 ESightCharacteristic.ESHARE_STATUS -> broadcastUpdate(
-                    EShareAction.StatusChanged,
-                    value
+                    EShareAction.StatusChanged, value
                 )
 
                 else -> broadcastUpdate(ACTION_DATA_AVAILABLE, value)

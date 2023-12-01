@@ -151,20 +151,21 @@ internal fun EShareConnectedScreen(
     when (uiState.connectionState) {
         // 1st state
         EShareConnectionStatus.Unknown -> {
-            LaunchedEffect(Unit) {
-                Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
-                startEshareConnection?.invoke()
-            }
-        }
-
-        // Waiting for remote connection
-        EShareConnectionStatus.Initiated -> {
             LoadingScreenWithSpinner(
                 loadingText = stringResource(R.string.eshare_loading_text),
                 modifier = modifier,
                 cancelButtonNeeded = true,
                 onCancelButtonClicked = { onCancelButtonClicked?.invoke(navController) },
             )
+
+            LaunchedEffect(Unit) {
+                Log.i(TAG, "eShareConnectedScreen: Starting eShare Connection")
+                startEshareConnection?.invoke()
+            }
+        }
+
+        EShareConnectionStatus.RequireSetupWifi -> {
+            //TODO: implement this
         }
 
         EShareConnectionStatus.Connected -> {

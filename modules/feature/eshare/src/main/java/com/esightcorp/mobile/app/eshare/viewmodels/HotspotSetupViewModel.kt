@@ -20,8 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HotspotSetupViewModel @Inject constructor(
-    private val eshareRepository: EshareRepository, application: Application
-) : ESightBaseViewModel(application), EshareRepositoryListener {
+    application: Application,
+    private val eshareRepository: EshareRepository,
+) : EshareViewModel(application), EshareRepositoryListener {
 
     private val _tag = this.javaClass.simpleName
 

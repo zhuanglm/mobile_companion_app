@@ -9,4 +9,6 @@ interface EshareBluetoothModelListener {
 
     fun onEshareStopped()
     fun onUserCancelled()
+
+    fun onWifiConnectionStatusChanged(data: String?)
 }

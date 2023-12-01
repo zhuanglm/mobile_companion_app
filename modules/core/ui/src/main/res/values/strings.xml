@@ -108,15 +108,16 @@
     <string name="label_eshare_stopped_title">Connection stopped</string>
     <string name="label_eshare_stopped_message">The eSight wearer has stopped the session.</string>
 
+    <string name="label_eshare_hotspot_setup_header">How to set up a hotspot</string>
+    <string name="label_eshare_hotspot_setup_sub_header">Connect your phone directly to eSight</string>
+    <string name="label_eshare_hotspot_setup_step_1">On your phone: open Settings > Wi-Fi</string>
+    <string name="label_eshare_hotspot_setup_step_2">Connect to the eSight\'s " %1$s " network</string>
+    <string name="label_eshare_hotspot_setup_step_3">Enter this password: "%1$s"</string>
+    <string name="label_eshare_hotspot_setup_step_4">Once connected, press the button below to retry</string>
+
     <!-- endregion -->
 
-    <string name="hotspot_setup_header">How to set up a hotspot</string>
-    <string name="hotspot_setup_subheader">Connect your phone directly to eSight</string>
-    <string name="hotspot_setup_step_1">On your phone: open Settings > Wi-Fi</string>
-    <string name="hotspot_setup_step_2">Connect to the eSight\'s " %1$s " network</string>
-    <string name="hotspot_setup_step_3">Enter this password: %1$s </string>
-    <string name="hotspot_setup_step_4">Once connected, press the button below to retry</string>
-    <string name="hotspot_setup_button">Share your view</string>
+    <string name="label_feature_eshare">Share your view</string>
 
     <string name="still_unable_to_connect_button">Still unable to connect?</string>
 

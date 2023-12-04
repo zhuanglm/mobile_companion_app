@@ -3,8 +3,6 @@ package com.esightcorp.mobile.app.eshare.composables
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,6 +27,7 @@ import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.UnableToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -41,33 +40,21 @@ fun HotspotSetupRoute(
         navController = navController,
         onBackPressed = vm::gotoMainScreen,
         onShareViewPressed = vm::onRetryPressed,
-
-//        //TODO: confirm this
-//        onUnableToConnectPressed = null,
-
+        onUnableToConnectPressed = vm::showHowToConnectPage,
         modifier = Modifier,
         uiState = uiState
-    )
-}
-
-@Preview
-@Composable
-fun HotspotSetupScreenPreview() = MaterialTheme {
-    HotspotSetupScreen(
-        navController = rememberNavController(),
-        uiState = HotspotSetupUiState(networkName = "AAA", networkPassword = "123"),
     )
 }
 
 //region Internal implementation
 
 @Composable
-internal fun HotspotSetupScreen(
+private fun HotspotSetupScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     onBackPressed: OnNavigationCallback? = null,
     onShareViewPressed: OnNavigationCallback? = null,
-    onUnableToConnectPressed: OnNavigationCallback? = null,
+    onUnableToConnectPressed: OnActionCallback? = null,
     uiState: HotspotSetupUiState
 ) {
     BaseScreen(
@@ -76,9 +63,7 @@ internal fun HotspotSetupScreen(
         showSettingsButton = false,
         onBackButtonInvoked = { onBackPressed?.invoke(navController) },
         onSettingsButtonInvoked = { },
-        bottomButton = {
-            UnableToConnectButton { onUnableToConnectPressed?.invoke(navController) }
-        },
+        bottomButton = { UnableToConnectButton { onUnableToConnectPressed?.invoke() } },
     ) {
         if (uiState.networkName != "" && uiState.networkPassword != "") {
             HotspotSetupBody(
@@ -98,21 +83,28 @@ private fun HotspotSetupBody(
     onShareViewPressed: OnNavigationCallback? = null,
     uiState: HotspotSetupUiState
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (header, subtitle, instruction, button) = createRefs()
+
         Header1Text(
             text = stringResource(R.string.label_eshare_hotspot_setup_header),
-            modifier = modifier,
+            modifier = modifier.constrainAs(header) {
+                top.linkTo(parent.top)
+            },
         )
-        ItemSpacer(25.dp)
 
         Subheader(
             text = stringResource(R.string.label_eshare_hotspot_setup_sub_header),
-            modifier = modifier,
+            modifier = modifier.constrainAs(subtitle) {
+                top.linkTo(header.bottom, margin = 10.dp)
+            },
         )
-        ItemSpacer(8.dp)
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.constrainAs(instruction) {
+                top.linkTo(subtitle.bottom, margin = 10.dp)
+            }
         ) {
             NumberedHelpItem(
                 number = 1,
@@ -143,37 +135,30 @@ private fun HotspotSetupBody(
                 text = stringResource(R.string.label_eshare_hotspot_setup_step_4),
             )
             ItemSpacer()
-
-            IconAndTextSquareButton(
-                text = stringResource(R.string.label_feature_eshare),
-                painter = painterResource(R.drawable.baseline_camera_alt_24),
-                onClick = { onShareViewPressed?.invoke(navController) },
-                modifier = modifier
-                    .size(160.dp)
-            )
         }
+
+        IconAndTextSquareButton(
+            text = stringResource(R.string.label_feature_eshare),
+            painter = painterResource(R.drawable.baseline_camera_alt_24),
+            onClick = { onShareViewPressed?.invoke(navController) },
+            modifier = modifier
+                .constrainAs(button) {
+                    bottom.linkTo(parent.bottom, margin = 10.dp)
+                    top.linkTo(instruction.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                .size(140.dp)
+        )
     }
-//
-//    ConstraintLayout(modifier = modifier.fillMaxSize()) {
-//        val (header, subtitle, instruction, help1, help2, help3, help4, button) = createRefs()
-//
-//        Header1Text(
-//            text = stringResource(id = R.string.label_eshare_hotspot_setup_header),
-//            modifier = modifier.constrainAs(header) {
-//                top.linkTo(parent.top, margin = 25.dp)
-//                start.linkTo(parent.start)
-//            },
-//        )
-//
-//        Subheader(
-//            text = stringResource(id = R.string.label_eshare_hotspot_setup_sub_header),
-//            modifier = modifier.constrainAs(subtitle) {
-//                top.linkTo(header.bottom, margin = 8.dp)
-//                start.linkTo(parent.start)
-//            },
-//        )
-//
-//
-//    }
+}
+
+@Preview
+@Composable
+private fun HotspotSetupScreenPreview() = MaterialTheme {
+    HotspotSetupScreen(
+        navController = rememberNavController(),
+        uiState = HotspotSetupUiState(networkName = "AAA", networkPassword = "123"),
+    )
 }
 //endregion

@@ -6,14 +6,14 @@ import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
-import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -96,8 +96,6 @@ class NoDevicesConnectedViewModel @Inject constructor(
     }
 
     fun navigateToScanESight(nav: NavController) = with(nav) {
-        navigate(BtConnectionScreens.BtSearchingRoute.route) {
-            popUpTo(BtConnectionScreens.IncomingNavigationRoute.route) { inclusive = false }
-        }
+        navigate(BtConnectionNavigation.BtSearchingRoute)
     }
 }

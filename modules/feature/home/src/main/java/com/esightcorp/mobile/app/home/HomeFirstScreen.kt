@@ -25,6 +25,7 @@ import com.esightcorp.mobile.app.ui.components.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 
 private const val TAG = "Home Screen"
 
@@ -33,6 +34,8 @@ fun HomeFirstScreen(
     navController: NavController, vm: HomeViewModel = hiltViewModel()
 ) {
     val homeUiState by vm.uiState.collectAsState()
+
+    BackStackLogger(navController, TAG)
 
     BaseHomeScreen(
         vm = vm,
@@ -53,6 +56,7 @@ internal fun BaseHomeScreen(
     onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) }
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
+        Log.d(TAG, "BaseHomeScreen: Not connected but are Enabled")
         LaunchedEffect(Unit) {
             vm.navigateToBluetoothStart(navController)
         }

@@ -2,38 +2,39 @@ package com.esightcorp.mobile.app.btconnection.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.esightcorp.mobile.app.btconnection.*
+import com.esightcorp.mobile.app.btconnection.BtConnectedRoute
+import com.esightcorp.mobile.app.btconnection.BtConnectingRoute
+import com.esightcorp.mobile.app.btconnection.BtDevicesRoute
+import com.esightcorp.mobile.app.btconnection.BtDisabledScreen
+import com.esightcorp.mobile.app.btconnection.BtSearchingRoute
+import com.esightcorp.mobile.app.btconnection.NoDeviceConnectedRoute
+import com.esightcorp.mobile.app.btconnection.NoDevicesFoundRoute
+import com.esightcorp.mobile.app.btconnection.UnableToConnectRoute
+import com.esightcorp.mobile.app.ui.extensions.composable
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectedRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectingRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtDisabledScreen
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtSearchingRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.IncomingRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.NoDeviceConnectedRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.NoDevicesFoundRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.ScanResultRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.UnableToConnectRoute
 
 
 fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
-    navigation(startDestination = BtConnectionScreens.NoDevicesConnectedRoute.route, route= BtConnectionScreens.IncomingNavigationRoute.route){
-        composable(BtConnectionScreens.NoDevicesConnectedRoute.route){
-            NoDeviceConnectedRoute(navController = navController)
-        }
-        composable(BtConnectionScreens.BtDevicesScreen.route){
-            BtDevicesRoute(navController = navController)
-        }
-        composable(BtConnectionScreens.BtDisabledScreen.route){
-            BtDisabledScreen(navController = navController)
-        }
-        composable(BtConnectionScreens.BtSearchingRoute.route){
-            BtSearchingRoute(navController = navController)
-        }
-        composable(BtConnectionScreens.BTConnectingRoute.route){
-            BtConnectingRoute(navController = navController)
-        }
-        composable(BtConnectionScreens.UnableToConnectRoute.route){
-            UnableToConnectRoute(navController = navController)
-        }
-        composable(BtConnectionScreens.NoDevicesFoundRoute.route){
-            NoDevicesFoundRoute(navController = navController)
-        }
-        composable(BtConnectionScreens.BtConnectedRoute.route){
-            BtConnectedRoute(navController = navController)
-        }
+    navigation(startDestination = NoDeviceConnectedRoute.path, route = IncomingRoute.path) {
 
+        composable(NoDeviceConnectedRoute) { NoDeviceConnectedRoute(navController) }
 
+        composable(BtSearchingRoute) { BtSearchingRoute(navController) }
+        composable(ScanResultRoute) { BtDevicesRoute(navController) }
+        composable(NoDevicesFoundRoute) { NoDevicesFoundRoute(navController) }
+        composable(BtConnectingRoute) { BtConnectingRoute(navController) }
+        composable(BtConnectedRoute) { BtConnectedRoute(navController) }
+
+        composable(BtDisabledScreen) { BtDisabledScreen(navController) }
+        composable(UnableToConnectRoute) { UnableToConnectRoute(navController) }
     }
 }

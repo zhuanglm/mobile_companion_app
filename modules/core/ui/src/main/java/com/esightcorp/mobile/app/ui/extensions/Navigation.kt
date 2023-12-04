@@ -34,22 +34,10 @@ fun NavController.navigate(
     popUntil: Navigation? = null,
     popIncluded: Boolean = true,
 ): Boolean {
-    var isPopSuccess = popUntil?.let { popBackStack(it.path, popIncluded) } ?: popBackStack()
+    val isPopSuccess = popUntil?.let { popBackStack(it.path, popIncluded) } ?: popBackStack()
 
-    // Check if the target is in the stack
-    try {
-        getBackStackEntry(target.path)
-
-        // the target is in the stack, just pop until it
-        isPopSuccess = popBackStack(target.path, false)
-        Log.i("NavController", "Pop target: ${target.path}, success: $isPopSuccess")
-
-    } catch (_: IllegalArgumentException) {
-        // Good, not in the stack
-    } finally {
-        navigate(target.path) {
-            launchSingleTop = true
-        }
+    navigate(target.path) {
+        launchSingleTop = true
     }
 
     return isPopSuccess

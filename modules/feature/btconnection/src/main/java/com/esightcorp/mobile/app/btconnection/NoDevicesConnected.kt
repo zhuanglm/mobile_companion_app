@@ -21,6 +21,7 @@ import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
@@ -33,6 +34,8 @@ fun NoDeviceConnectedRoute(
 ) {
     // Get Bluetooth UI state from view model
     val btUiState by vm.uiState.collectAsState()
+
+    BackStackLogger(navController, TAG)
 
     // Check if Bluetooth is enabled
     Log.d(TAG, "NoDeviceConnectedRoute: ")

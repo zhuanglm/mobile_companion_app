@@ -321,6 +321,8 @@ class BleService : Service() {
                             if (currentTime - lastBroadcastTimeEshareError > BROADCAST_DEBOUNCE_TIME) {
                                 broadcastUpdate(EShareAction.IpNotReachable)
                                 lastBroadcastTimeEshareError = currentTime
+                            } else {
+                                Log.e(_tag, "Ignored broadcasting $incoming")
                             }
                         }
 

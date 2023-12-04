@@ -168,6 +168,10 @@ class EshareConnectedViewModel @Inject constructor(
 
     fun navigateToWifiDisabledRoute(navController: NavController) =
         navController.navigate(EShareNavigation.WifiDisabledRoute)
+
+    fun navigateToWifiSetupRoute(navController: NavController) = navController.navigate(
+        target = EShareNavigation.WifiSetupRoute
+    )
     //endregion
 
     //region Internal implementation

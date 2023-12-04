@@ -85,6 +85,7 @@ fun EshareConnectedRoute(
             volDownButtonPress = vm::volDownButtonPress,
             finderButtonPress = vm::finderButtonPress,
             actionUpButtonPress = vm::actionUpButtonPress,
+            navigateToWifiSetupRoute = vm::navigateToWifiSetupRoute,
         )
         return
     }
@@ -113,41 +114,45 @@ internal fun EShareConnectedScreen(
     volDownButtonPress: OnActionCallback? = null,
     finderButtonPress: OnActionCallback? = null,
     actionUpButtonPress: OnActionCallback? = null,
+    navigateToWifiSetupRoute: OnNavigationCallback? = null,
 ) {
-    Row {
-        Box(
-            modifier = Modifier
-                .weight(3f)
-                .fillMaxHeight()
-        ) {
-            TextureViewAndCancelButton(
-                textureViewListener = textureViewListener,
-                modifier = modifier,
-                navController = navController,
-                onClick = onCancelButtonClicked,
+    Log.e(TAG, "eShare-connection state: ${uiState.connectionState}")
+
+    if (uiState.connectionState != EShareConnectionStatus.RequireSetupWifi) {
+        Row {
+            Box(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxHeight()
+            ) {
+                TextureViewAndCancelButton(
+                    textureViewListener = textureViewListener,
+                    modifier = modifier,
+                    navController = navController,
+                    onClick = onCancelButtonClicked,
+                )
+            }
+
+            EshareRemote(
+                modifier = Modifier.weight(1f),
+                onFinderButtonPressedEventDown = finderButtonPress,
+                onFinderButtonPressedEventUp = actionUpButtonPress,
+                onModeButtonPressedEventDown = modeButtonPress,
+                onModeButtonPressedEventUp = actionUpButtonPress,
+                onUpButtonPressedEventDown = upButtonPress,
+                onUpButtonPressedEventUp = actionUpButtonPress,
+                onDownButtonPressedEventDown = downButtonPress,
+                onDownButtonPressedEventUp = actionUpButtonPress,
+                onVolumeUpButtonPressedEventDown = volUpButtonPress,
+                onVolumeUpButtonPressedEventUp = actionUpButtonPress,
+                onVolumeDownButtonPressedEventDown = volDownButtonPress,
+                onVolumeDownButtonPressedEventUp = actionUpButtonPress,
+                onMenuButtonPressedEventDown = menuButtonPress,
+                onMenuButtonPressedEventUp = actionUpButtonPress,
             )
         }
-
-        EshareRemote(
-            modifier = Modifier.weight(1f),
-            onFinderButtonPressedEventDown = finderButtonPress,
-            onFinderButtonPressedEventUp = actionUpButtonPress,
-            onModeButtonPressedEventDown = modeButtonPress,
-            onModeButtonPressedEventUp = actionUpButtonPress,
-            onUpButtonPressedEventDown = upButtonPress,
-            onUpButtonPressedEventUp = actionUpButtonPress,
-            onDownButtonPressedEventDown = downButtonPress,
-            onDownButtonPressedEventUp = actionUpButtonPress,
-            onVolumeUpButtonPressedEventDown = volUpButtonPress,
-            onVolumeUpButtonPressedEventUp = actionUpButtonPress,
-            onVolumeDownButtonPressedEventDown = volDownButtonPress,
-            onVolumeDownButtonPressedEventUp = actionUpButtonPress,
-            onMenuButtonPressedEventDown = menuButtonPress,
-            onMenuButtonPressedEventUp = actionUpButtonPress,
-        )
     }
 
-    Log.e(TAG, "eShare-connection state: ${uiState.connectionState}")
     when (uiState.connectionState) {
         // 1st state
         EShareConnectionStatus.Unknown -> {
@@ -165,7 +170,7 @@ internal fun EShareConnectedScreen(
         }
 
         EShareConnectionStatus.RequireSetupWifi -> {
-            //TODO: implement this
+            LaunchedEffect(Unit) { navigateToWifiSetupRoute?.invoke(navController) }
         }
 
         EShareConnectionStatus.Connected -> {

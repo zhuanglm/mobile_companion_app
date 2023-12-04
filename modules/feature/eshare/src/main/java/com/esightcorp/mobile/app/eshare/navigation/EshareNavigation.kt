@@ -7,18 +7,20 @@ import androidx.navigation.navigation
 import com.esightcorp.mobile.app.eshare.composables.EshareBusyRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectedRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectionStoppedRoute
+import com.esightcorp.mobile.app.eshare.composables.EshareSetupWifiRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareUnableToConnectRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareWifiDisabledRoute
 import com.esightcorp.mobile.app.eshare.composables.HotspotSetupRoute
 import com.esightcorp.mobile.app.ui.extensions.composable
-import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionRejectedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectedRoute
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionRejectedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionStoppedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.HotspotSetupRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.IncomingRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.RemoteBusyRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.UnableToConnectRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.WifiDisabledRoute
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.WifiSetupRoute
 
 
 fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
@@ -42,6 +44,7 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
 
         composable(WifiDisabledRoute) { EshareWifiDisabledRoute(navController) }
         composable(ConnectionRejectedRoute) { EshareConnectedRoute(navController) }
+        composable(WifiSetupRoute) { EshareSetupWifiRoute(navController) }
     }
 }
 

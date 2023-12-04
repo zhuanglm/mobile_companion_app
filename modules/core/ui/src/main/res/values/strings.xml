@@ -101,7 +101,7 @@
 
     <string name="label_eshare_stopped_user_declined_title">Connection unsuccessful</string>
     <string name="label_eshare_stopped_user_declined_message">The eSight wearer has declined the viewing request.\n\nPlease try again later</string>
-    
+
     <string name="label_eshare_stopped_busy_title">Connection unavailable</string>
     <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
 
@@ -115,6 +115,10 @@
     <string name="label_eshare_hotspot_setup_step_3">Enter this password: "%1$s"</string>
     <string name="label_eshare_hotspot_setup_step_4">Once connected, press the button below to retry</string>
 
+    <string name="label_eshare_setup_wifi_header">Connect to Wi-Fi</string>
+    <string name="label_eshare_setup_wifi_sub_header">Your eSight is not connected to Wi-Fi.</string>
+    <string name="label_eshare_setup_wifi_footer">To proceed without Wi-Fi, tap the link below to set up a hotspot.</string>
+    <string name="label_eshare_setup_wifi_button">Connect to Wi-Fi</string>
     <!-- endregion -->
 
     <string name="label_feature_eshare">Share your view</string>

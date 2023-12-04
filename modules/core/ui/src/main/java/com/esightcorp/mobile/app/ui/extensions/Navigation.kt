@@ -14,7 +14,7 @@ import com.esightcorp.mobile.app.ui.navigation.Navigation
 //region NavGraphBuilder
 fun NavGraphBuilder.composable(
     target: Navigation,
-    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
+    content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) = this.composable(target.path, content = content)
 //endregion
 
@@ -31,12 +31,31 @@ fun NavGraphBuilder.composable(
  */
 fun NavController.navigate(
     target: Navigation,
+    popUntil: Navigation?,
+    popIncluded: Boolean,
+): Boolean = navigate(
+    target = target,
+    popUntil = popUntil,
+    popIncluded = popIncluded,
+    param = null,
+)
+
+fun NavController.navigate(
+    target: Navigation,
+    param: String? = null,
     popUntil: Navigation? = null,
     popIncluded: Boolean = true,
 ): Boolean {
     val isPopSuccess = popUntil?.let { popBackStack(it.path, popIncluded) } ?: popBackStack()
 
-    navigate(target.path) {
+    val targetUri = when (param) {
+        null -> target.path
+        else -> "${target.path}/$param"
+    }
+
+    Log.i("Navigation", "Navigating to: $targetUri")
+
+    navigate(targetUri) {
         launchSingleTop = true
     }
 
@@ -54,7 +73,6 @@ fun NavController.navigate(
 @Composable
 fun BackStackLogger(navController: NavController, tag: String? = null) {
     Log.w(
-        tag,
-        "Back-stack:\n${navController.currentBackStack.collectAsState().value.toStringList()}"
+        tag, "Back-stack:\n${navController.currentBackStack.collectAsState().value.toStringList()}"
     )
 }

@@ -5,7 +5,6 @@
     <string name="select_your_esight">Select your eSight</string>
     <string name="default_serial_number" translatable="false">1000101</string>
     <string name="hyphen" translatable="false">-</string>
-    <string name="navigate_to_home" translatable="false">home_first</string>
     <string name="connected_to">Connected to </string>
     <string name="something_went_wrong">Something went horribly wrong!</string>
     <string name="connecting_to_esight">Connecting to eSight</string>

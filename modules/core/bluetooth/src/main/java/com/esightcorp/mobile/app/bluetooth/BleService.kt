@@ -110,6 +110,8 @@ class BleService : Service() {
         )
     }
 
+    fun readWifiConnectionStatus() = readCharacteristic(ESightCharacteristic.WIFI_CONNECTION_STATUS)
+
     fun startHotspot(ssid: String, password: String) {
         Log.i(_tag, "startHotspot: SSID = $ssid, Password = $password")
         sendMessage(
@@ -270,7 +272,7 @@ class BleService : Service() {
                     EShareAction.StatusChanged, value
                 )
 
-                else -> broadcastUpdate(ACTION_DATA_AVAILABLE, value)
+                else -> broadcastUpdate(ESightBleAction.DataAvailable, value)
             }
         }
 
@@ -319,8 +321,10 @@ class BleService : Service() {
                         "ERROR_IP_NOT_REACHABLE" -> {
                             val currentTime = System.currentTimeMillis()
                             if (currentTime - lastBroadcastTimeEshareError > BROADCAST_DEBOUNCE_TIME) {
-                                broadcastUpdate(EShareAction.IpNotReachable.name)
+                                broadcastUpdate(EShareAction.IpNotReachable)
                                 lastBroadcastTimeEshareError = currentTime
+                            } else {
+                                Log.e(_tag, "Ignored broadcasting $incoming")
                             }
                         }
 
@@ -624,6 +628,7 @@ class BleService : Service() {
         const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
 
+        @Deprecated("Use ESightBleAction")
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
 
         const val EXTRA_DATA = "com.esightcorp.bluetooth.le.EXTRA_DATA"

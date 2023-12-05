@@ -11,6 +11,7 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -92,7 +93,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToShareYourView(navController: NavController) {
-        navController.navigate("eshare")
+        navController.navigate(EShareNavigation.IncomingRoute)
     }
 
     fun navigateToSettings(navController: NavController) = navController.navigate(IncomingRoute)

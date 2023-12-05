@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
@@ -19,10 +20,13 @@ import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -111,7 +115,12 @@ class EshareConnectedViewModel @Inject constructor(
 
     //endregion
 
-    fun startEshareConnection() = eShareRepository.startEshareConnection()
+    fun startEshareConnection() = viewModelScope.launch(Dispatchers.IO) {
+        delay(1000)
+
+        // Request to start eShare session
+        eShareRepository.startEshareConnection()
+    }
 
     fun cancelEshareConnection() = eShareRepository.cancelEshareConnection()
 
@@ -159,6 +168,10 @@ class EshareConnectedViewModel @Inject constructor(
 
     fun navigateToWifiDisabledRoute(navController: NavController) =
         navController.navigate(EShareNavigation.WifiDisabledRoute)
+
+    fun navigateToWifiSetupRoute(navController: NavController) = navController.navigate(
+        target = EShareNavigation.WifiSetupRoute
+    )
     //endregion
 
     //region Internal implementation

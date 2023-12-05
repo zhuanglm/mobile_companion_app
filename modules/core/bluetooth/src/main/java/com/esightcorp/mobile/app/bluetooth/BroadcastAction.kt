@@ -26,4 +26,31 @@ enum class EShareAction(private val iName: String) : IAction {
     }
 }
 
+enum class ESightBleAction(private val iName: String) : IAction {
+    DataAvailable("com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE")
+
+    ;
+
+    override fun actionName() = iName
+
+    companion object {
+        fun from(action: String?) = values().find { it.actionName() == action }
+    }
+}
+
+fun String?.toIAction(): IAction? {
+    var action: IAction?
+
+    do {
+        action = EShareAction.from(this)
+        if (action != null) break
+
+        action = ESightBleAction.from(this)
+        if (action != null) break
+
+    } while (false)
+
+    return action
+}
+
 fun IntentFilter.addAction(action: IAction) = addAction(action.actionName())

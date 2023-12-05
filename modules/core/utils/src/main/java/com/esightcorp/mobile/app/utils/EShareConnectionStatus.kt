@@ -5,10 +5,10 @@ enum class EShareConnectionStatus {
 
     Connected,
     Disconnected,
-    Initiated,
     ReceivedUserRejection,
     Timeout,
     AddressNotAvailable,
     IpNotReachable,
     Busy,
+    RequireSetupWifi,
 }

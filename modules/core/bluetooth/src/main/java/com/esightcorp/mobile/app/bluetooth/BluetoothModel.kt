@@ -86,7 +86,7 @@ class BluetoothModel constructor(
         @Synchronized
         override fun onReceive(context: Context?, intent: Intent) {
             val exData = intent.extras?.getString(BleService.EXTRA_DATA)
-            val actType = EShareAction.from(intent.action)
+            val actType = intent.action.toIAction()
             Log.i(_tag, "eShareReceiver - $actType, data: $exData")
 
             val eShareListener = bleManager.getEshareBluetoothListener()
@@ -109,6 +109,9 @@ class BluetoothModel constructor(
                 EShareAction.Busy -> eShareListener?.onEshareBusy()
 
                 EShareAction.UserDenied -> eShareListener?.onUserCancelled()
+
+                ESightBleAction.DataAvailable ->
+                    eShareListener?.onWifiConnectionStatusChanged(exData)
 
                 else -> Log.e(_tag, "Unknown action: ${intent.action}", Exception())
             }
@@ -336,6 +339,7 @@ class BluetoothModel constructor(
 
     private fun makeEShareIntentFilter() = IntentFilter().apply {
         EShareAction.values().forEach { addAction(it) }
+        addAction(ESightBleAction.DataAvailable)
     }
 
     private fun makeHotspotIntentFilter(): IntentFilter {

@@ -47,7 +47,7 @@ fun EshareUnableToConnectRoute(
 private const val TAG = "EshareUnableToConnectRoute"
 
 @Composable
-internal fun EshareUnableToConnectScreen(
+private fun EshareUnableToConnectScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     onBackPressed: OnNavigationCallback? = null,
@@ -133,7 +133,7 @@ internal fun EshareUnableToConnectScreen(
 
 @Preview
 @Composable
-internal fun EshareUnableToConnectScreenPreview() = MaterialTheme {
+private fun EshareUnableToConnectScreenPreview() = MaterialTheme {
     EshareUnableToConnectScreen(navController = rememberNavController())
 }
 //endregion

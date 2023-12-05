@@ -3,6 +3,7 @@ package com.esightcorp.mobile.app.wificonnection
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
+@Deprecated("")
 sealed class WifiConnectionScreens(val route: String) {
     object IncomingNavigationRoute : WifiConnectionScreens("wificonnection")
     object SearchingForNetworkRoute : WifiConnectionScreens("searching_for_networks"){
@@ -12,7 +13,6 @@ sealed class WifiConnectionScreens(val route: String) {
             navArgument(flowArg){type = NavType.StringType},
         )
     }
-
     object SelectNetworkRoute : WifiConnectionScreens("select_network")
     object ConnectingRoute : WifiConnectionScreens("connecting")
     object ConnectedRoute : WifiConnectionScreens("connected")

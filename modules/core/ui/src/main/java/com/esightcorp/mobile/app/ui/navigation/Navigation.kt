@@ -54,4 +54,19 @@ sealed class EShareNavigation(override val path: String) : Navigation(path) {
 
     object WifiDisabledRoute : EShareNavigation("eshare_wifi_disabled")
     object ConnectionRejectedRoute : EShareNavigation("eshare_connection_rejected")
+    object WifiSetupRoute : EShareNavigation("eshare_setup_wifi")
+}
+
+sealed class WifiNavigation(override val path: String) : Navigation(path) {
+    object IncomingRoute : WifiNavigation("wificonnection")
+
+    object ScanningRoute : WifiNavigation("searching_for_networks") {
+        const val flowArg = "flow"
+        val routeWithArgs = "$path/{$flowArg}"
+        val arguments = listOf(navArgument(flowArg) { type = NavType.StringType })
+
+        const val PARAM_BLUETOOTH = "bluetooth"
+    }
+
+    //TODO: migrate all other paths
 }

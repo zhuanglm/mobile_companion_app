@@ -7,8 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import androidx.core.os.postDelayed
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -443,7 +445,9 @@ class BleService : Service() {
                         characteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                     )
                     boolResult = decodeSendMessageResult(intResult)
-
+                    if(intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY){
+                        retryOnWriteRequestBusy(chType, payload)
+                    }
                     Log.d(_tag, "sendMessage - intResult: $intResult")
                 }
 
@@ -456,6 +460,14 @@ class BleService : Service() {
         Log.d(_tag, "sendMessage - result: $boolResult")
 
         return boolResult
+    }
+
+    private fun retryOnWriteRequestBusy(chType: ESightCharacteristic, payload: BluetoothPayload){
+        val handler = Handler(mainLooper)
+        handler.postDelayed({
+            sendMessage(chType, payload)
+        }, 100)
+        Log.d(_tag, "retryOnWriteRequestBusy: $payload")
     }
 
     private fun decodeSendMessageResult(result: Int): Boolean {

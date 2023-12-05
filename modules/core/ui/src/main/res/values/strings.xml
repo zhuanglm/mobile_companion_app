@@ -113,6 +113,7 @@
     <string name="label_eshare_hotspot_setup_step_2">Connect to the eSight\'s " %1$s " network</string>
     <string name="label_eshare_hotspot_setup_step_3">Enter this password: "%1$s"</string>
     <string name="label_eshare_hotspot_setup_step_4">Once connected, press the button below to retry</string>
+    <string name="label_eshare_hotspot_enabling">Enabling hotspot</string>
 
     <string name="label_eshare_setup_wifi_header">Connect to Wi-Fi</string>
     <string name="label_eshare_setup_wifi_sub_header">Your eSight is not connected to Wi-Fi.</string>

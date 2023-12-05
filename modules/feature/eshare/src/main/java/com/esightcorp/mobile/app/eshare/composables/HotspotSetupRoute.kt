@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.eshare.composables
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -17,12 +18,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.bluetooth.HotspotStatus
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.HotspotSetupViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
+import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.UnableToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
@@ -36,17 +39,36 @@ fun HotspotSetupRoute(
     vm: HotspotSetupViewModel = hiltViewModel(),
 ) {
     val uiState by vm.uiState.collectAsState()
-    HotspotSetupScreen(
-        navController = navController,
-        onBackPressed = vm::gotoMainScreen,
-        onShareViewPressed = vm::onRetryPressed,
-        onUnableToConnectPressed = vm::showHowToConnectPage,
-        modifier = Modifier,
-        uiState = uiState
-    )
+    Log.i(TAG, "hotspotStatus: ${uiState.hotspotStatus}")
+
+    when (uiState.hotspotStatus) {
+        HotspotStatus.ENABLED -> {
+            HotspotSetupScreen(
+                navController = navController,
+                onBackPressed = vm::gotoMainScreen,
+                onShareViewPressed = vm::onRetryPressed,
+                onUnableToConnectPressed = vm::showHowToConnectPage,
+                modifier = Modifier,
+                uiState = uiState
+            )
+        }
+
+        HotspotStatus.ERROR, HotspotStatus.DISABLED -> {
+            //TODO: show error screen
+        }
+
+        else -> {
+            LoadingScreenWithSpinner(
+                loadingText = stringResource(R.string.label_eshare_hotspot_enabling),
+                cancelButtonNeeded = false,
+                onCancelButtonClicked = { },
+            )
+        }
+    }
 }
 
 //region Internal implementation
+private const val TAG = "HotspotSetupRoute"
 
 @Composable
 private fun HotspotSetupScreen(

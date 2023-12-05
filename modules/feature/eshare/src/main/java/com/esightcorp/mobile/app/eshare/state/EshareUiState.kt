@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.eshare.state
 
+import com.esightcorp.mobile.app.bluetooth.HotspotStatus
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 
 data class RadioState(
@@ -27,4 +28,5 @@ data class HotspotSetupUiState(
     val networkName: String = "",
     val networkPassword: String = "",
     val isDeviceConnected: DeviceConnectionState = DeviceConnectionState(),
+    val hotspotStatus: HotspotStatus? = null,
 )

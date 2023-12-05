@@ -38,17 +38,33 @@ enum class ESightBleAction(private val iName: String) : IAction {
     }
 }
 
+enum class HotspotAction(private val iName: String) : IAction {
+    StatusChanged("com.esightcorp.wifi.ACTION_HOTSPOT"),
+
+    ;
+
+    override fun actionName() = iName
+
+    companion object {
+        fun from(action: String?) = HotspotAction.values().find { it.actionName() == action }
+    }
+}
+
 fun String?.toIAction(): IAction? {
-    var action: IAction?
+    var action: IAction? = null
 
-    do {
-        action = EShareAction.from(this)
-        if (action != null) break
+    arrayListOf(
+        EShareAction.from(this),
+        ESightBleAction.from(this),
+        HotspotAction.from(this),
 
-        action = ESightBleAction.from(this)
-        if (action != null) break
-
-    } while (false)
+        //TODO: add newly defined IAction here ...
+    ).forEach { actItem ->
+        actItem?.let {
+            action = it
+            return@forEach
+        }
+    }
 
     return action
 }

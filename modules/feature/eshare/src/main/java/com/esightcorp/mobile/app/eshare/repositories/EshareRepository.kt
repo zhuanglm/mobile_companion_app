@@ -8,6 +8,8 @@ import com.esightcorp.mobile.app.bluetooth.BluetoothConnectionListener
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothRadioListener
 import com.esightcorp.mobile.app.bluetooth.EshareBluetoothModelListener
+import com.esightcorp.mobile.app.bluetooth.HotspotModelListener
+import com.esightcorp.mobile.app.bluetooth.HotspotStatus
 import com.esightcorp.mobile.app.bluetooth.WifiConnectionStatus
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.SystemStatusListener
@@ -26,7 +28,7 @@ import javax.inject.Inject
 class EshareRepository @Inject constructor(
     @ApplicationContext context: Context
 ) : BluetoothRadioListener, BluetoothConnectionListener, SystemStatusListener,
-    EshareBluetoothModelListener {
+    EshareBluetoothModelListener, HotspotModelListener {
 
     private val _tag = this.javaClass.simpleName
 
@@ -34,9 +36,12 @@ class EshareRepository @Inject constructor(
     private val wifiModel: WifiModel
     private lateinit var eShareRepositoryListener: EshareRepositoryListener
 
+    private var lastHotspotStatus: HotspotStatus? = null
+
     init {
         bluetoothModel = BluetoothModel(context)
         eSightBleManager.setEshareBluetoothListener(this)
+        eSightBleManager.hotspotListener = this
         wifiModel = WifiModel(context)
     }
 
@@ -233,6 +238,15 @@ class EshareRepository @Inject constructor(
 
     //endregion
 
+    //region HotspotListener
+    @Synchronized
+    override fun onHotspotStatusChanged(status: HotspotStatus?) {
+        lastHotspotStatus = status
+        eShareRepositoryListener.onHotspotStateChanged(status)
+    }
+
+    //endregion
+
     //region EShare callback
 
     override fun onEshareReady() {
@@ -267,12 +281,26 @@ class EshareRepository @Inject constructor(
 
     override fun onWifiConnectionStatusChanged(data: String?) {
         val status = WifiConnectionStatus.from(data)
-        Log.w(_tag, "onWifiConnectionStatusChanged - value: $status")
-        status?.let {
-            updateEshareState(EShareConnectionStatus.RequireSetupWifi)
-        } ?: run {
+
+        val proceedCreatingSocket = when (status) {
+            // When Wifi error or not configure, need to combine with hotspot status
+            WifiConnectionStatus.WIFI_STATUS_ERROR,
+            WifiConnectionStatus.WIFI_STATUS_NONE -> when (lastHotspotStatus) {
+                HotspotStatus.ENABLED -> true
+                else -> false
+            }
+
             // Wifi status is good, proceed creating socket
-            wifiModel.openSocket(createSocketListener, inputStreamListener)
+            else -> true
+        }
+        Log.w(
+            _tag,
+            "onWifiConnectionStatusChanged - value: $status --> proceedCreatingSocket: $proceedCreatingSocket"
+        )
+
+        when (proceedCreatingSocket) {
+            true -> wifiModel.openSocket(createSocketListener, inputStreamListener)
+            false -> updateEshareState(EShareConnectionStatus.RequireSetupWifi)
         }
     }
 

@@ -7,10 +7,11 @@ import androidx.navigation.NavController
 @Composable
 fun NavigateToBluetoothDisabled(
     navController: NavController,
-){
-    LaunchedEffect(Unit){
-        navController.navigate("bluetooth_disabled"){
-            popUpTo("no_devices_found_bt"){
+) {
+    //TODO: refine this implementation again!!!
+    LaunchedEffect(Unit) {
+        navController.navigate("bluetooth_disabled") {
+            popUpTo("no_devices_found_bt") {
                 inclusive = true
             }
             launchSingleTop = true
@@ -22,9 +23,10 @@ fun NavigateToBluetoothDisabled(
 fun NavigateToDeviceDisconnected(
     navController: NavController
 ) {
-    LaunchedEffect(Unit){
-        navController.navigate("no_devices_found_bt"){
-            popUpTo("no_devices_found_bt"){
+    //TODO: refine this implementation again!!!
+    LaunchedEffect(Unit) {
+        navController.navigate("no_devices_found_bt") {
+            popUpTo("no_devices_found_bt") {
                 inclusive = false
             }
             launchSingleTop = true

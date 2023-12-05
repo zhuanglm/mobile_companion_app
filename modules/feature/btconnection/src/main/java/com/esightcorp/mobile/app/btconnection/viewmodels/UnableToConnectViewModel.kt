@@ -4,11 +4,12 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.UnableToConnectUiState
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,19 +63,13 @@ class UnableToConnectViewModel @Inject constructor(
 
     fun navigateToNoDevicesConnectedScreen() {
         if (this::navController.isInitialized) {
-            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route) {
-                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route) { inclusive = false }
-                launchSingleTop = true
-            }
+            navController.navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
         }
     }
 
     fun navigateToBtSearchingScreen() {
         if (this::navController.isInitialized) {
-            navController.navigate(BtConnectionScreens.BtSearchingRoute.route) {
-                popUpTo(BtConnectionScreens.UnableToConnectRoute.route) { inclusive = true }
-                launchSingleTop = true
-            }
+            navController.navigate(BtConnectionNavigation.BtSearchingRoute)
         }
     }
 

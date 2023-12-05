@@ -1,10 +1,21 @@
 package com.esightcorp.mobile.app.ui.navigation
 
-import androidx.navigation.NavController
-
-//region Route definition
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 abstract class Navigation(open val path: String)
+
+sealed class HomeNavigation(override val path: String) : Navigation(path) {
+    object IncomingRoute : HomeNavigation("home")
+
+    object FirstScreenRoute : HomeNavigation("home_first") {
+        const val deviceArg = "device"
+        val routeWithArgs = "$path/{$deviceArg}"
+        val arguments = listOf(navArgument(deviceArg) { type = NavType.StringType })
+    }
+
+    object PermissionRoute : HomeNavigation("home_permissions")
+}
 
 sealed class SettingsNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : SettingsNavigation("settings")
@@ -15,31 +26,32 @@ sealed class SettingsNavigation(override val path: String) : Navigation(path) {
 sealed class BtConnectionNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : BtConnectionNavigation("btconnection")
 
-    //TODO: refactor all other route from BtConnectionScreens
+    object NoDeviceConnectedRoute : BtConnectionNavigation("btconnection_home")
+    object ScanResultRoute : BtConnectionNavigation("bt_devices")
+    object BtConnectingRoute : BtConnectionNavigation("bt_connecting")
+    object BtConnectedRoute : BtConnectionNavigation("bt_connected")
+    object BtSearchingRoute : BtConnectionNavigation("bt_searching")
+    object NoDevicesFoundRoute : BtConnectionNavigation("no_devices_found_bt")
+
+    object BtDisabledScreen : BtConnectionNavigation("bt_disabled")
+    object UnableToConnectRoute : BtConnectionNavigation("unable_to_connect_bt")
 }
 
-//endregion
+sealed class EShareNavigation(override val path: String) : Navigation(path) {
+    object IncomingRoute : EShareNavigation("eshare")
 
-//region Extension utils
+    object ConnectedRoute : EShareNavigation("eshare_connected")
+    object ConnectionStoppedRoute : EShareNavigation("eshare_connection_stopped") {
+        const val reason = "reason"
 
-/**
- * Navigate to the `target` route.
- * If specifying, execute clean up (pop) the current stack until `popUntil` route with inclusive `popIncluded` or not **BEFORE** navigating to the `target`.
- *
- * @param target The target route to navigate to
- * @param popUntil (Optional) If specifying, pop current stack until this route
- * @param popIncluded (Optional) If specifying, include the `popUntil` route or not
- * @return Return value of the [NavController.popBackStack]
- */
-fun NavController.navigate(
-    target: Navigation,
-    popUntil: Navigation? = null,
-    popIncluded: Boolean = true,
-): Boolean {
-    val isPopSuccess = popUntil?.let { popBackStack(it.path, popIncluded) } ?: true
-    navigate(target.path)
+        val routeWithArgs = "$path/{$reason}"
+        val arguments = listOf(navArgument(reason) { type = NavType.StringType })
+    }
 
-    return isPopSuccess
+    object UnableToConnectRoute : EShareNavigation("eshare_unable_to_connect")
+    object HotspotSetupRoute : EShareNavigation("hotspot_setup")
+    object RemoteBusyRoute : EShareNavigation("eshare_busy")
+
+    object WifiDisabledRoute : EShareNavigation("eshare_wifi_disabled")
+    object ConnectionRejectedRoute : EShareNavigation("eshare_connection_rejected")
 }
-
-//endregion

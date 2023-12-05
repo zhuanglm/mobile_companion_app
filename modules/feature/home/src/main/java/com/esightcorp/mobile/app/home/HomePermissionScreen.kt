@@ -11,6 +11,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.home.viewmodels.PermissionViewModel
 import com.esightcorp.mobile.app.ui.components.containers.BaseSurface
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -30,7 +32,7 @@ fun BasePermissionScreen(
     val permissionsState = rememberMultiplePermissionsState(permissions = vm.getPermissionList())
     if (permissionsState.allPermissionsGranted) {
         LaunchedEffect(Unit) {
-            navController.navigate("btconnection")
+            navController.navigate(BtConnectionNavigation.IncomingRoute)
         }
 
     } else {

@@ -6,10 +6,11 @@ import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BtSearchingUiState
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,17 +94,13 @@ class BtSearchingViewModel @Inject constructor(
 
     fun onCancelButtonClicked(navController: NavController) {
         //navigate back to the 'no devices connected screen'
-        navController.navigate(BtConnectionScreens.IncomingNavigationRoute.route) {
-            popUpTo(BtConnectionScreens.BtSearchingRoute.route) { inclusive = true }
-            launchSingleTop = true
-        }
+        navController.navigate(BtConnectionNavigation.IncomingRoute)
+
         //cleanup bluetooth scanning
         btConnectionRepository.cancelBleScan()
     }
 
     fun onScanSuccess(navController: NavController) = with(navController) {
-        navigate(BtConnectionScreens.BtDevicesScreen.route) {
-            popUpTo(BtConnectionScreens.BtSearchingRoute.route) { inclusive = true }
-        }
+        navigate(BtConnectionNavigation.ScanResultRoute)
     }
 }

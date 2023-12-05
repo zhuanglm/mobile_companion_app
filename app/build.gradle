@@ -120,13 +120,11 @@ dependencies {
     // Integration with ViewModels
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel_compose"
     // UI Tests
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_tests"
-    debugImplementation "androidx.compose.ui:ui-tooling:$ui_tests"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose"
 
     //hilt dependencies
-    implementation "com.google.dagger:hilt-android:$hilt"
-    kapt 'com.google.dagger:hilt-android-compiler:2.42'
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt "com.google.dagger:hilt-android-compiler:2.42"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_compose"
 
     //compose dependencies

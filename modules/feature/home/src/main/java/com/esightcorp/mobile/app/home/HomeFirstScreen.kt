@@ -25,6 +25,7 @@ import com.esightcorp.mobile.app.ui.components.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 
 private const val TAG = "Home Screen"
 
@@ -33,6 +34,8 @@ fun HomeFirstScreen(
     navController: NavController, vm: HomeViewModel = hiltViewModel()
 ) {
     val homeUiState by vm.uiState.collectAsState()
+
+    BackStackLogger(navController, TAG)
 
     BaseHomeScreen(
         vm = vm,
@@ -53,6 +56,7 @@ internal fun BaseHomeScreen(
     onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) }
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
+        Log.d(TAG, "BaseHomeScreen: Not connected but are Enabled")
         LaunchedEffect(Unit) {
             vm.navigateToBluetoothStart(navController)
         }
@@ -61,7 +65,8 @@ internal fun BaseHomeScreen(
             vm.navigateToBluetoothDisabled(navController)
         }
     } else {
-        HomeBaseScreen(modifier = modifier,
+        HomeBaseScreen(
+            modifier = modifier,
             showBackButton = false,
             showSettingsButton = true,
             onBackButtonInvoked = { /*Unused*/ },
@@ -124,6 +129,7 @@ data class CardData(val text: String, val iconResId: Int, val onClick: () -> Uni
 fun SquareTileCardLayout(
     modifier: Modifier = Modifier, vm: HomeViewModel, navController: NavController
 ) {
+    //TODO: Hardcoded strings - Connect To Wi-Fi, Share your view
     val cards = listOf(CardData(
         "Connect to Wi-Fi", com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24
     ) {
@@ -132,8 +138,6 @@ fun SquareTileCardLayout(
         "Share your view", com.esightcorp.mobile.app.ui.R.drawable.baseline_camera_alt_24
     ) {
         vm.navigateToShareYourView(navController)
-    }, CardData("Wifi via QR", com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24) {
-        vm.navigateToWifiCredsQr(navController)
     })
 
     LazyVerticalGrid(

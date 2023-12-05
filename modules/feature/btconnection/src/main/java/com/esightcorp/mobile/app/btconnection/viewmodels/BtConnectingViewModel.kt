@@ -6,10 +6,11 @@ import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
-import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
+import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,17 +23,17 @@ import javax.inject.Inject
 class BtConnectingViewModel @Inject constructor(
     application: Application,
     btConnectionRepository: BtConnectionRepository
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
     private val TAG = "BtConnectingViewModel"
     private var _uiState = MutableStateFlow(BtConnectingUiState())
     val uiState: StateFlow<BtConnectingUiState> = _uiState.asStateFlow()
-    private val listener = object : BluetoothConnectionRepositoryCallback{
+    private val listener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
-            Log.e(TAG, "scanStatus: ", )
+            Log.e(TAG, "scanStatus: ")
         }
 
         override fun deviceListReady(deviceList: MutableList<String>) {
-            Log.e(TAG, "deviceListReady: ", )
+            Log.e(TAG, "deviceListReady: ")
         }
 
         override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
@@ -46,10 +47,14 @@ class BtConnectingViewModel @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private fun updateDeviceInfo(device: BluetoothDevice, connected: Boolean){
-         _uiState.update { state ->
-             state.copy(didDeviceConnect = connected, deviceName = device.name, deviceAddress = device.address)
-         }
+    private fun updateDeviceInfo(device: BluetoothDevice, connected: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                didDeviceConnect = connected,
+                deviceName = device.name,
+                deviceAddress = device.address,
+            )
+        }
     }
 
     init {
@@ -58,19 +63,19 @@ class BtConnectingViewModel @Inject constructor(
         btConnectionRepository.checkBtEnabledStatus()
     }
 
-    fun navigateToConnectedScreen(navController: NavController){
-        navController.navigate(BtConnectionScreens.BtConnectedRoute.route)
+    fun navigateToConnectedScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.BtConnectedRoute)
     }
 
-    fun navigateToUnableToConnectScreen(navController: NavController){
-       navController.graph.forEach {
-           Log.d(TAG, "navigateToUnableToConnectScreen: ${it.route}")
-       }
-        navController.navigate(BtConnectionScreens.UnableToConnectRoute.route)
+    fun navigateToUnableToConnectScreen(navController: NavController) {
+        navController.graph.forEach {
+            Log.d(TAG, "navigateToUnableToConnectScreen: ${it.route}")
+        }
+        navController.navigate(BtConnectionNavigation.UnableToConnectRoute)
     }
 
-    private fun updateBtEnabledState(enabled: Boolean){
-        _uiState.update {state ->
+    private fun updateBtEnabledState(enabled: Boolean) {
+        _uiState.update { state ->
             state.copy(isBtEnabled = enabled)
         }
     }

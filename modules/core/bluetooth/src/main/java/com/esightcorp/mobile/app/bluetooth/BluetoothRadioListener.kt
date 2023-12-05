@@ -4,5 +4,4 @@ interface BluetoothRadioListener {
     fun onBluetoothEnabled()
     fun onBluetoothDisabled()
     fun onBluetoothStateQueried(state: Boolean)
-
 }

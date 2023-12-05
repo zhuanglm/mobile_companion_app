@@ -4,10 +4,11 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.state.BtDisabledUiState
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,15 +18,15 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class BtDisabledViewModel  @Inject constructor(
+class BtDisabledViewModel @Inject constructor(
     application: Application,
     val btConnectionRepository: BtConnectionRepository
-): AndroidViewModel(application){
+) : AndroidViewModel(application) {
     private lateinit var navController: NavController
 
     private var _uiState = MutableStateFlow(BtDisabledUiState())
     val uiState: StateFlow<BtDisabledUiState> = _uiState.asStateFlow()
-    private val listener = object: BluetoothConnectionRepositoryCallback{
+    private val listener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
             //unused by this composable
         }
@@ -44,23 +45,17 @@ class BtDisabledViewModel  @Inject constructor(
     }
 
 
-
-    fun setNavController(controller: NavController){
+    fun setNavController(controller: NavController) {
         this.navController = controller
     }
 
-    fun onBackPressed(){
-        if(this::navController.isInitialized){
-            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                popUpTo(BtConnectionScreens.NoDevicesConnectedRoute.route){
-                    inclusive = false
-                }
-                launchSingleTop = true
-            }
+    fun onBackPressed() {
+        if (this::navController.isInitialized) {
+            navController.navigate(BtConnectionNavigation.NoDevicesFoundRoute)
         }
     }
 
-    fun updateBtEnabledState(state: Boolean){
+    fun updateBtEnabledState(state: Boolean) {
         _uiState.update {
             it.copy(isBtEnabled = state)
         }

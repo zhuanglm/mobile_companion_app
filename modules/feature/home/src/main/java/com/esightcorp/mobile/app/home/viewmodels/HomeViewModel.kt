@@ -4,13 +4,14 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
 import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import com.esightcorp.mobile.app.home.state.HomeUiState
-import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
-import com.esightcorp.mobile.app.ui.navigation.navigate
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,7 +57,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun updateConnectedDevice(device: String) {
-        Log.d(TAG, "updateConnectedDevice: ${device}")
+        Log.d(TAG, "updateConnectedDevice: $device")
         _uiState.update { currentState ->
             currentState.copy(connectedDevice = device, isBluetoothConnected = true)
         }
@@ -78,12 +79,12 @@ class HomeViewModel @Inject constructor(
         navController.navigate("searching_for_networks/bluetooth")
     }
 
-    fun navigateToBluetoothStart(navController: NavController) {
-        navController.navigate("btconnection")
+    fun navigateToBluetoothStart(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.IncomingRoute)
     }
 
-    fun navigateToBluetoothDisabled(navController: NavController) {
-        navController.navigate("bt_disabled")
+    fun navigateToBluetoothDisabled(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.BtDisabledScreen)
     }
 
     fun navigateToWifiCredsQr(navController: NavController) {

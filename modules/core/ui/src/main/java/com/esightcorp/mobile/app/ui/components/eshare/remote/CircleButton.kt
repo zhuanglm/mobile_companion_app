@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -44,6 +45,7 @@ fun CircleButton(
     backgroundColor: Color = MaterialTheme.colors.secondary,
     iconTint: Color = Color.Black,
     contentPadding: PaddingValues = PaddingValues(),
+    border: BorderStroke? = null
 ) {
     ElevatedButton(
         modifier = modifier
@@ -59,6 +61,7 @@ fun CircleButton(
             focusedElevation = FocusedElevation
         ),
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+        border = border,
         contentPadding = PaddingValues(DefaultPadding)
     ) {
         Box(modifier = Modifier.padding(contentPadding)) {
@@ -134,7 +137,8 @@ fun ColorContrastButton(
         backgroundColor = secondaryColor,
         iconTint = primaryColor,
         iconId = icon,
-        size = size
+        size = size,
+        border = BorderStroke(2.dp, primaryColor)
     )
 }
 

@@ -6,49 +6,49 @@ import com.esightcorp.mobile.app.utils.ScanningStatus
 // For network-related updates
 interface NetworkListener {
     // to update the list of networks
-    fun onWifiNetworkFound(result: ScanResult): Unit
+    fun onWifiNetworkFound(result: ScanResult)
 
-    fun onNetworkConnected(): Unit
+    fun onNetworkConnected()
 
     // Unable to connect screen
-    fun onNetworkConnectionError(): Unit
+    fun onNetworkConnectionError()
 
-    fun onScanFailed(): Unit
+    fun onScanFailed()
 
-    fun onNetworkNotFound(): Unit
+    fun onNetworkNotFound()
 }
 
 // For system status checks and updates
 interface SystemStatusListener {
     // check if we're scanning or not
-    fun onScanStatusUpdated(status: ScanningStatus): Unit
+    fun onScanStatusUpdated(status: ScanningStatus)
 
     // turn on wifi screen
-    fun onWifiDisabled(): Unit
+    fun onWifiDisabled()
 
-    fun onWifiEnabled(): Unit
+    fun onWifiEnabled()
 
-    fun onGoWifiDisabled(): Unit
+    fun onGoWifiDisabled()
 
     // turn on bluetooth screen & send the user back to the launch screen
-    fun onBluetoothDisconnected(): Unit
+    fun onBluetoothDisconnected()
 }
 
 // For errors and issues
 interface ErrorListener {
-    fun onErrorTest(): Unit
+    fun onErrorTest()
 
-    fun onErrorWifiConnectionTimeout(): Unit
+    fun onErrorWifiConnectionTimeout()
 
-    fun onErrorWifiInvalidPassword(): Unit
+    fun onErrorWifiInvalidPassword()
 
-    fun onErrorWifiWPALessThan8(): Unit
+    fun onErrorWifiWPALessThan8()
 
-    fun onPlatformError(): Unit
+    fun onPlatformError()
 }
 
 // For special cases and screens
 interface SpecialCaseListener {
     // ConnectedToWifi screen
-    fun alreadyConnectedToWifi(): Unit
+    fun alreadyConnectedToWifi()
 }

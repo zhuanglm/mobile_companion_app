@@ -13,7 +13,7 @@ import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
 import java.util.*
 
-@SuppressLint("MissingPermission")
+@SuppressLint("MissingPermission", "UnspecifiedRegisterReceiverFlag")
 class BluetoothModel constructor(
     val context: Context
 ) {
@@ -57,6 +57,7 @@ class BluetoothModel constructor(
      * receiver to capture changes to the connection state
      */
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @Synchronized
         override fun onReceive(context: Context?, intent: Intent) {
             Log.i(_tag, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
             when (intent.action) {
@@ -67,7 +68,6 @@ class BluetoothModel constructor(
                         ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
                     bleManager.getBluetoothConnectionListener()
                         ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
-                    bleManager.discoverServices()
                 }
 
                 BleService.ACTION_GATT_DISCONNECTED -> {
@@ -83,48 +83,43 @@ class BluetoothModel constructor(
     }
 
     private val eShareReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @Synchronized
         override fun onReceive(context: Context?, intent: Intent) {
-            Log.i(_tag, "onReceive: eShare status coming through")
-            when (intent.action) {
-                BleService.ACTION_ESHARE_STATUS -> {
-                    when (intent.extras?.getString(BleService.EXTRA_DATA)) {
-                        "READY" -> {
-                            bleManager.getEshareBluetoothListener().apply {
-                                Log.i(_tag, "onReceive: READY sending eshare ready ")
-                                this?.onEshareReady()
-                            }
-                        }
+            val exData = intent.extras?.getString(BleService.EXTRA_DATA)
+            val actType = intent.action.toIAction()
+            Log.i(_tag, "eShareReceiver - $actType, data: $exData")
 
-                        "RUNNING" -> {
-                            bleManager.getEshareBluetoothListener().apply {
-                                this?.onEshareBusy()
-                            }
-                        }
+            val eShareListener = bleManager.getEshareBluetoothListener()
+            when (actType) {
+                EShareAction.StatusChanged -> when (exData) {
+                    "READY" -> eShareListener?.onEshareReady()
 
-                        "STOPPED" -> {
-                            bleManager.getEshareBluetoothListener().apply {
-                                this?.onEshareStopped()
-                            }
-                        }
-                    }
+                    "STOPPED" -> eShareListener?.onEshareStopped()
+
+                    "RUNNING" -> eShareListener?.onEshareBusy()
+
+                    // Handler other status???
+                    else -> Log.e(_tag, "Not handling: $exData")
                 }
 
-                BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE -> {
-                    bleManager.getEshareBluetoothListener()?.onEshareAddrNotAvailable()
-                }
+                EShareAction.AddressNotAvailable -> eShareListener?.onEshareAddrNotAvailable()
 
-                BleService.ACTION_ESHARE_IP_NOT_REACHABLE -> {
-                    bleManager.getEshareBluetoothListener()?.onEshareIpNotReachable()
-                }
+                EShareAction.IpNotReachable -> eShareListener?.onEshareIpNotReachable()
 
-                BleService.ACTION_ESHARE_BUSY -> {
-                    bleManager.getEshareBluetoothListener()?.onEshareBusy()
-                }
+                EShareAction.Busy -> eShareListener?.onEshareBusy()
+
+                EShareAction.UserDenied -> eShareListener?.onUserCancelled()
+
+                ESightBleAction.DataAvailable ->
+                    eShareListener?.onWifiConnectionStatusChanged(exData)
+
+                else -> Log.e(_tag, "Unknown action: ${intent.action}", Exception())
             }
         }
     }
 
     private val hotspotReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @Synchronized
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 BleService.ACTION_HOTSPOT -> {
@@ -135,12 +130,12 @@ class BluetoothModel constructor(
     }
 
     private val bluetoothStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @Synchronized
         override fun onReceive(context: Context?, intent: Intent) {
             when (intent.action) {
                 BluetoothAdapter.ACTION_STATE_CHANGED -> {
                     when (intent.getIntExtra(
-                        BluetoothAdapter.EXTRA_STATE,
-                        BluetoothAdapter.ERROR
+                        BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR
                     )) {
                         BluetoothAdapter.STATE_OFF -> {
                             // Bluetooth is disabled
@@ -203,16 +198,19 @@ class BluetoothModel constructor(
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @Synchronized
     fun registerEshareReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(
-                eShareReceiver, makeeShareIntentFilter(), Context.RECEIVER_NOT_EXPORTED
+                eShareReceiver, makeEShareIntentFilter(), Context.RECEIVER_NOT_EXPORTED
             )
         } else {
-            context.registerReceiver(eShareReceiver, makeeShareIntentFilter())
+            context.registerReceiver(eShareReceiver, makeEShareIntentFilter())
         }
     }
 
+    @Synchronized
     fun unregisterEshareReceiver() {
         try {
             context.unregisterReceiver(eShareReceiver)
@@ -221,6 +219,7 @@ class BluetoothModel constructor(
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun registerHotspotReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.registerReceiver(
@@ -335,17 +334,12 @@ class BluetoothModel constructor(
         return IntentFilter().apply {
             addAction(BleService.ACTION_GATT_CONNECTED)
             addAction(BleService.ACTION_GATT_DISCONNECTED)
-            addAction(BleService.ACTION_GATT_SERVICES_DISCOVERED)
         }
     }
 
-    private fun makeeShareIntentFilter(): IntentFilter {
-        return IntentFilter().apply {
-            addAction(BleService.ACTION_ESHARE_STATUS)
-            addAction(BleService.ACTION_ESHARE_IP_NOT_REACHABLE)
-            addAction(BleService.ACTION_ESHARE_ADDR_NOT_AVAILABLE)
-            addAction(BleService.ACTION_ESHARE_BUSY)
-        }
+    private fun makeEShareIntentFilter() = IntentFilter().apply {
+        EShareAction.values().forEach { addAction(it) }
+        addAction(ESightBleAction.DataAvailable)
     }
 
     private fun makeHotspotIntentFilter(): IntentFilter {

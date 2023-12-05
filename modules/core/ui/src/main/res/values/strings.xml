@@ -2,98 +2,130 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="select_your_esight" translatable="true">Select your eSight</string>
+    <string name="select_your_esight">Select your eSight</string>
     <string name="default_serial_number" translatable="false">1000101</string>
     <string name="hyphen" translatable="false">-</string>
     <string name="navigate_to_home" translatable="false">home_first</string>
-    <string name="connected_to" translatable="true">Connected to </string>
-    <string name="something_went_wrong" translatable="true">Something went horribly wrong!</string>
-    <string name="connecting_to_esight" translatable="true">Connecting to eSight</string>
+    <string name="connected_to">Connected to </string>
+    <string name="something_went_wrong">Something went horribly wrong!</string>
+    <string name="connecting_to_esight">Connecting to eSight</string>
 
-    <string name="content_desc_bt_icon" translatable="true">Bluetooth Icon</string>
-    <string name="content_desc_wifi_icon" translatable="true">Wifi Icon</string>
-    <string name="bt_disabled_header" translatable="true">Turn on Bluetooth</string>
-    <string name="bt_disabled_body" translatable="true">Open Settings on your phone, and turn on Bluetooth to connect</string>
+    <string name="content_desc_bt_icon">Bluetooth Icon</string>
+    <string name="content_desc_wifi_icon">Wifi Icon</string>
+    <string name="bt_disabled_header">Turn on Bluetooth</string>
+    <string name="bt_disabled_body">Open Settings on your phone, and turn on Bluetooth to connect</string>
 
-    <string name="wifi_disabled_header" translatable="true">Turn on Wifi</string>
-    <string name="wifi_disabled_body" translatable="true">Open Settings on your phone, and turn on Wifi to connect</string>
+    <string name="wifi_disabled_header">Turn on Wifi</string>
+    <string name="wifi_disabled_body">Open Settings on your phone, and turn on Wifi to connect</string>
 
-    <string name="eshare_stopped_header" translatable="true">Connection Stopped</string>
-    <string name="eshare_stopped_subheader" translatable="true">The eSight wearer has stopped the session</string>
-    <string name="eshare_stopped_button" translatable="true">Return</string>
+    <string name="eshare_stopped_header">Connection Stopped</string>
+    <string name="eshare_stopped_subheader">The eSight wearer has stopped the session</string>
 
-    <string name="bt_searching_text" translatable="true">Searching for eSight devices</string>
-    <string name="wifi_already_connected_header" translatable="true">Connected to Wi-Fi</string>
-    <string name="wifi_already_connected_body" translatable="true">Your eSight is already connected to a Wi-Fi network.</string>
-    <string name="wifi_already_connected_action" translatable="true">Press the button below if you would like to connect to another network</string>
-    <string name="wifi_already_connected_button" translatable="true">Connect to another network</string>
-    <string name="wifi_connected_text" translatable="true">Wifi is now connected</string>
-    <string name="wifi_connect_button" translatable="true">Connect</string>
-    <string name="wifi_no_networks_header" translatable="true">No Wi-Fi networks found</string>
-    <string name="wifi_no_networks_subtitle" translatable="true">Please try the following:</string>
-    <string name="wifi_no_networks_1" translatable="true">Turn your eSight off and then back on again</string>
-    <string name="wifi_no_networks_2" translatable="true">Turn your router off and then back on again</string>
-    <string name="wifi_no_networks_button" translatable="true">Try again</string>
-    <string name="wifi_select_network_header" translatable="true">Select a Wi-Fi network</string>
-    <string name="wifi_unable_to_connect_header" translatable="true">Unable to Connect</string>
-    <string name="wifi_unable_to_connect_subtitle" translatable="true">Please try the following:</string>
-    <string name="wifi_unable_to_connect_1" translatable="true">Make sure your Wi-Fi password is correct.</string>
-    <string name="wifi_unable_to_connect_2" translatable="true">Make sure your eSight is within range.</string>
-    <string name="wifi_unable_to_connect_3" translatable="true">Make sure your eSight has sufficient charge.</string>
-    <string name="wifi_unable_to_connect_button" translatable="true">Try again</string>
-    <string name="wifi_unable_to_connect_footer" translatable="true">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
-    <string name="wifi_unable_to_connect_footer_button" translatable="true">How to connect</string>
 
-    <string name="bt_unable_to_connect_header" translatable="true">Unable to connect</string>
-    <string name="bt_unable_to_connect_subtitle" translatable="true">Please make sure:</string>
-    <string name="bt_unable_to_connect_1" translatable="true">eSight is within range.</string>
-    <string name="bt_unable_to_connect_2" translatable="true">eSight has sufficient charge.</string>
-    <string name="bt_unable_to_connect_footer" translatable="true">If connecting to Bluetooth continues to fail, please visit the link below for more information or contact Support</string>
-    <string name="bt_unable_to_connect_button" translatable="true">Try again</string>
+    <string name="bt_searching_text">Searching for eSight devices</string>
+    <string name="wifi_already_connected_header">Connected to Wi-Fi</string>
+    <string name="wifi_already_connected_body">Your eSight is already connected to a Wi-Fi network.</string>
+    <string name="wifi_already_connected_action">Press the button below if you would like to connect to another network</string>
+    <string name="wifi_already_connected_button">Connect to another network</string>
+    <string name="wifi_connected_text">Wifi is now connected</string>
+    <string name="wifi_connect_button">Connect</string>
+    <string name="wifi_no_networks_header">No Wi-Fi networks found</string>
+    <string name="wifi_no_networks_subtitle">Please try the following:</string>
+    <string name="wifi_no_networks_1">Turn your eSight off and then back on again</string>
+    <string name="wifi_no_networks_2">Turn your router off and then back on again</string>
+    <string name="wifi_no_networks_button">Try again</string>
+    <string name="wifi_select_network_header">Select a Wi-Fi network</string>
+    <string name="wifi_unable_to_connect_header">Unable to Connect</string>
+    <string name="wifi_unable_to_connect_subtitle">Please try the following:</string>
+    <string name="wifi_unable_to_connect_1">Make sure your Wi-Fi password is correct.</string>
+    <string name="wifi_unable_to_connect_2">Make sure your eSight is within range.</string>
+    <string name="wifi_unable_to_connect_3">Make sure your eSight has sufficient charge.</string>
+    <string name="wifi_unable_to_connect_button">Try again</string>
+    <string name="wifi_unable_to_connect_footer">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
+    <string name="wifi_unable_to_connect_footer_button">How to connect</string>
+
+    <string name="bt_unable_to_connect_header">Unable to connect</string>
+    <string name="bt_unable_to_connect_subtitle">Please make sure:</string>
+    <string name="bt_unable_to_connect_1">eSight is within range.</string>
+    <string name="bt_unable_to_connect_2">eSight has sufficient charge.</string>
+    <string name="bt_unable_to_connect_footer">If connecting to Bluetooth continues to fail, please visit the link below for more information or contact Support</string>
+    <string name="bt_unable_to_connect_button">Try again</string>
     <string name="bt_unable_to_connect_footer_button">How to connect</string>
 
-    <string name="bt_no_devices_found_header" translatable="true">Unable to find an eSight</string>
-    <string name="bt_no_devices_found_subtitle" translatable="true">Please try the following:</string>
-    <string name="bt_no_devices_found_1" translatable="true">Turn your eSight off and then back on again.</string>
-    <string name="bt_no_devices_found_2" translatable="true">Make sure your eSight is within range.</string>
-    <string name="bt_no_devices_found_3" translatable="true">Make sure your eSight has sufficient charge.</string>
-    <string name="bt_no_devices_found_button" translatable="true">Try again</string>
+    <string name="bt_no_devices_found_header">Unable to find an eSight</string>
+    <string name="bt_no_devices_found_subtitle">Please try the following:</string>
+    <string name="bt_no_devices_found_1">Turn your eSight off and then back on again.</string>
+    <string name="bt_no_devices_found_2">Make sure your eSight is within range.</string>
+    <string name="bt_no_devices_found_3">Make sure your eSight has sufficient charge.</string>
+    <string name="bt_no_devices_found_button">Try again</string>
     <string name="bt_no_devices_footer_button">Unable to connect?</string>
 
     <string name="bt_label_unable_to_find_help">Can’t find your eSight?</string>
 
-    <string name="wifi_searching_for_networks_header" translatable="true">Searching for Wi-Fi networks</string>
-    <string name="wifi_advanced_ssidHeader" translatable="true">Enter Wi-Fi name</string>
-    <string name="wifi_advanced_pwdHeader" translatable="true">Enter Wi-Fi password</string>
-    <string name="wifi_advanced_securityHeader" translatable="true">Select security type</string>
-    <string name="wifi_type_security_none" translatable="true">None</string>
-    <string name="wifi_type_security_wep" translatable="true">WEP</string>
-    <string name="wifi_type_security_wpa" translatable="true">WPA/WPA2/WPA3</string>
-    <string name="wifi_advanced_QR_finishButton" translatable="true">Create Wi-Fi code</string>
-    <string name="wifi_advanced_BT_finishButton" translatable="true">Connect to network</string>
-    <string name="cancel" translatable="true">Cancel</string>
-    <string name="retry" translatable="true">Retry</string>
-    <string name="how_to_scan" translatable="true" tools:ignore="ExtraTranslation">How to scan</string>
-    <string name="feedback" translatable="true">Feedback</string>
-    <string name="wifi_qr_code_header" translatable="true">Scan Wi-Fi code</string>
-    <string name="wifi_qr_code_subheader" translatable="true">Use the QR scanner in eSight Settings</string>
-    <string name="wifi_qr_code_button" translatable="true">Return to home screen</string>
-    <string name="back" translatable="true">Back</string>
-    <string name="settings" translatable="true">Settings</string>
-    <string name="add_device_button_text" translatable="true">Connect to eSight</string>
+    <string name="wifi_searching_for_networks_header">Searching for Wi-Fi networks</string>
+    <string name="wifi_advanced_ssidHeader">Enter Wi-Fi name</string>
+    <string name="wifi_advanced_pwdHeader">Enter Wi-Fi password</string>
+    <string name="wifi_advanced_securityHeader">Select security type</string>
+    <string name="wifi_type_security_none">None</string>
+    <string name="wifi_type_security_wep">WEP</string>
+    <string name="wifi_type_security_wpa">WPA/WPA2/WPA3</string>
+    <string name="wifi_advanced_QR_finishButton">Create Wi-Fi code</string>
+    <string name="wifi_advanced_BT_finishButton">Connect to network</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
+    <string name="how_to_scan" tools:ignore="ExtraTranslation">How to scan</string>
+    <string name="feedback">Feedback</string>
+    <string name="wifi_qr_code_header">Scan Wi-Fi code</string>
+    <string name="wifi_qr_code_subheader">Use the QR scanner in eSight Settings</string>
+    <string name="wifi_qr_code_button">Return to home screen</string>
+    <string name="back">Back</string>
+    <string name="settings">Settings</string>
+    <string name="add_device_button_text">Connect to eSight</string>
 
+    <!-- region EShare -->
+    <string name="label_eshare_footer_setup_hotspot">Set up a hotspot</string>
+    <string name="label_eshare_try_again">Try again</string>
+    <string name="label_eshare_btn_retry">Retry</string>
+    <string name="label_eshare_btn_return">Return</string>
 
-    <string name="hotspot_setup_header" translatable="true">How to set up a hotspot</string>
-    <string name="hotspot_setup_subheader" translatable="true">Connect your phone directly to eSight</string>
-    <string name="hotspot_setup_step_1" translatable="true">On your phone: open Settings > Wi-Fi</string>
-    <string name="hotspot_setup_step_2" translatable="true">Connect to the eSight\'s " %1$s " network</string>
-    <string name="hotspot_setup_step_3" translatable="true">Enter this password: %1$s </string>
-    <string name="hotspot_setup_step_4" translatable="true">Once connected, press the button below to retry</string>
-    <string name="hotspot_setup_button" translatable="true">Share your view</string>
+    <string name="label_eshare_unable_to_connect_title">Unable to connect</string>
+    <string name="label_eshare_instruction_general">Please make sure:</string>
+    <string name="label_eshare_instruction_1">eSight is connected to Wi-Fi</string>
+    <string name="label_eshare_instruction_2">eSight is within range</string>
+    <string name="label_eshare_instruction_3">eSight has sufficient charge</string>
+    <string name="label_eshare_instruction_4">Mobile and eSight are connected to the same Wi-Fi</string>
+    <string name="label_eshare_instruction_footer">If connecting to eShare continues to fail, tap the link below to set up a hotspot.</string>
 
-    <string name="still_unable_to_connect_button" translatable="true">Still unable to connect?</string>
+    <string name="label_eshare_wifi_disabled_title">Turn on Wi-Fi</string>
+    <string name="label_eshare_wifi_disabled_instruction">Open Settings on your phone, and turn on Wi-Fi to connect</string>
 
-    <string name="eshare_loading_text" translatable="true">Connecting to eSight</string>
+    <string name="label_eshare_stopped_user_declined_title">Connection unsuccessful</string>
+    <string name="label_eshare_stopped_user_declined_message">The eSight wearer has declined the viewing request.\n\nPlease try again later</string>
+
+    <string name="label_eshare_stopped_busy_title">Connection unavailable</string>
+    <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
+
+    <string name="label_eshare_stopped_title">Connection stopped</string>
+    <string name="label_eshare_stopped_message">The eSight wearer has stopped the session.</string>
+
+    <string name="label_eshare_hotspot_setup_header">How to set up a hotspot</string>
+    <string name="label_eshare_hotspot_setup_sub_header">Connect your phone directly to eSight</string>
+    <string name="label_eshare_hotspot_setup_step_1">On your phone: open Settings > Wi-Fi</string>
+    <string name="label_eshare_hotspot_setup_step_2">Connect to the eSight\'s " %1$s " network</string>
+    <string name="label_eshare_hotspot_setup_step_3">Enter this password: "%1$s"</string>
+    <string name="label_eshare_hotspot_setup_step_4">Once connected, press the button below to retry</string>
+
+    <string name="label_eshare_setup_wifi_header">Connect to Wi-Fi</string>
+    <string name="label_eshare_setup_wifi_sub_header">Your eSight is not connected to Wi-Fi.</string>
+    <string name="label_eshare_setup_wifi_footer">To proceed without Wi-Fi, tap the link below to set up a hotspot.</string>
+    <string name="label_eshare_setup_wifi_button">Connect to Wi-Fi</string>
+    <!-- endregion -->
+
+    <string name="label_feature_eshare">Share your view</string>
+
+    <string name="still_unable_to_connect_button">Still unable to connect?</string>
+
+    <string name="eshare_loading_text">Connecting to eSight</string>
 
     <!-- region Settings -->
     <string name="label_settings">Settings</string>

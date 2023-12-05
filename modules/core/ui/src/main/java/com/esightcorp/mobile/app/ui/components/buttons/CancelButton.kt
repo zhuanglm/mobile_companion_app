@@ -12,19 +12,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ButtonText
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun CancelButton(
-    onClick: () -> Unit,
+    onClick: OnActionCallback? = null,
     modifier: Modifier,
-    text: String = stringResource(id = R.string.cancel),
+    text: String = stringResource(R.string.cancel),
 ) {
     ElevatedButton(
-        onClick =  onClick,
-        modifier = modifier
-            .wrapContentSize(),
+        onClick = { onClick?.invoke() },
+        modifier = modifier.wrapContentSize(),
         enabled = true,
-        colors = ButtonDefaults.elevatedButtonColors(MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary),
+        colors = ButtonDefaults.elevatedButtonColors(
+            MaterialTheme.colors.primary,
+            MaterialTheme.colors.onPrimary
+        ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
         shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(42.dp, 14.dp),
@@ -36,5 +39,5 @@ fun CancelButton(
 @Preview
 @Composable
 fun CancelButtonPreview() {
-    CancelButton(onClick = {}, modifier = Modifier)
+    CancelButton(modifier = Modifier)
 }

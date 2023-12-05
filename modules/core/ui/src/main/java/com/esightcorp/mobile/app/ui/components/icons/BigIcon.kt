@@ -25,7 +25,7 @@ fun BigIcon(
     modifier: Modifier = Modifier,
     painter: Painter? = null,
     @DrawableRes drawableId: Int? = null,
-    contentDescription: String,
+    contentDescription: String? = null,
 ) {
     Surface(
         modifier = modifier.size(120.dp),

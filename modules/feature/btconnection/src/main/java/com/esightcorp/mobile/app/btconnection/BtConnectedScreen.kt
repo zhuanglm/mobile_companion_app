@@ -8,20 +8,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectedViewModel
-import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
-import kotlinx.coroutines.delay
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import kotlinx.coroutines.delay
+
 @Composable
 fun BtConnectedRoute(
     navController: NavController,
     vm: BtConnectedViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    if(!uiState.isBtEnabled){
+    if (!uiState.isBtEnabled) {
         NavigateBluetoothDisabled(navController = navController)
-    }else{
+    } else {
         BtConnectedScreen(
             navController = navController,
             modifier = Modifier,
@@ -43,19 +45,20 @@ internal fun BtConnectedScreen(
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
         LaunchedEffect(Unit) {
             delay(screenTimeout)
-            navController.navigate(homeRoute){
-                popUpTo(homeRoute){
+            navController.navigate(homeRoute) {
+                popUpTo(homeRoute) {
                     inclusive = false
                 }
                 launchSingleTop = true
             }
         }
-    }else{
+    } else {
         val loadingText = stringResource(id = R.string.something_went_wrong)
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
         LaunchedEffect(Unit) {
             delay(screenTimeout)
-            navController.navigate(BtConnectionScreens.NoDevicesConnectedRoute.route)
+
+            navController.navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
         }
     }
 

@@ -9,9 +9,9 @@ import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRe
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
-import com.esightcorp.mobile.app.ui.navigation.navigate
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -70,8 +70,8 @@ class DeviceDisconnectViewModel @Inject constructor(
     fun navigateBack(navController: NavController) = navController.popBackStack()
 
     fun navigateToDisconnectedScreen(navController: NavController) = navController.navigate(
-        BtConnectionNavigation.IncomingRoute,
-        SettingsNavigation.IncomingRoute
+        target = BtConnectionNavigation.IncomingRoute,
+        popUntil = SettingsNavigation.IncomingRoute
     )
 
     companion object {

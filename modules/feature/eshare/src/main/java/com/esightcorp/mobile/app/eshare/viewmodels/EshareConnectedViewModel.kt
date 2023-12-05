@@ -7,31 +7,36 @@ import android.os.Looper
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.eshare.navigation.EshareScreens
+import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
-import com.esightcorp.mobile.app.utils.eShareConnectionStatus
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
+import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.InputStream
 import javax.inject.Inject
-
-private const val TAG = "EshareConnectedViewMode"
 
 @HiltViewModel
 class EshareConnectedViewModel @Inject constructor(
     application: Application,
     private val eShareRepository: EshareRepository
+) : ESightBaseViewModel(application), EshareRepositoryListener, SurfaceTextureListener {
 
-) : AndroidViewModel(application), EshareRepositoryListener, SurfaceTextureListener {
+    private val _tag = this.javaClass.simpleName
 
     private var surfaceTexture: SurfaceTexture? = null
 
@@ -39,45 +44,19 @@ class EshareConnectedViewModel @Inject constructor(
     val uiState: StateFlow<EshareConnectedUiState> = _uiState.asStateFlow()
     private var wasStoppedByMobile: Boolean = false
 
-
-
     init {
         eShareRepository.setupEshareListener(this)
         wasStoppedByMobile = false
     }
 
+    //region EshareRepositoryListener
 
-    private fun updateConnectionState(state: eShareConnectionStatus) {
-        _uiState.update { uiState ->
-            uiState.copy(connectionState = state)
-        }
-    }
-
-    private fun updateBluetoothDeviceState(state: Boolean) {
-        _uiState.update { uiState ->
-            uiState.copy(deviceConnectionState = DeviceConnectionState(state))
-        }
-    }
-
-    private fun updateBluetoothRadioState(state: Boolean) {
-        _uiState.update { uiState ->
-            uiState.copy(radioState = RadioState(isBtEnabled = state, isWifiEnabled = uiState.radioState.isWifiEnabled))
-        }
-    }
-
-    private fun updateWifiRadioState(state: Boolean) {
-        _uiState.update { uiState ->
-            uiState.copy(radioState = RadioState(isBtEnabled = uiState.radioState.isBtEnabled, isWifiEnabled = state))
-        }
-    }
-
-    override fun onEshareStateChanged(state: eShareConnectionStatus) {
-        Log.i(TAG, "onEshareStateChanged: $state")
+    override fun onEshareStateChanged(state: EShareConnectionStatus) {
+        Log.i(_tag, "onEshareStateChanged: $state")
         updateConnectionState(state)
     }
 
-
-    override fun onEshareStateRequested(state: eShareConnectionStatus) {
+    override fun onEshareStateRequested(state: EShareConnectionStatus) {
         updateConnectionState(state)
     }
 
@@ -90,128 +69,136 @@ class EshareConnectedViewModel @Inject constructor(
     }
 
     override fun onWifiStateChanged(state: Boolean) {
-       updateWifiRadioState(state)
+        updateWifiRadioState(state)
     }
 
     override fun onInputStreamCreated(inputStream: InputStream) {
-        Log.i(TAG, "onInputStreamCreated: ")
-        if (surfaceTexture != null) {
-            Log.d(TAG, "onInputStreamCreated: surfaceTexture is not null")
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({
-                Log.d(TAG, "onInputStreamCreated: starting stream")
-                eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
-            }, 1000)
+        Log.i(_tag, "onInputStreamCreated")
+        surfaceTexture?.let {
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    Log.d(_tag, "onInputStreamCreated: starting stream")
+                    eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
+                },
+                1000,
+            )
+        } ?: run {
+            Log.e(_tag, "surfaceTexture is NULL", Exception())
         }
     }
 
-    override fun onCleared() {
-        Log.i(TAG, "onCleared: ")
-        super.onCleared()
-    }
+    //endregion
+
+    //region SurfaceTextureListener
 
     override fun onSurfaceTextureAvailable(
         surfaceTexture: SurfaceTexture,
         width: Int,
         height: Int
     ) {
-        Log.i(TAG, "onSurfaceTextureAvailable: " + width + " " + height)
+//        Log.i(_tag, "onSurfaceTextureAvailable: $width $height")
         this.surfaceTexture = surfaceTexture
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-        Log.i(TAG, "onSurfaceTextureSizeChanged: ")
+//        Log.i(_tag, "onSurfaceTextureSizeChanged: ")
     }
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-        Log.i(TAG, "onSurfaceTextureDestroyed: ")
+//        Log.i(_tag, "onSurfaceTextureDestroyed: ")
         return true
     }
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-        Log.i(TAG, "onSurfaceTextureUpdated: ")
+//        Log.i(_tag, "onSurfaceTextureUpdated: ")
     }
 
-    fun navigateToStoppedRoute(navController: NavController) {
-        if(wasStoppedByMobile){
-            navController.navigate(HOME_FIRST_SCREEN){
-                popUpTo(HOME_FIRST_SCREEN){
-                    inclusive = false
-                }
-                launchSingleTop = true
-            }
-        }else{
-            navController.navigate(EshareScreens.EshareConnectionStoppedRoute.route)
-        }
-    }
+    //endregion
 
-    fun navigateToBusyRoute(navController: NavController) {
-        Log.i(TAG, "navigateToBusyRoute: ")
-        navController.navigate(EshareScreens.EshareBusyRoute.route) {
-            popUpTo(EshareScreens.IncomingNavigationRoute.route) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
+    fun startEshareConnection() = viewModelScope.launch(Dispatchers.IO) {
+        delay(1000)
 
-    }
-
-    fun navigateToUnableToConnectRoute(navController: NavController) {
-        Log.i(TAG, "navigateToUnableToConnectRoute: ")
-        navController.navigate(EshareScreens.EshareUnableToConnectRoute.route) {
-            popUpTo(EshareScreens.IncomingNavigationRoute.route) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
-    }
-
-    fun startEshareConnection(){
-        Log.i(TAG, "startEshareConnection: ")
+        // Request to start eShare session
         eShareRepository.startEshareConnection()
     }
 
-    fun onCancelButtonClicked() {
-        Log.i(TAG, "onCancelButtonClicked: ")
+    fun cancelEshareConnection() = eShareRepository.cancelEshareConnection()
+
+    fun onCancelButtonClicked(navController: NavController) {
+        Log.i(_tag, "onCancelButtonClicked")
         wasStoppedByMobile = true
-        eShareRepository.cancelEshareConnection()
+        cancelEshareConnection()
 
-    }
-
-    fun upButtonPress(){
-        eShareRepository.writeUpButtonPress()
-    }
-    fun downButtonPress(){
-        eShareRepository.writeDownButtonPress()
+        navController.popBackStack()
     }
 
-    fun volUpButtonPress(){
-        eShareRepository.writeVolumeUpButtonPress()
+    fun upButtonPress() = eShareRepository.writeUpButtonPress()
+
+    fun downButtonPress() = eShareRepository.writeDownButtonPress()
+
+    fun volUpButtonPress() = eShareRepository.writeVolumeUpButtonPress()
+
+    fun volDownButtonPress() = eShareRepository.writeVolumeDownButtonPress()
+
+    fun modeButtonPress() = eShareRepository.writeModeButtonPress()
+
+    fun menuButtonPress() = eShareRepository.writeMenuButtonPress()
+
+    fun finderButtonPress() = eShareRepository.writeFinderButtonPress()
+
+    fun actionUpButtonPress() = eShareRepository.writeActionUpEvent()
+
+    //region Navigation
+
+    fun navigateToStoppedRoute(navController: NavController, reason: EShareStoppedReason? = null) {
+        when (wasStoppedByMobile) {
+            true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
+            false -> {
+                val navStoppedPath =
+                    reason?.let { "${EShareNavigation.ConnectionStoppedRoute.path}/${it.name}" } ?: EShareNavigation.ConnectionStoppedRoute.path
+
+                navController.popBackStack()
+                navController.navigate(navStoppedPath)
+            }
+        }
     }
 
-    fun volDownButtonPress(){
-        eShareRepository.writeVolumeDownButtonPress()
+    fun navigateToUnableToConnectRoute(navController: NavController) =
+        navController.navigate(EShareNavigation.UnableToConnectRoute)
+
+    fun navigateToWifiDisabledRoute(navController: NavController) =
+        navController.navigate(EShareNavigation.WifiDisabledRoute)
+
+    fun navigateToWifiSetupRoute(navController: NavController) = navController.navigate(
+        target = EShareNavigation.WifiSetupRoute
+    )
+    //endregion
+
+    //region Internal implementation
+
+    private fun updateConnectionState(state: EShareConnectionStatus) =
+        _uiState.update { it.copy(connectionState = state) }
+
+    private fun updateBluetoothDeviceState(state: Boolean) =
+        _uiState.update { it.copy(deviceConnectionState = DeviceConnectionState(state)) }
+
+    private fun updateBluetoothRadioState(state: Boolean) = _uiState.update {
+        it.copy(
+            radioState = RadioState(
+                isBtEnabled = state,
+                isWifiEnabled = it.radioState.isWifiEnabled
+            )
+        )
     }
 
-    fun modeButtonPress(){
-        eShareRepository.writeModeButtonPress()
+    private fun updateWifiRadioState(state: Boolean) = _uiState.update {
+        it.copy(
+            radioState = RadioState(
+                isBtEnabled = it.radioState.isBtEnabled,
+                isWifiEnabled = state
+            )
+        )
     }
 
-    fun menuButtonPress(){
-        eShareRepository.writeMenuButtonPress()
-    }
-
-    fun finderButtonPress(){
-        eShareRepository.writeFinderButtonPress()
-    }
-
-    fun actionUpButtonPress(){
-        eShareRepository.writeActionUpEvent()
-    }
-
-    companion object{
-        const val HOME_FIRST_SCREEN = "home_first"
-    }
+    //endregion
 }
-
-

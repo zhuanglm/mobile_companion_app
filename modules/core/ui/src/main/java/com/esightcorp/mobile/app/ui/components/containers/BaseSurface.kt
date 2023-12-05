@@ -1,29 +1,26 @@
 package com.esightcorp.mobile.app.ui.components.containers
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.esightcorp.mobile.app.ui.components.AddDeviceButton
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
-import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
-import kotlinx.coroutines.NonDisposableHandle.parent
 
 @Composable
 fun BaseSurface(
-    modifier: Modifier = Modifier, everythingElse: @Composable () -> Unit
+    modifier: Modifier = Modifier,
+    everythingElse: @Composable () -> Unit,
 ) {
     Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
         everythingElse()
@@ -48,7 +45,6 @@ fun BaseSurface(
  * @see ESightTopAppBar
  * @sample BaseScreenPreview
  */
-
 @Composable
 fun BaseScreen(
     modifier: Modifier,
@@ -59,11 +55,12 @@ fun BaseScreen(
     isBottomButtonNeeded: Boolean = true,
     bottomButton: @Composable () -> Unit,
     everythingElse: @Composable () -> Unit,
-    ) {
-    BaseSurface(modifier = modifier.systemBarsPadding()){
+) {
+    BaseSurface(modifier = modifier.systemBarsPadding()) {
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
-            val (topAppBar, everything, bottomButton) = createRefs()
-            ESightTopAppBar(showBackButton = showBackButton,
+            val (topAppBar, everything, btBtn) = createRefs()
+            ESightTopAppBar(
+                showBackButton = showBackButton,
                 showSettingsButton = showSettingsButton,
                 onBackButtonInvoked = onBackButtonInvoked,
                 onSettingsButtonInvoked = onSettingsButtonInvoked,
@@ -71,26 +68,24 @@ fun BaseScreen(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                })
+                },
+            )
             Box(modifier = modifier
-                .constrainAs(everything){
+                .constrainAs(everything) {
                     top.linkTo(topAppBar.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(bottomButton.top)
+                    bottom.linkTo(btBtn.top)
                     height = Dimension.fillToConstraints
                 }
-                .padding(25.dp, 0.dp, 25.dp, 0.dp).fillMaxSize()
+                .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                .fillMaxSize()
             ) {
-                LazyColumn(modifier = Modifier) {
-                    item {
-                        everythingElse()
-                    }
-                }
+                everythingElse()
             }
-            if(isBottomButtonNeeded){
+            if (isBottomButtonNeeded) {
                 Box(modifier = modifier
-                    .constrainAs(bottomButton) {
+                    .constrainAs(btBtn) {
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -100,7 +95,6 @@ fun BaseScreen(
                     bottomButton()
                 }
             }
-
         }
     }
 }
@@ -116,12 +110,8 @@ fun BaseScreenPreview() {
             onBackButtonInvoked = {},
             onSettingsButtonInvoked = {},
             isBottomButtonNeeded = true,
-            bottomButton = {
-                Text("This is a bottom button")
-            },
-            everythingElse = {
-                Text("This is the content of the screen")
-            }
+            bottomButton = { Text("This is a bottom button") },
+            everythingElse = { Text("This is the content of the screen") }
         )
     }
 }
@@ -135,13 +125,12 @@ fun HomeBaseScreen(
     onSettingsButtonInvoked: () -> Unit,
     bottomButton: @Composable () -> Unit,
     everythingElse: @Composable () -> Unit,
-
-
-    ) {
+) {
     BaseSurface(modifier = modifier) {
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
-            val (topAppBar, everything, bottomButton) = createRefs()
-            ESightTopAppBar(showBackButton = showBackButton,
+            val (topAppBar, everything, btBtn) = createRefs()
+            ESightTopAppBar(
+                showBackButton = showBackButton,
                 showSettingsButton = showSettingsButton,
                 onBackButtonInvoked = onBackButtonInvoked,
                 onSettingsButtonInvoked = onSettingsButtonInvoked,
@@ -149,32 +138,33 @@ fun HomeBaseScreen(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                })
+                },
+            )
             Box(modifier = modifier
                 .padding(25.dp, 30.dp, 25.dp, 0.dp)
                 .constrainAs(everything) {
                     top.linkTo(topAppBar.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(bottomButton.top)
+                    bottom.linkTo(btBtn.top)
                 }
                 .fillMaxSize()
-            ){
+            ) {
                 everythingElse()
             }
 
-
-        Box(modifier = modifier
-            .constrainAs(bottomButton) {
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+            Box(
+                modifier = modifier
+                    .constrainAs(btBtn) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                bottomButton()
             }
-            .fillMaxWidth(),
-            contentAlignment = Alignment.Center) {
-            bottomButton()
         }
     }
 }
-}
-

@@ -15,13 +15,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.esightcorp.mobile.app.btconnection.navigation.BtConnectionScreens
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.AddDeviceButton
 import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
 
 private const val TAG = "BluetoothScreens"
 
@@ -31,6 +34,8 @@ fun NoDeviceConnectedRoute(
 ) {
     // Get Bluetooth UI state from view model
     val btUiState by vm.uiState.collectAsState()
+
+    BackStackLogger(navController, TAG)
 
     // Check if Bluetooth is enabled
     Log.d(TAG, "NoDeviceConnectedRoute: ")
@@ -50,6 +55,8 @@ fun NoDeviceConnectedRoute(
             navController = navController
         )
     } else {
+        Log.i(TAG, "NoDeviceConnectedRoute: Navigate Home should be called.")
+
         // If Bluetooth is enabled and there is a device connected, navigate to the home screen
         NavigateHome(navController = navController, device = btUiState.connectedDevice)
     }
@@ -182,14 +189,8 @@ fun NoDevicesBodyPreview() {
 }
 
 @Composable
-fun NavigateHome(
-    navController: NavController, device: String
-) {
-// Use LaunchedEffect to navigate to home screen after a delay
-    LaunchedEffect(Unit) {
-        navController.navigate("home_first")
-    }
-}
+fun NavigateHome(navController: NavController, device: String) =
+    LaunchedEffect(Unit) { navController.navigate(HomeNavigation.FirstScreenRoute) }
 
 @Composable
 fun NavigateBluetoothDisabled(
@@ -197,7 +198,7 @@ fun NavigateBluetoothDisabled(
 ) {
 // Use LaunchedEffect to navigate to Bluetooth disabled screen after a delay
     LaunchedEffect(Unit) {
-        navController.navigate(BtConnectionScreens.BtDisabledScreen.route)
+        navController.navigate(BtConnectionNavigation.BtDisabledScreen)
     }
 }
 

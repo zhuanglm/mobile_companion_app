@@ -67,43 +67,44 @@ class DecoderImpl(
      */
     @Synchronized
     override fun readFrame(dataInput: ByteArray, length: Int) {
-        Log.i(TAG, "readFrame: Trying to read frame")
-        if(mDecoder == null){
+//        Log.i(TAG, "readFrame: Trying to read frame")
+        if (mDecoder == null) {
             Log.e(TAG, "readFrame: Decoder is null")
             return
         }
         val inputIndex = mDecoder!!.dequeueInputBuffer(TIMEOUT)
-        Log.d(TAG, "readFrame: input index " + inputIndex)
-        if (inputIndex >= 0){
+//        Log.d(TAG, "readFrame: input index $inputIndex")
+        if (inputIndex >= 0) {
             val buffer: ByteBuffer? = mDecoder!!.getInputBuffer(inputIndex)
-            if(buffer != null){
-                Log.i(TAG, "readFrame: buffer is not null")
+            if (buffer != null) {
+//                Log.i(TAG, "readFrame: buffer is not null")
                 buffer.clear()
                 buffer.put(mAccessUnit)
                 buffer.put(dataInput, 0, length)
                 mDecoder!!.queueInputBuffer(inputIndex, 0, length, 0, 0)
             }
         }
-        try{
+        try {
             val outputIndex = mDecoder!!.dequeueOutputBuffer(MediaCodec.BufferInfo(), TIMEOUT)
-            Log.d(TAG, "readFrame: output index " + outputIndex)
-            Log.d(TAG, "readFrame: isConfigured " + isConfigured)
-            if(outputIndex >= 0 && isConfigured){
-                Log.i(TAG, "readFrame: release output buffer called")
+//            Log.d(TAG, "readFrame: output index $outputIndex")
+//            Log.d(TAG, "readFrame: isConfigured $isConfigured")
+            if (outputIndex >= 0 && isConfigured) {
+//                Log.i(TAG, "readFrame: release output buffer called")
                 mDecoder!!.releaseOutputBuffer(outputIndex, true)
-            }else if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED){
+            } else if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                 val format = mDecoder!!.outputFormat
-                Log.i(TAG, "readFrame: Size changed")
-                onSizeChanged?.onSizeChanged(format.getInteger(MediaFormat.KEY_WIDTH), format.getInteger(MediaFormat.KEY_HEIGHT))
+//                Log.i(TAG, "readFrame: Size changed")
+                onSizeChanged?.onSizeChanged(
+                    format.getInteger(MediaFormat.KEY_WIDTH),
+                    format.getInteger(MediaFormat.KEY_HEIGHT)
+                )
                 isConfigured = true
-                Log.i(TAG, "readFrame: Output format changed")
+//                Log.i(TAG, "readFrame: Output format changed")
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(TAG, "readFrame: Exception reading frame", e)
         }
     }
-
-
 
 
     /**
@@ -137,7 +138,7 @@ class DecoderImpl(
         return MediaCodec.createByCodecName(codecs.first())
     }
 
-    companion object{
+    companion object {
         private const val TIMEOUT = 10000L
     }
 }

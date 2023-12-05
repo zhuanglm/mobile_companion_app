@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
     <dimen name="settings_subtitle_padding">15dp</dimen>
     <dimen name="settings_section_spacer">20dp</dimen>
-    <dimen name="settings_item_spacer">10dp</dimen>
 
     <dimen name="settings_disconnect_title_margin">40dp</dimen>
 </resources>

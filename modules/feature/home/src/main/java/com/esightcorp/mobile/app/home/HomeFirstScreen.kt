@@ -129,6 +129,7 @@ data class CardData(val text: String, val iconResId: Int, val onClick: () -> Uni
 fun SquareTileCardLayout(
     modifier: Modifier = Modifier, vm: HomeViewModel, navController: NavController
 ) {
+    //TODO: Hardcoded strings - Connect To Wi-Fi, Share your view
     val cards = listOf(CardData(
         "Connect to Wi-Fi", com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24
     ) {
@@ -137,8 +138,6 @@ fun SquareTileCardLayout(
         "Share your view", com.esightcorp.mobile.app.ui.R.drawable.baseline_camera_alt_24
     ) {
         vm.navigateToShareYourView(navController)
-    }, CardData("Wifi via QR", com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24) {
-        vm.navigateToWifiCredsQr(navController)
     })
 
     LazyVerticalGrid(

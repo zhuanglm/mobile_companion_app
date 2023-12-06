@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.bluetooth.HotspotStatus
+import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.HotspotSetupViewModel
 import com.esightcorp.mobile.app.ui.R
@@ -88,7 +89,7 @@ private fun HotspotSetupScreen(
         onSettingsButtonInvoked = { },
         bottomButton = { UnableToConnectButton { onUnableToConnectPressed?.invoke() } },
     ) {
-        if (uiState.networkName != "" && uiState.networkPassword != "") {
+        uiState.hotspotCredential?.let {
             HotspotSetupBody(
                 modifier = modifier,
                 navController = navController,
@@ -139,7 +140,7 @@ private fun HotspotSetupBody(
                 number = 2,
                 text = stringResource(
                     R.string.label_eshare_hotspot_setup_step_2,
-                    uiState.networkName
+                    uiState.hotspotCredential!!.ssid
                 ),
             )
             ItemSpacer()
@@ -148,7 +149,7 @@ private fun HotspotSetupBody(
                 number = 3,
                 text = stringResource(
                     R.string.label_eshare_hotspot_setup_step_3,
-                    uiState.networkPassword
+                    uiState.hotspotCredential.password
                 ),
             )
             ItemSpacer()
@@ -171,7 +172,7 @@ private fun HotspotSetupBody(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-                .size(140.dp)
+                .size(125.dp)
         )
     }
 }
@@ -181,7 +182,12 @@ private fun HotspotSetupBody(
 private fun HotspotSetupScreenPreview() = MaterialTheme {
     HotspotSetupScreen(
         navController = rememberNavController(),
-        uiState = HotspotSetupUiState(networkName = "AAA", networkPassword = "123"),
+        uiState = HotspotSetupUiState(
+            hotspotCredential = EshareRepository.HotspotCredential(
+                "AAA-12345678-BCDE",
+                "12345678"
+            )
+        ),
     )
 }
 //endregion

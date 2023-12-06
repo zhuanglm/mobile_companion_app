@@ -47,6 +47,8 @@ class EshareRepository @Inject constructor(
 
     //region Public interface
 
+    data class HotspotCredential(val ssid: String, val password: String)
+
     fun setupEshareListener(eshareRepositoryListener: EshareRepositoryListener) {
         this.eShareRepositoryListener = eshareRepositoryListener
         eShareRepositoryListener.onWifiStateChanged(wifiModel.isWifiEnabled())
@@ -58,8 +60,7 @@ class EshareRepository @Inject constructor(
             bluetoothModel.registerEshareReceiver()
 
             with(eSightBleManager) {
-                if (!checkIfConnected())
-                    return@with
+                if (!checkIfConnected()) return@with
 
                 getBleService()?.readWifiConnectionStatus()
             }
@@ -79,21 +80,23 @@ class EshareRepository @Inject constructor(
         SocketManager.startStreamingFromHMD(surface, inputStream, streamOutListener)
     }
 
-    fun startHotspotOnHMD() {
+    fun startHotspotOnHMD(credential: HotspotCredential) {
         Log.i(_tag, "startHotspotOnHMD")
         bluetoothModel.registerHotspotReceiver()
         if (eSightBleManager.checkIfConnected()) {
             try {
-                eSightBleManager.getBleService()?.startHotspot(
-                    ssid = HotspotCredentialGenerator.generateHotspotName(),
-                    password = HotspotCredentialGenerator.generateHotspotPassword()
-                )
+                eSightBleManager.getBleService()?.startHotspot(credential.ssid, credential.password)
             } catch (exception: NullPointerException) {
                 Log.e(_tag, "startHotspotOnHMD: BleService has not been initialized ", exception)
             } catch (exception: UninitializedPropertyAccessException) {
                 Log.e(_tag, "startHotspotOnHMD: BleService has not been initialized ", exception)
             }
         }
+    }
+
+    fun genHotspotCredential() = when (val shortName = eSightBleManager.getShortDeviceName()) {
+        null -> null
+        else -> HotspotCredential(shortName, HotspotCredentialGenerator.generateHotspotPassword())
     }
 
     //region Remote controller

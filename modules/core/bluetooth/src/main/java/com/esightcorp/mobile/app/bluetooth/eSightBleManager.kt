@@ -146,4 +146,7 @@ object eSightBleManager {
     fun checkIfEnabled(): Boolean {
         return bluetoothAdapter.isEnabled
     }
+
+    @SuppressLint("MissingPermission")
+    fun getShortDeviceName() = getConnectedDevice()?.name?.replace("$DEVICE_NAME_CRITERION-", "")
 }

@@ -23,7 +23,7 @@ class EshareConnectionStoppedViewModel @Inject constructor(
     fun updateState(stoppedReason: EShareStoppedReason?) = when (stoppedReason) {
         EShareStoppedReason.USER_DECLINED -> _uiState.update {
             it.copy(
-                titleId = R.string.label_eshare_stopped_user_declined_title,
+                titleId = R.string.label_eshare_connection_unsuccessful_title,
                 descriptionId = R.string.label_eshare_stopped_user_declined_message
             )
         }
@@ -39,6 +39,13 @@ class EshareConnectionStoppedViewModel @Inject constructor(
             it.copy(
                 titleId = R.string.label_eshare_stopped_title,
                 descriptionId = R.string.label_eshare_stopped_message
+            )
+        }
+
+        EShareStoppedReason.HOTSPOT_ERROR -> _uiState.update {
+            it.copy(
+                titleId = R.string.label_eshare_connection_unsuccessful_title,
+                descriptionId = R.string.label_eshare_stopped_hotspot_setup_error_message,
             )
         }
 

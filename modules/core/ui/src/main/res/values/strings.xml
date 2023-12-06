@@ -98,8 +98,9 @@
     <string name="label_eshare_wifi_disabled_title">Turn on Wi-Fi</string>
     <string name="label_eshare_wifi_disabled_instruction">Open Settings on your phone, and turn on Wi-Fi to connect</string>
 
-    <string name="label_eshare_stopped_user_declined_title">Connection unsuccessful</string>
+    <string name="label_eshare_connection_unsuccessful_title">Connection unsuccessful</string>
     <string name="label_eshare_stopped_user_declined_message">The eSight wearer has declined the viewing request.\n\nPlease try again later</string>
+    <string name="label_eshare_stopped_hotspot_setup_error_message">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
 
     <string name="label_eshare_stopped_busy_title">Connection unavailable</string>
     <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
@@ -113,7 +114,7 @@
     <string name="label_eshare_hotspot_setup_step_2">Connect to the eSight\'s " %1$s " network</string>
     <string name="label_eshare_hotspot_setup_step_3">Enter this password: "%1$s"</string>
     <string name="label_eshare_hotspot_setup_step_4">Once connected, press the button below to retry</string>
-    <string name="label_eshare_hotspot_enabling">Enabling hotspot</string>
+    <string name="label_eshare_starting_hotspot">Starting your Hotspot</string>
 
     <string name="label_eshare_setup_wifi_header">Connect to Wi-Fi</string>
     <string name="label_eshare_setup_wifi_sub_header">Your eSight is not connected to Wi-Fi.</string>

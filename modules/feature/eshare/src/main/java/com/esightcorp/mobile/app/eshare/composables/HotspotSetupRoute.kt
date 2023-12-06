@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -54,12 +55,12 @@ fun HotspotSetupRoute(
         }
 
         HotspotStatus.ERROR, HotspotStatus.DISABLED -> {
-            //TODO: show error screen
+            LaunchedEffect(Unit) { vm.showHotspotSetupErrorPage(navController) }
         }
 
         else -> {
             LoadingScreenWithSpinner(
-                loadingText = stringResource(R.string.label_eshare_hotspot_enabling),
+                loadingText = stringResource(R.string.label_eshare_starting_hotspot),
                 cancelButtonNeeded = false,
                 onCancelButtonClicked = { },
             )

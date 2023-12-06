@@ -1,7 +1,9 @@
 package com.esightcorp.mobile.app.eshare.viewmodels
 
 import android.app.Application
+import androidx.navigation.NavController
 import com.esightcorp.mobile.app.bluetooth.HotspotStatus
+import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
@@ -10,6 +12,8 @@ import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,9 +37,20 @@ class HotspotSetupViewModel @Inject constructor(
         startHotspotOnHMD()
     }
 
+    //region Navigation
+
     fun showHowToConnectPage() = with(application.applicationContext) {
         openExternalUrl(getString(R.string.url_esight_support))
     }
+
+    fun showHotspotSetupErrorPage(navController: NavController) = with(navController) {
+        navigate(
+            target = EShareNavigation.ConnectionStoppedRoute,
+            param = EShareStoppedReason.HOTSPOT_ERROR.name
+        )
+    }
+
+    //endregion
 
     //region EshareRepositoryListener callback
     override fun onBluetoothDeviceDisconnected() {

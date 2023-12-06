@@ -154,11 +154,10 @@ class EshareConnectedViewModel @Inject constructor(
         when (wasStoppedByMobile) {
             true -> gotoMainScreen(navController, EShareNavigation.ConnectedRoute)
             false -> {
-                val navStoppedPath =
-                    reason?.let { "${EShareNavigation.ConnectionStoppedRoute.path}/${it.name}" } ?: EShareNavigation.ConnectionStoppedRoute.path
-
-                navController.popBackStack()
-                navController.navigate(navStoppedPath)
+                navController.navigate(
+                    target = EShareNavigation.ConnectionStoppedRoute,
+                    param = reason?.name
+                )
             }
         }
     }

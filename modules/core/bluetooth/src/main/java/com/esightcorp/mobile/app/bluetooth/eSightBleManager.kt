@@ -26,6 +26,7 @@ object eSightBleManager {
     private var btConnectionListener: BluetoothConnectionListener? = null
     private var btRadioListener: BluetoothRadioListener? = null
 
+    var hotspotListener: HotspotModelListener? = null
 
     fun setupBluetoothManager(context: Context) {
         if (!this::bluetoothManager.isInitialized) {
@@ -145,4 +146,7 @@ object eSightBleManager {
     fun checkIfEnabled(): Boolean {
         return bluetoothAdapter.isEnabled
     }
+
+    @SuppressLint("MissingPermission")
+    fun getShortDeviceName() = getConnectedDevice()?.name?.replace("$DEVICE_NAME_CRITERION-", "")
 }

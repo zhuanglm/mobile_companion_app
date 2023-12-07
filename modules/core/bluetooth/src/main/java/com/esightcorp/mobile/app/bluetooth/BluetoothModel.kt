@@ -91,12 +91,12 @@ class BluetoothModel constructor(
 
             val eShareListener = bleManager.getEshareBluetoothListener()
             when (actType) {
-                EShareAction.StatusChanged -> when (exData) {
-                    "READY" -> eShareListener?.onEshareReady()
+                EShareAction.StatusChanged -> when (EShareStatus.from(exData)) {
+                    EShareStatus.READY -> eShareListener?.onEshareReady()
 
-                    "STOPPED" -> eShareListener?.onEshareStopped()
+                    EShareStatus.STOPPED -> eShareListener?.onEshareStopped()
 
-                    "RUNNING" -> eShareListener?.onEshareBusy()
+                    EShareStatus.RUNNING -> eShareListener?.onEshareBusy()
 
                     // Handler other status???
                     else -> Log.e(_tag, "Not handling: $exData")
@@ -120,10 +120,18 @@ class BluetoothModel constructor(
 
     private val hotspotReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         @Synchronized
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                BleService.ACTION_HOTSPOT -> {
-                    Log.i(_tag, "onReceive: HOTSPOT ACTION")
+        override fun onReceive(context: Context, intent: Intent) {
+            val exData = intent.extras?.getString(BleService.EXTRA_DATA)
+            val actType = intent.action.toIAction()
+            Log.i(_tag, "hotspotReceiver - $actType, data: $exData")
+
+            when (actType) {
+                HotspotAction.StatusChanged -> {
+                    bleManager.hotspotListener?.onHotspotStatusChanged(HotspotStatus.from(exData))
+                }
+
+                else -> {
+                    Log.e(_tag, "Ignored status: $exData")
                 }
             }
         }
@@ -342,10 +350,8 @@ class BluetoothModel constructor(
         addAction(ESightBleAction.DataAvailable)
     }
 
-    private fun makeHotspotIntentFilter(): IntentFilter {
-        return IntentFilter().apply {
-            addAction(BleService.ACTION_HOTSPOT)
-        }
+    private fun makeHotspotIntentFilter(): IntentFilter = IntentFilter().apply {
+        addAction(HotspotAction.StatusChanged)
     }
 
     companion object {

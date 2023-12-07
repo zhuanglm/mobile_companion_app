@@ -52,7 +52,7 @@ private fun EshareSetupWifiScreen(
     bottomButton = { SetupHotspotButton { onSetupHotspotPressed?.invoke(navController) } },
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (header, subHeader, button, instruction, footer) = createRefs()
+        val (header, subHeader, button, footer) = createRefs()
 
         Header1Text(
             text = stringResource(R.string.label_eshare_setup_wifi_header),

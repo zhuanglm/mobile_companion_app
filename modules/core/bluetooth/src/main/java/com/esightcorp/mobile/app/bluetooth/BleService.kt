@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
-import androidx.core.os.postDelayed
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -341,13 +340,22 @@ class BleService : Service() {
                 }
 
                 ESightCharacteristic.HOTSPOT -> {
-                    broadcastUpdate(ACTION_HOTSPOT, incoming)
+                    broadcastUpdate(HotspotAction.StatusChanged, incoming)
                 }
 
-                //TODO: check again if we need this
-//                ESightCharacteristic.ESHARE_STATUS -> {
-//                    broadcastUpdate(ACTION_ESHARE_STATUS, incoming)
-//                }
+                ESightCharacteristic.ESHARE_STATUS -> {
+                    when (EShareStatus.from(incoming)) {
+                        EShareStatus.STOPPED -> broadcastUpdate(
+                            EShareAction.StatusChanged,
+                            incoming
+                        )
+
+                        else -> Log.e(
+                            _tag,
+                            "onCharacteristicChanged: not handling!\n$chType, data: $incoming"
+                        )
+                    }
+                }
 
                 ESightCharacteristic.WIFI_CONNECTION_STATUS -> {
                     broadcastUpdate(ACTION_WIFI_CONNECTION_STATUS, incoming)
@@ -449,7 +457,7 @@ class BleService : Service() {
                         characteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                     )
                     boolResult = decodeSendMessageResult(intResult)
-                    if(intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY){
+                    if (intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY) {
                         retryOnWriteRequestBusy(chType, payload)
                     }
                     Log.d(_tag, "sendMessage - intResult: $intResult")
@@ -466,7 +474,7 @@ class BleService : Service() {
         return boolResult
     }
 
-    private fun retryOnWriteRequestBusy(chType: ESightCharacteristic, payload: BluetoothPayload){
+    private fun retryOnWriteRequestBusy(chType: ESightCharacteristic, payload: BluetoothPayload) {
         val handler = Handler(mainLooper)
         handler.postDelayed({
             sendMessage(chType, payload)
@@ -639,7 +647,6 @@ class BleService : Service() {
         const val ACTION_ERROR = "com.esightcorp.wifi.ACTION_ERROR"
         const val ACTION_WIFI_CONNECTION_STATUS =
             "com.esightcorp.wifi.ACTION_WIFI_CONNECTION_STATUS"
-        const val ACTION_HOTSPOT = "com.esightcorp.wifi.ACTION_HOTSPOT"
 
         private const val REQUEST_MTU_SIZE = 200
 

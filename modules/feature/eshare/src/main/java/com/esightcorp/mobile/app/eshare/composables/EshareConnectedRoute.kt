@@ -118,38 +118,41 @@ internal fun EShareConnectedScreen(
 ) {
     Log.e(TAG, "eShare-connection state: ${uiState.connectionState}")
 
-    if (uiState.connectionState != EShareConnectionStatus.RequireSetupWifi) {
-        Row {
-            Box(
-                modifier = Modifier
-                    .weight(3f)
-                    .fillMaxHeight()
-            ) {
-                TextureViewAndCancelButton(
-                    textureViewListener = textureViewListener,
-                    modifier = modifier,
-                    navController = navController,
-                    onClick = onCancelButtonClicked,
+    // Prepare the streaming view
+    with(uiState.connectionState) {
+        if (this == EShareConnectionStatus.Unknown || this == EShareConnectionStatus.Connected) {
+            Row {
+                Box(
+                    modifier = Modifier
+                        .weight(3f)
+                        .fillMaxHeight()
+                ) {
+                    TextureViewAndCancelButton(
+                        textureViewListener = textureViewListener,
+                        modifier = modifier,
+                        navController = navController,
+                        onClick = onCancelButtonClicked,
+                    )
+                }
+
+                EshareRemote(
+                    modifier = Modifier.weight(1f),
+                    onFinderButtonPressedEventDown = finderButtonPress,
+                    onFinderButtonPressedEventUp = actionUpButtonPress,
+                    onModeButtonPressedEventDown = modeButtonPress,
+                    onModeButtonPressedEventUp = actionUpButtonPress,
+                    onUpButtonPressedEventDown = upButtonPress,
+                    onUpButtonPressedEventUp = actionUpButtonPress,
+                    onDownButtonPressedEventDown = downButtonPress,
+                    onDownButtonPressedEventUp = actionUpButtonPress,
+                    onVolumeUpButtonPressedEventDown = volUpButtonPress,
+                    onVolumeUpButtonPressedEventUp = actionUpButtonPress,
+                    onVolumeDownButtonPressedEventDown = volDownButtonPress,
+                    onVolumeDownButtonPressedEventUp = actionUpButtonPress,
+                    onMenuButtonPressedEventDown = menuButtonPress,
+                    onMenuButtonPressedEventUp = actionUpButtonPress,
                 )
             }
-
-            EshareRemote(
-                modifier = Modifier.weight(1f),
-                onFinderButtonPressedEventDown = finderButtonPress,
-                onFinderButtonPressedEventUp = actionUpButtonPress,
-                onModeButtonPressedEventDown = modeButtonPress,
-                onModeButtonPressedEventUp = actionUpButtonPress,
-                onUpButtonPressedEventDown = upButtonPress,
-                onUpButtonPressedEventUp = actionUpButtonPress,
-                onDownButtonPressedEventDown = downButtonPress,
-                onDownButtonPressedEventUp = actionUpButtonPress,
-                onVolumeUpButtonPressedEventDown = volUpButtonPress,
-                onVolumeUpButtonPressedEventUp = actionUpButtonPress,
-                onVolumeDownButtonPressedEventDown = volDownButtonPress,
-                onVolumeDownButtonPressedEventUp = actionUpButtonPress,
-                onMenuButtonPressedEventDown = menuButtonPress,
-                onMenuButtonPressedEventUp = actionUpButtonPress,
-            )
         }
     }
 

@@ -52,6 +52,7 @@ enum class EShareStoppedReason {
     USER_DECLINED,
     EXISTING_ACTIVE_SESSION,
     REMOTE_STOPPED,
+    HOTSPOT_ERROR,
 
     ;
 

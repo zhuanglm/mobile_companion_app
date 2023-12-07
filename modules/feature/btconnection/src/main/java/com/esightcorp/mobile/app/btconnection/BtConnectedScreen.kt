@@ -1,18 +1,21 @@
 package com.esightcorp.mobile.app.btconnection
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectedViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
-import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import kotlinx.coroutines.delay
 
 @Composable
@@ -26,40 +29,52 @@ fun BtConnectedRoute(
     } else {
         BtConnectedScreen(
             navController = navController,
-            modifier = Modifier,
             deviceAddress = uiState.deviceAddress,
-            deviceName = uiState.deviceName
+            deviceName = uiState.deviceName,
+            gotoNoDeviceConnectedScreen = vm::gotoNoDeviceConnectedScreen,
+            gotoHomeScreen = { nav ->
+                vm.gotoMainScreen(nav = nav, popUntil = BtConnectionNavigation.IncomingRoute)
+            },
         )
     }
-
 }
 
+//region Internal implementation
+
 @Composable
-internal fun BtConnectedScreen(
-    navController: NavController, modifier: Modifier, deviceAddress: String?, deviceName: String?
+private fun BtConnectedScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    deviceAddress: String? = null,
+    deviceName: String? = null,
+    gotoHomeScreen: OnNavigationCallback? = null,
+    gotoNoDeviceConnectedScreen: OnNavigationCallback? = null,
 ) {
-    val homeRoute = stringResource(id = R.string.navigate_to_home)
-    val screenTimeout = 5000L //5s in milliseconds
     if (deviceName != null && deviceAddress != null) {
-        val loadingText = stringResource(id = R.string.connected_to) + " ${deviceName}"
+        val loadingText = stringResource(id = R.string.connected_to) + " $deviceName"
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
+
         LaunchedEffect(Unit) {
-            delay(screenTimeout)
-            navController.navigate(homeRoute) {
-                popUpTo(homeRoute) {
-                    inclusive = false
-                }
-                launchSingleTop = true
-            }
+            delay(SCREEN_TIMEOUT)
+
+            gotoHomeScreen?.invoke(navController)
         }
     } else {
         val loadingText = stringResource(id = R.string.something_went_wrong)
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
         LaunchedEffect(Unit) {
-            delay(screenTimeout)
+            delay(SCREEN_TIMEOUT)
 
-            navController.navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
+            gotoNoDeviceConnectedScreen?.invoke(navController)
         }
     }
-
 }
+
+@Preview
+@Composable
+private fun BtConnectedScreenPreview() = MaterialTheme {
+    BtConnectedScreen(navController = rememberNavController())
+}
+
+private const val SCREEN_TIMEOUT = 5000L //5s in milliseconds
+// endregion

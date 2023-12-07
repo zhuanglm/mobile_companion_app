@@ -5,6 +5,7 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -38,7 +39,7 @@ class SelectNetworkViewModel @Inject constructor(
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             list.forEach {
-                Log.d(_tag, "onNetworkListUpdated: ${it.SSID}")
+                Log.d(_tag, "onNetworkListUpdated: ${it.ssidName()}")
             }
             updateNetworkList(list)
         }

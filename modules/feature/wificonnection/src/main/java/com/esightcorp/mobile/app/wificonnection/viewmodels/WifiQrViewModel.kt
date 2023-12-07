@@ -20,13 +20,13 @@ class WifiQrViewModel @Inject constructor(
     val repository: WifiConnectionRepository
 ) : AndroidViewModel(application) {
 
+    private val _tag = this.javaClass.simpleName
 
-    private val TAG = "WifiQrViewModel"
     private var _uiState = MutableStateFlow(WifiQrCodeUiState())
     val uiState: StateFlow<WifiQrCodeUiState> = _uiState.asStateFlow()
 
     init {
-        setQrString(repository.getQrString())
+        setQrString(repository.qrString)
     }
 
     fun onBackPressed(navController: NavController) {
@@ -41,11 +41,14 @@ class WifiQrViewModel @Inject constructor(
         navController.popBackStack("home_first", false)
     }
 
-    private fun setQrString(string: String){
-        Log.i(TAG, "setQrString: $string ")
-        _uiState.update {
-            it.copy(qrString = string)
+    private fun setQrString(qrString: String?) {
+        when (qrString) {
+            null -> Log.e(_tag, "QrString is null! Wifi was not selected properly!", Exception())
+
+            else -> {
+                Log.i(_tag, "setQrString: $qrString")
+                _uiState.update { it.copy(qrString = qrString) }
+            }
         }
     }
-
 }

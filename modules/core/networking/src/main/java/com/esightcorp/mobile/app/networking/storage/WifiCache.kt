@@ -5,36 +5,32 @@ import android.util.Log
 import com.esightcorp.mobile.app.networking.WifiCredentials
 
 object WifiCache {
+    private val _tag = this.javaClass.simpleName
+
+    enum class WifiFlow {
+        QrFlow,
+        BluetoothFlow,
+        NotInUse,
+    }
 
     private var networkList: MutableList<ScanResult> = mutableListOf()
     val credentials = WifiCredentials
     private var currentFlow: WifiFlow = WifiFlow.NotInUse
 
-    fun getNetworkList(): MutableList<ScanResult> {
-        return networkList
-    }
+    fun getNetworkList() = networkList
 
     fun selectNetwork(network: ScanResult) {
-        Log.i("WifiCache", "selectNetwork: ${network.SSID}")
-        WifiCredentials.setNetwork(network)
+        credentials.setNetwork(network)
     }
 
     fun setWifiFlow(flow: WifiFlow) {
-        Log.d("WIFI_CACHE", "setWifiFlow: ${flow.toString()}")
         currentFlow = flow
     }
 
-    fun getWifiFlow(): WifiFlow {
-        return currentFlow
-    }
-
-    fun finishWifiFlow(){
-        currentFlow = WifiFlow.NotInUse
-    }
+    fun getWifiFlow() = currentFlow
 
     fun addNetworkToNetworkList(result: ScanResult): Boolean {
-        Log.d("WifiCache", "addNetworkToNetworkList: " + result.SSID)
-        Log.d("WifiCache", result.toString())
+        Log.d(_tag, "addNetworkToNetworkList: $result")
         return if (networkList.none { it.BSSID == result.BSSID }) {
             networkList.add(result)
             true
@@ -42,11 +38,4 @@ object WifiCache {
             false
         }
     }
-
-    sealed class WifiFlow() {
-        object QrFlow : WifiFlow()
-        object BluetoothFlow : WifiFlow()
-        object NotInUse : WifiFlow()
-    }
-
 }

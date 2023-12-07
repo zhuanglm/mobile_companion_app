@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.ui.extensions
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
@@ -71,6 +72,7 @@ fun NavController.navigate(
  * @param tag (Optional) The tag
  */
 @Composable
+@SuppressLint("RestrictedApi")
 fun BackStackLogger(navController: NavController, tag: String? = null) {
     Log.w(
         tag, "Back-stack:\n${navController.currentBackStack.collectAsState().value.toStringList()}"

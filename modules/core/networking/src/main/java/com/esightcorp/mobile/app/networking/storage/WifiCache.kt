@@ -3,6 +3,7 @@ package com.esightcorp.mobile.app.networking.storage
 import android.net.wifi.ScanResult
 import android.util.Log
 import com.esightcorp.mobile.app.networking.WifiCredentials
+import com.esightcorp.mobile.app.networking.ssidName
 
 object WifiCache {
     private val _tag = this.javaClass.simpleName
@@ -31,7 +32,7 @@ object WifiCache {
 
     fun addNetworkToNetworkList(result: ScanResult): Boolean {
         Log.d(_tag, "addNetworkToNetworkList: $result")
-        return if (networkList.none { it.BSSID == result.BSSID }) {
+        return if (networkList.none { it.BSSID == result.BSSID || (it.ssidName() == result.ssidName()) }) {
             networkList.add(result)
             true
         } else {

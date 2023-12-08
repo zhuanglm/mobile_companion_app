@@ -2,8 +2,11 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiQrCodeUiState
@@ -18,7 +21,7 @@ import javax.inject.Inject
 class WifiQrViewModel @Inject constructor(
     application: Application,
     val repository: WifiConnectionRepository
-) : AndroidViewModel(application) {
+) : ESightBaseViewModel(application) {
 
     private val _tag = this.javaClass.simpleName
 
@@ -37,8 +40,8 @@ class WifiQrViewModel @Inject constructor(
         navController.navigate(WifiConnectionScreens.HowToScanQrRoute.route)
     }
 
-    fun onReturnToHomeClicked(navController: NavController) {
-        navController.popBackStack("home_first", false)
+    fun onGotoHomeScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.IncomingRoute, popUntil = SettingsNavigation.IncomingRoute)
     }
 
     private fun setQrString(qrString: String?) {

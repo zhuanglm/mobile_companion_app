@@ -240,10 +240,9 @@ class WifiModel(
         WifiCache.credentials.setPassword(password)
     }
 
-    fun getQrString(): String {
-        return "WIFI:S:${
-            WifiCache.credentials.getNetwork().ssidName()
-        };T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
+    fun getQrString() = when (val nwName = WifiCache.credentials.getSSID()) {
+        null -> null
+        else -> "WIFI:S:${nwName};T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
     }
 
     fun openSocket(
@@ -353,7 +352,7 @@ class WifiModel(
 }
 
 @Suppress("Deprecation")
-private fun ScanResult.ssidName(): String? {
+fun ScanResult.ssidName(): String? {
     if (Build.VERSION.SDK_INT >= 33)
         return wifiSsid?.toString()
 

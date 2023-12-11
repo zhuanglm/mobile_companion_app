@@ -2,36 +2,33 @@ package com.esightcorp.mobile.app.networking
 
 import android.net.wifi.ScanResult
 
-object WifiCredentials{
-    private lateinit var network: ScanResult
+object WifiCredentials {
+
+    private var network: ScanResult? = null
     private var password: String = ""
     private var wifiType: String = "WPA/WPA2"
 
-    fun setNetwork(network: ScanResult){
+    fun getSSID(): String? {
+        return network?.ssidName()
+    }
+
+    fun setNetwork(network: ScanResult) {
         this.network = network
     }
 
-    fun getNetwork():ScanResult{
-        return network
-    }
-
-    fun getPassword():String{
+    fun getPassword(): String {
         return password
     }
 
-    fun getWifiType():String{
+    fun getWifiType(): String {
         return wifiType
     }
 
-    fun setPassword(pwd: String){
+    fun setPassword(pwd: String) {
         this.password = pwd
     }
 
-    fun setWifiType(type: String){
+    fun setWifiType(type: String) {
         this.wifiType = type
     }
-
-
-
-
 }

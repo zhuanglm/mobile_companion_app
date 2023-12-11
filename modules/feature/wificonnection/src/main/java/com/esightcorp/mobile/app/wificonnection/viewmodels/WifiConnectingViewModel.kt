@@ -1,10 +1,11 @@
 package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
-import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import com.esightcorp.mobile.app.utils.ScanningStatus
+import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectingUiState
@@ -19,51 +20,21 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiConnectingViewModel @Inject constructor(
     application: Application,
-    val repository: WifiConnectionRepository
-): AndroidViewModel(application){
+    repository: WifiConnectionRepository
+) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiConnectingUiState())
     val uiState: StateFlow<WifiConnectingUiState> = _uiState.asStateFlow()
-    val TAG = "WifiConnectingViewModel"
-    val repoListener = object: WifiConnectionListener{
-        override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.i(TAG, "onBluetoothStatusUpdate: ")
-        }
 
+    //region WifiConnectionListener
+    private val repoListener = object : WifiConnectionListener {
         override fun onWifiConnected(success: Boolean) {
             updateConnectionStatus(success)
         }
 
-        override fun onWifiNetworkNotFound() {
-            Log.e(TAG, "onWifiNetworkNotFound: ", )
-        }
-
-        override fun onWifiConnectionTimeout() {
-            Log.e(TAG, "onWifiConnectionTimeout: ", )
-        }
-
-        override fun onWifiInvalidPassword() {
-            Log.e(TAG, "onWifiInvalidPassword: ", )
-        }
-
-        override fun onWifiWPALessThan8() {
-            Log.e(TAG, "onWifiWPALessThan8: ", )
-        }
-
-        override fun onWifiConnectionTest() {
-            Log.e(TAG, "onWifiConnectionTest: ", )
-        }
-
-        override fun onPlatformError() {
-            Log.e(TAG, "onPlatformError: ", )
-        }
-
-        override fun onGoWifiDisabled() {
-            Log.e(TAG, "onGoWifiDisabled: ", )
-        }
-
         override fun onNetworkConnectionError() {
-            Log.e(TAG, "onNetworkConnectionError: ", )
+            Log.e(_tag, "onNetworkConnectionError: ")
             onWifiConnectionError()
         }
 
@@ -71,41 +42,41 @@ class WifiConnectingViewModel @Inject constructor(
             updateWifiEnabledState(status)
         }
     }
+    //endregion
 
     init {
         repository.registerListener(repoListener)
-    }
-
-    fun getUpdatedSSIDFromRepo(){
-        updateSsid(repository.getSelectedNetwork().SSID)
-    }
-
-    private fun updateSsid(ssid: String){
-        _uiState.update { state ->
-            state.copy(ssid = ssid)
+        when (val ssid = repository.wifiCredentials.getSSID()) {
+            null -> Log.e(_tag, "SSID is null!!!")
+            else -> updateSsid(ssid)
         }
     }
 
-    private fun onWifiConnectionError(){
-        _uiState.update { state ->
-            state.copy(connectionError = true)
-        }
-    }
-    
-    private fun updateWifiEnabledState(enabled: Boolean){
-        _uiState.update { state -> 
-            state.copy(isWifiEnabled = enabled)
-        }
+    //region Navigation
+    fun navigateToWifiConnected(navController: NavController) = with(navController) {
+        navigate(WifiNavigation.ConnectedRoute)
     }
 
-    private fun updateConnectionStatus(status: Boolean){
-        _uiState.update { state ->
-            state.copy(connectionWasSuccess = status)
-        }
+    fun navigateToWifiConnectError(navController: NavController) = with(navController) {
+        navigate(WifiNavigation.UnableToConnectRoute)
+    }
+    //endregion
+
+    //region Private implementation
+    private fun updateSsid(ssid: String) = _uiState.update { state ->
+        state.copy(ssid = ssid)
     }
 
+    private fun onWifiConnectionError() = _uiState.update { state ->
+        state.copy(connectionError = true)
+    }
 
+    private fun updateWifiEnabledState(enabled: Boolean) = _uiState.update { state ->
+        state.copy(isWifiEnabled = enabled)
+    }
 
-
-
+    private fun updateConnectionStatus(status: Boolean) = _uiState.update { state ->
+        state.copy(connectionWasSuccess = status)
+    }
+    //endregion
 }

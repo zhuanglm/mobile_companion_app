@@ -42,6 +42,7 @@
     <string name="wifi_unable_to_connect_button">Try again</string>
     <string name="wifi_unable_to_connect_footer">If connecting to Wi-Fi continues to fail, please visit the link below for more information or contact Support</string>
     <string name="wifi_unable_to_connect_footer_button">How to connect</string>
+    <string name="label_wifi_connecting_to_network_format">Connecting to %1$s</string>
 
     <string name="bt_unable_to_connect_header">Unable to connect</string>
     <string name="bt_unable_to_connect_subtitle">Please make sure:</string>

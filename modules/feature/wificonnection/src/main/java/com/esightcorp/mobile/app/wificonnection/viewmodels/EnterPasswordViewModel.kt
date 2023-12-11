@@ -48,7 +48,7 @@ class EnterPasswordViewModel @Inject constructor(
 
     init {
         repository.registerListener(scanListener)
-        updateWifiFlow(repository.getCurrentWifiFlow())
+        updateWifiFlow(repository.wifiFlow)
     }
 
     companion object {

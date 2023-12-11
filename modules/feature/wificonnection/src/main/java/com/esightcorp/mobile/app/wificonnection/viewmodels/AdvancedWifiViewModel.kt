@@ -18,60 +18,58 @@ import javax.inject.Inject
 @HiltViewModel
 class AdvancedWifiViewModel @Inject constructor(
     application: Application,
-    val repository: WifiConnectionRepository
+    private val repository: WifiConnectionRepository
 ) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiAdvancedSettingsUiState())
     val uiState: StateFlow<WifiAdvancedSettingsUiState> = _uiState.asStateFlow()
-    val TAG = "AdvancedWifiViewModel"
+
     private val listener = object : WifiConnectionListener {
         override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.d(TAG, "onBluetoothStatusUpdate: ")
+            Log.d(_tag, "onBluetoothStatusUpdate: ")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
-            Log.d(TAG, "onWifiStatusUpdate: ")
+            Log.d(_tag, "onWifiStatusUpdate: ")
         }
 
         override fun onWifiConnected(success: Boolean) {
-            Log.d(TAG, "onWifiConnected: ")
+            Log.d(_tag, "onWifiConnected: ")
         }
 
         override fun onWifiNetworkNotFound() {
-            Log.d(TAG, "onWifiNetworkNotFound: ")
+            Log.d(_tag, "onWifiNetworkNotFound: ")
         }
 
         override fun onWifiConnectionTimeout() {
-            Log.d(TAG, "onWifiConnectionTimeout: ")
+            Log.d(_tag, "onWifiConnectionTimeout: ")
         }
 
         override fun onWifiInvalidPassword() {
-            Log.d(TAG, "onWifiInvalidPassword: ")
+            Log.d(_tag, "onWifiInvalidPassword: ")
         }
 
         override fun onWifiWPALessThan8() {
-            Log.d(TAG, "onWifiWPALessThan8: ")
+            Log.d(_tag, "onWifiWPALessThan8: ")
         }
 
         override fun onWifiConnectionTest() {
-            Log.d(TAG, "onWifiConnectionTest: ")
+            Log.d(_tag, "onWifiConnectionTest: ")
         }
 
         override fun onPlatformError() {
-            Log.d(TAG, "onPlatformError: ")
+            Log.d(_tag, "onPlatformError: ")
         }
 
         override fun onGoWifiDisabled() {
-            Log.d(TAG, "onGoWifiDisabled: ")
+            Log.d(_tag, "onGoWifiDisabled: ")
         }
 
         override fun onNetworkConnectionError() {
-            Log.d(TAG, "onNetworkConnectionError: ")
+            Log.d(_tag, "onNetworkConnectionError: ")
         }
-
-
     }
-
 
     init {
         repository.registerListener(listener)
@@ -79,9 +77,15 @@ class AdvancedWifiViewModel @Inject constructor(
     }
 
     fun refreshUiState() {
-        onSsidUpdated(repository.getSelectedNetwork().SSID)
-        onPasswordUpdated(repository.getCurrentPassword())
-        onTypeUpdated(repository.getCurrentSecurityType())
+        with(repository.wifiCredentials) {
+            when (val ssid = getSSID()) {
+                null -> Log.e(_tag, "SSID is null! Is there a valid wifi selected?", Exception())
+
+                else -> _uiState.update {
+                    it.copy(ssid = ssid, password = getPassword(), wifiType = getWifiType())
+                }
+            }
+        }
     }
 
     override fun onCleared() {
@@ -89,22 +93,12 @@ class AdvancedWifiViewModel @Inject constructor(
         repository.unregisterListener(listener)
     }
 
-    fun onSsidUpdated(ssid: String) {
-        _uiState.update { state ->
-            state.copy(ssid = ssid)
-        }
+    fun onSsidUpdated(ssid: String) = _uiState.update { state ->
+        state.copy(ssid = ssid)
     }
 
-    fun onPasswordUpdated(password: String) {
-        _uiState.update { state ->
-            state.copy(password = password)
-        }
-    }
-
-    fun onTypeUpdated(type: String) {
-        _uiState.update { state ->
-            state.copy(wifiType = type)
-        }
+    fun onPasswordUpdated(password: String) = _uiState.update { state ->
+        state.copy(password = password)
     }
 
     fun onBackButtonPressed(navController: NavController) {
@@ -116,8 +110,6 @@ class AdvancedWifiViewModel @Inject constructor(
     }
 
     fun onFinishButtonPressed(navController: NavController) {
-        Log.i(TAG, "onFinishButtonPressed: ")
+        Log.i(_tag, "onFinishButtonPressed: ")
     }
-
-
 }

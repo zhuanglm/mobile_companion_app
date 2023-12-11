@@ -9,93 +9,79 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectingUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectingViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun WifiConnectingRoute(
-    navController: NavController, vm: WifiConnectingViewModel = hiltViewModel()
+    navController: NavController,
+    vm: WifiConnectingViewModel = hiltViewModel(),
 ) {
     val uiState by vm.uiState.collectAsState()
-    vm.getUpdatedSSIDFromRepo()
-    WifiConnectingScreen(
-        navController = navController, vm = vm, modifier = Modifier, uiState = uiState
-    )
 
+    WifiConnectingScreen(
+        navController = navController,
+        uiState = uiState,
+        onWifiConfigureSuccess = vm::navigateToWifiConnected,
+        onWifiConfigureFail = vm::navigateToWifiConnectError,
+    )
 }
+
+//region Internal implementation
+private const val TAG = "WifiConnectingScreen"
 
 @Composable
-internal fun WifiConnectingScreen(
+private fun WifiConnectingScreen(
     navController: NavController,
-    vm: WifiConnectingViewModel,
     modifier: Modifier = Modifier,
-    uiState: WifiConnectingUiState
+    uiState: WifiConnectingUiState,
+    onWifiConfigureSuccess: OnNavigationCallback? = null,
+    onWifiConfigureFail: OnNavigationCallback? = null,
 ) {
-    val TAG = "WifiConnectingScreen"
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-            LoadingScreenWithSpinner(
-                modifier = modifier, loadingText = "Connecting to ${uiState.ssid}"
-            )
-
+        LoadingScreenWithSpinner(
+            modifier = modifier,
+            loadingText = stringResource(
+                R.string.label_wifi_connecting_to_network_format, uiState.ssid
+            ),
+        )
     }
-    if(uiState.connectionWasSuccess){
+
+    if (uiState.connectionWasSuccess) {
         LaunchedEffect(Unit) {
-            delay(2000)
-            navController.navigate(WifiConnectionScreens.ConnectedRoute.route)
+            delay(SCREEN_DELAY)
+
+            onWifiConfigureSuccess?.invoke(navController)
         }
     }
-    if(uiState.connectionError){
+
+    if (uiState.connectionError) {
         LaunchedEffect(Unit) {
-            delay(2000)
+            delay(SCREEN_DELAY)
+
             Log.e(TAG, "WifiConnectingScreen: ERROR connecting to wifi network provided ")
-            navController.navigate(WifiConnectionScreens.UnableToConnectRoute.route)
+            onWifiConfigureFail?.invoke(navController)
         }
     }
-
-
-//    if (!uiState.connectionWasSuccess && !uiState.connectionError) {
-//
-//    } else if (uiState.connectionWasSuccess) {
-//        Log.i(TAG, "WifiConnectingScreen: Connection was a success")
-//        Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
-//            ConstraintLayout() {
-//                val loading = createRef()
-//                LoadingScreenWithSpinner(
-//                    modifier = modifier.constrainAs(loading) {
-//                        top.linkTo(parent.top)
-//                        start.linkTo(parent.start)
-//                        end.linkTo(parent.end)
-//                        bottom.linkTo(parent.bottom)
-//                    }, loadingText = "Connecting to ${uiState.ssid}"
-//                )
-//            }
-//        }
-//
-//    } else {
-//        Surface(modifier = modifier.fillMaxSize(), color = Color.Black) {
-//            ConstraintLayout() {
-//                val loading = createRef()
-//                LoadingScreenWithSpinner(
-//                    modifier = modifier.constrainAs(loading) {
-//                        top.linkTo(parent.top)
-//                        start.linkTo(parent.start)
-//                        end.linkTo(parent.end)
-//                        bottom.linkTo(parent.bottom)
-//                    }, loadingText = "Connecting to ${uiState.ssid}"
-//                )
-//            }
-//        }
-//        LaunchedEffect(Unit) {
-//            delay(2000)
-//            Log.e(TAG, "WifiConnectingScreen: ERROR connecting to wifi network provided ")
-//            navController.navigate("home_first/")
-//        }
-//    }
-
 }
+
+private const val SCREEN_DELAY = 2000L
+
+@Preview
+@Composable
+private fun WifiConnectingScreenPreview() = MaterialTheme {
+    WifiConnectingScreen(
+        navController = rememberNavController(),
+        uiState = WifiConnectingUiState(ssid = "My Network")
+    )
+}
+//endregion

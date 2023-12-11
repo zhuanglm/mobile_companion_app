@@ -83,12 +83,12 @@ private fun WifiQrCodeScreenBody(
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (header, subheader, qrcode, button) = createRefs()
-        Header1Text(text = stringResource(id = R.string.wifi_qr_code_header),
+        Header1Text(text = stringResource(id = R.string.kWifiQRViewScanWiFiTitleText),
             modifier = Modifier.constrainAs(header) {
                 top.linkTo(parent.top, margin = 50.dp)
                 start.linkTo(parent.start)
             })
-        Subheader(text = stringResource(id = R.string.wifi_qr_code_subheader),
+        Subheader(text = stringResource(id = R.string.kQRViewScanWifiSubtitleText),
             modifier = modifier.constrainAs(subheader) {
                 top.linkTo(header.bottom, margin = 10.dp)
                 start.linkTo(parent.start)
@@ -119,7 +119,7 @@ private fun WifiQrCodeScreenBody(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            text = stringResource(id = R.string.wifi_qr_code_button)
+            text = stringResource(id = R.string.kQRViewReturnHomeButtonText)
         )
 
 

@@ -77,7 +77,7 @@ internal fun UnableToConnectScreen(
             )
 
             Header1Text(
-                text = stringResource(id = R.string.bt_unable_to_connect_header),
+                text = stringResource(id = R.string.kTroubleshootingUnableToConnectTitle),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(header) {
@@ -87,7 +87,7 @@ internal fun UnableToConnectScreen(
             )
 
             Subheader(
-                text = stringResource(id = R.string.bt_unable_to_connect_subtitle),
+                text = stringResource(id = R.string.kTroubleshootingUnableToConnectSubtitle),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(subtitle) {
@@ -98,7 +98,7 @@ internal fun UnableToConnectScreen(
 
             NumberedHelpItem(
                 number = 1,
-                text = stringResource(id = R.string.bt_unable_to_connect_1),
+                text = stringResource(id = R.string.kTroubleshootingInstructionEsightWithinRangeShort),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(help1) {
@@ -110,7 +110,7 @@ internal fun UnableToConnectScreen(
 
             NumberedHelpItem(
                 number = 2,
-                text = stringResource(id = R.string.bt_unable_to_connect_2),
+                text = stringResource(id = R.string.kTroubleshootingInstructionsSufficientChargeShort),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(help2) {
@@ -129,11 +129,11 @@ internal fun UnableToConnectScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                text = stringResource(id = R.string.bt_unable_to_connect_button)
+                text = stringResource(id = R.string.kTryAgainButtonTitle)
             )
 
             BodyText(
-                text = stringResource(id = R.string.bt_unable_to_connect_footer),
+                text = stringResource(id = R.string.kBTTroubleshootingUnableToConnectDescriptionText),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)

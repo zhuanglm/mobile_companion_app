@@ -95,7 +95,7 @@ private fun WifiOffScreenBody(
             })
 
         Header1Text(
-            text = stringResource(id = R.string.wifi_disabled_header),
+            text = stringResource(id = R.string.kWifiErrorWifiDisabledTitle),
             modifier = modifier.constrainAs(headerText) {
                 top.linkTo(bigIcon.bottom, margin = headerTopMargin)
                 start.linkTo(parent.start)
@@ -103,7 +103,7 @@ private fun WifiOffScreenBody(
             })
 
         Subheader(
-            text = stringResource(id = R.string.wifi_disabled_body),
+            text = stringResource(id = R.string.kWifiErrorWifiDisabledSubtitle),
             modifier = modifier
                 .padding(
                     dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),
@@ -122,11 +122,11 @@ private fun WifiOffScreenBody(
         TextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier.constrainAs(retry){
 
         }, text = stringResource(
-            id = R.string.retry
+            id = R.string.kRetryButtonTitle
         ))
         OutlinedTextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier.constrainAs(cancel){
 
-        }, text = stringResource(id = R.string.cancel))
+        }, text = stringResource(id = R.string.kCancel))
 
         /* This code block will actually launch settings for us
             TODO: check if we want this with product

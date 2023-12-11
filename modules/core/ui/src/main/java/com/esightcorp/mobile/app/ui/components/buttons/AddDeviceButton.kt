@@ -50,7 +50,7 @@ fun AddDeviceButton(
         ),
     ) {
         WrappableButtonText(
-            stringResource(id = R.string.add_device_button_text), modifier = modifier.weight(1f)
+            stringResource(id = R.string.kHomeRootViewUnconnectedConnectButtonText), modifier = modifier.weight(1f)
         )
     }
 }

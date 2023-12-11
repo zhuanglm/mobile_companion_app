@@ -62,14 +62,14 @@ internal fun EshareWifiDisabledScreen(
 
         ItemSpacer(30.dp)
         Header1Text(
-            text = stringResource(R.string.label_eshare_wifi_disabled_title),
+            text = stringResource(R.string.kWifiErrorWifiDisabledTitle),
             modifier = modifier,
             textAlign = TextAlign.Center,
         )
 
         ItemSpacer(30.dp)
         Subheader(
-            text = stringResource(R.string.label_eshare_wifi_disabled_instruction),
+            text = stringResource(R.string.kWifiErrorWifiDisabledSubtitle),
             modifier = modifier,
         )
 
@@ -77,7 +77,7 @@ internal fun EshareWifiDisabledScreen(
         TextRectangularButton(
             onClick = { onRetryPressed?.invoke(navController) },
             modifier = modifier,
-            text = stringResource(R.string.label_eshare_btn_retry),
+            text = stringResource(R.string.kRetryButtonTitle),
             textAlign = TextAlign.Center,
         )
     }

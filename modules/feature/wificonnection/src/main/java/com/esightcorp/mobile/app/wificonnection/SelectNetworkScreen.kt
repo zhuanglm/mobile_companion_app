@@ -24,7 +24,6 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
-import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.SelectNetworkViewModel
@@ -115,7 +114,7 @@ private fun SelectNetworkBody(
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (header, networkContainer) = createRefs()
         Header1Text(
-            text = stringResource(id = R.string.wifi_select_network_header),
+            text = stringResource(id = R.string.kWifiViewSelectWifiNameLabelText),
             modifier = modifier
                 .constrainAs(header) {
                     top.linkTo(parent.top, margin = 35.dp)

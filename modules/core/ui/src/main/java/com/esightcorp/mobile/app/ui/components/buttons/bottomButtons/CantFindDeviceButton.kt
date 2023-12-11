@@ -12,7 +12,7 @@ import com.esightcorp.mobile.app.ui.components.SupportButtonTemplate
 @Composable
 fun CantFindDeviceButton(
     modifier: Modifier = Modifier,
-    @StringRes labelId: Int = R.string.bt_label_unable_to_find_help,
+    @StringRes labelId: Int = R.string.kBTPairingCantFindESightButtonText,
     onHelpClick: () -> Unit
 ) {
     SupportButtonTemplate(

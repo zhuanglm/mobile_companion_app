@@ -27,7 +27,6 @@ import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
-import com.esightcorp.mobile.app.ui.components.toStringList
 
 @Composable
 fun BtDevicesRoute(
@@ -104,7 +103,7 @@ internal fun BtDevicesScreen(
             val lazyColTopMargin = dimensionResource(id = R.dimen.lazy_col_top_margin)
 
             Header1Text(
-                text = stringResource(id = R.string.select_your_esight),
+                text = stringResource(id = R.string.kBTPairingHeader),
                 modifier = modifier
                     .padding(horizontal = dimensionResource(R.dimen.header_horizontal_padding))
                     .constrainAs(header) {

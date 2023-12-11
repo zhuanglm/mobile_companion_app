@@ -83,7 +83,7 @@ internal fun NoDevicesFoundScreen(
                 onBackButtonInvoked = { onBackButtonClicked(navController) },
                 onSettingsButtonInvoked = { },
                 bottomButton = {
-                    CantFindDeviceButton(modifier, R.string.bt_no_devices_footer_button) {
+                    CantFindDeviceButton(modifier, R.string.kUnableToConnectFooterButtonText) {
                         onHelpClicked.invoke(navController)
                     }
                 },
@@ -106,7 +106,7 @@ private fun NoDevicesFoundBody(
         val (header, subtitle, help1, help2, help3, button) = createRefs()
 
         Header1Text(
-            text = stringResource(id = R.string.bt_no_devices_found_header),
+            text = stringResource(id = R.string.kBTTroubleshootingESightNotFoundTitle),
             modifier = modifier
                 .constrainAs(header) {
                     top.linkTo(parent.top, margin = 25.dp)
@@ -115,7 +115,7 @@ private fun NoDevicesFoundBody(
         )
 
         Subheader(
-            text = stringResource(id = R.string.bt_no_devices_found_subtitle),
+            text = stringResource(id = R.string.kTroubleShootingTryFollowingSteps),
             modifier = modifier
                 .constrainAs(subtitle) {
                     top.linkTo(header.bottom, margin = 8.dp)
@@ -125,7 +125,7 @@ private fun NoDevicesFoundBody(
 
         NumberedHelpItem(
             number = 1,
-            text = stringResource(id = R.string.bt_no_devices_found_1),
+            text = stringResource(id = R.string.kTroubleshootingInstructionRestartESightDevice),
             modifier = modifier
                 .constrainAs(help1) {
                     top.linkTo(subtitle.bottom, margin = 35.dp)
@@ -136,7 +136,7 @@ private fun NoDevicesFoundBody(
 
         NumberedHelpItem(
             number = 2,
-            text = stringResource(id = R.string.bt_no_devices_found_2),
+            text = stringResource(id = R.string.kTroubleshootingInstructionESightWithinRange),
             modifier = modifier
                 .constrainAs(help2) {
                     top.linkTo(help1.bottom, margin = 35.dp)
@@ -147,7 +147,7 @@ private fun NoDevicesFoundBody(
 
         NumberedHelpItem(
             number = 3,
-            text = stringResource(id = R.string.bt_no_devices_found_3),
+            text = stringResource(id = R.string.kTroubleshootingInstructionSufficientCharge),
             modifier = modifier
                 .constrainAs(help3) {
                     top.linkTo(help2.bottom, margin = 35.dp)
@@ -164,7 +164,7 @@ private fun NoDevicesFoundBody(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            text = stringResource(id = R.string.bt_no_devices_found_button)
+            text = stringResource(id = R.string.kTryAgainButtonTitle)
         )
     }
 }

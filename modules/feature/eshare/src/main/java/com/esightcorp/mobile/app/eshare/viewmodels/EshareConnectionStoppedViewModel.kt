@@ -23,28 +23,28 @@ class EshareConnectionStoppedViewModel @Inject constructor(
     fun updateState(stoppedReason: EShareStoppedReason?) = when (stoppedReason) {
         EShareStoppedReason.USER_DECLINED -> _uiState.update {
             it.copy(
-                titleId = R.string.label_eshare_connection_unsuccessful_title,
-                descriptionId = R.string.label_eshare_stopped_user_declined_message
+                titleId = R.string.kEshareErrorViewControllerConnectionUnsuccessfulTitle,
+                descriptionId = R.string.kEshareErrorViewControllerConnectionUnsuccessfulDescription
             )
         }
 
         EShareStoppedReason.EXISTING_ACTIVE_SESSION -> _uiState.update {
             it.copy(
-                titleId = R.string.label_eshare_stopped_busy_title,
+                titleId = R.string.kEshareErrorViewControllerConnectionUnavailableTitle,
                 descriptionId = R.string.label_eshare_stopped_busy_message
             )
         }
 
         EShareStoppedReason.REMOTE_STOPPED -> _uiState.update {
             it.copy(
-                titleId = R.string.label_eshare_stopped_title,
-                descriptionId = R.string.label_eshare_stopped_message
+                titleId = R.string.kEshareErrorViewControllerConnectionStoppedTitle,
+                descriptionId = R.string.kEshareErrorViewControllerConnectionStoppedDescription
             )
         }
 
         EShareStoppedReason.HOTSPOT_ERROR -> _uiState.update {
             it.copy(
-                titleId = R.string.label_eshare_connection_unsuccessful_title,
+                titleId = R.string.kEshareErrorViewControllerConnectionUnsuccessfulTitle,
                 descriptionId = R.string.label_eshare_stopped_hotspot_setup_error_message,
             )
         }

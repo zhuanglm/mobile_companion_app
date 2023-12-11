@@ -52,7 +52,7 @@ internal fun SettingsScreenBody(
     bottomButton = { },
 ) {
     Column {
-        Header1Text(stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings), modifier)
+        Header1Text(stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewTitleText), modifier)
 
         val spacer = dimensionResource(R.dimen.settings_section_spacer)
 
@@ -80,7 +80,7 @@ internal fun SettingsMyESight(
     vwModel: SettingsViewModel? = null,
 ) = Column {
     BodyText(
-        stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_my_esight),
+        stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewMyeSightSubTitleText),
         modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
@@ -89,7 +89,7 @@ internal fun SettingsMyESight(
         onClick = { navController.navigate("searching_for_networks/qr") },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24),
-        text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_create_wifi_code)
+        text = stringResource(com.esightcorp.mobile.app.ui.R.string.kCreateWifiCodeButtonText)
     )
 
     val settingState = vwModel?.settingsUiState?.collectAsState()?.value
@@ -99,7 +99,7 @@ internal fun SettingsMyESight(
             onClick = { vwModel.navigateToDisconnect(navController) },
             modifier,
             iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_disconnected_24,
-            text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_disconnect_esight),
+            text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewDisconnectButtonText),
         )
     }
 }
@@ -110,7 +110,7 @@ internal fun SettingsHelp(
     onLinkButtonClicked: (Int) -> Unit,
 ) = Column {
     BodyText(
-        stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_help),
+        stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewHelpSubTitleText),
         modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
@@ -119,7 +119,7 @@ internal fun SettingsHelp(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_question_mark_24),
-        text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_tutorials)
+        text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewTutorialButtonText)
     )
 
     ItemSpacer()
@@ -127,7 +127,7 @@ internal fun SettingsHelp(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_feedback) },
         modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_chat_bubble_outline_24),
-        text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_feedback)
+        text = stringResource(com.esightcorp.mobile.app.ui.R.string.kFeedbackButtonText)
     )
 }
 
@@ -137,7 +137,7 @@ internal fun SettingsAbout(
     onLinkButtonClicked: (Int) -> Unit,
 ) = Column {
     BodyText(
-        stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_about),
+        stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewAbouteSightSubTitleText),
         modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
         MaterialTheme.colors.onSurface,
     )
@@ -146,7 +146,7 @@ internal fun SettingsAbout(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
         modifier = modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_website_24,
-        text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_visit_website)
+        text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewVisitWebsiteButtonText)
     )
 
     ItemSpacer()
@@ -154,14 +154,14 @@ internal fun SettingsAbout(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_privacy_policy) },
         modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_privacy_24,
-        text = stringResource(com.esightcorp.mobile.app.ui.R.string.label_settings_btn_privacy_policy)
+        text = stringResource(com.esightcorp.mobile.app.ui.R.string.kDataPolicy)
     )
 }
 
 @Composable
 internal fun SettingsVersion(modifier: Modifier = Modifier, version: String) = FineText(
     text = stringResource(
-        com.esightcorp.mobile.app.ui.R.string.label_settings_version_format, version
+        com.esightcorp.mobile.app.ui.R.string.kSettingViewApplicationVersion, version
     ),
     modifier = modifier.fillMaxWidth(),
     textAlign = TextAlign.Center,

@@ -62,7 +62,7 @@ private fun WifiTypeBody(
         modifier = modifier
     ) {
         val (header, wpa, wep, none) = createRefs()
-        Header1Text(text = stringResource(id = R.string.wifi_advanced_securityHeader),
+        Header1Text(text = stringResource(id = R.string.kWifiViewControllerSelectSecurityLabelText),
             modifier = Modifier.constrainAs(header) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
@@ -72,17 +72,17 @@ private fun WifiTypeBody(
             top.linkTo(header.bottom, margin = 35.dp)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-        }, text = stringResource(id = R.string.wifi_type_security_wpa))
+        }, text = stringResource(id = R.string.kWifiSecurityTypeWPA))
         TextRectangularButton(onClick = { onTypePressed(navController, "WEP") }, modifier = modifier.constrainAs(wep) {
             top.linkTo(wpa.bottom, margin = 20.dp)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-        }, text = stringResource(id = R.string.wifi_type_security_wep))
+        }, text = stringResource(id = R.string.kWifiSecurityTypeWEP))
         TextRectangularButton(onClick = { onTypePressed(navController, "None") }, modifier = modifier.constrainAs(none) {
             top.linkTo(wep.bottom, margin = 20.dp)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-        }, text = stringResource(id = R.string.wifi_type_security_none))
+        }, text = stringResource(id = R.string.kWifiSecurityTypeNone))
 
     }
 }

@@ -51,7 +51,7 @@ private fun BtConnectedScreen(
     gotoNoDeviceConnectedScreen: OnNavigationCallback? = null,
 ) {
     if (deviceName != null && deviceAddress != null) {
-        val loadingText = stringResource(id = R.string.connected_to) + " $deviceName"
+        val loadingText = stringResource(id = R.string.kBTPairingConnectedTitle)
         LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
 
         LaunchedEffect(Unit) {

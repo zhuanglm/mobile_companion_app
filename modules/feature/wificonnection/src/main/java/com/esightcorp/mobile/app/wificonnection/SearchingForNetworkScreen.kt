@@ -35,7 +35,7 @@ fun SearchingForNetworksRoute(
             navController = navController,
             vm = vm,
             uiState = uiState,
-            loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.wifi_searching_for_networks_header))
+            loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle))
     }
 
 }

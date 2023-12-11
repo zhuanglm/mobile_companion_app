@@ -92,7 +92,7 @@ internal fun BtDisabledScreen(
 
             // Set up the header text
             Header1Text(
-                text = stringResource(id = R.string.bt_disabled_header),
+                text = stringResource(id = R.string.kBTErrorBluetoothOffTitle),
                 modifier = modifier.constrainAs(headerText) {
                     top.linkTo(bigIcon.bottom, margin = headerTopMargin)
                     start.linkTo(parent.start)
@@ -101,7 +101,7 @@ internal fun BtDisabledScreen(
 
             // Set up the body text
             Subheader(
-                text = stringResource(id = R.string.bt_disabled_body),
+                text = stringResource(id = R.string.kBTErrorBluetoothOffDescription),
                 modifier = modifier
                     .padding(
                         dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),

@@ -18,7 +18,7 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 fun CancelButton(
     onClick: OnActionCallback? = null,
     modifier: Modifier,
-    text: String = stringResource(R.string.cancel),
+    text: String = stringResource(R.string.kCancel),
 ) {
     ElevatedButton(
         onClick = { onClick?.invoke() },

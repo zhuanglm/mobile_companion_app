@@ -122,7 +122,7 @@ private fun PasswordBody(
                 start.linkTo(editText.start)
                 end.linkTo(editText.end)
             },
-            text = stringResource(R.string.wifi_connect_button),
+            text = stringResource(R.string.kWifiViewConnectButtonText),
             enabled = wifiUiState?.isPasswordValid ?: false
         )
     }

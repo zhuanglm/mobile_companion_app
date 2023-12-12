@@ -6,8 +6,7 @@ data class BluetoothUiState(
     val btConnectionStatus: Boolean = false,
     val isBtEnabled: Boolean = false,
     val connectedDevice: String = "",
-
-    )
+)
 
 data class BtSearchingUiState(
     val isScanning: ScanningStatus = ScanningStatus.Unknown,
@@ -44,5 +43,3 @@ data class NoDevicesFoundUiState(
 data class BtDisabledUiState(
     val isBtEnabled: Boolean = false,
 )
-
-

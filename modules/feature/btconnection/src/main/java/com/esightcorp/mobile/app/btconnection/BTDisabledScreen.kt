@@ -6,127 +6,71 @@ import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDisabledViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.Header1Text
+import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.Subheader
+import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 
 @Composable
 fun BtDisabledScreen(
     navController: NavController,
-    vm: BtDisabledViewModel = hiltViewModel()
+    vm: BtDisabledViewModel = hiltViewModel(),
 ) {
-    val TAG = "BtDisabledScreen"
-    Log.d(TAG, "BtDisabledScreen: ")
+    Log.d(TAG, "BtDisabledScreen")
     val uiState by vm.uiState.collectAsState()
-    vm.setNavController(navController)
-    // Call the BtDisabledScreen composable function
-    if(!uiState.isBtEnabled){
-        BtDisabledScreen(onBackPressed = vm::onBackPressed, modifier = Modifier, vm = vm)
-    }else{
-        Log.d(TAG, "BtDisabledScreen: on Back pressed")
-        LaunchedEffect(Unit){
-            vm.onBackPressed()
+
+    when (uiState.isBtEnabled) {
+        false -> {
+            BtDisabledScreenImpl(onBtStateChanged = vm::updateBtEnabledState)
+        }
+
+        true -> {
+            Log.d(TAG, "BtDisabledScreen - BT is now enabled!")
+            LaunchedEffect(Unit) { vm.onBtEnabled(navController) }
         }
     }
-
 }
 
+//region Internal implementation
+
+private const val TAG = "BtDisabledScreen"
+
 @Composable
-internal fun BtDisabledScreen(
-    onBackPressed: () -> Unit,
-    modifier: Modifier,
-    vm: BtDisabledViewModel
+private fun BtDisabledScreenImpl(
+    modifier: Modifier = Modifier,
+    onBtStateChanged: (Boolean) -> Unit,
 ) {
-    /*
-    Importing these are variables since the margin function does not accept @Composables
-     */
+    BtDisabledBody(modifier = modifier)
 
-    // Retrieve margin values from resources
-    val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
-    val bodyTopMargin = dimensionResource(id = R.dimen.bt_disabled_body_top_margin)
-
-    // Set up the UI elements of the screen using ConstraintLayout
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-        ConstraintLayout {
-            val (topBar, bigIcon, headerText, header2Text) = createRefs()
-
-            // Set up the top app bar
-            ESightTopAppBar(
-                showBackButton = true,
-                showSettingsButton = false,
-                onBackButtonInvoked = onBackPressed ,
-                onSettingsButtonInvoked = {/*Unused*/ },
-                modifier = modifier.constrainAs(topBar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-            )
-
-            // Set up the big Bluetooth icon
-            BigIcon(
-                painter = painterResource(id = R.drawable.baseline_bluetooth_24),
-                contentDescription = stringResource(R.string.content_desc_bt_icon),
-                modifier = modifier.constrainAs(bigIcon) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                })
-
-            // Set up the header text
-            Header1Text(
-                text = stringResource(id = R.string.kBTErrorBluetoothOffTitle),
-                modifier = modifier.constrainAs(headerText) {
-                    top.linkTo(bigIcon.bottom, margin = headerTopMargin)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
-
-            // Set up the body text
-            Subheader(
-                text = stringResource(id = R.string.kBTErrorBluetoothOffDescription),
-                modifier = modifier
-                    .padding(
-                        dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),
-                        dimensionResource(
-                            id = R.dimen.zero
-                        )
-                    )
-                    .constrainAs(header2Text) {
-                        top.linkTo(headerText.bottom, margin = bodyTopMargin)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                textAlign = TextAlign.Center
-
-            )
-        }
-    }
     // If Bluetooth is not enabled, launch system dialog to enable Bluetooth
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
-            Log.d("TAG", "isBluetoothEnabled: $it")
-            vm.updateBtEnabledState(it.resultCode == Activity.RESULT_OK)
+            Log.d(TAG, "isBluetoothEnabled: $it")
+            onBtStateChanged.invoke(it.resultCode == Activity.RESULT_OK)
         }
     )
+
     DisposableEffect(Unit) {
         val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         launcher.launch(intent)
@@ -135,3 +79,45 @@ internal fun BtDisabledScreen(
         }
     }
 }
+
+@Composable
+private fun BtDisabledBody(
+    modifier: Modifier = Modifier,
+) = BaseScreen(
+    modifier = modifier,
+    showBackButton = false,
+    showSettingsButton = false,
+    bottomButton = { },
+) {
+    Column(
+        modifier = modifier
+            .padding(vertical = 30.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        BigIcon(drawableId = R.drawable.baseline_bluetooth_24)
+        ItemSpacer(30.dp)
+
+        // Set up the header text
+        Header1Text(
+            text = stringResource(R.string.kBTErrorBluetoothOffTitle),
+            modifier = modifier,
+        )
+        ItemSpacer(60.dp)
+
+        // Set up the body text
+        Subheader(
+            text = stringResource(R.string.kBTErrorBluetoothOffDescription),
+            modifier = modifier,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun BtDisabledBodyPreview() = MaterialTheme {
+    BtDisabledBody()
+}
+
+//endregion

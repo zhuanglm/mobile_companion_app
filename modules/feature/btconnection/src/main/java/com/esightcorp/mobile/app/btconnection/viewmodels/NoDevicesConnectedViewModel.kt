@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.btconnection.state.BluetoothUiState
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
@@ -25,8 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NoDevicesConnectedViewModel @Inject constructor(
     private val application: Application,
-    btConnectionRepository: BtConnectionRepository
-) : AndroidViewModel(application) {
+    btConnectionRepository: BtConnectionRepository,
+) : ESightBaseViewModel(application) {
     private val _tag = this.javaClass.simpleName
 
     /**
@@ -34,24 +34,6 @@ class NoDevicesConnectedViewModel @Inject constructor(
      */
     private var _uiState = MutableStateFlow(BluetoothUiState())
     val uiState: StateFlow<BluetoothUiState> = _uiState.asStateFlow()
-
-    /**
-     * Methods to interact with the UI state StateFlow object
-     */
-
-    fun updateBtEnabledState(state: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(isBtEnabled = state)
-        }
-    }
-
-    fun updateBtConnectedState(state: Boolean, device: String) {
-        _uiState.update { currentState ->
-            currentState.copy(btConnectionStatus = state, connectedDevice = device)
-        }
-    }
-
-    fun navigateToSettings(nav: NavController) = nav.navigate(SettingsNavigation.IncomingRoute)
 
     /**
      * Interface to receive callbacks from the bluetooth repository
@@ -76,12 +58,6 @@ class NoDevicesConnectedViewModel @Inject constructor(
         }
     }
 
-//    private fun checkBtEnabledStatus() {
-//        Log.d("TAG", "checkBtEnabledStatus: ")
-//        btConnectionRepository.checkBtEnabledStatus()
-//    }
-
-
     /**
      * First constructor is init{}
      */
@@ -91,6 +67,25 @@ class NoDevicesConnectedViewModel @Inject constructor(
         btConnectionRepository.setupBtModelListener()
     }
 
+    //region Private implementation
+
+    /**
+     * Methods to interact with the UI state StateFlow object
+     */
+
+    private fun updateBtEnabledState(state: Boolean) = _uiState.update { currentState ->
+        currentState.copy(isBtEnabled = state)
+    }
+
+    private fun updateBtConnectedState(state: Boolean, device: String) =
+        _uiState.update { currentState ->
+            currentState.copy(btConnectionStatus = state, connectedDevice = device)
+        }
+
+    //endregion
+
+    //region Navigation
+
     fun showFeedbackPage() = with(application.applicationContext) {
         openExternalUrl(getString(R.string.url_esight_feedback))
     }
@@ -98,4 +93,8 @@ class NoDevicesConnectedViewModel @Inject constructor(
     fun navigateToScanESight(nav: NavController) = with(nav) {
         navigate(BtConnectionNavigation.BtSearchingRoute)
     }
+
+    fun navigateToSettings(nav: NavController) = nav.navigate(SettingsNavigation.IncomingRoute)
+
+    //endregion
 }

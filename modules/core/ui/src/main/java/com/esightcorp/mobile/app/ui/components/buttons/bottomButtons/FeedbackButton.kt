@@ -8,13 +8,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.SupportButtonTemplate
-
-//TODO: String resources
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun FeedbackButton(
     modifier: Modifier = Modifier,
-    onFeedbackClick: () -> Unit
+    onFeedbackClick: OnActionCallback
 ) {
     SupportButtonTemplate(
         onClick = onFeedbackClick,

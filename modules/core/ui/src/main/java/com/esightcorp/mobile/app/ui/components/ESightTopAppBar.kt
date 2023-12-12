@@ -4,13 +4,24 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -20,6 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 
 /**
@@ -47,84 +59,29 @@ import com.esightcorp.mobile.app.ui.R
 fun ESightTopAppBar(
     showBackButton: Boolean,
     showSettingsButton: Boolean,
-    onBackButtonInvoked: () -> Unit,
-    onSettingsButtonInvoked: () -> Unit,
+    onBackButtonInvoked: OnActionCallback? = null,
+    onSettingsButtonInvoked: OnActionCallback? = null,
     modifier: Modifier
-
 ) {
-
     CenterAlignedTopAppBar(
-        modifier = modifier.semantics(mergeDescendants = true){},
+        modifier = modifier.semantics(mergeDescendants = true) {},
         title = { TopAppBarTitle() },
         navigationIcon = {
             if (showBackButton) TopAppBarNavIconButton(
-                onClick = onBackButtonInvoked,
+                onClick = { onBackButtonInvoked?.invoke() },
                 modifier = modifier
             )
         },
         actions = {
             if (showSettingsButton) TopAppBarSettingsIconButton(
-                onClick = onSettingsButtonInvoked,
+                onClick = { onSettingsButtonInvoked?.invoke() },
                 modifier = modifier
             )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colors.surface
         )
-
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ESightTopAppBarPreview() {
-    MaterialTheme {
-        ESightTopAppBar(
-            showBackButton = true,
-            showSettingsButton = true,
-            onBackButtonInvoked = { /* implement action for back button here in your real app */ },
-            onSettingsButtonInvoked = { /* implement action for settings button here in your real app */ },
-            modifier = Modifier
-        )
-    }
-}
-
-/**
- * Displays a title for the top app bar, which is a logo image wrapped inside a box.
- * The background color of the box is determined based on the theme of the system.
- *
- * @param darkTheme A boolean value to determine whether the system theme is dark or not.
- * Defaults to `isSystemInDarkTheme()`.
- */
-@Composable
-private fun TopAppBarTitle(
-    darkTheme: Boolean = isSystemInDarkTheme()
-) {
-    val boxColor =
-        if (darkTheme) androidx.compose.material.MaterialTheme.colors.surface else androidx.compose.material.MaterialTheme.colors.surface
-    Log.i("TAG", "TopAppBarTitle: ${boxColor.toString()}")
-    Box(
-        modifier = Modifier
-            .background(boxColor, shape = RoundedCornerShape(dimensionResource(id = R.dimen.logo_corner_radius_top_app_bar)))
-            .wrapContentSize()
-            .padding(8.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "eSight Logo",
-            modifier = Modifier
-                .height(IntrinsicSize.Min)
-                .width(IntrinsicSize.Min)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TopAppBarTitlePreview() {
-    MaterialTheme {
-        TopAppBarTitle(darkTheme = false)
-    }
 }
 
 /**
@@ -137,7 +94,7 @@ fun TopAppBarTitlePreview() {
 @Composable
 fun TopAppBarNavIconButton(
     modifier: Modifier,
-    onClick: () -> Unit
+    onClick: OnActionCallback
 ) {
     FilledIconButton(
         onClick = onClick,
@@ -151,20 +108,11 @@ fun TopAppBarNavIconButton(
     ) {
         Icon(
             Icons.Rounded.ArrowBack,
-            contentDescription = stringResource(id = R.string.back),
-            modifier = modifier.size(dimensionResource(id = R.dimen.filled_icon_top_app_bar_size)),
+            contentDescription = stringResource(R.string.back),
+            modifier = modifier.size(dimensionResource(R.dimen.filled_icon_top_app_bar_size)),
         )
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun TopAppBarNavIconButtonPreview() {
-    MaterialTheme {
-        TopAppBarNavIconButton(modifier = Modifier, onClick = {Unit})
-    }
-}
-
 
 /**
  * Displays a settings icon button on the top app bar.
@@ -176,7 +124,7 @@ fun TopAppBarNavIconButtonPreview() {
 @Composable
 fun TopAppBarSettingsIconButton(
     modifier: Modifier,
-    onClick: () -> Unit
+    onClick: OnActionCallback
 ) {
     FilledIconButton(
         onClick = onClick,
@@ -190,16 +138,76 @@ fun TopAppBarSettingsIconButton(
     ) {
         Icon(
             Icons.Rounded.Settings,
-            contentDescription = stringResource(id = R.string.kSettingsViewTitleText),
-            modifier = modifier.size(dimensionResource(id = R.dimen.filled_icon_top_app_bar_size))
+            contentDescription = stringResource(R.string.kSettingsViewTitleText),
+            modifier = modifier.size(dimensionResource(R.dimen.filled_icon_top_app_bar_size))
+        )
+    }
+}
+
+
+//region Internal implementation
+
+private const val TAG = "ESightTopAppBar"
+
+/**
+ * Displays a title for the top app bar, which is a logo image wrapped inside a box.
+ * The background color of the box is determined based on the theme of the system.
+ *
+ * @param darkTheme A boolean value to determine whether the system theme is dark or not.
+ * Defaults to `isSystemInDarkTheme()`.
+ */
+@Composable
+private fun TopAppBarTitle(
+    darkTheme: Boolean = isSystemInDarkTheme()
+) {
+    val boxColor =
+        if (darkTheme) MaterialTheme.colors.surface else MaterialTheme.colors.surface
+    Log.i(TAG, "TopAppBarTitle: $boxColor")
+    Box(
+        modifier = Modifier
+            .background(
+                boxColor,
+                shape = RoundedCornerShape(dimensionResource(R.dimen.logo_corner_radius_top_app_bar))
+            )
+            .wrapContentSize()
+            .padding(8.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo),
+            contentDescription = "eSight Logo",
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .width(IntrinsicSize.Min)
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun TopAppBarSettingsIconButtonPreview() {
-    MaterialTheme {
-        TopAppBarSettingsIconButton(modifier = Modifier, onClick = {Unit})
-    }
+private fun ESightTopAppBarPreview() = MaterialTheme {
+    ESightTopAppBar(
+        showBackButton = true,
+        showSettingsButton = true,
+        modifier = Modifier
+    )
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun TopAppBarTitlePreview() = MaterialTheme {
+    TopAppBarTitle(darkTheme = false)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TopAppBarNavIconButtonPreview() = MaterialTheme {
+    TopAppBarNavIconButton(modifier = Modifier, onClick = { })
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TopAppBarSettingsIconButtonPreview() = MaterialTheme {
+    TopAppBarSettingsIconButton(modifier = Modifier, onClick = { })
+}
+
+//endregion

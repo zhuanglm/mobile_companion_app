@@ -25,6 +25,7 @@ class NoDevicesFoundViewModel @Inject constructor(
 
     private var _uiState = MutableStateFlow(NoDevicesFoundUiState())
     val uiState: StateFlow<NoDevicesFoundUiState> = _uiState.asStateFlow()
+
     private val listener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
             //unused by this composable
@@ -48,10 +49,10 @@ class NoDevicesFoundViewModel @Inject constructor(
         btConnectionRepository.setupBtModelListener()
     }
 
-    private fun updateIsBtEnabledState(enabled: Boolean) {
+    private fun updateIsBtEnabledState(enabled: Boolean) =
         _uiState.update { state -> state.copy(isBtEnabled = enabled) }
-    }
 
+    //region Navigation
 
     fun navigateToNoDevicesConnectedScreen(navController: NavController) {
         navController.navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
@@ -64,8 +65,6 @@ class NoDevicesFoundViewModel @Inject constructor(
     fun navigateToUnableToConnectScreen(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.UnableToConnectRoute)
     }
+    //endregion
 
-    fun onBluetoothDisabled(navController: NavController) = with(navController) {
-        navigate(BtConnectionNavigation.BtDisabledScreen)
-    }
 }

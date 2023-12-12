@@ -5,17 +5,18 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="action_settings">Settings</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="default_serial_number" translatable="false">1000101</string>
     <string name="hyphen" translatable="false">-</string>
     <!--    This is a string used for a debug screen -->
     <string name="something_went_wrong" translatable="false">Something went horribly wrong!</string>
-<!--    TODO: Need to add all content descriptions and get translations for them -->
+    <!--    TODO: Need to add all content descriptions and get translations for them -->
     <string name="content_desc_bt_icon">Bluetooth Icon</string>
     <string name="content_desc_wifi_icon">Wifi Icon</string>
     <string name="back">Back</string>
 
-<!--    Didn't find these in the ditto strings -->
+    <!--    Didn't find these in the ditto strings -->
 
     <string name="label_eshare_stopped_hotspot_setup_error_message">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
     <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
@@ -25,6 +26,12 @@
     <string name="label_settings_disconnecting_esight">Disconnecting from eSight</string>
 
     <!--    <string name="wifi_advanced_BT_finishButton">Connect to network</string>-->
+
+    <!-- region HomeScreen -->
+    <string name="label_home_screen_request_permission_title">Permissions are required to use this app</string>
+    <string name="label_home_screen_request_permission_description">These permissions allow you to have access to the full functionality of the app.</string>
+    <string name="label_home_screen_request_permission_button_confirm">Request Permissions</string>
+    <!-- endregion -->
 
     <!-- region External URL -->
     <string name="url_esight_home">https://www.esighteyewear.com/</string>
@@ -37,110 +44,109 @@
     <string name="kHotspotTroubleshootingEnterPassword">Enter this password: "%1$s"</string>
     <string name="kSettingViewApplicationVersion">Version %1$s</string>
 
-
-    <string name="kWifiViewControllerSelectSecurityLabelText" >Select security</string>
-    <string name="kWifiSecurityTypeWPA" >WPA/WPA2/WPA3</string>
-    <string name="kWifiSecurityTypeWEP" >WEP</string>
-    <string name="kWifiSecurityTypeNone" >None</string>
-    <string name="kWifiViewWifiNameLabelText" >Enter Wi-Fi name</string>
-    <string name="kCreateWifiCodeButtonText" >Create Wi-Fi code</string>
-    <string name="kWifiViewWifiPasswordLabelText" >Enter Wi-Fi password</string>
-    <string name="kWifiSearchSpinnerTitle" >Searching for Wi-Fi networks</string>
-    <string name="kCancel" >Cancel</string>
-    <string name="kWifiViewSelectWifiNameLabelText" >Select Wi-Fi network</string>
-    <string name="kAdvancedSettingsButtonText" >Advanced settings</string>
-    <string name="kWifiQRViewScanWiFiTitleText" >Scan Wi-Fi code</string>
-    <string name="kQRViewScanWifiSubtitleText" >Use the QR scanner in eSight Settings</string>
-    <string name="kQRViewReturnHomeButtonText" >Return to home screen</string>
-    <string name="kQRViewHowToScanButtonText" >How to scan</string>
-    <string name="kWifiTroubleshootingHowToScanTitle" >How to scan a Wi-Fi code</string>
-    <string name="kWifiTroubleshootingHowToScanFirstText" >Press the Menu button on your eSight</string>
-    <string name="kTroubleshootingStep1" >1</string>
-    <string name="kWifiTroubleshootingHowToScanSecondText" >Navigate to Connectivity > Wi-Fi</string>
-    <string name="kTroubleshootingStep2" >2</string>
-    <string name="kWifiTroubleshootingHowToScanThirdText" >Select “Connect with QR”</string>
-    <string name="kTroubleshootingStep3" >3</string>
-    <string name="kWifiTroubleshootingHowToScanFourthText" >Scan the Wi-Fi code with your eSight</string>
-    <string name="kTroubleshootingStep4" >4</string>
-    <string name="kUnableToConnectFooterButtonText" >Unable to connect?</string>
-    <string name="kTroubleshootingUnableToConnectTitle" >Unable to connect</string>
-    <string name="kTroubleshootingUnableToConnectSubtitle" >Please make sure:</string>
-    <string name="kTroubleshootingInstructionWiFiPassword" >Wi-Fi password is correct.</string>
-    <string name="kTroubleshootingInstructionEsightWithinRangeShort" >eSight is within range.</string>
-    <string name="kTroubleshootingInstructionsSufficientChargeShort" >eSight has sufficient charge.</string>
-    <string name="kTryAgainButtonTitle" >Try again</string>
-    <string name="kWifiTroubleshootingUnableToConnectFooter" >If connecting to Wi-Fi continues to fail, please visit the link below for more information or to contact Support.</string>
-    <string name="kFooterButtonHowToConnectTitle" >How to connect</string>
-    <string name="kSettingsViewTitleText" >Settings</string>
-    <string name="kSettingsViewMyeSightSubTitleText" >My eSight</string>
-    <string name="kSettingsViewHelpSubTitleText" >Help</string>
-    <string name="kSettingsViewTutorialButtonText" >Tutorials</string>
-    <string name="kFeedbackButtonText" >Feedback</string>
-    <string name="kSettingsViewAbouteSightSubTitleText" >About eSight</string>
-    <string name="kSettingsViewVisitWebsiteButtonText" >Visit website</string>
-    <string name="kDataPolicy" >Privacy Policy</string>
-    <string name="kGreetingsTextEvening" >Good evening</string>
-    <string name="kHomeRootViewUnconnectedSubHeader" >You are not connected to an eSight</string>
-    <string name="kHomeRootViewUnconnectedConnectButtonText" >Connect to eSight Go</string>
-    <string name="kTermsOfServiceAgreementPartOne" >By continuing, you agree to our</string>
-    <string name="kTermsOfService" >Terms</string>
-    <string name="kTermsOfServiceAgreementPartTwo" >See how we use your data in our</string>
-    <string name="kBTErrorConnectionLostTitleText" >Connection lost</string>
-    <string name="kBTErrorConnectionLostDescriptionText" >Please make sure that your eSight is turned on and within range of your device.</string>
-    <string name="kBTErrorReconnectButtonText" >Reconnect</string>
-    <string name="kBTSearchSpinnerTitle" >Searching for eSight devices</string>
-    <string name="kBTPairingHeader" >Select your eSight</string>
-    <string name="kBTDeviceFoundeSightGo" >eSight Go</string>
-    <string name="kBTDeviceFoundeSightGoSN" >S/N:</string>
-    <string name="kBTPairingCantFindESightButtonText" >Can’t find your eSight?</string>
-    <string name="kBTConnectSpinnerTitle" >Connecting to eSight</string>
-    <string name="kBTPairingConnectedTitle" >Connected to eSight</string>
-    <string name="kBTErrorBluetoothOffTitle" >Turn on Bluetooth</string>
-    <string name="kBTErrorBluetoothOffDescription" >Open Settings on your phone, and turn on Bluetooth to connect</string>
-    <string name="kRetryButtonTitle" >Retry</string>
-    <string name="kBTTroubleshootingESightNotFoundTitle" >Unable to find an eSight</string>
-    <string name="kTroubleShootingTryFollowingSteps" >Please try the following:</string>
-    <string name="kTroubleshootingInstructionRestartESightDevice" >Turn your eSight off and then back on again.</string>
-    <string name="kTroubleshootingInstructionESightWithinRange" >Make sure your eSight is within range.</string>
-    <string name="kTroubleshootingInstructionSufficientCharge" >Make sure your eSight has sufficient charge.</string>
-    <string name="kBTTroubleshootingUnableToConnectDescriptionText" >If pairing continues to fail, please visit the link below for more information or to contact Support.</string>
-    <string name="kHomeRootViewConnectedSubHeader" >You are connected to</string>
-    <string name="kConnectWifiLabelText" >Connect to Wi-Fi</string>
-    <string name="kHomeRootViewConnectedeShareButtonText" >Share your view</string>
-    <string name="kWifiViewConnectButtonText" >Connect</string>
-    <string name="kWifiViewControllerWifiConnectingSpinnerTitle" >Connecting to Wi-Fi</string>
-    <string name="kWifiConnectedTitle" >Connected to Wi-Fi</string>
-    <string name="kWifiErrorWifiDisabledTitle" >Turn on Wi-Fi</string>
-    <string name="kWifiErrorWifiDisabledSubtitle" >Open Settings on your phone, and turn on Wi-Fi to connect</string>
-    <string name="kWifiTroubleshootingNoWifiTitle" >No Wi-Fi networks found</string>
-    <string name="kTroubleshootingInstructionRestartRouter" >Turn your router off and then back on again.</string>
-    <string name="kWifiTroubleshootingNoWifiFooterButtonTitle" >Can’t find your Wi-Fi?</string>
-    <string name="kWifiAlreadyConnectedSubtitle" >Your eSight is already connected to a Wi-Fi network.</string>
-    <string name="kWifiAlreadyConnectedDescription" >Press the button below if you would like to connect to another network.</string>
-    <string name="kEShareViewControllerConnectingSpinnerTitle" >Connecting to eSight</string>
-    <string name="kTroubleshootingInstructionEsightConnectedToWifi" >eSight is connected to Wi-Fi</string>
-    <string name="kTroubleshootingInstructionEsightIsConnectedToSameWifi" >Mobile and eSight are connected to the same Wi-Fi</string>
-    <string name="kEshareTroubleshootingUnableToConnectDescriptionText" >If connecting to eShare continues to fail, tap the link below to set up a hotspot.</string>
-    <string name="kEshareTroubleshootingUnableToConnectFooterButtonText" >Set up a hotspot</string>
-    <string name="kHotspotTroubleshootingHowToConnectTitle" >How to set up a hotspot</string>
-    <string name="kHotspotTroubleshootingHowToConnectSubTitle" >Connect your phone directly to eSight</string>
-    <string name="kHotspotTroubleshootingOpenSetting" >On your phone: open Settings > Wi-Fi</string>
-    <string name="kHotspotTroubleshootingNetwork" >network</string>
-    <string name="kHotspotTroubleshootingPressBelowButton" >Once connected, press the button below to retry</string>
-    <string name="kFooterButtonStillUnableToConnectTitle" >Still unable to connect?</string>
-    <string name="kEShareViewControllerWifiNotConnectedSubHeaderText" >Your eSight is not connected to Wi-Fi.</string>
-    <string name="kEshareViewControllerWifiNotConnectedFooterText" >To proceed without Wi-Fi, tap the link below to set up a hotspot.</string>
-    <string name="kSettingsViewDisconnectButtonText" >Disconnect eSight</string>
-    <string name="kGreetingsTextMorning" >Good morning</string>
-    <string name="kGreetingsTextAfternoon" >Good afternoon</string>
-    <string name="kEshareErrorViewControllerButtonTitle" >Return</string>
-    <string name="kEshareErrorViewControllerConnectionUnsuccessfulTitle" >Connection unsuccessful</string>
-    <string name="kEshareErrorViewControllerConnectionUnsuccessfulDescription" >The eSight wearer has declined the viewing request.</string>
-    <string name="kEshareErrorViewControllerTryAgainLater" >Please try again later</string>
-    <string name="kEshareErrorViewControllerConnectionUnavailableTitle" >Connection unavailable</string>
-    <string name="kEshareErrorViewControllerConnectionStoppedTitle" >Connection stopped</string>
-    <string name="kEshareErrorViewControllerConnectionStoppedDescription" >The eSight wearer has stopped the session.</string>
-    <string name="kHotspostViewControllerConnectingSpinnerTitle" >Starting a Hotspot</string>
+    <string name="kWifiViewControllerSelectSecurityLabelText">Select security</string>
+    <string name="kWifiSecurityTypeWPA">WPA/WPA2/WPA3</string>
+    <string name="kWifiSecurityTypeWEP">WEP</string>
+    <string name="kWifiSecurityTypeNone">None</string>
+    <string name="kWifiViewWifiNameLabelText">Enter Wi-Fi name</string>
+    <string name="kCreateWifiCodeButtonText">Create Wi-Fi code</string>
+    <string name="kWifiViewWifiPasswordLabelText">Enter Wi-Fi password</string>
+    <string name="kWifiSearchSpinnerTitle">Searching for Wi-Fi networks</string>
+    <string name="kCancel">Cancel</string>
+    <string name="kWifiViewSelectWifiNameLabelText">Select Wi-Fi network</string>
+    <string name="kAdvancedSettingsButtonText">Advanced settings</string>
+    <string name="kWifiQRViewScanWiFiTitleText">Scan Wi-Fi code</string>
+    <string name="kQRViewScanWifiSubtitleText">Use the QR scanner in eSight Settings</string>
+    <string name="kQRViewReturnHomeButtonText">Return to home screen</string>
+    <string name="kQRViewHowToScanButtonText">How to scan</string>
+    <string name="kWifiTroubleshootingHowToScanTitle">How to scan a Wi-Fi code</string>
+    <string name="kWifiTroubleshootingHowToScanFirstText">Press the Menu button on your eSight</string>
+    <string name="kTroubleshootingStep1">1</string>
+    <string name="kWifiTroubleshootingHowToScanSecondText">Navigate to Connectivity > Wi-Fi</string>
+    <string name="kTroubleshootingStep2">2</string>
+    <string name="kWifiTroubleshootingHowToScanThirdText">Select “Connect with QR”</string>
+    <string name="kTroubleshootingStep3">3</string>
+    <string name="kWifiTroubleshootingHowToScanFourthText">Scan the Wi-Fi code with your eSight</string>
+    <string name="kTroubleshootingStep4">4</string>
+    <string name="kUnableToConnectFooterButtonText">Unable to connect?</string>
+    <string name="kTroubleshootingUnableToConnectTitle">Unable to connect</string>
+    <string name="kTroubleshootingUnableToConnectSubtitle">Please make sure:</string>
+    <string name="kTroubleshootingInstructionWiFiPassword">Wi-Fi password is correct.</string>
+    <string name="kTroubleshootingInstructionEsightWithinRangeShort">eSight is within range.</string>
+    <string name="kTroubleshootingInstructionsSufficientChargeShort">eSight has sufficient charge.</string>
+    <string name="kTryAgainButtonTitle">Try again</string>
+    <string name="kWifiTroubleshootingUnableToConnectFooter">If connecting to Wi-Fi continues to fail, please visit the link below for more information or to contact Support.</string>
+    <string name="kFooterButtonHowToConnectTitle">How to connect</string>
+    <string name="kSettingsViewTitleText">Settings</string>
+    <string name="kSettingsViewMyeSightSubTitleText">My eSight</string>
+    <string name="kSettingsViewHelpSubTitleText">Help</string>
+    <string name="kSettingsViewTutorialButtonText">Tutorials</string>
+    <string name="kFeedbackButtonText">Feedback</string>
+    <string name="kSettingsViewAbouteSightSubTitleText">About eSight</string>
+    <string name="kSettingsViewVisitWebsiteButtonText">Visit website</string>
+    <string name="kDataPolicy">Privacy Policy</string>
+    <string name="kGreetingsTextEvening">Good evening</string>
+    <string name="kHomeRootViewUnconnectedSubHeader">You are not connected to an eSight</string>
+    <string name="kHomeRootViewUnconnectedConnectButtonText">Connect to eSight Go</string>
+    <string name="kTermsOfServiceAgreementPartOne">By continuing, you agree to our</string>
+    <string name="kTermsOfService">Terms</string>
+    <string name="kTermsOfServiceAgreementPartTwo">See how we use your data in our</string>
+    <string name="kBTErrorConnectionLostTitleText">Connection lost</string>
+    <string name="kBTErrorConnectionLostDescriptionText">Please make sure that your eSight is turned on and within range of your device.</string>
+    <string name="kBTErrorReconnectButtonText">Reconnect</string>
+    <string name="kBTSearchSpinnerTitle">Searching for eSight devices</string>
+    <string name="kBTPairingHeader">Select your eSight</string>
+    <string name="kBTDeviceFoundeSightGo">eSight Go</string>
+    <string name="kBTDeviceFoundeSightGoSN">S/N:</string>
+    <string name="kBTPairingCantFindESightButtonText">Can’t find your eSight?</string>
+    <string name="kBTConnectSpinnerTitle">Connecting to eSight</string>
+    <string name="kBTPairingConnectedTitle">Connected to eSight</string>
+    <string name="kBTErrorBluetoothOffTitle">Turn on Bluetooth</string>
+    <string name="kBTErrorBluetoothOffDescription">Open Settings on your phone, and turn on Bluetooth to connect</string>
+    <string name="kRetryButtonTitle">Retry</string>
+    <string name="kBTTroubleshootingESightNotFoundTitle">Unable to find an eSight</string>
+    <string name="kTroubleShootingTryFollowingSteps">Please try the following:</string>
+    <string name="kTroubleshootingInstructionRestartESightDevice">Turn your eSight off and then back on again.</string>
+    <string name="kTroubleshootingInstructionESightWithinRange">Make sure your eSight is within range.</string>
+    <string name="kTroubleshootingInstructionSufficientCharge">Make sure your eSight has sufficient charge.</string>
+    <string name="kBTTroubleshootingUnableToConnectDescriptionText">If pairing continues to fail, please visit the link below for more information or to contact Support.</string>
+    <string name="kHomeRootViewConnectedSubHeader">You are connected to</string>
+    <string name="kConnectWifiLabelText">Connect to Wi-Fi</string>
+    <string name="kHomeRootViewConnectedeShareButtonText">Share your view</string>
+    <string name="kWifiViewConnectButtonText">Connect</string>
+    <string name="kWifiViewControllerWifiConnectingSpinnerTitle">Connecting to Wi-Fi</string>
+    <string name="kWifiConnectedTitle">Connected to Wi-Fi</string>
+    <string name="kWifiErrorWifiDisabledTitle">Turn on Wi-Fi</string>
+    <string name="kWifiErrorWifiDisabledSubtitle">Open Settings on your phone, and turn on Wi-Fi to connect</string>
+    <string name="kWifiTroubleshootingNoWifiTitle">No Wi-Fi networks found</string>
+    <string name="kTroubleshootingInstructionRestartRouter">Turn your router off and then back on again.</string>
+    <string name="kWifiTroubleshootingNoWifiFooterButtonTitle">Can’t find your Wi-Fi?</string>
+    <string name="kWifiAlreadyConnectedSubtitle">Your eSight is already connected to a Wi-Fi network.</string>
+    <string name="kWifiAlreadyConnectedDescription">Press the button below if you would like to connect to another network.</string>
+    <string name="kEShareViewControllerConnectingSpinnerTitle">Connecting to eSight</string>
+    <string name="kTroubleshootingInstructionEsightConnectedToWifi">eSight is connected to Wi-Fi</string>
+    <string name="kTroubleshootingInstructionEsightIsConnectedToSameWifi">Mobile and eSight are connected to the same Wi-Fi</string>
+    <string name="kEshareTroubleshootingUnableToConnectDescriptionText">If connecting to eShare continues to fail, tap the link below to set up a hotspot.</string>
+    <string name="kEshareTroubleshootingUnableToConnectFooterButtonText">Set up a hotspot</string>
+    <string name="kHotspotTroubleshootingHowToConnectTitle">How to set up a hotspot</string>
+    <string name="kHotspotTroubleshootingHowToConnectSubTitle">Connect your phone directly to eSight</string>
+    <string name="kHotspotTroubleshootingOpenSetting">On your phone: open Settings > Wi-Fi</string>
+    <string name="kHotspotTroubleshootingNetwork">network</string>
+    <string name="kHotspotTroubleshootingPressBelowButton">Once connected, press the button below to retry</string>
+    <string name="kFooterButtonStillUnableToConnectTitle">Still unable to connect?</string>
+    <string name="kEShareViewControllerWifiNotConnectedSubHeaderText">Your eSight is not connected to Wi-Fi.</string>
+    <string name="kEshareViewControllerWifiNotConnectedFooterText">To proceed without Wi-Fi, tap the link below to set up a hotspot.</string>
+    <string name="kSettingsViewDisconnectButtonText">Disconnect eSight</string>
+    <string name="kGreetingsTextMorning">Good morning</string>
+    <string name="kGreetingsTextAfternoon">Good afternoon</string>
+    <string name="kEshareErrorViewControllerButtonTitle">Return</string>
+    <string name="kEshareErrorViewControllerConnectionUnsuccessfulTitle">Connection unsuccessful</string>
+    <string name="kEshareErrorViewControllerConnectionUnsuccessfulDescription">The eSight wearer has declined the viewing request.</string>
+    <string name="kEshareErrorViewControllerTryAgainLater">Please try again later</string>
+    <string name="kEshareErrorViewControllerConnectionUnavailableTitle">Connection unavailable</string>
+    <string name="kEshareErrorViewControllerConnectionStoppedTitle">Connection stopped</string>
+    <string name="kEshareErrorViewControllerConnectionStoppedDescription">The eSight wearer has stopped the session.</string>
+    <string name="kHotspostViewControllerConnectingSpinnerTitle">Starting a Hotspot</string>
 
 
 </resources>

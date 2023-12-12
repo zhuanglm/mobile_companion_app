@@ -51,7 +51,7 @@ private fun WifiConnectingScreen(
         LoadingScreenWithSpinner(
             modifier = modifier,
             loadingText = stringResource(
-                R.string.label_wifi_connecting_to_network_format, uiState.ssid
+                R.string.kWifiViewControllerWifiConnectingSpinnerTitle
             ),
         )
     }

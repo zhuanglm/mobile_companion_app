@@ -15,7 +15,7 @@ fun UnableToConnectButton(
 ) {
     SupportButtonTemplate(
         onClick =  onClick ,
-        text = stringResource(id = R.string.still_unable_to_connect_button),
+        text = stringResource(id = R.string.kFooterButtonStillUnableToConnectTitle),
         painter = painterResource(id = R.drawable.round_question_mark_24),
         modifier = modifier
     )

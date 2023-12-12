@@ -61,7 +61,7 @@ fun HotspotSetupRoute(
 
         else -> {
             LoadingScreenWithSpinner(
-                loadingText = stringResource(R.string.label_eshare_starting_hotspot),
+                loadingText = stringResource(R.string.kHotspostViewControllerConnectingSpinnerTitle),
                 cancelButtonNeeded = false,
                 onCancelButtonClicked = { },
             )
@@ -111,14 +111,14 @@ private fun HotspotSetupBody(
         val (header, subtitle, instruction, button) = createRefs()
 
         Header1Text(
-            text = stringResource(R.string.label_eshare_hotspot_setup_header),
+            text = stringResource(R.string.kHotspotTroubleshootingHowToConnectTitle),
             modifier = modifier.constrainAs(header) {
                 top.linkTo(parent.top)
             },
         )
 
         Subheader(
-            text = stringResource(R.string.label_eshare_hotspot_setup_sub_header),
+            text = stringResource(R.string.kHotspotTroubleshootingHowToConnectSubTitle),
             modifier = modifier.constrainAs(subtitle) {
                 top.linkTo(header.bottom, margin = 10.dp)
             },
@@ -132,14 +132,14 @@ private fun HotspotSetupBody(
         ) {
             NumberedHelpItem(
                 number = 1,
-                text = stringResource(R.string.label_eshare_hotspot_setup_step_1),
+                text = stringResource(R.string.kHotspotTroubleshootingOpenSetting),
             )
             ItemSpacer()
 
             NumberedHelpItem(
                 number = 2,
                 text = stringResource(
-                    R.string.label_eshare_hotspot_setup_step_2,
+                    R.string.kHotspotTroubleshootingConnectToeSight,
                     uiState.hotspotCredential!!.ssid
                 ),
             )
@@ -148,7 +148,7 @@ private fun HotspotSetupBody(
             NumberedHelpItem(
                 number = 3,
                 text = stringResource(
-                    R.string.label_eshare_hotspot_setup_step_3,
+                    R.string.kHotspotTroubleshootingEnterPassword,
                     uiState.hotspotCredential.password
                 ),
             )
@@ -156,13 +156,13 @@ private fun HotspotSetupBody(
 
             NumberedHelpItem(
                 number = 4,
-                text = stringResource(R.string.label_eshare_hotspot_setup_step_4),
+                text = stringResource(R.string.kHotspotTroubleshootingPressBelowButton),
             )
             ItemSpacer()
         }
 
         IconAndTextSquareButton(
-            text = stringResource(R.string.label_feature_eshare),
+            text = stringResource(R.string.kHomeRootViewConnectedeShareButtonText),
             painter = painterResource(R.drawable.baseline_camera_alt_24),
             onClick = { onShareViewPressed?.invoke(navController) },
             modifier = modifier

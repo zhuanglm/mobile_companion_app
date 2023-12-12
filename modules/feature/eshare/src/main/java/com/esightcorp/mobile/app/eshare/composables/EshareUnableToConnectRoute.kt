@@ -66,14 +66,14 @@ private fun EshareUnableToConnectScreen(
             val (header, subtitle, instruction, footer) = createRefs()
 
             Header1Text(
-                stringResource(R.string.label_eshare_unable_to_connect_title),
+                stringResource(R.string.kTroubleshootingUnableToConnectTitle),
                 modifier.constrainAs(header) {
                     top.linkTo(parent.top)
                 },
             )
 
             Subheader(
-                stringResource(R.string.label_eshare_instruction_general),
+                stringResource(R.string.kTroubleshootingUnableToConnectSubtitle),
                 modifier.constrainAs(subtitle) {
                     top.linkTo(header.bottom, margin = 10.dp)
                 },
@@ -88,25 +88,25 @@ private fun EshareUnableToConnectScreen(
             ) {
                 NumberedHelpItem(
                     number = 1,
-                    text = stringResource(R.string.label_eshare_instruction_1)
+                    text = stringResource(R.string.kTroubleshootingInstructionEsightConnectedToWifi)
                 )
                 ItemSpacer()
 
                 NumberedHelpItem(
                     number = 2,
-                    text = stringResource(R.string.label_eshare_instruction_2)
+                    text = stringResource(R.string.kTroubleshootingInstructionEsightWithinRangeShort)
                 )
                 ItemSpacer()
 
                 NumberedHelpItem(
                     number = 3,
-                    text = stringResource(R.string.label_eshare_instruction_3)
+                    text = stringResource(R.string.kTroubleshootingInstructionsSufficientChargeShort)
                 )
                 ItemSpacer()
 
                 NumberedHelpItem(
                     number = 4,
-                    text = stringResource(R.string.label_eshare_instruction_4)
+                    text = stringResource(R.string.kTroubleshootingInstructionEsightIsConnectedToSameWifi)
                 )
                 ItemSpacer()
 
@@ -114,13 +114,13 @@ private fun EshareUnableToConnectScreen(
                 TextRectangularButton(
                     onClick = { onRetryPressed?.invoke(navController) },
                     modifier = modifier,
-                    text = stringResource(R.string.label_eshare_try_again),
+                    text = stringResource(R.string.kTryAgainButtonTitle),
                     textAlign = TextAlign.Center,
                 )
             }
 
             BodyText(
-                text = stringResource(R.string.label_eshare_instruction_footer),
+                text = stringResource(R.string.kEshareTroubleshootingUnableToConnectDescriptionText),
                 modifier = modifier
                     .constrainAs(footer) {
                         bottom.linkTo(parent.bottom, margin = 5.dp)

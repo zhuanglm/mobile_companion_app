@@ -23,6 +23,6 @@ fun FeedbackButton(
             minWidth = dimensionResource(id = R.dimen.min_dimension_touch_area)
         ),
         painter = painterResource(id = R.drawable.round_chat_bubble_outline_24),
-        text = stringResource(id = R.string.feedback)
+        text = stringResource(id = R.string.kFeedbackButtonText)
     )
 }

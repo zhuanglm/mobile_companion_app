@@ -106,7 +106,7 @@ private fun SupportButtonIcon(
     ) {
         Icon(
             painter = painter,
-            contentDescription = stringResource(R.string.feedback),
+            contentDescription = stringResource(R.string.kFeedbackButtonText),
             modifier = Modifier.size(dimensionResource(R.dimen.filled_icon_bottom_button_size))
         )
     }

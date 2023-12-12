@@ -12,7 +12,6 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -191,7 +190,7 @@ fun TopAppBarSettingsIconButton(
     ) {
         Icon(
             Icons.Rounded.Settings,
-            contentDescription = stringResource(id = R.string.settings),
+            contentDescription = stringResource(id = R.string.kSettingsViewTitleText),
             modifier = modifier.size(dimensionResource(id = R.dimen.filled_icon_top_app_bar_size))
         )
     }

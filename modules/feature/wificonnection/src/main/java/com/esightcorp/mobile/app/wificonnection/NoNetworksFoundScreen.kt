@@ -62,7 +62,7 @@ internal fun NoNetworksFoundScreen(
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = stringResource(id = R.string.wifi_no_networks_header),
+            Header1Text(text = stringResource(id = R.string.kWifiTroubleshootingNoWifiTitle),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(headerText) {
@@ -70,7 +70,7 @@ internal fun NoNetworksFoundScreen(
                         start.linkTo(parent.start)
                     })
 
-            Subheader(text = stringResource(id = R.string.wifi_no_networks_subtitle),
+            Subheader(text = stringResource(id = R.string.kTroubleShootingTryFollowingSteps),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(header2Text) {
@@ -79,7 +79,7 @@ internal fun NoNetworksFoundScreen(
                     })
 
             NumberedHelpItem(number = 1,
-                text = stringResource(id = R.string.wifi_no_networks_1),
+                text = stringResource(id = R.string.kTroubleshootingInstructionRestartESightDevice),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(nhiOne) {
@@ -87,7 +87,7 @@ internal fun NoNetworksFoundScreen(
                         start.linkTo(parent.start)
                     })
             NumberedHelpItem(number = 2,
-                text = stringResource(id = R.string.wifi_no_networks_2),
+                text = stringResource(id = R.string.kTroubleshootingInstructionRestartRouter),
                 modifier = modifier
                     .padding(25.dp, 0.dp, 25.dp, 0.dp)
                     .constrainAs(nhiTwo) {
@@ -103,7 +103,7 @@ internal fun NoNetworksFoundScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                text = stringResource(id = R.string.wifi_no_networks_button)
+                text = stringResource(id = R.string.kTryAgainButtonTitle)
             )
         }
     }

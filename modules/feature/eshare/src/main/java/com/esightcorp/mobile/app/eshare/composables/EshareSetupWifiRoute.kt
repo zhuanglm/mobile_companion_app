@@ -55,14 +55,14 @@ private fun EshareSetupWifiScreen(
         val (header, subHeader, button, footer) = createRefs()
 
         Header1Text(
-            text = stringResource(R.string.label_eshare_setup_wifi_header),
+            text = stringResource(R.string.kConnectWifiLabelText),
             modifier = modifier.constrainAs(header) {
                 top.linkTo(parent.top)
             }
         )
 
         Subheader(
-            text = stringResource(R.string.label_eshare_setup_wifi_sub_header),
+            text = stringResource(R.string.kEShareViewControllerWifiNotConnectedSubHeaderText),
             modifier = modifier.constrainAs(subHeader) {
                 top.linkTo(header.bottom, margin = 20.dp)
             }
@@ -73,12 +73,12 @@ private fun EshareSetupWifiScreen(
             modifier = modifier.constrainAs(button) {
                 top.linkTo(subHeader.bottom, margin = 50.dp)
             },
-            text = stringResource(R.string.label_eshare_setup_wifi_button),
+            text = stringResource(R.string.kConnectWifiLabelText),
             iconDrawableId = R.drawable.round_wifi_24,
         )
 
         BodyText(
-            text = stringResource(R.string.label_eshare_setup_wifi_footer),
+            text = stringResource(R.string.kEshareViewControllerWifiNotConnectedFooterText),
             modifier = modifier.constrainAs(footer) {
                 bottom.linkTo(parent.bottom, margin = 10.dp)
             },

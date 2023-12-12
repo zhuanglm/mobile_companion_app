@@ -78,7 +78,7 @@ internal fun BtSearchingScreen(
 
         else -> {
             LoadingScreenWithSpinner(
-                loadingText = stringResource(id = R.string.bt_searching_text),
+                loadingText = stringResource(id = R.string.kBTSearchSpinnerTitle),
                 modifier = modifier,
                 onCancelButtonClicked = { onCancelButtonClicked(navController) },
             )

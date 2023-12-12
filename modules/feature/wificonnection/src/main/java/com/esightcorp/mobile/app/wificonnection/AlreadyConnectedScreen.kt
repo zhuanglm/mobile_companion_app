@@ -54,20 +54,20 @@ internal fun AlreadyConnectedScreen(
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = stringResource(id =R.string.wifi_already_connected_header), modifier = modifier.constrainAs(headerText) {
+            Header1Text(text = stringResource(id =R.string.kWifiConnectedTitle), modifier = modifier.constrainAs(headerText) {
                 top.linkTo(topBar.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             })
 
-            Subheader(text = stringResource(id = R.string.wifi_already_connected_body),
+            Subheader(text = stringResource(id = R.string.kWifiAlreadyConnectedSubtitle),
                 modifier = modifier.constrainAs(header2Text) {
                     top.linkTo(headerText.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 })
 
-            Header1Text(text = stringResource(id = R.string.wifi_already_connected_action),
+            Header1Text(text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
                 modifier = modifier.constrainAs(helpText) {
                     top.linkTo(header2Text.bottom)
                     start.linkTo(parent.start)
@@ -77,7 +77,7 @@ internal fun AlreadyConnectedScreen(
             TextRectangularButton(
                 onClick = { Log.i(TAG, "AlreadyConnectedScreen: ") },
                 modifier = modifier,
-                text = stringResource(id = R.string.wifi_already_connected_button),
+                text = stringResource(id = R.string.kConnectWifiLabelText),
             )
         }
 

@@ -91,7 +91,7 @@ internal fun EshareConnectionStoppedScreen(
         TextRectangularButton(
             onClick = { onReturnPressed?.invoke(navController) },
             modifier = modifier,
-            text = stringResource(R.string.label_eshare_btn_return),
+            text = stringResource(R.string.kEshareErrorViewControllerButtonTitle),
             textAlign = TextAlign.Center
         )
     }
@@ -103,8 +103,8 @@ internal fun ConnectionStoppedPreview() = MaterialTheme {
     EshareConnectionStoppedScreen(
         navController = rememberNavController(),
         uiState = EshareStoppedUiState(
-            titleId = R.string.label_eshare_stopped_title,
-            descriptionId = R.string.label_eshare_stopped_message
+            titleId = R.string.kEshareErrorViewControllerConnectionStoppedTitle,
+            descriptionId = R.string.kEshareErrorViewControllerConnectionStoppedDescription
         ),
     )
 }

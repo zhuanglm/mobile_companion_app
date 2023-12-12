@@ -40,7 +40,7 @@ private fun ConnectedScreen(
 ) {
     LoadingScreenWithIcon(
         modifier = modifier,
-        loadingText = stringResource(R.string.wifi_connected_text),
+        loadingText = stringResource(R.string.kWifiConnectedTitle),
     )
 
     LaunchedEffect(Unit) {

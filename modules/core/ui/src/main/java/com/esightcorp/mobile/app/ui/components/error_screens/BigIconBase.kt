@@ -1,22 +1,15 @@
 package com.esightcorp.mobile.app.ui.components.error_screens
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -25,9 +18,6 @@ import com.esightcorp.mobile.app.ui.components.Header1Text
 import com.esightcorp.mobile.app.ui.components.Subheader
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
-import kotlinx.coroutines.NonDisposableHandle.parent
-
-
 
 
 //Draft state, throwing an error based on infinite height when trying to preview
@@ -69,7 +59,7 @@ fun BigIconBase(
 
             // Set up the header text
             Header1Text(
-                text = stringResource(id = R.string.bt_disabled_header),
+                text = stringResource(id = R.string.kBTErrorBluetoothOffTitle),
                 modifier = modifier.constrainAs(header) {
                     top.linkTo(icon.bottom, margin = headerTopMargin)
                     start.linkTo(parent.start)
@@ -78,7 +68,7 @@ fun BigIconBase(
 
             // Set up the body text
             Subheader(
-                text = stringResource(id = R.string.bt_disabled_body),
+                text = stringResource(id = R.string.kBTErrorBluetoothOffDescription),
                 modifier = modifier
                     .padding(
                         dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),

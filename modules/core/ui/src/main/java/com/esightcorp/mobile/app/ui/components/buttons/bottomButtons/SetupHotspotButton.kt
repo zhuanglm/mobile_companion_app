@@ -16,6 +16,6 @@ fun SetupHotspotButton(
 ) = SupportButtonTemplate(
     modifier = modifier,
     onClick = onClick,
-    text = stringResource(R.string.label_eshare_footer_setup_hotspot),
+    text = stringResource(R.string.kEshareTroubleshootingUnableToConnectFooterButtonText),
     painter = painterResource(R.drawable.round_question_mark_24)
 )

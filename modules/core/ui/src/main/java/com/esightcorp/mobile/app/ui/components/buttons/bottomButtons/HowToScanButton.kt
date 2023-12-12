@@ -14,7 +14,7 @@ fun HowToScanButton(
 ){
     SupportButtonTemplate(
         onClick = onScanClick,
-        text = stringResource(id = R.string.how_to_scan),
+        text = stringResource(id = R.string.kQRViewHowToScanButtonText),
         painter = painterResource(
             id = R.drawable.round_question_mark_24
         ),

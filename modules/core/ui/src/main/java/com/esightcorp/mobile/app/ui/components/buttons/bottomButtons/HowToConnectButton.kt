@@ -14,7 +14,7 @@ fun HowToConnectButton(
 ){
     SupportButtonTemplate(
         onClick = onConnectClick,
-        text = stringResource(id = R.string.wifi_unable_to_connect_footer_button),
+        text = stringResource(id = R.string.kFooterButtonHowToConnectTitle),
         painter = painterResource(
             id = R.drawable.round_question_mark_24
         ),

@@ -53,7 +53,7 @@ internal fun BtConnectingScreen(
         }
     } else {
         LoadingScreenWithSpinner(
-            loadingText = stringResource(id = R.string.connecting_to_esight), modifier = modifier
+            loadingText = stringResource(id = R.string.kBTConnectSpinnerTitle), modifier = modifier
         )
     }
 

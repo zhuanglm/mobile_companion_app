@@ -105,7 +105,7 @@ internal fun DisconnectDeviceScreen(
         TextRectangularButton(
             onClick = { onCancelPressed.invoke(nav) },
             modifier = modifier,
-            text = stringResource(R.string.cancel),
+            text = stringResource(R.string.kCancel),
             textAlign = TextAlign.Center
         )
 

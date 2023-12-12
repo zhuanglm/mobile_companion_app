@@ -88,7 +88,7 @@ private fun AdvancedWifiBody(
         val (ssidHeader, ssidField, pwdHeader, pwdField, securityHeader, securityButton, finishButton) = createRefs()
 
         Header1Text(
-            text = stringResource(id = R.string.wifi_advanced_ssidHeader),
+            text = stringResource(id = R.string.kWifiViewWifiNameLabelText),
             modifier = modifier.constrainAs(ssidHeader) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
@@ -103,7 +103,7 @@ private fun AdvancedWifiBody(
             }.fillMaxWidth())
         if(!wifiUiState.wifiType.equals("none", ignoreCase = false)){
             Header1Text(
-                text = stringResource(id = R.string.wifi_advanced_pwdHeader),
+                text = stringResource(id = R.string.kWifiViewWifiPasswordLabelText),
                 modifier = modifier.constrainAs(pwdHeader) {
                     top.linkTo(ssidField.bottom, margin = 35.dp)
                     start.linkTo(parent.start)
@@ -119,7 +119,7 @@ private fun AdvancedWifiBody(
         }
 
         Header1Text(
-            text = stringResource(id = R.string.wifi_advanced_securityHeader),
+            text = stringResource(id = R.string.kWifiViewControllerSelectSecurityLabelText),
             modifier = modifier.constrainAs(securityHeader) {
                 top.linkTo(pwdField.bottom, margin = 35.dp)
                 start.linkTo(parent.start)
@@ -143,7 +143,7 @@ private fun AdvancedWifiBody(
                 end.linkTo(parent.end)
             },
             enabled = false,
-            text = stringResource(id = R.string.wifi_advanced_QR_finishButton)
+            text = stringResource(id = R.string.kCreateWifiCodeButtonText)
         )
 
     }

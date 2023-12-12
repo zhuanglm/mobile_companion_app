@@ -160,7 +160,7 @@ internal fun EShareConnectedScreen(
         // 1st state
         EShareConnectionStatus.Unknown -> {
             LoadingScreenWithSpinner(
-                loadingText = stringResource(R.string.eshare_loading_text),
+                loadingText = stringResource(R.string.kBTConnectSpinnerTitle),
                 modifier = modifier,
                 cancelButtonNeeded = true,
                 onCancelButtonClicked = { onCancelButtonClicked?.invoke(navController) },

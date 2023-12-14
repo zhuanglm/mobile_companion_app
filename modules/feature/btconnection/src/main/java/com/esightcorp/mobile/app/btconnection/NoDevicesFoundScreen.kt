@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,7 +14,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.esightcorp.mobile.app.btconnection.state.NoDevicesFoundUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesFoundViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.Header1Text
@@ -24,135 +22,110 @@ import com.esightcorp.mobile.app.ui.components.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
-
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
 fun NoDevicesFoundRoute(
     navController: NavController,
     vm: NoDevicesFoundViewModel = hiltViewModel()
 ) {
-    val btUiState by vm.uiState.collectAsState()
-    if (btUiState.isBtEnabled) {
-        NoDevicesFoundScreen(
-            onBackButtonClicked = vm::navigateToNoDevicesConnectedScreen,
-            onTryAgainClicked = vm::navigateToSearchingScreen,
-            onBluetoothDisabled = vm::onBluetoothDisabled,
-            onHelpClicked = vm::navigateToUnableToConnectScreen,
-            uiState = btUiState,
-            navController = navController
-        )
-    } else {
-        NavigateBluetoothDisabled(navController = navController)
-    }
-}
+    BackStackLogger(navController, TAG)
 
-@Preview
-@Composable
-fun NoDevicesFoundScreenPreview() = MaterialTheme {
-    NoDevicesFoundScreen(
-        onBackButtonClicked = {},
-        onTryAgainClicked = {},
-        onBluetoothDisabled = {},
-        onHelpClicked = {},
-        uiState = NoDevicesFoundUiState(isBtEnabled = true),
-        navController = rememberNavController(),
-    )
+    val btUiState by vm.uiState.collectAsState()
+    when (btUiState.isBtEnabled) {
+        false -> NavigateBluetoothDisabled(navController = navController)
+
+        true -> {
+            NoDevicesFoundScreen(
+                onBackButtonClicked = vm::navigateToNoDevicesConnectedScreen,
+                onTryAgainClicked = vm::navigateToSearchingScreen,
+                onHelpClicked = vm::navigateToUnableToConnectScreen,
+                navController = navController
+            )
+        }
+    }
 }
 
 //region Internal implementation
 private const val TAG = "NoDevicesFoundScreen"
 
 @Composable
-internal fun NoDevicesFoundScreen(
+private fun NoDevicesFoundScreen(
     modifier: Modifier = Modifier,
-    onBackButtonClicked: (NavController) -> Unit,
-    onTryAgainClicked: (NavController) -> Unit,
-    onBluetoothDisabled: (NavController) -> Unit,
-    onHelpClicked: (NavController) -> Unit,
-    uiState: NoDevicesFoundUiState,
+    onBackButtonClicked: OnNavigationCallback? = null,
+    onTryAgainClicked: OnNavigationCallback? = null,
+    onHelpClicked: OnNavigationCallback? = null,
     navController: NavController
 ) {
     Log.i(TAG, "NoDevicesFoundScreen: ")
-    when (uiState.isBtEnabled) {
-        false -> LaunchedEffect(Unit) { onBluetoothDisabled(navController) }
-        true -> {
-            BaseScreen(
-                modifier = modifier,
-                showBackButton = true,
-                showSettingsButton = false,
-                onBackButtonInvoked = { onBackButtonClicked(navController) },
-                onSettingsButtonInvoked = { },
-                bottomButton = {
-                    CantFindDeviceButton(modifier, R.string.kUnableToConnectFooterButtonText) {
-                        onHelpClicked.invoke(navController)
-                    }
-                },
-            ) {
-                NoDevicesFoundBody(
-                    modifier = modifier,
-                    onTryAgainClicked = { onTryAgainClicked(navController) },
-                )
+    BaseScreen(
+        modifier = modifier,
+        showBackButton = true,
+        showSettingsButton = false,
+        onBackButtonInvoked = { onBackButtonClicked?.invoke(navController) },
+        bottomButton = {
+            CantFindDeviceButton(modifier, R.string.kUnableToConnectFooterButtonText) {
+                onHelpClicked?.invoke(navController)
             }
-        }
+        },
+    ) {
+        NoDevicesFoundBody(
+            modifier = modifier,
+            onTryAgainClicked = { onTryAgainClicked?.invoke(navController) },
+        )
     }
 }
 
 @Composable
 private fun NoDevicesFoundBody(
     modifier: Modifier,
-    onTryAgainClicked: () -> Unit,
+    onTryAgainClicked: OnActionCallback,
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (header, subtitle, help1, help2, help3, button) = createRefs()
 
         Header1Text(
-            text = stringResource(id = R.string.kBTTroubleshootingESightNotFoundTitle),
+            text = stringResource(R.string.kBTTroubleshootingESightNotFoundTitle),
             modifier = modifier
                 .constrainAs(header) {
                     top.linkTo(parent.top, margin = 25.dp)
-                    start.linkTo(parent.start)
                 },
         )
 
         Subheader(
-            text = stringResource(id = R.string.kTroubleShootingTryFollowingSteps),
+            text = stringResource(R.string.kTroubleShootingTryFollowingSteps),
             modifier = modifier
                 .constrainAs(subtitle) {
                     top.linkTo(header.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
                 },
         )
 
         NumberedHelpItem(
             number = 1,
-            text = stringResource(id = R.string.kTroubleshootingInstructionRestartESightDevice),
+            text = stringResource(R.string.kTroubleshootingInstructionRestartESightDevice),
             modifier = modifier
                 .constrainAs(help1) {
                     top.linkTo(subtitle.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                 },
         )
 
         NumberedHelpItem(
             number = 2,
-            text = stringResource(id = R.string.kTroubleshootingInstructionESightWithinRange),
+            text = stringResource(R.string.kTroubleshootingInstructionESightWithinRange),
             modifier = modifier
                 .constrainAs(help2) {
                     top.linkTo(help1.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                 },
         )
 
         NumberedHelpItem(
             number = 3,
-            text = stringResource(id = R.string.kTroubleshootingInstructionSufficientCharge),
+            text = stringResource(R.string.kTroubleshootingInstructionSufficientCharge),
             modifier = modifier
                 .constrainAs(help3) {
                     top.linkTo(help2.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                 },
         )
 
@@ -161,11 +134,18 @@ private fun NoDevicesFoundBody(
             modifier = modifier
                 .constrainAs(button) {
                     top.linkTo(help3.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                 },
-            text = stringResource(id = R.string.kTryAgainButtonTitle)
+            text = stringResource(R.string.kTryAgainButtonTitle)
         )
     }
 }
+
+@Preview
+@Composable
+private fun NoDevicesFoundScreenPreview() = MaterialTheme {
+    NoDevicesFoundScreen(
+        navController = rememberNavController(),
+    )
+}
+
 //endregion

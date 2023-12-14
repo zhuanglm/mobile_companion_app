@@ -1,8 +1,7 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,64 +24,90 @@ import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
-
-private const val TAG = "BluetoothScreens"
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
 fun NoDeviceConnectedRoute(
-    navController: NavController, vm: NoDevicesConnectedViewModel = hiltViewModel()
+    navController: NavController,
+    vm: NoDevicesConnectedViewModel = hiltViewModel(),
 ) {
     // Get Bluetooth UI state from view model
     val btUiState by vm.uiState.collectAsState()
 
     BackStackLogger(navController, TAG)
 
-    // Check if Bluetooth is enabled
-    Log.d(TAG, "NoDeviceConnectedRoute: ")
-    if (!btUiState.isBtEnabled) {
-        // If Bluetooth is not enabled, show the Bluetooth enabled screen
-        Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth not enabled")
-        IsBluetoothEnabled(vm = vm, navController = navController)
-    } else if (!btUiState.btConnectionStatus) {
-        // If Bluetooth is enabled and there is no device connected, show the no device connected screen
-        Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
-        NoDeviceConnectedScreen(
-            onScanESightPressed = vm::navigateToScanESight,
-            onSettingsButtonPressed = { vm.navigateToSettings(navController) },
-            onFeedbackButtonPressed = vm::showFeedbackPage,
-            onTermsAndConditionsPressed = { },
-            onPrivacyPolicyPressed = { },
-            navController = navController
-        )
-    } else {
-        Log.i(TAG, "NoDeviceConnectedRoute: Navigate Home should be called.")
+    Log.d(
+        TAG,
+        "NoDeviceConnectedRoute - isBtEnabled: ${btUiState.isBtEnabled}\nconnectionStatus: ${btUiState.btConnectionStatus}"
+    )
 
-        // If Bluetooth is enabled and there is a device connected, navigate to the home screen
-        NavigateHome(navController = navController, device = btUiState.connectedDevice)
+    // Check if Bluetooth is enabled
+    when (btUiState.isBtEnabled) {
+        false -> {
+            // If Bluetooth is not enabled, show the Bluetooth enabled screen
+            Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth not enabled")
+            NavigateBluetoothDisabled(navController = navController)
+        }
+
+        true -> when (btUiState.btConnectionStatus) {
+            false -> {
+                // If Bluetooth is enabled and there is no device connected, show the no device connected screen
+                Log.d(TAG, "NoDeviceConnectedRoute: Bluetooth enabled but not connected ")
+                NoDeviceConnectedScreen(
+                    onScanESightPressed = vm::navigateToScanESight,
+                    onSettingsButtonPressed = vm::navigateToSettings,
+                    onFeedbackButtonPressed = vm::showFeedbackPage,
+                    onTermsAndConditionsPressed = { },
+                    onPrivacyPolicyPressed = { },
+                    navController = navController
+                )
+            }
+
+            true -> {
+                Log.i(TAG, "NoDeviceConnectedRoute: Navigate Home should be called.")
+
+                // If Bluetooth is enabled and there is a device connected, navigate to the home screen
+                LaunchedEffect(Unit) {
+                    navController.navigate(
+                        HomeNavigation.FirstScreenRoute,
+                        popUntil = BtConnectionNavigation.IncomingRoute,
+                    )
+                }
+            }
+        }
     }
 }
 
+// Use LaunchedEffect to navigate to Bluetooth disabled screen after a delay
 @Composable
-internal fun NoDeviceConnectedScreen(
+fun NavigateBluetoothDisabled(navController: NavController) = LaunchedEffect(Unit) {
+    navController.navigate(BtConnectionNavigation.BtDisabledScreen)
+}
+
+//region Internal implementation
+
+private const val TAG = "BluetoothScreens"
+
+@Composable
+private fun NoDeviceConnectedScreen(
     modifier: Modifier = Modifier,
-    onScanESightPressed: (NavController) -> Unit,
-    onSettingsButtonPressed: () -> Unit,
-    onFeedbackButtonPressed: () -> Unit,
+    onScanESightPressed: OnNavigationCallback? = null,
+    onSettingsButtonPressed: OnNavigationCallback? = null,
+    onFeedbackButtonPressed: OnActionCallback? = null,
     onTermsAndConditionsPressed: (Int) -> Unit,
     onPrivacyPolicyPressed: (Int) -> Unit,
     navController: NavController,
 ) {
-    // Set up UI using ConstraintLayout
-
     BaseScreen(
         modifier = modifier,
         showBackButton = false,
         showSettingsButton = true,
-        onBackButtonInvoked = { /*Unused*/ },
-        onSettingsButtonInvoked = onSettingsButtonPressed,
+        onSettingsButtonInvoked = { onSettingsButtonPressed?.invoke(navController) },
         bottomButton = {
             FeedbackButton(
-                onFeedbackClick = onFeedbackButtonPressed, modifier = modifier
+                modifier = modifier,
+                onFeedbackClick = { onFeedbackButtonPressed?.invoke() },
             )
         },
     ) {
@@ -96,67 +121,31 @@ internal fun NoDeviceConnectedScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun NoDeviceConnectedScreenPreview() {
-    MaterialTheme {
-        NoDeviceConnectedScreen(
-            onScanESightPressed = {},
-            onSettingsButtonPressed = { /* implement dummy action for preview */ },
-            onFeedbackButtonPressed = { /* implement dummy action for preview */ },
-            onTermsAndConditionsPressed = { /* implement dummy action for preview */ },
-            onPrivacyPolicyPressed = { /* implement dummy action for preview */ },
-            navController = rememberNavController(), // Note: this won't actually navigate in preview
-            modifier = Modifier
-        )
-    }
-}
-
 @Composable
 private fun NoDevicesBody(
     modifier: Modifier,
     onPrivacyPolicyPressed: (Int) -> Unit,
     onTermsAndConditionsPressed: (Int) -> Unit,
-    onScanESightPressed: (NavController) -> Unit,
+    onScanESightPressed: OnNavigationCallback? = null,
     navController: NavController
 ) {
-    ConstraintLayout(modifier = modifier) {
-        val (greeting, deviceButton, spacer, terms) = createRefs()
-
-//        Log.w(
-//            TAG,
-//            "Back-stack:\n${navController.currentBackStack.collectAsState().value.toStringList()}"
-//        )
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (greeting, deviceButton, terms) = createRefs()
 
         // Set up greeting message
         PersonalGreeting(
             modifier = modifier.constrainAs(greeting) {
                 top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
             },
             connected = false,
         )
 
         // Set up device button to navigate to Bluetooth searching screen
         AddDeviceButton(
-            onClick = { onScanESightPressed.invoke(navController) },
+            onClick = { onScanESightPressed?.invoke(navController) },
             modifier = modifier.constrainAs(deviceButton) {
-                top.linkTo(greeting.bottom, margin = 16.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                top.linkTo(greeting.bottom, margin = 25.dp)
             },
-        )
-
-        Spacer(
-            modifier = modifier
-                .height(300.dp)
-                .constrainAs(spacer) {
-                    top.linkTo(deviceButton.bottom, margin = 16.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-
-                },
         )
 
         // Set up terms and policy buttons
@@ -164,10 +153,7 @@ private fun NoDevicesBody(
             onTermsInvoked = onTermsAndConditionsPressed,
             onPrivacyPolicyInvoked = onPrivacyPolicyPressed,
             modifier = modifier.constrainAs(terms) {
-                top.linkTo(spacer.bottom)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom, margin = 20.dp)
             },
             textColor = MaterialTheme.colors.onSurface
         )
@@ -176,44 +162,16 @@ private fun NoDevicesBody(
 
 @Preview(showBackground = true)
 @Composable
-fun NoDevicesBodyPreview() {
-    MaterialTheme {
-        NoDevicesBody(
-            modifier = Modifier,
-            onPrivacyPolicyPressed = { /* implement dummy action for preview */ },
-            onTermsAndConditionsPressed = { /* implement dummy action for preview */ },
-            onScanESightPressed = {},
-            navController = rememberNavController() // Note: this won't actually navigate in preview
-        )
-    }
+private fun NoDeviceConnectedScreenPreview() = MaterialTheme {
+    NoDeviceConnectedScreen(
+        onTermsAndConditionsPressed = { },
+        onPrivacyPolicyPressed = { },
+        navController = rememberNavController(), // Note: this won't actually navigate in preview
+        modifier = Modifier
+    )
 }
 
-@Composable
-fun NavigateHome(navController: NavController, device: String) =
-    LaunchedEffect(Unit) { navController.navigate(HomeNavigation.FirstScreenRoute) }
-
-@Composable
-fun NavigateBluetoothDisabled(
-    navController: NavController,
-) {
-// Use LaunchedEffect to navigate to Bluetooth disabled screen after a delay
-    LaunchedEffect(Unit) {
-        navController.navigate(BtConnectionNavigation.BtDisabledScreen)
-    }
-}
-
-@Composable
-fun IsBluetoothEnabled(
-    vm: NoDevicesConnectedViewModel,
-    navController: NavController,
-) {
-// Get Bluetooth UI state from view model
-    val uiState by vm.uiState.collectAsState()
-    // Check if Bluetooth is not enabled
-    if (!uiState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
-    }
-}
+//endregion
 
 
 //TODO:move with the REQUEST_PERMISSION composable

@@ -9,12 +9,7 @@ abstract class Navigation(open val path: String)
 sealed class HomeNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : HomeNavigation("home")
 
-    object FirstScreenRoute : HomeNavigation("home_first") {
-        const val deviceArg = "device"
-        val routeWithArgs = "$path/{$deviceArg}"
-        val arguments = listOf(navArgument(deviceArg) { type = NavType.StringType })
-    }
-
+    object FirstScreenRoute : HomeNavigation("home_first")
     object PermissionRoute : HomeNavigation("home_permissions")
 }
 

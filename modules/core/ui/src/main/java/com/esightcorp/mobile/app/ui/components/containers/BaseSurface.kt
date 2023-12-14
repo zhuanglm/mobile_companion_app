@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun BaseSurface(
@@ -50,8 +51,8 @@ fun BaseScreen(
     modifier: Modifier,
     showBackButton: Boolean,
     showSettingsButton: Boolean,
-    onBackButtonInvoked: () -> Unit,
-    onSettingsButtonInvoked: () -> Unit,
+    onBackButtonInvoked: OnActionCallback? = null,
+    onSettingsButtonInvoked: OnActionCallback? = null,
     isBottomButtonNeeded: Boolean = true,
     bottomButton: @Composable () -> Unit,
     everythingElse: @Composable () -> Unit,

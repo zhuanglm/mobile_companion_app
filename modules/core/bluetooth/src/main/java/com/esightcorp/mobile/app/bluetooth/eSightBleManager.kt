@@ -1,22 +1,20 @@
 package com.esightcorp.mobile.app.bluetooth
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
-import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
 
+@SuppressLint("MissingPermission")
 object eSightBleManager {
     private val _tag = this.javaClass.simpleName
 
     private const val DEVICE_NAME_CRITERION = "eGo"
 
 
-    lateinit var bluetoothManager: BluetoothManager
-    private lateinit var bluetoothAdapter: BluetoothAdapter
-    lateinit var bluetoothLeScanner: BluetoothLeScanner
+    private var bluetoothManager: BluetoothManager? = null
     private var bleService: BleService? = null
     private var bleConnectionStatus = false
     private var connectedDevice: BluetoothDevice? = null
@@ -28,19 +26,16 @@ object eSightBleManager {
 
     var hotspotListener: HotspotModelListener? = null
 
-    fun setupBluetoothManager(context: Context) {
-        if (!this::bluetoothManager.isInitialized) {
-            this.bluetoothManager =
+    fun setupBluetoothManager(context: Context) = when (bluetoothManager) {
+        null -> {
+            bluetoothManager =
                 context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         }
-        if (!this::bluetoothAdapter.isInitialized) {
-            this.bluetoothAdapter = bluetoothManager.adapter
 
-        }
-        if (!this::bluetoothLeScanner.isInitialized) {
-            this.bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
-        }
+        else -> {}
     }
+
+    fun getLeScanner() = bluetoothManager?.adapter?.bluetoothLeScanner
 
     fun setModelListener(listener: BluetoothModelListener) {
         this.modelListener = listener
@@ -143,9 +138,13 @@ object eSightBleManager {
 //        Log.d(_tag, "checkIfConnected: $it")
     }
 
-    fun checkIfEnabled(): Boolean {
-        return bluetoothAdapter.isEnabled
+    fun checkIfEnabled() = when (bluetoothManager) {
+        null -> false
+        else -> bluetoothManager!!.adapter.isEnabled
     }
+
+    fun getConnectedGattDevices(): List<BluetoothDevice>? =
+        bluetoothManager?.getConnectedDevices(BluetoothProfile.GATT)?.toList()
 
     @SuppressLint("MissingPermission")
     fun getShortDeviceName() = getConnectedDevice()?.name?.replace("$DEVICE_NAME_CRITERION-", "")

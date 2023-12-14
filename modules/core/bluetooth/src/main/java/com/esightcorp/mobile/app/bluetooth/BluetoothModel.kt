@@ -14,7 +14,7 @@ import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
 import java.util.*
 
 @SuppressLint("MissingPermission", "UnspecifiedRegisterReceiverFlag")
-class BluetoothModel constructor(
+class BluetoothModel(
     val context: Context
 ) {
     private val _tag = this.javaClass.simpleName
@@ -250,11 +250,10 @@ class BluetoothModel constructor(
      * Listener coming in from view model, should be used to send data back to respository
      */
     fun checkForConnection() {
-        val connectedDeviceList =
-            bleManager.bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
+        val connectedDeviceList = bleManager.getConnectedGattDevices()
         Log.d(_tag, "Are there any connected devices?  $connectedDeviceList ")
-        if (connectedDeviceList.isNotEmpty()) {
-            bleManager.setConnectedDevice(connectedDeviceList[0], true)
+        connectedDeviceList?.firstOrNull()?.let { firstDevice ->
+            bleManager.setConnectedDevice(firstDevice, true)
             bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
         }
     }
@@ -272,24 +271,26 @@ class BluetoothModel constructor(
      */
     @SuppressLint("MissingPermission")
     private fun scanLeDevices() {
+        val leScanner = bleManager.getLeScanner()
+
         if (!scanning) {
             handler.postDelayed({
                 scanning = false
-                bleManager.bluetoothLeScanner.stopScan(leScanCallback)
+                leScanner?.stopScan(leScanCallback)
                 bleManager.getModelListener()?.onScanFinished()
             }, SCAN_PERIOD)
             scanning = true
             bleManager.getModelListener()?.onScanStarted()
-            bleManager.bluetoothLeScanner.startScan(leScanCallback)
+            leScanner?.startScan(leScanCallback)
         } else {
             bleManager.getModelListener()?.onScanFailed(-1)
             scanning = false
-            bleManager.bluetoothLeScanner.stopScan(leScanCallback)
+            leScanner?.stopScan(leScanCallback)
         }
     }
 
     fun stopScan() {
-        bleManager.bluetoothLeScanner.stopScan(leScanCallback)
+        bleManager.getLeScanner()?.stopScan(leScanCallback)
         scanning = false
         bleManager.getModelListener()?.onScanCancelled()
     }

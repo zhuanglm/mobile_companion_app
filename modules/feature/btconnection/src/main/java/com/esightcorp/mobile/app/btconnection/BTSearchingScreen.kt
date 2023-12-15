@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.state.BtSearchingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtSearchingViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
 @Composable

@@ -20,10 +20,10 @@ import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.state.EshareStoppedUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectionStoppedViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.Subheader
-import com.esightcorp.mobile.app.ui.components.TextRectangularButton
+import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger

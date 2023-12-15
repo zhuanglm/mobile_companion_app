@@ -9,7 +9,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.esightcorp.mobile.app.ui.components.ButtonText
+import com.esightcorp.mobile.app.ui.components.text.ButtonText
 
 @Composable
 fun TextRectangularButton(

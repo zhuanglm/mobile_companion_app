@@ -7,7 +7,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.SupportButtonTemplate
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable

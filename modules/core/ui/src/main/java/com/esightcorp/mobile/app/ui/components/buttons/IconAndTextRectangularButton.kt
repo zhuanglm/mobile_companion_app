@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.ui.components
+package com.esightcorp.mobile.app.ui.components.buttons
 
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.esightcorp.mobile.app.ui.components.text.ButtonText
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @Composable
@@ -131,7 +132,7 @@ fun OutlinedTextRectangularButton(
 
 @Preview
 @Composable
-fun IconAndTextRectangularButtonPreview() {
+private fun IconAndTextRectangularButtonPreview() {
     IconAndTextRectangularButton(
         onClick = { }, modifier = Modifier, icon = Icons.Default.Star, text = "Preview"
     )

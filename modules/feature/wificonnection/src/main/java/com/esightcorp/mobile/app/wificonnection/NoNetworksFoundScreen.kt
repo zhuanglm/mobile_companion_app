@@ -15,9 +15,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.Subheader
-import com.esightcorp.mobile.app.ui.components.TextRectangularButton
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.wificonnection.state.NoNetworksFoundUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.NoNetworksFoundViewModel

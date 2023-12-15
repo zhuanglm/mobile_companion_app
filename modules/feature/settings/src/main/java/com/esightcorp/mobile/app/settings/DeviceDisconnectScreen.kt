@@ -21,11 +21,11 @@ import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
 import com.esightcorp.mobile.app.settings.viewmodels.DeviceDisconnectViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
-import com.esightcorp.mobile.app.ui.components.OutlinedTextRectangularButton
-import com.esightcorp.mobile.app.ui.components.TextRectangularButton
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 

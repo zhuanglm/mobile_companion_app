@@ -7,7 +7,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.SupportButtonTemplate
 
 @Composable
 fun CantFindDeviceButton(

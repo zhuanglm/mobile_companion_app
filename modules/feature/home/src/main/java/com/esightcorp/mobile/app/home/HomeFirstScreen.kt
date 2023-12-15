@@ -1,6 +1,8 @@
 package com.esightcorp.mobile.app.home
 
 import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -20,18 +23,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.DeviceCard
-import com.esightcorp.mobile.app.ui.components.IconAndTextSquareButton
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
-
-private const val TAG = "Home Screen"
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun HomeFirstScreen(
-    navController: NavController, vm: HomeViewModel = hiltViewModel()
+    navController: NavController,
+    vm: HomeViewModel = hiltViewModel()
 ) {
     val homeUiState by vm.uiState.collectAsState()
 
@@ -46,13 +50,16 @@ fun HomeFirstScreen(
     )
 }
 
+//region Private implementation
+private const val TAG = "Home Screen"
+
 @Composable
-internal fun BaseHomeScreen(
+private fun BaseHomeScreen(
     vm: HomeViewModel,
     homeUiState: HomeUiState,
     navController: NavController,
-    device: String = "0123456",
     modifier: Modifier = Modifier,
+    device: String = "0123456",
     onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) }
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
@@ -69,7 +76,7 @@ internal fun BaseHomeScreen(
             modifier = modifier,
             showBackButton = false,
             showSettingsButton = true,
-            onBackButtonInvoked = { /*Unused*/ },
+            onBackButtonInvoked = { },
             onSettingsButtonInvoked = onSettingsButtonInvoked,
             bottomButton = { FeedbackButton(modifier, vm::showFeedbackPage) },
         ) {
@@ -87,9 +94,7 @@ private fun HomeScreenBody(
     navController: NavController,
     vm: HomeViewModel
 ) {
-    ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (personalGreeting, deviceCard, appContainer) = createRefs()
         PersonalGreeting(
             modifier = modifier.constrainAs(personalGreeting) {
@@ -104,7 +109,7 @@ private fun HomeScreenBody(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            onClick = { Unit },
+            onClick = { },
             deviceModel = device.substringBeforeLast('-'),
             serialNumber = device.substringAfterLast('-'),
         )
@@ -118,27 +123,36 @@ private fun HomeScreenBody(
                 width = Dimension.fillToConstraints
                 height = Dimension.fillToConstraints
             },
-            navController = navController, vm = vm,
+            navController = navController,
+            vm = vm,
         )
     }
 }
 
-data class CardData(val text: String, val iconResId: Int, val onClick: () -> Unit)
+private data class CardData(
+    @StringRes val labelId: Int,
+    @DrawableRes val iconResId: Int,
+    val onClick: OnActionCallback
+)
 
 @Composable
-fun SquareTileCardLayout(
-    modifier: Modifier = Modifier, vm: HomeViewModel, navController: NavController
+private fun SquareTileCardLayout(
+    modifier: Modifier = Modifier,
+    vm: HomeViewModel,
+    navController: NavController,
 ) {
-    //TODO: Hardcoded strings - Connect To Wi-Fi, Share your view
-    val cards = listOf(CardData(
-        "Connect to Wi-Fi", com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24
-    ) {
-        vm.navigateToWifiCredsOverBt(navController)
-    }, CardData(
-        "Share your view", com.esightcorp.mobile.app.ui.R.drawable.baseline_camera_alt_24
-    ) {
-        vm.navigateToShareYourView(navController)
-    })
+    val cards = listOf(
+        CardData(R.string.kConnectWifiLabelText, R.drawable.round_wifi_24) {
+            vm.navigateToWifiCredsOverBt(navController)
+        },
+
+        CardData(
+            R.string.kHomeRootViewConnectedeShareButtonText,
+            R.drawable.baseline_camera_alt_24
+        ) {
+            vm.navigateToShareYourView(navController)
+        }
+    )
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -147,11 +161,13 @@ fun SquareTileCardLayout(
     ) {
         itemsIndexed(cards) { _, card ->
             IconAndTextSquareButton(
-                text = card.text,
+                text = stringResource(card.labelId),
                 painter = painterResource(id = card.iconResId),
                 onClick = card.onClick,
-                modifier = modifier.padding(0.dp, 25.dp, 0.dp, 0.dp),
+                modifier = modifier.padding(top = 25.dp),
             )
         }
     }
 }
+
+//endregion

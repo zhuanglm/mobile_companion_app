@@ -24,11 +24,11 @@ import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.HotspotSetupViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.IconAndTextSquareButton
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
-import com.esightcorp.mobile.app.ui.components.Subheader
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.UnableToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem

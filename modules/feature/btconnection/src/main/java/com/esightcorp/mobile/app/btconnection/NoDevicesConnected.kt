@@ -15,8 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
-import com.esightcorp.mobile.app.ui.components.AddDeviceButton
-import com.esightcorp.mobile.app.ui.components.TermsAndPolicy
+import com.esightcorp.mobile.app.ui.components.buttons.AddDeviceButton
+import com.esightcorp.mobile.app.ui.components.buttons.TermsAndPolicy
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.FeedbackButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting

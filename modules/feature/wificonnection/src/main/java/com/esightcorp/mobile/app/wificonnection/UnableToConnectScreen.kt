@@ -11,10 +11,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.*
+import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.components.text.BodyText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.wificonnection.state.UnableToConnectUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.UnableToConnectViewModel
 

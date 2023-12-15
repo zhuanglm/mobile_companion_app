@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.ui.components
+package com.esightcorp.mobile.app.ui.components.text
 
 import android.util.Log
 import androidx.compose.foundation.text.ClickableText
@@ -40,7 +40,7 @@ fun Subheader(
     color: Color = MaterialTheme.colors.onSurface,
     textAlign: TextAlign? = TextAlign.Start
 ) {
-    Log.d("TAG", "Subheader: " + color.toString())
+    Log.d("TAG", "Subheader: $color")
     Text(
         text = text,
         modifier = modifier,

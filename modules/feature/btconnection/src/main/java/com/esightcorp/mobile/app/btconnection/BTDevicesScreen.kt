@@ -24,7 +24,7 @@ import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 

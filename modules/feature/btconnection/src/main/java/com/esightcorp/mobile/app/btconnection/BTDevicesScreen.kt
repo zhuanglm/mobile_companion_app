@@ -24,9 +24,10 @@ import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
 fun BtDevicesRoute(
@@ -43,23 +44,11 @@ fun BtDevicesRoute(
         BtDevicesScreen(
             navController = navController,
             uiState = uiState,
-            onBackClicked = vm::navigateToNoDeviceConnectedScreen,
+            onBackClicked = { navController.popBackStack() },
             onDeviceSelected = vm::navigateToBtConnectingScreen,
             onHelpClicked = vm::navigateToUnableToFindESight,
         )
     }
-}
-
-@Preview
-@Composable
-fun BtDevicesScreenPreview() = MaterialTheme {
-    BtDevicesScreen(
-        navController = rememberNavController(),
-        uiState = BtDevicesUiState(listOfAvailableDevices = listOf("ABC")),
-        onBackClicked = {},
-        onDeviceSelected = { _, _ -> },
-        onHelpClicked = {}
-    )
 }
 
 //region Internal implementation
@@ -70,9 +59,9 @@ internal fun BtDevicesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     uiState: BtDevicesUiState,
-    onBackClicked: (NavController) -> Unit,
+    onBackClicked: OnNavigationCallback,
     onDeviceSelected: (NavController, String) -> Unit,
-    onHelpClicked: (NavController) -> Unit,
+    onHelpClicked: OnNavigationCallback,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
@@ -161,6 +150,18 @@ internal fun BtDevicesScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun BtDevicesScreenPreview() = MaterialTheme {
+    BtDevicesScreen(
+        navController = rememberNavController(),
+        uiState = BtDevicesUiState(listOfAvailableDevices = listOf("ABC")),
+        onBackClicked = {},
+        onDeviceSelected = { _, _ -> },
+        onHelpClicked = {}
+    )
 }
 
 //endregion

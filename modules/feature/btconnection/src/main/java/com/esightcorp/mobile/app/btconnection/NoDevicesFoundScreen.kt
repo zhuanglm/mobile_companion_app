@@ -39,7 +39,7 @@ fun NoDevicesFoundRoute(
 
         true -> {
             NoDevicesFoundScreen(
-                onBackButtonClicked = vm::navigateToNoDevicesConnectedScreen,
+                onBackButtonClicked = { navController.popBackStack() },
                 onTryAgainClicked = vm::navigateToSearchingScreen,
                 onHelpClicked = vm::navigateToUnableToConnectScreen,
                 navController = navController

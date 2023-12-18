@@ -11,7 +11,6 @@ import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectingRoute
-import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.NoDeviceConnectedRoute
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,10 +66,6 @@ class BtDevicesViewModel @Inject constructor(
 
     fun getDeviceList() {
         btConnectionRepository.getMapOfDevices()
-    }
-
-    fun navigateToNoDeviceConnectedScreen(navController: NavController) = with(navController) {
-        navigate(NoDeviceConnectedRoute)
     }
 
     fun navigateToBtConnectingScreen(navController: NavController, device: String) {

@@ -15,25 +15,29 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.UnableToConnectViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.components.text.BodyText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
 fun UnableToConnectRoute(
-    navController: NavController, vm: UnableToConnectViewModel = hiltViewModel()
+    navController: NavController,
+    vm: UnableToConnectViewModel = hiltViewModel(),
 ) {
     val btUiState by vm.uiState.collectAsState()
-    vm.setNavController(navController)
     if (btUiState.isBtEnabled) {
         UnableToConnectScreen(
-            onBackButtonClicked = vm::navigateToNoDevicesConnectedScreen,
+            navController = navController,
+            onBackButtonClicked = { navController.popBackStack() },
             onTryAgainClicked = vm::navigateToBtSearchingScreen,
             onConnectClicked = vm::showHowToConnectPage,
         )
@@ -42,25 +46,18 @@ fun UnableToConnectRoute(
     }
 }
 
-@Preview
-@Composable
-fun UnableToConnectScreenPreview() = MaterialTheme {
-    UnableToConnectScreen(
-        onBackButtonClicked = {},
-        onTryAgainClicked = {},
-        onConnectClicked = {},
-    )
-}
-
 //region Internal implementation
+private const val TAG = "UnableToConnectScreen"
+
 @Composable
-internal fun UnableToConnectScreen(
+private fun UnableToConnectScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    onBackButtonClicked: () -> Unit,
-    onTryAgainClicked: () -> Unit,
-    onConnectClicked: () -> Unit,
+    onBackButtonClicked: OnActionCallback,
+    onTryAgainClicked: OnNavigationCallback,
+    onConnectClicked: OnActionCallback,
 ) {
-    Log.i("UnableToConnectScreen", "UnableToConnectScreen: ")
+    Log.i(TAG, "UnableToConnectScreen: ")
     Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
         ConstraintLayout(modifier = modifier.fillMaxSize()) {
             val (topBar, header, subtitle, help1, help2, button, footerButton, footerText) = createRefs()
@@ -68,7 +65,6 @@ internal fun UnableToConnectScreen(
                 showBackButton = true,
                 showSettingsButton = false,
                 onBackButtonInvoked = onBackButtonClicked,
-                onSettingsButtonInvoked = { /*Unused*/ },
                 modifier = modifier.constrainAs(topBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -77,9 +73,9 @@ internal fun UnableToConnectScreen(
             )
 
             Header1Text(
-                text = stringResource(id = R.string.kTroubleshootingUnableToConnectTitle),
+                text = stringResource(R.string.kTroubleshootingUnableToConnectTitle),
                 modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .padding(start = 25.dp, end = 25.dp)
                     .constrainAs(header) {
                         top.linkTo(topBar.bottom, margin = 50.dp)
                         start.linkTo(parent.start)
@@ -87,9 +83,9 @@ internal fun UnableToConnectScreen(
             )
 
             Subheader(
-                text = stringResource(id = R.string.kTroubleshootingUnableToConnectSubtitle),
+                text = stringResource(R.string.kTroubleshootingUnableToConnectSubtitle),
                 modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .padding(start = 25.dp, end = 25.dp)
                     .constrainAs(subtitle) {
                         top.linkTo(header.bottom, margin = 8.dp)
                         start.linkTo(parent.start)
@@ -98,9 +94,9 @@ internal fun UnableToConnectScreen(
 
             NumberedHelpItem(
                 number = 1,
-                text = stringResource(id = R.string.kTroubleshootingInstructionEsightWithinRangeShort),
+                text = stringResource(R.string.kTroubleshootingInstructionEsightWithinRangeShort),
                 modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .padding(start = 25.dp, end = 25.dp)
                     .constrainAs(help1) {
                         top.linkTo(subtitle.bottom, margin = 35.dp)
                         start.linkTo(parent.start)
@@ -110,9 +106,9 @@ internal fun UnableToConnectScreen(
 
             NumberedHelpItem(
                 number = 2,
-                text = stringResource(id = R.string.kTroubleshootingInstructionsSufficientChargeShort),
+                text = stringResource(R.string.kTroubleshootingInstructionsSufficientChargeShort),
                 modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .padding(start = 25.dp, end = 25.dp)
                     .constrainAs(help2) {
                         top.linkTo(help1.bottom, margin = 35.dp)
                         start.linkTo(parent.start)
@@ -121,22 +117,22 @@ internal fun UnableToConnectScreen(
             )
 
             TextRectangularButton(
-                onClick = onTryAgainClicked,
+                onClick = { onTryAgainClicked.invoke(navController) },
                 modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .padding(start = 25.dp, end = 25.dp)
                     .constrainAs(button) {
                         top.linkTo(help2.bottom, margin = 35.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                text = stringResource(id = R.string.kTryAgainButtonTitle)
+                text = stringResource(R.string.kTryAgainButtonTitle)
             )
 
             BodyText(
-                text = stringResource(id = R.string.kBTTroubleshootingUnableToConnectDescriptionText),
+                text = stringResource(R.string.kBTTroubleshootingUnableToConnectDescriptionText),
                 modifier = modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
+                    .padding(start = 25.dp, end = 25.dp)
+                    .padding(start = 25.dp, end = 25.dp)
                     .constrainAs(footerText) {
                         bottom.linkTo(footerButton.top, margin = 35.dp)
                         start.linkTo(parent.start)
@@ -154,5 +150,16 @@ internal fun UnableToConnectScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun UnableToConnectScreenPreview() = MaterialTheme {
+    UnableToConnectScreen(
+        navController = rememberNavController(),
+        onBackButtonClicked = {},
+        onTryAgainClicked = {},
+        onConnectClicked = {},
+    )
 }
 //endregion

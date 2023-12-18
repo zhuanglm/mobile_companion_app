@@ -28,9 +28,10 @@
     <!--    <string name="wifi_advanced_BT_finishButton">Connect to network</string>-->
 
     <!-- region HomeScreen -->
-    <string name="label_home_screen_request_permission_title">Permissions are required to use this app</string>
+    <string name="label_home_screen_request_permission_title">Permissions are required</string>
     <string name="label_home_screen_request_permission_description">These permissions allow you to have access to the full functionality of the app.</string>
     <string name="label_home_screen_request_permission_button_confirm">Request Permissions</string>
+    <string name="label_home_screen_request_permission_goto_app_settings">Open app\'s Settings</string>
     <!-- endregion -->
 
     <!-- region External URL -->

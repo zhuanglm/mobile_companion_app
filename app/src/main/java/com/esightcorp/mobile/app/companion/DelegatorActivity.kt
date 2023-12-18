@@ -1,5 +1,9 @@
 package com.esightcorp.mobile.app.companion
 
+import android.app.ActivityManager
+import android.app.ApplicationExitInfo
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -16,24 +20,52 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DelegatorActivity : ComponentActivity() {
+    private val _tag = this.javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("DelegatorActivity", "onCreate: ")
+        val processedBundle = preProcessSavedInstanceState(this, savedInstanceState)
+        Log.d(_tag, "onCreate - Saved state: $processedBundle")
+
+        super.onCreate(processedBundle)
+
         setContent {
             CompanionApp()
         }
     }
 
+    /**
+     * Preprocessing the saved state bundle.
+     * This helps in case the user revoke permission while the app is in background.
+     */
+    private fun preProcessSavedInstanceState(context: Context, savedState: Bundle?) =
+        when (savedState) {
+            null -> null
+            else -> {
+                val outBundle: Bundle? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val latestExitReason =
+                        (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                            .getHistoricalProcessExitReasons(context.packageName, 0, 0)
+                            .firstOrNull()
+
+                    when (latestExitReason?.reason) {
+                        ApplicationExitInfo.REASON_PERMISSION_CHANGE -> null
+                        else -> savedState
+                    }
+                } else {
+                    //TODO: any better way to use the `savedState` instead of always null like this???
+                    null
+                }
+
+                outBundle
+            }
+        }
 }
 
 @Composable
 private fun CompanionApp() {
     Mobile_companion_appTheme {
         // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
             Column {
                 TopLevelNavigation()
             }

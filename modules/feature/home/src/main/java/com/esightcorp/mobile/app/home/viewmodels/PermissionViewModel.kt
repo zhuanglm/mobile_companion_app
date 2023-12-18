@@ -1,7 +1,10 @@
 package com.esightcorp.mobile.app.home.viewmodels
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.extensions.navigate
@@ -11,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PermissionViewModel @Inject constructor(
-    application: Application
+    private val application: Application
 ) : AndroidViewModel(application) {
 
     val requiredPermissions: List<String>
@@ -30,5 +33,18 @@ class PermissionViewModel @Inject constructor(
 
     fun navigateToBluetoothConnection(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.IncomingRoute)
+    }
+
+    fun navigateToAppSettings() {
+        with(application) {
+            val uri = Uri.Builder()
+                .scheme("package")
+                .opaquePart(packageName)
+                .build()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.btconnection.repositories
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
@@ -24,14 +23,9 @@ class BtConnectionRepository @Inject constructor(
      * Interface to receive callbacks from BluetoothModel
      */
     private val bluetoothModelListener = object : BluetoothModelListener {
-
         override fun listOfDevicesUpdated() {
             Log.d(_tag, "listOfDevicesUpdated: ")
             getMapOfDevices()
-        }
-
-        override fun onBatchScanResults(results: List<ScanResult>) {
-            Log.e(_tag, "onBatchScanResults: ")
         }
 
         override fun onScanFailed(error: Int) {

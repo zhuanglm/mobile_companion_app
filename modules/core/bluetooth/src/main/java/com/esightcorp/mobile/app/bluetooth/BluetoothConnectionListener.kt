@@ -5,5 +5,4 @@ import android.bluetooth.BluetoothDevice
 interface BluetoothConnectionListener {
     fun onDeviceDisconnected(device: BluetoothDevice)
     fun onDeviceConnected(device: BluetoothDevice)
-    fun onConnectionStateQueried(state: Boolean)
 }

@@ -196,10 +196,6 @@ class EshareRepository @Inject constructor(
         // We should always be connected at this point
     }
 
-    override fun onConnectionStateQueried(state: Boolean) {
-        Log.i(_tag, "onConnectionStateQueried: $state")
-    }
-
     //endregion
 
     //region BluetoothRadioListener
@@ -210,10 +206,6 @@ class EshareRepository @Inject constructor(
 
     override fun onBluetoothDisabled() {
         updateBluetoothRadioDisabled()
-    }
-
-    override fun onBluetoothStateQueried(state: Boolean) {
-        Log.i(_tag, "onBluetoothStateQueried: $state")
     }
 
     //endregion

@@ -54,6 +54,10 @@ class NoDevicesFoundViewModel @Inject constructor(
 
     //region Navigation
 
+    fun navigateToNoDevicesConnectedScreen(navController: NavController) {
+        navController.navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
+    }
+
     fun navigateToSearchingScreen(navController: NavController) {
         navController.navigate(BtConnectionNavigation.BtSearchingRoute)
     }

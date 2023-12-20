@@ -16,37 +16,34 @@ import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 
 @Composable
 fun BtConnectingRoute(
-    navController: NavController,
-    vm: BtConnectingViewModel = hiltViewModel(),
+    navController: NavController, vm: BtConnectingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    if (uiState.isBtEnabled) {
+    if(uiState.isBtEnabled){
         BtConnectingScreen(
-            modifier = Modifier,
-            navController = navController,
-            uiState = uiState,
-            vm = vm,
+            modifier = Modifier, navController = navController, uiState = uiState, vm = vm
         )
-    } else {
+    }else{
         NavigateBluetoothDisabled(navController = navController)
     }
+
 }
 
-//region Internal implementation
-private const val TAG = "BtConnectingScreen"
-
 @Composable
-private fun BtConnectingScreen(
+internal fun BtConnectingScreen(
     modifier: Modifier,
     navController: NavController,
     uiState: BtConnectingUiState,
     vm: BtConnectingViewModel
 ) {
+    val TAG = "BtConnectingScreen"
     if (uiState.deviceAddress != null && uiState.deviceName != null) {
         if (uiState.didDeviceConnect) {
             LaunchedEffect(Unit) {
                 Log.i(TAG, "${uiState.deviceName} is connected")
-                vm.navigateToConnectedScreen(navController)
+                vm.navigateToConnectedScreen(
+                    navController
+                )
             }
         } else {
             LaunchedEffect(Unit) {
@@ -56,8 +53,8 @@ private fun BtConnectingScreen(
         }
     } else {
         LoadingScreenWithSpinner(
-            loadingText = stringResource(R.string.kBTConnectSpinnerTitle), modifier = modifier
+            loadingText = stringResource(id = R.string.kBTConnectSpinnerTitle), modifier = modifier
         )
     }
+
 }
-//endregion

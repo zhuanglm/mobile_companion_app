@@ -26,6 +26,7 @@ class UnableToConnectViewModel @Inject constructor(
 
     private var _uiState = MutableStateFlow(UnableToConnectUiState())
     val uiState: StateFlow<UnableToConnectUiState> = _uiState.asStateFlow()
+    private lateinit var navController: NavController
 
     private val listener = object : BluetoothConnectionRepositoryCallback {
         override fun scanStatus(isScanning: ScanningStatus) {
@@ -56,8 +57,20 @@ class UnableToConnectViewModel @Inject constructor(
         }
     }
 
-    fun navigateToBtSearchingScreen(navController: NavController) {
-        navController.navigate(BtConnectionNavigation.BtSearchingRoute)
+    fun setNavController(navController: NavController) {
+        this.navController = navController
+    }
+
+    fun navigateToNoDevicesConnectedScreen() {
+        if (this::navController.isInitialized) {
+            navController.navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
+        }
+    }
+
+    fun navigateToBtSearchingScreen() {
+        if (this::navController.isInitialized) {
+            navController.navigate(BtConnectionNavigation.BtSearchingRoute)
+        }
     }
 
     fun showHowToConnectPage() = with(application.applicationContext) {

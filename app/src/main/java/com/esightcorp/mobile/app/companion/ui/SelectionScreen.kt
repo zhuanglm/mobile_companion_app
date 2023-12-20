@@ -15,9 +15,6 @@ fun SelectionScreen(navController: NavController) {
 
         navController.navigate(SupportedProducts.GoProduct.route) {
             launchSingleTop = true
-            navController.graph.startDestinationRoute?.let {
-                popUpTo(route = it) { inclusive = true }
-            }
         }
     }
 }

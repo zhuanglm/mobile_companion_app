@@ -46,6 +46,7 @@ class DelegatorActivity : ComponentActivity() {
                         (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
                             .getHistoricalProcessExitReasons(context.packageName, 0, 0)
                             .firstOrNull()
+                    Log.w(_tag, "latestExitReason: $latestExitReason")
 
                     when (latestExitReason?.reason) {
                         ApplicationExitInfo.REASON_PERMISSION_CHANGE -> null

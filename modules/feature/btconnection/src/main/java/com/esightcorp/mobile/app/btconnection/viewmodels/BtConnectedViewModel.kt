@@ -2,7 +2,6 @@ package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.bluetooth.BluetoothDevice
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
@@ -10,7 +9,6 @@ import com.esightcorp.mobile.app.btconnection.state.BtConnectedUiState
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
-import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,18 +26,6 @@ class BtConnectedViewModel @Inject constructor(
     val uiState: StateFlow<BtConnectedUiState> = _uiState.asStateFlow()
 
     private val listener = object : BluetoothConnectionRepositoryCallback {
-        override fun scanStatus(isScanning: ScanningStatus) {
-            //unused by this composable
-        }
-
-        override fun deviceListReady(deviceList: MutableList<String>) {
-            //unused by this composable
-        }
-
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            //unused by this composable
-        }
-
         override fun onBtStateUpdate(enabled: Boolean) {
             updateIsBtEnabledState(enabled)
         }

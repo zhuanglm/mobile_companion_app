@@ -1,7 +1,6 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
-import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
@@ -10,7 +9,6 @@ import com.esightcorp.mobile.app.btconnection.state.UnableToConnectUiState
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
-import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,18 +27,6 @@ class UnableToConnectViewModel @Inject constructor(
     private lateinit var navController: NavController
 
     private val listener = object : BluetoothConnectionRepositoryCallback {
-        override fun scanStatus(isScanning: ScanningStatus) {
-            //unused by this composable
-        }
-
-        override fun deviceListReady(deviceList: MutableList<String>) {
-            //unused by this composable
-        }
-
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            //unused by this composable
-        }
-
         override fun onBtStateUpdate(enabled: Boolean) {
             updateBtEnabledState(enabled)
         }

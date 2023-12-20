@@ -3,7 +3,6 @@ package com.esightcorp.mobile.app.home.repositories
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
@@ -20,10 +19,6 @@ class HomeRepository @Inject constructor(
     private val modelListener = object : BluetoothModelListener {
         override fun onDeviceDisconnected(device: BluetoothDevice) {
             repoListener.onBluetoothDeviceDisconnected()
-        }
-
-        override fun onDeviceConnected(device: BluetoothDevice) {
-            Log.i(TAG, "onDeviceConnected: $device")
         }
 
         override fun onBluetoothEnabled() {

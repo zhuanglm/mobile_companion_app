@@ -191,23 +191,12 @@ class EshareRepository @Inject constructor(
         bluetoothModel.unregisterEshareReceiver()
         bluetoothModel.unregisterHotspotReceiver()
     }
-
-    override fun onDeviceConnected(device: BluetoothDevice) {
-        // We should always be connected at this point
-    }
-
     //endregion
 
     //region BluetoothRadioListener
-
-    override fun onBluetoothEnabled() {
-        //this should always be enabled at this point
-    }
-
     override fun onBluetoothDisabled() {
         updateBluetoothRadioDisabled()
     }
-
     //endregion
 
     //region SystemStatusListener

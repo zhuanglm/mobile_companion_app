@@ -12,7 +12,6 @@ import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
-import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -44,12 +43,6 @@ class DeviceDisconnectViewModel @Inject constructor(
                             )
                         }
                     }
-
-                    override fun scanStatus(isScanning: ScanningStatus) {}
-
-                    override fun deviceListReady(deviceList: MutableList<String>) {}
-
-                    override fun onBtStateUpdate(enabled: Boolean) {}
                 },
             )
             setupBtModelListener()

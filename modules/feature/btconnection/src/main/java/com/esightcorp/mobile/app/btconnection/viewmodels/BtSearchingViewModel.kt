@@ -1,7 +1,6 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
-import android.bluetooth.BluetoothDevice
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -41,10 +40,6 @@ class BtSearchingViewModel @Inject constructor(
             android.os.Handler(Looper.getMainLooper()).postDelayed({
                 updateBtSearchingState(ScanningStatus.Success)
             }, 2000)
-        }
-
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            Log.i(_tag, "onDeviceConnected: ")
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {

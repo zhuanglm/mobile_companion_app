@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.ui.components
+package com.esightcorp.mobile.app.ui.components.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
@@ -14,6 +14,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.text.WrappableButtonText
 
 /**
  * Displays a button styled as an `ElevatedButton` with a text "Connect to eSight".
@@ -37,26 +38,27 @@ fun AddDeviceButton(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .defaultMinSize(dimensionResource(id = R.dimen.min_dimension_touch_area)),
+            .defaultMinSize(dimensionResource(R.dimen.min_dimension_touch_area)),
         enabled = true,
         colors = ButtonDefaults.elevatedButtonColors(
             MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.button_corner_radius)),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.button_corner_radius)),
         contentPadding = PaddingValues(
-            dimensionResource(id = R.dimen.add_device_content_padding_horiz),
-            dimensionResource(id = R.dimen.add_device_content_padding_vert)
+            dimensionResource(R.dimen.add_device_content_padding_horiz),
+            dimensionResource(R.dimen.add_device_content_padding_vert)
         ),
     ) {
         WrappableButtonText(
-            stringResource(id = R.string.kHomeRootViewUnconnectedConnectButtonText), modifier = modifier.weight(1f)
+            stringResource(R.string.kHomeRootViewUnconnectedConnectButtonText),
+            modifier = modifier.weight(1f)
         )
     }
 }
 
 @Preview
 @Composable
-fun AddDeviceButtonPreview() {
+private fun AddDeviceButtonPreview() {
     AddDeviceButton(onClick = { }, modifier = Modifier)
 }

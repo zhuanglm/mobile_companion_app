@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.ui.components
+package com.esightcorp.mobile.app.ui.components.buttons.bottomButtons
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 

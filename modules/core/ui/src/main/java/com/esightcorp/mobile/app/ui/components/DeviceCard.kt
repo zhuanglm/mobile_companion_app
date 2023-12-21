@@ -17,6 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.text.Button2Text
+import com.esightcorp.mobile.app.ui.components.text.ButtonText
 
 
 @OptIn(ExperimentalMaterial3Api::class)

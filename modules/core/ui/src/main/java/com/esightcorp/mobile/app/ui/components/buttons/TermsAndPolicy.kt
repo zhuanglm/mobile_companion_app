@@ -1,10 +1,11 @@
-package com.esightcorp.mobile.app.ui.components
+package com.esightcorp.mobile.app.ui.components.buttons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.esightcorp.mobile.app.ui.components.text.ClickableBodyText
 
 @Composable
 fun TermsAndPolicy(

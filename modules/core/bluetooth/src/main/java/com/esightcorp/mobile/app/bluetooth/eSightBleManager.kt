@@ -140,11 +140,13 @@ object eSightBleManager {
 
     fun checkIfEnabled() = when (bluetoothManager) {
         null -> false
-        else -> bluetoothManager!!.adapter.isEnabled
+        else -> bluetoothManager?.adapter?.isEnabled ?: false
     }
 
-    fun getConnectedGattDevices(): List<BluetoothDevice>? =
-        bluetoothManager?.getConnectedDevices(BluetoothProfile.GATT)?.toList()
+    fun getConnectedGattDevices(): List<BluetoothDevice>? = when (checkIfEnabled()) {
+        false -> null
+        true -> bluetoothManager?.getConnectedDevices(BluetoothProfile.GATT)?.toList()
+    }
 
     @SuppressLint("MissingPermission")
     fun getShortDeviceName() = getConnectedDevice()?.name?.replace("$DEVICE_NAME_CRITERION-", "")

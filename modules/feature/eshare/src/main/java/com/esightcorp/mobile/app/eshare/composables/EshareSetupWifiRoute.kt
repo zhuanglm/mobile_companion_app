@@ -13,10 +13,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareWifiSetupViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.BodyText
-import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
-import com.esightcorp.mobile.app.ui.components.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BodyText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback

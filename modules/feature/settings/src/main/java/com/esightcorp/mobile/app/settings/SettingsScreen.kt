@@ -17,10 +17,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.settings.viewmodels.SettingsViewModel
-import com.esightcorp.mobile.app.ui.components.BodyText
-import com.esightcorp.mobile.app.ui.components.FineText
-import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.text.BodyText
+import com.esightcorp.mobile.app.ui.components.text.FineText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 
@@ -28,16 +28,16 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 fun SettingsScreen(navController: NavController, vwModel: SettingsViewModel = hiltViewModel()) =
     SettingsScreenBody(navController = navController, vwModel = vwModel)
 
+//region Internal impl
 @Preview(showBackground = true)
 @Composable
-fun SettingsScreenPreview() = MaterialTheme {
+private fun SettingsScreenPreview() = MaterialTheme {
     SettingsScreenBody(
         modifier = Modifier,
         navController = rememberNavController(),
     )
 }
 
-//region Internal impl
 @Composable
 internal fun SettingsScreenBody(
     modifier: Modifier = Modifier,

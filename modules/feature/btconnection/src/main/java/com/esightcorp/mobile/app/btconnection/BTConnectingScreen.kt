@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectingViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 
 @Composable
 fun BtConnectingRoute(

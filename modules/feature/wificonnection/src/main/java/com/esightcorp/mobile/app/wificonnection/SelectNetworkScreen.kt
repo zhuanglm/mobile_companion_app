@@ -21,8 +21,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
@@ -136,7 +136,7 @@ private fun SelectNetworkBody(
                         vm.navigateToPasswordScreen(navController)
                     },
                     modifier = Modifier,
-                    icon = ImageVector.vectorResource(id = com.esightcorp.mobile.app.ui.R.drawable.round_wifi_24),
+                    icon = ImageVector.vectorResource(id = R.drawable.round_wifi_24),
                     text = network.SSID
                 )
                 Spacer(modifier = modifier.padding(10.dp))

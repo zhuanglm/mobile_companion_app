@@ -35,7 +35,6 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
  * @param modifier Modifier to be applied to the button.
  * @param size Size of the oblong button. Width is derived from the height to maintain the oblong shape.
  * @param contentDescription Description of the icon for accessibility purposes.
- * @param borderColor Color of the button's border.
  * @param backgroundColor Background color of the button.
  * @param iconTint Tint color of the icon.
  */

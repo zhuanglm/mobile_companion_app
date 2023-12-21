@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.ButtonText
+import com.esightcorp.mobile.app.ui.components.text.ButtonText
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable

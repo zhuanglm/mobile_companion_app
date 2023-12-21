@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.SupportButtonTemplate
 
 @Composable
 fun HowToScanButton(

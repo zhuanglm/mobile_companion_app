@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.ui.components
+package com.esightcorp.mobile.app.ui.components.loading
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -7,11 +7,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.buttons.CancelButton
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
@@ -27,8 +28,6 @@ fun LoadingScreenWithSpinner(
             ESightTopAppBar(
                 showBackButton = false,
                 showSettingsButton = false,
-                onBackButtonInvoked = { /*Unused*/ },
-                onSettingsButtonInvoked = { /*Unused*/ },
                 modifier = modifier.constrainAs(topAppBar) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -42,7 +41,8 @@ fun LoadingScreenWithSpinner(
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                })
+                },
+            )
 
             CircularProgressIndicator(
                 modifier = modifier
@@ -62,7 +62,8 @@ fun LoadingScreenWithSpinner(
                     modifier = modifier.constrainAs(cancelButton) {
                         start.linkTo(parent.start, margin = 25.dp)
                         bottom.linkTo(parent.bottom, margin = 25.dp)
-                    })
+                    },
+                )
             }
         }
     }
@@ -70,6 +71,6 @@ fun LoadingScreenWithSpinner(
 
 @Preview
 @Composable
-fun LoadingScreenWithSpinnerPreview() {
+private fun LoadingScreenWithSpinnerPreview() {
     LoadingScreenWithSpinner()
 }

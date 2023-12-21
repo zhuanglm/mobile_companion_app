@@ -11,15 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.esightcorp.mobile.app.ui.components.ButtonText
-import com.esightcorp.mobile.app.ui.components.Header1Text
-import com.esightcorp.mobile.app.ui.components.WrappableButtonText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.WrappableButtonText
 
 
 @Composable
 fun HelpItemNumber(
-    number: Int = 1,
     modifier: Modifier = Modifier,
+    number: Int = 1,
     shape: Shape = CircleShape,
     color: Color = MaterialTheme.colors.onPrimary
 ) {
@@ -37,7 +36,8 @@ fun HelpItemNumber(
             Header1Text(
                 text = number.toString(),
                 color = color,
-                modifier = Modifier)
+                modifier = Modifier
+            )
         }
     }
 }
@@ -65,7 +65,9 @@ fun NumberedHelpItem(
     numberColor: Color = MaterialTheme.colors.onPrimary
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().wrapContentHeight(),
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         HelpItemNumber(

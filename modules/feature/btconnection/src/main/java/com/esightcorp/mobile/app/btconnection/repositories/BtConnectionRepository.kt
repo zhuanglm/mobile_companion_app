@@ -61,20 +61,12 @@ class BtConnectionRepository @Inject constructor(
             deviceConnected(device, true)
         }
 
-        override fun onConnectionStateQueried(state: Boolean) {
-            Log.i(_tag, "onConnectionStateQueried: $state")
-        }
-
         override fun onBluetoothEnabled() {
             checkBtEnabledStatus()
         }
 
         override fun onBluetoothDisabled() {
             checkBtEnabledStatus()
-        }
-
-        override fun onBluetoothStateQueried(state: Boolean) {
-            Log.i(_tag, "onBluetoothStateQueried: $state")
         }
     }
 
@@ -94,7 +86,9 @@ class BtConnectionRepository @Inject constructor(
 
     fun setupBtModelListener() {
         eSightBleManager.setModelListener(bluetoothModelListener)
-        bluetoothModel.checkForConnection()
+
+        // Forward connection status if needed
+        eSightBleManager.getConnectedDevice()?.let { bluetoothModelListener.onDeviceConnected(it) }
     }
 
     /**
@@ -122,11 +116,12 @@ class BtConnectionRepository @Inject constructor(
     fun getMapOfDevices() {
         val strippedList = mutableListOf<String>()
         for (bluetoothDevice in eSightBleManager.getBleDeviceList()) {
-            if (eSightBleManager.checkIfEnabled()) {
-                strippedList.add(bluetoothDevice.name)
-            } else {
-                bluetoothConnectionRepositoryCallback.onBtStateUpdate(eSightBleManager.checkIfEnabled())
-                return
+            when (eSightBleManager.checkIfEnabled()) {
+                true -> strippedList.add(bluetoothDevice.name)
+                false -> {
+                    bluetoothConnectionRepositoryCallback.onBtStateUpdate(false)
+                    return
+                }
             }
         }
         bluetoothConnectionRepositoryCallback.deviceListReady(strippedList)

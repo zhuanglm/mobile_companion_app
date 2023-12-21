@@ -20,6 +20,9 @@ class BluetoothModel(
     private val _tag = this.javaClass.simpleName
 
     private var scanning = false
+        @Synchronized get
+        @Synchronized set
+
     private val handler = Handler(Looper.getMainLooper())
     private val bleManager = eSightBleManager
 
@@ -28,17 +31,23 @@ class BluetoothModel(
      */
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
-            bleManager.setupBleService((service as LocalBinder).getService())
-            bleManager.getBleService()?.let { bluetooth ->
-                if (!bluetooth.initialize()) {
-                    Log.e(_tag, "onServiceConnected: Unable to initialize bluetooth")
+            Log.w(_tag, "onServiceConnected ...")
+
+            when (bleManager.getBleService()) {
+                null -> {
+                    val bleService = (service as LocalBinder).getService()
+                    when (bleService.initialize()) {
+                        false -> Log.e(_tag, "onServiceConnected: Unable to initialize bluetooth")
+                        true -> bleManager.setupBleService(bleService)
+                    }
                 }
-                //perform device connection
-                Log.d(_tag, "onServiceConnected: Perform device connection")
+
+                else -> return
             }
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
+            Log.w(_tag, "onServiceDisconnected!!!")
             bleManager.resetBleService()
             context.unregisterReceiver(gattUpdateReceiver)
         }
@@ -61,13 +70,11 @@ class BluetoothModel(
         override fun onReceive(context: Context?, intent: Intent) {
             Log.i(_tag, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
             when (intent.action) {
-                BleService.ACTION_GATT_CONNECTED -> {
-                    bleManager.setConnectedDevice(bleManager.getConnectedDevice()!!, true)
+                BleService.ACTION_GATT_CONNECTED -> bleManager.getConnectedDevice()?.let { dev ->
+                    bleManager.setConnectedDevice(dev, true)
                     Log.e(_tag, "onReceive: CONNECTED")
-                    bleManager.getModelListener()
-                        ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
-                    bleManager.getBluetoothConnectionListener()
-                        ?.onDeviceConnected(bleManager.getConnectedDevice()!!)
+                    bleManager.getModelListener()?.onDeviceConnected(dev)
+                    bleManager.getBluetoothConnectionListener()?.onDeviceConnected(dev)
                 }
 
                 BleService.ACTION_GATT_DISCONNECTED -> {
@@ -247,18 +254,6 @@ class BluetoothModel(
     }
 
     /**
-     * Listener coming in from view model, should be used to send data back to respository
-     */
-    fun checkForConnection() {
-        val connectedDeviceList = bleManager.getConnectedGattDevices()
-        Log.d(_tag, "Are there any connected devices?  $connectedDeviceList ")
-        connectedDeviceList?.firstOrNull()?.let { firstDevice ->
-            bleManager.setConnectedDevice(firstDevice, true)
-            bleManager.getModelListener()?.onDeviceConnected(bleManager.getConnectedDevice()!!)
-        }
-    }
-
-    /**
      * Scan and then trigger callback to repository when ready
      */
     fun triggerBleScan() {
@@ -274,11 +269,14 @@ class BluetoothModel(
         val leScanner = bleManager.getLeScanner()
 
         if (!scanning) {
-            handler.postDelayed({
-                scanning = false
-                leScanner?.stopScan(leScanCallback)
-                bleManager.getModelListener()?.onScanFinished()
-            }, SCAN_PERIOD)
+            handler.postDelayed(
+                {
+                    scanning = false
+                    leScanner?.stopScan(leScanCallback)
+                    bleManager.getModelListener()?.onScanFinished()
+                },
+                SCAN_PERIOD,
+            )
             scanning = true
             bleManager.getModelListener()?.onScanStarted()
             leScanner?.startScan(leScanCallback)
@@ -300,32 +298,24 @@ class BluetoothModel(
      */
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            Log.i(_tag, "onScanFailed: ")
+            Log.i(_tag, "onScanFailed - errorCode: $errorCode")
             bleManager.getModelListener()?.onScanFailed(errorCode)
         }
 
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            super.onScanResult(callbackType, result)
-            if (result != null) {
-                if ((result.device != null)) {
-                    if (result.device.name != null) {
-                        if (bleManager.addToBleDeviceList(result.device)) {
-                            Log.d(_tag, "onScanResult: ${result.device.name}")
-                            bleManager.getModelListener()?.listOfDevicesUpdated()
-                        }
-                    }
-                }
+            if (result == null || result.device == null || result.device.name == null) return
+
+            if (bleManager.addToBleDeviceList(result.device)) {
+                Log.d(_tag, "onScanResult - added: ${result.device.name}")
+                bleManager.getModelListener()?.listOfDevicesUpdated()
             }
         }
 
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-            super.onBatchScanResults(results)
-            if (results != null) {
-                Log.i(_tag, "onBatchScanResults: ")
-                bleManager.getModelListener()?.onBatchScanResults(results)
-            }
+            Log.i(_tag, "onBatchScanResults - size: ${results?.size}")
+
+            results?.let { bleManager.getModelListener()?.onBatchScanResults(results) }
         }
     }
 
@@ -339,11 +329,9 @@ class BluetoothModel(
 
     fun disconnectToDevice(): Boolean = (bleManager.getBleService()?.disconnect() ?: false)
 
-    private fun makeGattUpdateIntentFilter(): IntentFilter {
-        return IntentFilter().apply {
-            addAction(BleService.ACTION_GATT_CONNECTED)
-            addAction(BleService.ACTION_GATT_DISCONNECTED)
-        }
+    private fun makeGattUpdateIntentFilter() = IntentFilter().apply {
+        addAction(BleService.ACTION_GATT_CONNECTED)
+        addAction(BleService.ACTION_GATT_DISCONNECTED)
     }
 
     private fun makeEShareIntentFilter() = IntentFilter().apply {

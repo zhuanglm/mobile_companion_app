@@ -13,7 +13,6 @@ object eSightBleManager {
 
     private const val DEVICE_NAME_CRITERION = "eGo"
 
-
     private var bluetoothManager: BluetoothManager? = null
     private var bleService: BleService? = null
     private var bleConnectionStatus = false
@@ -22,7 +21,6 @@ object eSightBleManager {
     private var modelListener: BluetoothModelListener? = null
     private var eshareBluetoothListener: EshareBluetoothModelListener? = null
     private var btConnectionListener: BluetoothConnectionListener? = null
-    private var btRadioListener: BluetoothRadioListener? = null
 
     var hotspotListener: HotspotModelListener? = null
 
@@ -53,22 +51,9 @@ object eSightBleManager {
         return eshareBluetoothListener
     }
 
-    fun setBluetoothConnectionListener(listener: BluetoothConnectionListener) {
-        this.btConnectionListener = listener
-    }
-
-    fun setBluetoothRadioListener(listener: BluetoothRadioListener) {
-        this.btRadioListener = listener
-    }
-
     fun getBluetoothConnectionListener(): BluetoothConnectionListener? {
         return btConnectionListener
     }
-
-    fun getBluetoothRadioListener(): BluetoothRadioListener? {
-        return btRadioListener
-    }
-
 
     /**
      * returns true when device is added to the device list

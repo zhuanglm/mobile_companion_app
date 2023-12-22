@@ -9,6 +9,7 @@ import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRe
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
+import com.esightcorp.mobile.app.ui.UI_DELAY_TIMER
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
@@ -53,7 +54,8 @@ class DeviceDisconnectViewModel @Inject constructor(
         _disconnectUiState.update { it.copy(disconnectState = State.Disconnecting) }
 
         viewModelScope.launch(Dispatchers.IO) {
-            delay(DISCONNECTING_DELAY)
+            // Delay the UI changing so that user has time to read
+            delay(UI_DELAY_TIMER)
 
             if (!btConnRepo.disconnectToDevice())
                 _disconnectUiState.update { it.copy(disconnectState = null) }
@@ -66,11 +68,4 @@ class DeviceDisconnectViewModel @Inject constructor(
         target = BtConnectionNavigation.IncomingRoute,
         popUntil = SettingsNavigation.IncomingRoute
     )
-
-    companion object {
-        /**
-         * A delay time to show the disconnecting screen
-         */
-        const val DISCONNECTING_DELAY = 3000L // 3s
-    }
 }

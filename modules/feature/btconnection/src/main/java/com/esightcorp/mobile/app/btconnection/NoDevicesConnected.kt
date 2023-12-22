@@ -1,7 +1,6 @@
 package com.esightcorp.mobile.app.btconnection
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -110,11 +109,17 @@ private fun NoDeviceConnectedScreen(
                 onFeedbackClick = { onFeedbackButtonPressed?.invoke() },
             )
         },
+        bottomAlignedContent = {
+            TermsAndPolicy(
+                onTermsInvoked = onTermsAndConditionsPressed,
+                onPrivacyPolicyInvoked = onPrivacyPolicyPressed,
+                modifier = modifier,
+                textColor = MaterialTheme.colors.onSurface
+            )
+        }
     ) {
         NoDevicesBody(
             modifier = modifier,
-            onPrivacyPolicyPressed = onPrivacyPolicyPressed,
-            onTermsAndConditionsPressed = onTermsAndConditionsPressed,
             onScanESightPressed = onScanESightPressed,
             navController = navController
         )
@@ -124,13 +129,11 @@ private fun NoDeviceConnectedScreen(
 @Composable
 private fun NoDevicesBody(
     modifier: Modifier,
-    onPrivacyPolicyPressed: (Int) -> Unit,
-    onTermsAndConditionsPressed: (Int) -> Unit,
     onScanESightPressed: OnNavigationCallback? = null,
     navController: NavController
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (greeting, deviceButton, terms) = createRefs()
+    ConstraintLayout(modifier = modifier) {
+        val (greeting, deviceButton) = createRefs()
 
         // Set up greeting message
         PersonalGreeting(
@@ -146,16 +149,6 @@ private fun NoDevicesBody(
             modifier = modifier.constrainAs(deviceButton) {
                 top.linkTo(greeting.bottom, margin = 25.dp)
             },
-        )
-
-        // Set up terms and policy buttons
-        TermsAndPolicy(
-            onTermsInvoked = onTermsAndConditionsPressed,
-            onPrivacyPolicyInvoked = onPrivacyPolicyPressed,
-            modifier = modifier.constrainAs(terms) {
-                bottom.linkTo(parent.bottom, margin = 20.dp)
-            },
-            textColor = MaterialTheme.colors.onSurface
         )
     }
 }

@@ -73,9 +73,14 @@ class BtConnectionRepository @Inject constructor(
     }
 
     fun checkBtEnabledStatus() {
+        val btEnabled = eSightBleManager.checkIfEnabled()
+        Log.d(_tag, "checkBtEnabledStatus - enabled: $btEnabled")
+
+        if (!btEnabled)
+            eSightBleManager.resetConnectedDevice()
+
         if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
-            Log.d(_tag, "checkBtEnabledStatus: ")
-            bluetoothConnectionRepositoryCallback.onBtStateUpdate(eSightBleManager.checkIfEnabled())
+            bluetoothConnectionRepositoryCallback.onBtStateUpdate(btEnabled)
         }
     }
 

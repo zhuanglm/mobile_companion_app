@@ -1,6 +1,5 @@
 package com.esightcorp.mobile.app.ui.components.containers
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -66,54 +65,45 @@ fun BaseScreen(
     bottomAlignedContent: @Composable (() -> Unit)? = null,
     everythingElse: @Composable () -> Unit,
 ) {
-    BaseSurface(modifier = modifier.systemBarsPadding()) {
-        Scaffold(
-            modifier = modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
 
-            backgroundColor = MaterialTheme.colors.surface,
+        backgroundColor = MaterialTheme.colors.surface,
 
-            topBar = {
-                ESightTopAppBar(
-                    showBackButton = showBackButton,
-                    showSettingsButton = showSettingsButton,
-                    onBackButtonInvoked = onBackButtonInvoked,
-                    onSettingsButtonInvoked = onSettingsButtonInvoked,
-                    modifier = Modifier.background(Color.Transparent)
-                )
-            },
-            bottomBar = {
-                if (isBottomButtonNeeded) {
-                    BottomAppBar(
-                        backgroundColor = MaterialTheme.colors.surface
-                    ) {
-                        bottomButton()
-                    }
-                }
-
-            },
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(25.dp, 0.dp, 25.dp, 0.dp)
-                    .padding(bottom = innerPadding.calculateBottomPadding())
-                    .fillMaxSize()
-                    .background(color = Color.Transparent)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+        topBar = {
+            ESightTopAppBar(
+                showBackButton = showBackButton,
+                showSettingsButton = showSettingsButton,
+                onBackButtonInvoked = onBackButtonInvoked,
+                onSettingsButtonInvoked = onSettingsButtonInvoked,
+                modifier
+            )
+        },
+        bottomBar = {
+            if (isBottomButtonNeeded) {
+                BottomAppBar(
+                    backgroundColor = Color.Transparent
                 ) {
-                    everythingElse()
+                    bottomButton()
                 }
+            }
 
-                bottomAlignedContent?.let {
-                    // Spacer to fill up the available space
-                    Spacer(modifier = Modifier.weight(1f))
-                    Column { it.invoke() }
-                }
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            everythingElse()
+
+            bottomAlignedContent?.let {
+                // Spacer to fill up the available space
+                Spacer(modifier = Modifier.weight(1f))
+                it.invoke()
             }
         }
     }

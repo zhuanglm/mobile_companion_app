@@ -7,6 +7,7 @@ import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
+import com.esightcorp.mobile.app.utils.BleConnectionStatus
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -48,11 +49,11 @@ class BtConnectionRepository @Inject constructor(
         }
 
         override fun onDeviceDisconnected(device: BluetoothDevice) {
-            deviceConnected(device, false)
+            updateDeviceConnectionStatus(device, false)
         }
 
         override fun onDeviceConnected(device: BluetoothDevice) {
-            deviceConnected(device, true)
+            updateDeviceConnectionStatus(device, true)
         }
 
         override fun onBluetoothEnabled() {
@@ -78,11 +79,21 @@ class BtConnectionRepository @Inject constructor(
         }
     }
 
+    @Synchronized
     fun setupBtModelListener() {
-        eSightBleManager.setModelListener(bluetoothModelListener)
+        with(eSightBleManager) {
+            setModelListener(bluetoothModelListener)
 
-        // Forward connection status if needed
-        eSightBleManager.getConnectedDevice()?.let { bluetoothModelListener.onDeviceConnected(it) }
+            // Forward connection status if needed
+            getConnectedDevice()?.let { dev ->
+                val isConnected = when (getConnectionStatus()) {
+                    BleConnectionStatus.Connecting -> null
+                    BleConnectionStatus.Connected -> true
+                    else -> false
+                }
+                updateDeviceConnectionStatus(dev, isConnected)
+            }
+        }
     }
 
     /**
@@ -109,7 +120,7 @@ class BtConnectionRepository @Inject constructor(
     @SuppressLint("MissingPermission")
     fun getMapOfDevices() {
         val strippedList = mutableListOf<String>()
-        for (bluetoothDevice in eSightBleManager.getBleDeviceList()) {
+        eSightBleManager.getBleDeviceList().filter { it.name != null }.forEach { bluetoothDevice ->
             when (eSightBleManager.checkIfEnabled()) {
                 true -> strippedList.add(bluetoothDevice.name)
                 false -> {
@@ -118,6 +129,7 @@ class BtConnectionRepository @Inject constructor(
                 }
             }
         }
+
         bluetoothConnectionRepositoryCallback.deviceListReady(strippedList)
     }
 
@@ -135,6 +147,7 @@ class BtConnectionRepository @Inject constructor(
      * key  = the BluetoothDevice object you want to connect to
      */
     @SuppressLint("MissingPermission")
+    @Synchronized
     fun connectToDevice(device: String) {
         eSightBleManager.getBleDeviceList().forEach { key ->
             if (key.name.equals(device)) {
@@ -159,7 +172,7 @@ class BtConnectionRepository @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private fun deviceConnected(device: BluetoothDevice, connected: Boolean) {
+    private fun updateDeviceConnectionStatus(device: BluetoothDevice, connected: Boolean?) {
         Log.d(_tag, "onDeviceConnected: ${device.name}, isConnected: $connected")
         if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
             bluetoothConnectionRepositoryCallback.onDeviceConnected(device, connected)

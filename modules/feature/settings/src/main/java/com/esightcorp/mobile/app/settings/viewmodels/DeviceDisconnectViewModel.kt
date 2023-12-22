@@ -35,10 +35,10 @@ class DeviceDisconnectViewModel @Inject constructor(
         with(btConnRepo) {
             registerListener(
                 object : BluetoothConnectionRepositoryCallback {
-                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
                         _disconnectUiState.update {
                             it.copy(
-                                disconnectState = if (connected) State.Connected
+                                disconnectState = if (connected == true) State.Connected
                                 else State.Disconnected
                             )
                         }

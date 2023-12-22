@@ -224,7 +224,7 @@ class BleService : Service() {
                     Log.d(_tag, "onConnectionStateChange - STATE_DISCONNECTED")
                     close()
                     connectionState = STATE_DISCONNECTED
-                    broadcastUpdate(ACTION_GATT_DISCONNECTED)
+                    broadcastUpdate(BleAction.GATT_DISCONNECTED)
                 }
             }
         }
@@ -239,11 +239,13 @@ class BleService : Service() {
             Log.i(_tag, "onServicesDiscovered - device: ${gatt.device.name}, status: $status")
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 Log.e(_tag, "onServicesDiscovered failed", Exception())
+                broadcastUpdate(BleAction.GATT_CONNECT_FAILED)
                 return
             }
 
             gatt.getService(SERVICE_UUID) ?: run {
                 Log.e(_tag, "Failed to discover service: $SERVICE_UUID")
+                broadcastUpdate(BleAction.GATT_CONNECT_FAILED)
                 return
             }
 
@@ -253,7 +255,7 @@ class BleService : Service() {
                 configureCharacteristicNotification(gatt, chType)
             }
 
-            broadcastUpdate(ACTION_GATT_CONNECTED)
+            broadcastUpdate(BleAction.GATT_CONNECTED)
         }
 
         override fun onCharacteristicRead(
@@ -633,9 +635,6 @@ class BleService : Service() {
     //endregion
 
     companion object {
-        const val ACTION_GATT_CONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"
-        const val ACTION_GATT_DISCONNECTED = "com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"
-
         @Deprecated("Use ESightBleAction")
         const val ACTION_DATA_AVAILABLE = "com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"
 

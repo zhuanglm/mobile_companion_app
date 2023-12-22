@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
+import com.esightcorp.mobile.app.utils.BleConnectionStatus
 import java.util.*
 
 @SuppressLint("MissingPermission", "UnspecifiedRegisterReceiverFlag")
@@ -68,23 +69,30 @@ class BluetoothModel(
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         @Synchronized
         override fun onReceive(context: Context?, intent: Intent) {
-            Log.i(_tag, "onReceive: GATT UPDATE RECEIVER ${intent.action}")
-            when (intent.action) {
-                BleService.ACTION_GATT_CONNECTED -> bleManager.getConnectedDevice()?.let { dev ->
-                    bleManager.setConnectedDevice(dev, true)
-                    Log.e(_tag, "onReceive: CONNECTED")
-                    bleManager.getModelListener()?.onDeviceConnected(dev)
-                    bleManager.getBluetoothConnectionListener()?.onDeviceConnected(dev)
+            val action = intent.action.toIAction()
+
+            when (action) {
+                BleAction.GATT_CONNECTED -> {
+                    Log.i(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
+
+                    bleManager.getConnectedDevice()?.let { dev ->
+                        bleManager.setConnectedDevice(dev, BleConnectionStatus.Connected)
+                        bleManager.getModelListener()?.onDeviceConnected(dev)
+                        bleManager.getBluetoothConnectionListener()?.onDeviceConnected(dev)
+                    }
                 }
 
-                BleService.ACTION_GATT_DISCONNECTED -> {
-                    Log.e(_tag, "onReceive: DISCONNECTED")
+                BleAction.GATT_DISCONNECTED -> {
+                    Log.e(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
+
                     bleManager.getConnectedDevice()?.let {
                         bleManager.getModelListener()?.onDeviceDisconnected(it)
                         bleManager.getBluetoothConnectionListener()?.onDeviceDisconnected(it)
                     }
                     bleManager.resetConnectedDevice()
                 }
+
+                //TODO: handle GATT failure???
             }
         }
     }
@@ -322,7 +330,7 @@ class BluetoothModel(
     fun connectToDevice(device: BluetoothDevice) {
         val result = bleManager.getBleService()?.connect(device.address)
         if (result == true) {
-            bleManager.setConnectedDevice(device, status = false)
+            bleManager.setConnectedDevice(device, status = BleConnectionStatus.Connecting)
             stopScan()
         }
     }
@@ -330,8 +338,8 @@ class BluetoothModel(
     fun disconnectToDevice(): Boolean = (bleManager.getBleService()?.disconnect() ?: false)
 
     private fun makeGattUpdateIntentFilter() = IntentFilter().apply {
-        addAction(BleService.ACTION_GATT_CONNECTED)
-        addAction(BleService.ACTION_GATT_DISCONNECTED)
+        addAction(BleAction.GATT_CONNECTED)
+        addAction(BleAction.GATT_DISCONNECTED)
     }
 
     private fun makeEShareIntentFilter() = IntentFilter().apply {

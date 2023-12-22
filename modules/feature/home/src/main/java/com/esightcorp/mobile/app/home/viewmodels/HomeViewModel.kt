@@ -20,13 +20,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-private const val TAG = "HomeViewModel"
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val application: Application,
     homeRepository: HomeRepository,
 ) : AndroidViewModel(application) {
+    private val _tag = this.javaClass.simpleName
 
     /**
      * Object which is used by the compose UI to track UI State
@@ -39,7 +38,6 @@ class HomeViewModel @Inject constructor(
             updateBtEnabledState(false)
             updateConnectedDevice("")
             updateConnectedState(false)
-
         }
 
         override fun onBluetoothEnabled() {
@@ -53,14 +51,23 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
-        homeRepository.registerListener(listener)
+        with(homeRepository) {
+            registerListener(listener)
+
+            when (val connectedDev = getConnectedDevice()) {
+                null -> updateConnectedState(false)
+                else -> updateConnectedDevice(connectedDev)
+            }
+        }
         updateConnectedDevice(homeRepository.getConnectedDevice())
     }
 
-    private fun updateConnectedDevice(device: String) {
-        Log.d(TAG, "updateConnectedDevice: $device")
-        _uiState.update { currentState ->
-            currentState.copy(connectedDevice = device, isBluetoothConnected = true)
+    private fun updateConnectedDevice(device: String?) {
+        Log.d(_tag, "updateConnectedDevice: $device")
+        device?.let {
+            _uiState.update { currentState ->
+                currentState.copy(connectedDevice = it, isBluetoothConnected = true)
+            }
         }
     }
 
@@ -86,10 +93,6 @@ class HomeViewModel @Inject constructor(
 
     fun navigateToBluetoothDisabled(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.BtDisabledScreen)
-    }
-
-    fun navigateToWifiCredsQr(navController: NavController) {
-        navController.navigate("searching_for_networks/qr")
     }
 
     fun navigateToShareYourView(navController: NavController) {

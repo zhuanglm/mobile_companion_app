@@ -9,6 +9,7 @@ import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.util.Log
+import com.esightcorp.mobile.app.bluetooth.BleAction
 import com.esightcorp.mobile.app.bluetooth.BleService
 import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
 import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
@@ -76,11 +77,11 @@ class WifiModel(
                     }
                 }
 
-                BleService.ACTION_GATT_CONNECTED -> {
+                BleAction.GATT_CONNECTED.actionName() -> {
                     Log.e(_tag, "onReceive: CONNECTED")
                 }
 
-                BleService.ACTION_GATT_DISCONNECTED -> {
+                BleAction.GATT_DISCONNECTED.actionName() -> {
                     Log.e(_tag, "onReceive: DISCONNECTED")
                     listener?.onBluetoothDisconnected()
                 }
@@ -247,7 +248,7 @@ class WifiModel(
 
     fun openSocket(
         createSocketListener: CreateSocketListener,
-        inputStreamListener: InputStreamListener
+        inputStreamListener: InputStreamListener,
     ) {
         getMyIpAddress()?.let { eShareCache.setIpAddress(it) }
         getPortToConnectOn { port ->

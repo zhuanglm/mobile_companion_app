@@ -9,8 +9,6 @@ import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-private const val TAG = "HomeRepository"
-
 class HomeRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
@@ -27,6 +25,7 @@ class HomeRepository @Inject constructor(
 
         override fun onBluetoothDisabled() {
             repoListener.onBluetoothDisabled()
+            eSightBleManager.resetConnectedDevice()
         }
     }
 
@@ -40,7 +39,7 @@ class HomeRepository @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    fun getConnectedDevice(): String {
-        return eSightBleManager.getConnectedDevice()!!.name
+    fun getConnectedDevice(): String? {
+        return eSightBleManager.getConnectedDevice()?.name
     }
 }

@@ -23,35 +23,29 @@ class BtConnectingViewModel @Inject constructor(
     application: Application,
     btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
-    private val TAG = "BtConnectingViewModel"
-    private var _uiState = MutableStateFlow(BtConnectingUiState())
+    private val _tag = this.javaClass.simpleName
+
+    private val _uiState = MutableStateFlow(BtConnectingUiState())
     val uiState: StateFlow<BtConnectingUiState> = _uiState.asStateFlow()
-    private val listener = object : BluetoothConnectionRepositoryCallback {
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            Log.d(TAG, "onDeviceConnected: $device")
-            updateDeviceInfo(device, connected)
-        }
-
-        override fun onBtStateUpdate(enabled: Boolean) {
-            updateBtEnabledState(enabled)
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun updateDeviceInfo(device: BluetoothDevice, connected: Boolean) {
-        _uiState.update { state ->
-            state.copy(
-                didDeviceConnect = connected,
-                deviceName = device.name,
-                deviceAddress = device.address,
-            )
-        }
-    }
 
     init {
-        btConnectionRepository.registerListener(listener)
-        btConnectionRepository.setupBtModelListener()
-        btConnectionRepository.checkBtEnabledStatus()
+        with(btConnectionRepository) {
+            registerListener(
+                object : BluetoothConnectionRepositoryCallback {
+                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
+                        Log.d(_tag, "onDeviceConnected: $device -> $connected")
+                        updateDeviceInfo(device, connected)
+                    }
+
+                    override fun onBtStateUpdate(enabled: Boolean) {
+                        updateBtEnabledState(enabled)
+                    }
+                },
+            )
+
+            setupBtModelListener()
+            checkBtEnabledStatus()
+        }
     }
 
     fun navigateToConnectedScreen(navController: NavController) = with(navController) {
@@ -59,17 +53,20 @@ class BtConnectingViewModel @Inject constructor(
     }
 
     fun navigateToUnableToConnectScreen(navController: NavController) {
-        navController.graph.forEach {
-            Log.d(TAG, "navigateToUnableToConnectScreen: ${it.route}")
-        }
         navController.navigate(BtConnectionNavigation.UnableToConnectRoute)
     }
 
-    private fun updateBtEnabledState(enabled: Boolean) {
+    @SuppressLint("MissingPermission")
+    private fun updateDeviceInfo(device: BluetoothDevice, connected: Boolean?) =
         _uiState.update { state ->
-            state.copy(isBtEnabled = enabled)
+            state.copy(
+                didDeviceConnect = connected,
+                deviceName = device.name,
+                deviceAddress = device.address,
+            )
         }
+
+    private fun updateBtEnabledState(enabled: Boolean) = _uiState.update { state ->
+        state.copy(isBtEnabled = enabled)
     }
-
-
 }

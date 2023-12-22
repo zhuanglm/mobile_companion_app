@@ -34,7 +34,7 @@ class SettingsViewModel @Inject constructor(
         with(btConnRepo) {
             registerListener(
                 object : BluetoothConnectionRepositoryCallback {
-                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
                         _settingsUiState.update { it.copy(isConnected = connected) }
                     }
 

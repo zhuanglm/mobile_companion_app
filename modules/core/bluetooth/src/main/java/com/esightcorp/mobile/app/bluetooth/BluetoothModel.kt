@@ -69,9 +69,7 @@ class BluetoothModel(
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         @Synchronized
         override fun onReceive(context: Context?, intent: Intent) {
-            val action = intent.action.toIAction()
-
-            when (action) {
+            when (val action = intent.action.toIAction()) {
                 BleAction.GATT_CONNECTED -> {
                     Log.i(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
 
@@ -82,6 +80,7 @@ class BluetoothModel(
                     }
                 }
 
+                BleAction.GATT_CONNECT_FAILED,
                 BleAction.GATT_DISCONNECTED -> {
                     Log.e(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
 
@@ -91,8 +90,6 @@ class BluetoothModel(
                     }
                     bleManager.resetConnectedDevice()
                 }
-
-                //TODO: handle GATT failure???
             }
         }
     }

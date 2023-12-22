@@ -3,9 +3,9 @@ package com.esightcorp.mobile.app.bluetooth
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
-import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
+import com.esightcorp.mobile.app.utils.BleConnectionStatus
 
 @SuppressLint("MissingPermission")
 object eSightBleManager {
@@ -13,16 +13,14 @@ object eSightBleManager {
 
     private const val DEVICE_NAME_CRITERION = "eGo"
 
-
     private var bluetoothManager: BluetoothManager? = null
     private var bleService: BleService? = null
-    private var bleConnectionStatus = false
+    private var bleConnectionStatus: BleConnectionStatus = BleConnectionStatus.Unknown
     private var connectedDevice: BluetoothDevice? = null
     private var bleDeviceList: MutableList<BluetoothDevice> = mutableListOf()
     private var modelListener: BluetoothModelListener? = null
     private var eshareBluetoothListener: EshareBluetoothModelListener? = null
     private var btConnectionListener: BluetoothConnectionListener? = null
-    private var btRadioListener: BluetoothRadioListener? = null
 
     var hotspotListener: HotspotModelListener? = null
 
@@ -53,22 +51,9 @@ object eSightBleManager {
         return eshareBluetoothListener
     }
 
-    fun setBluetoothConnectionListener(listener: BluetoothConnectionListener) {
-        this.btConnectionListener = listener
-    }
-
-    fun setBluetoothRadioListener(listener: BluetoothRadioListener) {
-        this.btRadioListener = listener
-    }
-
     fun getBluetoothConnectionListener(): BluetoothConnectionListener? {
         return btConnectionListener
     }
-
-    fun getBluetoothRadioListener(): BluetoothRadioListener? {
-        return btRadioListener
-    }
-
 
     /**
      * returns true when device is added to the device list
@@ -80,13 +65,20 @@ object eSightBleManager {
     @SuppressLint("MissingPermission")
     @Synchronized
     fun addToBleDeviceList(device: BluetoothDevice): Boolean {
-        return if (bleDeviceList.contains(device) || !device.name.contains(DEVICE_NAME_CRITERION)) {
-            false
-        } else {
-            Log.d(_tag, "addToBleDeviceList: ${device.name}")
-            this.bleDeviceList.add(device)
-            true
-        }
+        var added = false
+
+        do {
+            if (!device.name.contains(DEVICE_NAME_CRITERION))
+                break
+
+            if (bleDeviceList.find { it.address == device.address } != null)
+                break
+
+            added = bleDeviceList.add(device)
+            Log.d(_tag, "addToBleDeviceList: ${device.name} ($device) --> $added")
+        } while (false)
+
+        return added
     }
 
     @SuppressLint("MissingPermission")
@@ -99,7 +91,7 @@ object eSightBleManager {
     Once we ACTUALLY connect, it flips to true.
      */
     @Synchronized
-    fun setConnectedDevice(device: BluetoothDevice, status: Boolean) {
+    fun setConnectedDevice(device: BluetoothDevice, status: BleConnectionStatus) {
         Log.d(_tag, "setConnectedDevice: $status")
         this.connectedDevice = device
         this.bleConnectionStatus = status
@@ -109,7 +101,7 @@ object eSightBleManager {
     fun resetConnectedDevice() {
         Log.d(_tag, "resetConnectedDevice: ")
         this.connectedDevice = null
-        this.bleConnectionStatus = false
+        this.bleConnectionStatus = BleConnectionStatus.Unknown
     }
 
     @Synchronized
@@ -134,18 +126,18 @@ object eSightBleManager {
         return this.bleService
     }
 
-    fun checkIfConnected(): Boolean = bleConnectionStatus.also {
-//        Log.d(_tag, "checkIfConnected: $it")
+    @Synchronized
+    fun checkIfConnected(): Boolean {
+        Log.d(_tag, "Bt device connected: $bleConnectionStatus")
+        return bleConnectionStatus == BleConnectionStatus.Connected
     }
+
+    @Synchronized
+    fun getConnectionStatus() = bleConnectionStatus
 
     fun checkIfEnabled() = when (bluetoothManager) {
         null -> false
         else -> bluetoothManager?.adapter?.isEnabled ?: false
-    }
-
-    fun getConnectedGattDevices(): List<BluetoothDevice>? = when (checkIfEnabled()) {
-        false -> null
-        true -> bluetoothManager?.getConnectedDevices(BluetoothProfile.GATT)?.toList()
     }
 
     @SuppressLint("MissingPermission")

@@ -1,8 +1,6 @@
 package com.esightcorp.mobile.app.btconnection.viewmodels
 
 import android.app.Application
-import android.bluetooth.BluetoothDevice
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BluetoothConnectionRepositoryCallback
@@ -12,7 +10,6 @@ import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectingRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.NoDeviceConnectedRoute
-import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,16 +28,8 @@ class BtDevicesViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(BtDevicesUiState())
     val uiState: StateFlow<BtDevicesUiState> = _uiState.asStateFlow()
     private val btRepoListener = object : BluetoothConnectionRepositoryCallback {
-        override fun scanStatus(isScanning: ScanningStatus) {
-            //unused in this composable
-        }
-
         override fun deviceListReady(deviceList: MutableList<String>) {
             updateDeviceList(deviceList)
-        }
-
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
-            Log.d(_tag, "onDeviceConnected: ")
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {

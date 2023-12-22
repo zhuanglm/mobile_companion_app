@@ -6,6 +6,19 @@ interface IAction {
     fun actionName(): String
 }
 
+enum class BleAction(private val iName: String) : IAction {
+    GATT_CONNECTED("com.esightcorp.bluetooth.le.ACTION_GATT_CONNECTED"),
+    GATT_DISCONNECTED("com.esightcorp.bluetooth.le.ACTION_GATT_DISCONNECTED"),
+    GATT_CONNECT_FAILED("com.esightcorp.bluetooth.le.ACTION_GATT_CONNECT_FAILED")
+    ;
+
+    override fun actionName() = iName
+
+    companion object {
+        fun from(action: String?) = values().find { it.actionName() == action }
+    }
+}
+
 enum class EShareAction(private val iName: String) : IAction {
     StatusChanged("com.esightcorp.bluetooth.le.ACTION_ESHARE_STATUS"),
 
@@ -54,6 +67,7 @@ fun String?.toIAction(): IAction? {
     var action: IAction? = null
 
     arrayListOf(
+        BleAction.from(this),
         EShareAction.from(this),
         ESightBleAction.from(this),
         HotspotAction.from(this),

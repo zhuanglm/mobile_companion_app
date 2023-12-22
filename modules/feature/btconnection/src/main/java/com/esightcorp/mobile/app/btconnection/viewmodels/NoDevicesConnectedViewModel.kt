@@ -14,7 +14,6 @@ import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
-import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,16 +38,8 @@ class NoDevicesConnectedViewModel @Inject constructor(
      * Interface to receive callbacks from the bluetooth repository
      */
     private val btRepositoryListener = object : BluetoothConnectionRepositoryCallback {
-        override fun scanStatus(isScanning: ScanningStatus) {
-            //not needed on this particular screen
-        }
-
-        override fun deviceListReady(deviceList: MutableList<String>) {
-            //Not needed on this particular screen
-        }
-
         @SuppressLint("MissingPermission")
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
             updateBtConnectedState(connected, device.name)
         }
 
@@ -77,9 +68,9 @@ class NoDevicesConnectedViewModel @Inject constructor(
         currentState.copy(isBtEnabled = state)
     }
 
-    private fun updateBtConnectedState(state: Boolean, device: String) =
+    private fun updateBtConnectedState(state: Boolean?, device: String) =
         _uiState.update { currentState ->
-            currentState.copy(btConnectionStatus = state, connectedDevice = device)
+            currentState.copy(btConnectionStatus = (state == true), connectedDevice = device)
         }
 
     //endregion

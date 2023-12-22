@@ -9,9 +9,8 @@ import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepositor
 import com.esightcorp.mobile.app.settings.repositories.SettingsRepository
 import com.esightcorp.mobile.app.settings.state.SettingsUiState
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
-import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.ui.extensions.navigate
-import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,13 +34,9 @@ class SettingsViewModel @Inject constructor(
         with(btConnRepo) {
             registerListener(
                 object : BluetoothConnectionRepositoryCallback {
-                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean) {
+                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
                         _settingsUiState.update { it.copy(isConnected = connected) }
                     }
-
-                    override fun scanStatus(isScanning: ScanningStatus) {}
-
-                    override fun deviceListReady(deviceList: MutableList<String>) {}
 
                     override fun onBtStateUpdate(enabled: Boolean) {}
                 },

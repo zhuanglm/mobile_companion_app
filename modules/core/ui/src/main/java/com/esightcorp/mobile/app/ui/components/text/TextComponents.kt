@@ -119,7 +119,6 @@ fun ButtonText(
         fontWeight = FontWeight.Bold,
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,
-        maxLines = 1,
         textAlign = textAlign,
     )
 }

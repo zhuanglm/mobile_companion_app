@@ -17,10 +17,6 @@ fun FeedbackButton(
 ) {
     SupportButtonTemplate(
         onClick = onFeedbackClick,
-        modifier = modifier.defaultMinSize(
-            minHeight = dimensionResource(id = R.dimen.min_dimension_touch_area),
-            minWidth = dimensionResource(id = R.dimen.min_dimension_touch_area)
-        ),
         painter = painterResource(id = R.drawable.round_chat_bubble_outline_24),
         text = stringResource(id = R.string.kFeedbackButtonText)
     )

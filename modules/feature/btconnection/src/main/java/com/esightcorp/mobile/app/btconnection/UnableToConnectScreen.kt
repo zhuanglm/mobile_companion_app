@@ -51,7 +51,6 @@ fun UnableToConnectScreenPreview() = MaterialTheme {
     )
 }
 
-//region Internal implementation
 @Composable
 private fun UnableToConnectBody(modifier: Modifier,
                                 onTryAgainClicked: OnActionCallback) {

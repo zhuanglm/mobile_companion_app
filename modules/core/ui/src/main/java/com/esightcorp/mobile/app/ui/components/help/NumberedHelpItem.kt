@@ -1,50 +1,57 @@
 package com.esightcorp.mobile.app.ui.components.help
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.esightcorp.mobile.app.ui.components.ButtonText
-import com.esightcorp.mobile.app.ui.components.Header1Text
+import androidx.compose.ui.unit.sp
 import com.esightcorp.mobile.app.ui.components.WrappableButtonText
 
+fun Modifier.badgeLayout() =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
 
+        // based on the expectation of only one line of text
+        val minPadding = placeable.height / 4
+
+        val width = maxOf(placeable.width + minPadding, placeable.height)
+        layout(width, placeable.height) {
+            placeable.place((width - placeable.width) / 2, 0)
+        }
+    }
 @Composable
 fun HelpItemNumber(
     number: Int = 1,
-    modifier: Modifier = Modifier,
-    shape: Shape = CircleShape,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.onPrimary
 ) {
-    Surface(
-        modifier = Modifier
-            .size(60.dp)
-            .padding(8.dp),
-        shape = CircleShape,
-        color = MaterialTheme.colors.primary,
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            Header1Text(
-                text = number.toString(),
-                color = color,
-                modifier = Modifier)
-        }
+    Box(contentAlignment = Alignment.Center,
+        modifier = modifier.padding(8.dp)) {
+        Text(
+            text = number.toString(),
+            modifier = modifier.background(MaterialTheme.colors.primary, shape = CircleShape).badgeLayout(),
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 30.sp,
+            fontFamily = FontFamily.SansSerif,
+            color = color,
+        )
     }
+
 }
 
 @Composable
 fun HelpItemText(
-    modifier: Modifier = Modifier,
     text: String = "This is a test",
     color: Color = MaterialTheme.colors.secondary,
 ) {
@@ -71,11 +78,9 @@ fun NumberedHelpItem(
         HelpItemNumber(
             number = number,
             modifier = Modifier,
-            shape = CircleShape,
             color = numberColor,
         )
         HelpItemText(
-            modifier = Modifier,
             text = text,
             color = textColor,
         )

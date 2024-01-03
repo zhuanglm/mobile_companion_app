@@ -36,9 +36,6 @@ android {
         release {
             minifyEnabled true
 
-            // TODO: Change this to false in actual release build!!!
-            debuggable true
-
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ext.config = getProps('../config/release.properties')

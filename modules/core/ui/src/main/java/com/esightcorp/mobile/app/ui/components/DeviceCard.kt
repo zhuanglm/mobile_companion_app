@@ -11,20 +11,24 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.Button2Text
 import com.esightcorp.mobile.app.ui.components.text.ButtonText
+import com.esightcorp.mobile.app.ui.components.text.WrappableButton2Text
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceCard(
-    deviceModel: String = "eSight Go",
+    deviceModel: String = stringResource(R.string.ego_model_name),
     serialNumber: String = "31415962",
     containerColor: Color = MaterialTheme.colors.secondary,
     borderColor: Color = MaterialTheme.colors.primary,
@@ -47,17 +51,19 @@ fun DeviceCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxHeight()
+                .padding(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            ImageForDeviceCard(Modifier.weight(0.7F))
+            ImageForDeviceCard(Modifier.weight(1F))
+            Spacer(modifier = Modifier.size(10.dp))
             Column(
                 modifier = Modifier
-                    .padding(20.dp)
                     .weight(1F), horizontalAlignment = Alignment.Start
             ) {
-                ButtonText(text = deviceModel, modifier = Modifier)
-                Button2Text(text = "S/N: $serialNumber", modifier = Modifier)
+                ButtonText(text = stringResource(R.string.ego_model_name), modifier = Modifier)
+                WrappableButton2Text(text = "S/N: $serialNumber", modifier = Modifier, textAlign = TextAlign.Start)
             }
 
 
@@ -67,13 +73,13 @@ fun DeviceCard(
 
 @Composable
 fun YellowDeviceCard(
-    deviceModel: String = "eSight Go",
+    deviceModel: String = stringResource(R.string.ego_model_name),
     serialNumber: String = "####$$$$",
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     DeviceCard(
-        deviceModel = deviceModel,
+        deviceModel = stringResource(R.string.ego_model_name),
         serialNumber = serialNumber,
         border = false,
         containerColor = MaterialTheme.colors.primary,
@@ -88,16 +94,14 @@ fun ImageForDeviceCard(
 ) {
     Image(
         painter = painterResource(id = R.drawable.glasses),
-        contentDescription = "Temporary image for the eSight Go",
-        modifier = modifier.size(76.dp),
-        colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary)
-    )
+        contentDescription = "Image of the eSight Go",
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight())
 }
 
 @Preview
 @Composable
 fun ConnectedDeviceCardPreview() {
-//ImageForDeviceCard()
-//    DeviceCard()
-//    YellowDeviceCard()
+
 }

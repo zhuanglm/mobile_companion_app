@@ -1,6 +1,5 @@
 package com.esightcorp.mobile.app.ui.components.help
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -16,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.esightcorp.mobile.app.ui.components.WrappableButtonText
+import com.esightcorp.mobile.app.ui.components.text.WrappableButtonText
 
 fun Modifier.badgeLayout() =
     layout { measurable, constraints ->

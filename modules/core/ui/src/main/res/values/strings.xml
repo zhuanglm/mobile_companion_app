@@ -24,6 +24,7 @@
     <string name="settings_disconnect_esight_confirm">Are you sure you want to disconnect?</string>
     <string name="label_btn_disconnect">Disconnect</string>
     <string name="label_settings_disconnecting_esight">Disconnecting from eSight</string>
+    <string name="ego_model_name">eSight Go</string>
 
     <!--    <string name="wifi_advanced_BT_finishButton">Connect to network</string>-->
 

@@ -145,7 +145,8 @@ fun WrappableButtonText(
 fun Button2Text(
     modifier: Modifier,
     text: String = "Text goes here",
-    color: Color = MaterialTheme.colors.onPrimary
+    color: Color = MaterialTheme.colors.onPrimary,
+    textAlign: TextAlign = TextAlign.Center
 ) {
     Text(
         text = text,
@@ -155,7 +156,7 @@ fun Button2Text(
         fontFamily = FontFamily.SansSerif,
         maxLines = 1,
         color = color,
-        textAlign = TextAlign.Center
+        textAlign = textAlign
     )
 }
 
@@ -163,7 +164,9 @@ fun Button2Text(
 fun WrappableButton2Text(
     modifier: Modifier = Modifier,
     text: String = "Text goes here",
-    color: Color = MaterialTheme.colors.onPrimary
+    color: Color = MaterialTheme.colors.onPrimary,
+    textAlign: TextAlign = TextAlign.Center
+
 ) {
     Text(
         text = text,
@@ -172,6 +175,6 @@ fun WrappableButton2Text(
         fontSize = 18.sp,
         fontFamily = FontFamily.SansSerif,
         color = color,
-        textAlign = TextAlign.Center
+        textAlign = textAlign
     )
 }

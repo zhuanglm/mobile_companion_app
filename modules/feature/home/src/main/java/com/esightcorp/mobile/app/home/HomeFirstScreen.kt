@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,8 @@ import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
+private const val TAG = "Home Screen"
+
 @Composable
 fun HomeFirstScreen(
     navController: NavController,
@@ -49,9 +52,6 @@ fun HomeFirstScreen(
         modifier = Modifier
     )
 }
-
-//region Private implementation
-private const val TAG = "Home Screen"
 
 @Composable
 private fun BaseHomeScreen(
@@ -116,7 +116,7 @@ private fun HomeScreenBody(
 
         SquareTileCardLayout(
             modifier = modifier.constrainAs(appContainer) {
-                top.linkTo(deviceCard.bottom)
+                top.linkTo(deviceCard.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
@@ -154,8 +154,11 @@ private fun SquareTileCardLayout(
         }
     )
 
+    val configuration = LocalConfiguration.current
+    val adaptiveCells = (configuration.fontScale * 150).dp
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(adaptiveCells),
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(25.dp),
     ) {
@@ -164,10 +167,8 @@ private fun SquareTileCardLayout(
                 text = stringResource(card.labelId),
                 painter = painterResource(id = card.iconResId),
                 onClick = card.onClick,
-                modifier = modifier.padding(top = 25.dp),
+                modifier = modifier.padding( top = 25.dp ),
             )
         }
     }
 }
-
-//endregion

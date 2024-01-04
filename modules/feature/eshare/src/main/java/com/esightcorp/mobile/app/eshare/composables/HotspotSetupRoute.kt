@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -161,6 +162,9 @@ private fun HotspotSetupBody(
             ItemSpacer()
         }
 
+        val configuration = LocalConfiguration.current
+        val adaptiveSize = (configuration.fontScale * 125).dp
+
         IconAndTextSquareButton(
             text = stringResource(R.string.kHomeRootViewConnectedeShareButtonText),
             painter = painterResource(R.drawable.baseline_camera_alt_24),
@@ -172,7 +176,7 @@ private fun HotspotSetupBody(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-                .size(125.dp)
+                .size(adaptiveSize)
         )
     }
 }

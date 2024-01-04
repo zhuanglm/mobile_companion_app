@@ -112,66 +112,6 @@ private fun UnableToConnectBody(modifier: Modifier,
 }
 //region Internal implementation
 @Composable
-private fun UnableToConnectBody(modifier: Modifier,
-                                onTryAgainClicked: OnActionCallback) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (topBar, header, subtitle, help1, help2, button) = createRefs()
-
-        Header1Text(
-            text = stringResource(id = R.string.kTroubleshootingUnableToConnectTitle),
-            modifier = modifier
-                .constrainAs(header) {
-                    top.linkTo(topBar.bottom, margin = 50.dp)
-                    start.linkTo(parent.start)
-                },
-        )
-
-        Subheader(
-            text = stringResource(id = R.string.kTroubleshootingUnableToConnectSubtitle),
-            modifier = modifier
-                .constrainAs(subtitle) {
-                    top.linkTo(header.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                },
-        )
-
-        NumberedHelpItem(
-            number = 1,
-            text = stringResource(id = R.string.kTroubleshootingInstructionEsightWithinRangeShort),
-            modifier = modifier
-                .constrainAs(help1) {
-                    top.linkTo(subtitle.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-        )
-
-        NumberedHelpItem(
-            number = 2,
-            text = stringResource(id = R.string.kTroubleshootingInstructionsSufficientChargeShort),
-            modifier = modifier
-                .constrainAs(help2) {
-                    top.linkTo(help1.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-        )
-
-        TextRectangularButton(
-            onClick = onTryAgainClicked,
-            modifier = modifier
-                .constrainAs(button) {
-                    top.linkTo(help2.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            text = stringResource(id = R.string.kTryAgainButtonTitle)
-        )
-    }
-
-}
-//region Internal implementation
-@Composable
 internal fun UnableToConnectScreen(
     modifier: Modifier = Modifier,
     onBackButtonClicked: () -> Unit,

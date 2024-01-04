@@ -50,9 +50,16 @@ private fun EshareSetupWifiScreen(
     onBackButtonInvoked = { onBackPressed?.invoke(navController) },
     onSettingsButtonInvoked = { },
     bottomButton = { SetupHotspotButton { onSetupHotspotPressed?.invoke(navController) } },
+    bottomAlignedContent = {
+        BodyText(
+            text = stringResource(R.string.kEshareViewControllerWifiNotConnectedFooterText),
+            modifier,
+            MaterialTheme.colors.onSurface,
+        )
+    }
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (header, subHeader, button, footer) = createRefs()
+        val (header, subHeader, button) = createRefs()
 
         Header1Text(
             text = stringResource(R.string.kConnectWifiLabelText),
@@ -75,14 +82,6 @@ private fun EshareSetupWifiScreen(
             },
             text = stringResource(R.string.kConnectWifiLabelText),
             iconDrawableId = R.drawable.round_wifi_24,
-        )
-
-        BodyText(
-            text = stringResource(R.string.kEshareViewControllerWifiNotConnectedFooterText),
-            modifier = modifier.constrainAs(footer) {
-                bottom.linkTo(parent.bottom, margin = 10.dp)
-            },
-            MaterialTheme.colors.onSurface,
         )
     }
 }

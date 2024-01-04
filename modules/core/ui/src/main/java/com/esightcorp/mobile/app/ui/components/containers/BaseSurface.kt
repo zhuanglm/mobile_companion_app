@@ -123,6 +123,20 @@ fun BaseScreenPreview() {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun HomeBaseScreenPreview() {
+    MaterialTheme {
+        HomeBaseScreen(modifier = Modifier,
+            showBackButton = true,
+            showSettingsButton = true,
+            onBackButtonInvoked = {},
+            onSettingsButtonInvoked = {},
+            bottomButton = { Text("This is a bottom button") },
+            everythingElse = { Text("This is the content of the screen") })
+    }
+}
+
 @Composable
 fun HomeBaseScreen(
     modifier: Modifier,
@@ -133,44 +147,39 @@ fun HomeBaseScreen(
     bottomButton: @Composable () -> Unit,
     everythingElse: @Composable () -> Unit,
 ) {
-    BaseSurface(modifier = modifier) {
-        ConstraintLayout(modifier = modifier.fillMaxSize()) {
-            val (topAppBar, everything, btBtn) = createRefs()
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
+
+        backgroundColor = MaterialTheme.colors.surface,
+
+        topBar = {
             ESightTopAppBar(
                 showBackButton = showBackButton,
                 showSettingsButton = showSettingsButton,
                 onBackButtonInvoked = onBackButtonInvoked,
                 onSettingsButtonInvoked = onSettingsButtonInvoked,
-                modifier = modifier.constrainAs(topAppBar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+                modifier
             )
-            Box(modifier = modifier
-                .padding(25.dp, 30.dp, 25.dp, 0.dp)
-                .constrainAs(everything) {
-                    top.linkTo(topAppBar.bottom, margin = 35.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(btBtn.top)
-                }
-                .fillMaxSize()) {
-                everythingElse()
-            }
-
-            Box(
-                modifier = modifier
-                    .constrainAs(btBtn) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
+        },
+        bottomBar = {
+                Box(modifier = Modifier
                     .fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                bottomButton()
-            }
+                    contentAlignment = Alignment.Center
+                ) {
+                    bottomButton()
+                }
+
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
+                .fillMaxSize()
+        ) {
+            everythingElse()
+
         }
     }
 }

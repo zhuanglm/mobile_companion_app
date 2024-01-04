@@ -1,5 +1,6 @@
 package com.esightcorp.mobile.app.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -52,7 +54,7 @@ internal fun BaseHomeScreen(
     homeUiState: HomeUiState,
     navController: NavController,
     device: String = "0123456",
-    modifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) }
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
@@ -69,7 +71,7 @@ internal fun BaseHomeScreen(
             modifier = modifier,
             showBackButton = false,
             showSettingsButton = true,
-            onBackButtonInvoked = { /*Unused*/ },
+            onBackButtonInvoked = { },
             onSettingsButtonInvoked = onSettingsButtonInvoked,
             bottomButton = { FeedbackButton(modifier, vm::showFeedbackPage) },
         ) {
@@ -104,14 +106,14 @@ private fun HomeScreenBody(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            onClick = { Unit },
+            onClick = { },
             deviceModel = device.substringBeforeLast('-'),
             serialNumber = device.substringAfterLast('-'),
         )
 
         SquareTileCardLayout(
             modifier = modifier.constrainAs(appContainer) {
-                top.linkTo(deviceCard.bottom)
+                top.linkTo(deviceCard.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
@@ -140,17 +142,22 @@ fun SquareTileCardLayout(
         vm.navigateToShareYourView(navController)
     })
 
+    val configuration = LocalConfiguration.
+    current
+    val adaptiveCells = (configuration.fontScale * 150).dp
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Adaptive(adaptiveCells),
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(25.dp),
     ) {
-        itemsIndexed(cards) { _, card ->
+        itemsIndexed(cards)
+        { _, card ->
             IconAndTextSquareButton(
                 text = card.text,
-                painter = painterResource(id = card.iconResId),
+                painter = painterResource( id = card.iconResId ),
                 onClick = card.onClick,
-                modifier = modifier.padding(0.dp, 25.dp, 0.dp, 0.dp),
+                modifier = modifier.padding( top = 25.dp ),
             )
         }
     }

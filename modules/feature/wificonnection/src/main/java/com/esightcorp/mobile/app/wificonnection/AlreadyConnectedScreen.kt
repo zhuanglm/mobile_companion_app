@@ -1,85 +1,96 @@
 package com.esightcorp.mobile.app.wificonnection
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
+import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.Subheader
-import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
-import com.esightcorp.mobile.app.wificonnection.state.AlreadyConnectedUiState
-import com.esightcorp.mobile.app.wificonnection.viewmodels.AlreadyConnectedViewModel
-import com.esightcorp.mobile.app.ui.R
 
 @Composable
 fun AlreadyConnectedRoute(
     navController: NavController,
-    vm: AlreadyConnectedViewModel = hiltViewModel(),
 ) {
-    val uiState by vm.uiState.collectAsState()
     AlreadyConnectedScreen(
-        navController = navController, vm = vm, modifier = Modifier, uiState = uiState
+        navController = navController, modifier = Modifier
     )
 }
 
-
+@Preview
+@Composable
+private fun AlreadyConnectedScreenPreview() = MaterialTheme {
+    AlreadyConnectedScreen(
+        navController = rememberNavController(),
+        modifier = Modifier,
+        onBackPressed = {},
+    )
+}
 @Composable
 internal fun AlreadyConnectedScreen(
     navController: NavController,
-    vm: AlreadyConnectedViewModel,
     modifier: Modifier = Modifier,
-    uiState: AlreadyConnectedUiState,
     onBackPressed: () -> Unit = { navController.popBackStack() },
 ) {
-    val TAG = "AlreadyConnectedScreen"
-    Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
-        ConstraintLayout(modifier = modifier.fillMaxSize()) {
-            val (topBar, headerText, header2Text, helpText, button) = createRefs()
-            ESightTopAppBar(showBackButton = true,
-                showSettingsButton = false,
-                onBackButtonInvoked = onBackPressed,
-                onSettingsButtonInvoked = { /*Not shown*/ },
-                modifier = modifier.constrainAs(topBar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
 
-            Header1Text(text = stringResource(id =R.string.kWifiConnectedTitle), modifier = modifier.constrainAs(headerText) {
-                top.linkTo(topBar.bottom)
+        BaseScreen(
+            modifier = modifier,
+            showBackButton = true,
+            showSettingsButton = false,
+            onBackButtonInvoked = onBackPressed,
+            isBottomButtonNeeded = false,
+            bottomButton = {}) {
+            AlreadyConnectedScreenBody(modifier = modifier, navController = navController)
+        }
+}
+
+@Composable
+private fun AlreadyConnectedScreenBody(
+    modifier: Modifier,
+    navController: NavController
+) {
+     ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (headerText, header2Text, helpText, button) = createRefs()
+
+        Header1Text(text = stringResource(id =R.string.kWifiConnectedTitle), modifier = modifier.constrainAs(headerText) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        })
+
+        Subheader(text = stringResource(id = R.string.kWifiAlreadyConnectedSubtitle),
+            modifier = modifier.constrainAs(header2Text) {
+                top.linkTo(headerText.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             })
 
-            Subheader(text = stringResource(id = R.string.kWifiAlreadyConnectedSubtitle),
-                modifier = modifier.constrainAs(header2Text) {
-                    top.linkTo(headerText.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
+        Subheader(text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
+            modifier = modifier.constrainAs(helpText) {
+                top.linkTo(header2Text.bottom, margin = 20.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            })
 
-            Header1Text(text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
-                modifier = modifier.constrainAs(helpText) {
-                    top.linkTo(header2Text.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                })
-
-            TextRectangularButton(
-                onClick = { Log.i(TAG, "AlreadyConnectedScreen: ") },
-                modifier = modifier,
-                text = stringResource(id = R.string.kConnectWifiLabelText),
-            )
-        }
-
+        IconAndTextRectangularButton(
+            onClick = {
+                navController.navigate("searching_for_networks/bluetooth")
+            },
+            modifier = modifier.constrainAs(button) {
+                top.linkTo(helpText.bottom, margin = 8.dp)
+            },
+            icon = ImageVector.vectorResource(id = R.drawable.round_wifi_24),
+            text = stringResource(id = R.string.kConnectWifiLabelText)
+        )
     }
 }

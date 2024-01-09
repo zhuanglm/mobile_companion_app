@@ -20,7 +20,6 @@ object eSightBleManager {
     private var bleDeviceList: MutableList<BluetoothDevice> = mutableListOf()
     private var modelListener: BluetoothModelListener? = null
     private var eshareBluetoothListener: EshareBluetoothModelListener? = null
-    private var btConnectionListener: BluetoothConnectionListener? = null
 
     var hotspotListener: HotspotModelListener? = null
 
@@ -51,10 +50,6 @@ object eSightBleManager {
         return eshareBluetoothListener
     }
 
-    fun getBluetoothConnectionListener(): BluetoothConnectionListener? {
-        return btConnectionListener
-    }
-
     /**
      * returns true when device is added to the device list
      * returns false when device is already in the device list OR when device does not contain part of our bt name
@@ -68,11 +63,9 @@ object eSightBleManager {
         var added = false
 
         do {
-            if (!device.name.contains(DEVICE_NAME_CRITERION))
-                break
+            if (!device.name.contains(DEVICE_NAME_CRITERION)) break
 
-            if (bleDeviceList.find { it.address == device.address } != null)
-                break
+            if (bleDeviceList.find { it.address == device.address } != null) break
 
             added = bleDeviceList.add(device)
             Log.d(_tag, "addToBleDeviceList: ${device.name} ($device) --> $added")
@@ -114,16 +107,32 @@ object eSightBleManager {
         return this.connectedDevice
     }
 
-    fun setupBleService(service: BleService) {
+    @Synchronized
+    fun setBleService(service: BleService?) {
         this.bleService = service
     }
 
-    fun resetBleService() {
-        this.bleService = null
+    /**
+     * Retrieve a BleService instance (as-is)
+     *
+     * @return service instance
+     */
+    @Synchronized
+    fun getBleService(): BleService? {
+        return bleService
     }
 
-    fun getBleService(): BleService? {
-        return this.bleService
+    /**
+     * Retrieve a **connected** BleService if any
+     *
+     * @return
+     *   * a BLE service instance (nullable) if a connection has been established
+     *   * `null` if there is no active connection
+     */
+    @Synchronized
+    fun getConnectedBleService() = when (checkIfConnected()) {
+        false -> null
+        true -> bleService
     }
 
     @Synchronized

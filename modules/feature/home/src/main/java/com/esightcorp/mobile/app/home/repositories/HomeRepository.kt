@@ -5,33 +5,34 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
-import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) {
     private val bluetoothModel: BluetoothModel
     private lateinit var repoListener: HomeRepositoryListener
-    private val modelListener = object : BluetoothModelListener {
-        override fun onDeviceDisconnected(device: BluetoothDevice) {
-            repoListener.onBluetoothDeviceDisconnected()
-        }
-
-        override fun onBluetoothEnabled() {
-            repoListener.onBluetoothEnabled()
-        }
-
-        override fun onBluetoothDisabled() {
-            repoListener.onBluetoothDisabled()
-            eSightBleManager.resetConnectedDevice()
-        }
-    }
 
     init {
-        bluetoothModel = BluetoothModel(context = context)
-        eSightBleManager.setModelListener(modelListener)
+        bluetoothModel = BluetoothModel(context).apply {
+            bleManager.setModelListener(
+                object : BluetoothModelListener {
+                    override fun onDeviceDisconnected(device: BluetoothDevice) {
+                        repoListener.onBluetoothDeviceDisconnected()
+                    }
+
+                    override fun onBluetoothEnabled() {
+                        repoListener.onBluetoothEnabled()
+                    }
+
+                    override fun onBluetoothDisabled() {
+                        repoListener.onBluetoothDisabled()
+                        bleManager.resetConnectedDevice()
+                    }
+                },
+            )
+        }
     }
 
     fun registerListener(listener: HomeRepositoryListener) {
@@ -40,6 +41,6 @@ class HomeRepository @Inject constructor(
 
     @SuppressLint("MissingPermission")
     fun getConnectedDevice(): String? {
-        return eSightBleManager.getConnectedDevice()?.name
+        return bluetoothModel.bleManager.getConnectedDevice()?.name
     }
 }

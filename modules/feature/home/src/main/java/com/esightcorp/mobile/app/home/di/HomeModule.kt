@@ -1,8 +1,8 @@
 package com.esightcorp.mobile.app.home.di
 
 import android.content.Context
-import com.esightcorp.mobile.app.bluetooth.IBleEventListener
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
+import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,12 +13,10 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object HomeModule {
-
     @ViewModelScoped
     @Provides
-    fun provideHomeRepository(
-        @ApplicationContext context: Context,
-        bleEventListener: IBleEventListener,
-    ) = HomeRepository(context, bleEventListener)
+    fun provideHomeRepository(@ApplicationContext context: Context): HomeRepository{
+        return HomeRepository(context)
+    }
 
 }

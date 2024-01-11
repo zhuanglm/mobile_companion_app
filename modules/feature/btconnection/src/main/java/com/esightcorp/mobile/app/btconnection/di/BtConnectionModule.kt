@@ -1,7 +1,6 @@
 package com.esightcorp.mobile.app.btconnection.di
 
 import android.content.Context
-import com.esightcorp.mobile.app.bluetooth.IBleEventListener
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
 import dagger.Module
 import dagger.Provides
@@ -16,10 +15,7 @@ object BtConnectionModule {
 
     @Provides
     @Singleton
-    fun provideBluetoothRepository(
-        @ApplicationContext context: Context,
-        bleEventListener: IBleEventListener,
-    ): BtConnectionRepository {
-        return BtConnectionRepository(context, bleEventListener)
+    fun provideBluetoothRepository(@ApplicationContext context: Context): BtConnectionRepository{
+        return BtConnectionRepository(context)
     }
 }

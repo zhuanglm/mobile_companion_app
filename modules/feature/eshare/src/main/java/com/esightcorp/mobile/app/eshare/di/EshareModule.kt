@@ -1,7 +1,6 @@
 package com.esightcorp.mobile.app.eshare.di
 
 import android.content.Context
-import com.esightcorp.mobile.app.bluetooth.IBleEventListener
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import dagger.Module
 import dagger.Provides
@@ -13,11 +12,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object EshareModule {
-
     @Provides
     @Singleton
-    fun provideEshareRepository(
-        @ApplicationContext context: Context,
-        bleEventListener: IBleEventListener,
-    ) = EshareRepository(context, bleEventListener)
+    fun provideEshareRepository(@ApplicationContext context: Context) = EshareRepository(context)
 }

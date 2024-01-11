@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.util.Log
 import android.view.Surface
+import com.esightcorp.mobile.app.bluetooth.IBleEventListener
 import com.esightcorp.mobile.app.bluetooth.BluetoothConnectionListener
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothRadioListener
@@ -25,7 +26,8 @@ import java.io.InputStream
 import javax.inject.Inject
 
 class EshareRepository @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
+    bleEventListener: IBleEventListener,
 ) : BluetoothRadioListener, BluetoothConnectionListener, SystemStatusListener,
     EshareBluetoothModelListener, HotspotModelListener {
 
@@ -38,11 +40,15 @@ class EshareRepository @Inject constructor(
     private var lastHotspotStatus: HotspotStatus? = null
 
     init {
-        bluetoothModel = BluetoothModel(context)
-        with(bluetoothModel.bleManager) {
-            setEshareBluetoothListener(this@EshareRepository)
-            hotspotListener = this@EshareRepository
+        bluetoothModel = BluetoothModel(context).apply {
+            initialize(bleEventListener = bleEventListener)
+
+            with(bleManager) {
+                setEshareBluetoothListener(this@EshareRepository)
+                hotspotListener = this@EshareRepository
+            }
         }
+
         wifiModel = WifiModel(context)
     }
 

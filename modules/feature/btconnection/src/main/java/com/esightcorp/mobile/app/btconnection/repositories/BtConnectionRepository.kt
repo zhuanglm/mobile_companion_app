@@ -6,6 +6,7 @@ import android.content.Context
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
+import com.esightcorp.mobile.app.bluetooth.IBleEventListener
 import com.esightcorp.mobile.app.utils.BleConnectionStatus
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class BtConnectionRepository @Inject constructor(
     @ApplicationContext context: Context,
+    bleEventListener: IBleEventListener,
 ) {
     private val _tag = this.javaClass.simpleName
 
@@ -68,7 +70,10 @@ class BtConnectionRepository @Inject constructor(
      * First constructor here is init{}, as don't have any other constructors here.
      */
     init {
+        Log.w(_tag, "bleEventListener - $bleEventListener")
         bluetoothModel = BluetoothModel(context)
+        //TODO: just to verify the callback - remove it when verification is done!!!
+        bleEventListener.onDisconnected()
     }
 
     fun checkBtEnabledStatus() {

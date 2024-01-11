@@ -57,6 +57,14 @@ class BluetoothModel(
     val bleService = bleManager.getConnectedBleService()
         @Synchronized get
 
+    fun initialize(
+        modelListener: BluetoothModelListener? = null,
+        bleEventListener: IBleEventListener? = null,
+    ) {
+        modelListener?.let { bleManager.setModelListener(it) }
+        this.bleEventListener = bleEventListener
+    }
+
     @Synchronized
     fun registerEshareReceiver() {
         context.safeRegisterReceiver(eShareReceiver, makeEShareIntentFilter())
@@ -110,6 +118,8 @@ class BluetoothModel(
 
     private val handler = Handler(Looper.getMainLooper())
 
+    private var bleEventListener: IBleEventListener? = null
+
     /**
      * receiver to capture changes to the connection state
      */
@@ -134,6 +144,9 @@ class BluetoothModel(
                         bleManager.getModelListener()?.onDeviceDisconnected(it)
                     }
                     bleManager.resetConnectedDevice()
+
+                    // Notify disconnected event
+                    bleEventListener?.onDisconnected()
                 }
             }
         }

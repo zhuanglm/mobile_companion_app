@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.btconnection.BtConnectedRoute
 import com.esightcorp.mobile.app.btconnection.BtConnectingRoute
+import com.esightcorp.mobile.app.btconnection.BtConnectionLostRoute
 import com.esightcorp.mobile.app.btconnection.BtDevicesRoute
 import com.esightcorp.mobile.app.btconnection.BtDisabledScreen
 import com.esightcorp.mobile.app.btconnection.BtSearchingRoute
@@ -16,6 +17,7 @@ import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnecte
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectingRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtDisabledScreen
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtSearchingRoute
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.DeviceDisconnectedRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.IncomingRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.NoDeviceConnectedRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.NoDevicesFoundRoute
@@ -33,6 +35,7 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         composable(NoDevicesFoundRoute) { NoDevicesFoundRoute(navController) }
         composable(BtConnectingRoute) { BtConnectingRoute(navController) }
         composable(BtConnectedRoute) { BtConnectedRoute(navController) }
+        composable(DeviceDisconnectedRoute) { BtConnectionLostRoute(navController) }
 
         composable(BtDisabledScreen) { BtDisabledScreen(navController) }
         composable(UnableToConnectRoute) { UnableToConnectRoute(navController) }

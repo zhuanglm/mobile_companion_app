@@ -28,6 +28,7 @@ sealed class BtConnectionNavigation(override val path: String) : Navigation(path
     object BtConnectedRoute : BtConnectionNavigation("bt_connected")
     object BtSearchingRoute : BtConnectionNavigation("bt_searching")
     object NoDevicesFoundRoute : BtConnectionNavigation("no_devices_found_bt")
+    object DeviceDisconnectedRoute : BtConnectionNavigation("bt_device_disconnected")
 
     object BtDisabledScreen : BtConnectionNavigation("bt_disabled")
     object UnableToConnectRoute : BtConnectionNavigation("unable_to_connect_bt")

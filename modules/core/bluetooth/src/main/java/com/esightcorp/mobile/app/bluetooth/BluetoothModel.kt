@@ -10,7 +10,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
-import com.esightcorp.mobile.app.utils.BleConnectionStatus
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 import com.esightcorp.mobile.app.utils.safeRegisterReceiver
 import com.esightcorp.mobile.app.utils.safeUnregisterReceiver
 import java.util.*
@@ -128,7 +128,7 @@ class BluetoothModel(
 
                 BleAction.GATT_CONNECT_FAILED,
                 BleAction.GATT_DISCONNECTED -> {
-                    Log.e(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
+                    Log.w(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
 
                     bleManager.getConnectedDevice()?.let {
                         bleManager.getModelListener()?.onDeviceDisconnected(it)

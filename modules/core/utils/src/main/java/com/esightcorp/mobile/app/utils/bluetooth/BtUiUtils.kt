@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.utils
+package com.esightcorp.mobile.app.utils.bluetooth
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

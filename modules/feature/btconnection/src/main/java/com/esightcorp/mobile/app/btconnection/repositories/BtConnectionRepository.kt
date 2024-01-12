@@ -6,7 +6,7 @@ import android.content.Context
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
-import com.esightcorp.mobile.app.utils.BleConnectionStatus
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

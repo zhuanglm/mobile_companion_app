@@ -36,8 +36,8 @@ import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
-import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
-import com.esightcorp.mobile.app.utils.NavigateToDeviceDisconnected
+import com.esightcorp.mobile.app.utils.bluetooth.NavigateToBluetoothDisabled
+import com.esightcorp.mobile.app.utils.bluetooth.NavigateToDeviceDisconnected
 
 @Composable
 fun EshareConnectedRoute(

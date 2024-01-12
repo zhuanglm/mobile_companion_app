@@ -1,4 +1,4 @@
-package com.esightcorp.mobile.app.utils
+package com.esightcorp.mobile.app.utils.bluetooth
 
 enum class BleConnectionStatus {
     Unknown,

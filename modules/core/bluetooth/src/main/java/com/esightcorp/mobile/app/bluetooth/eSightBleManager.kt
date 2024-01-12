@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.util.Log
-import com.esightcorp.mobile.app.utils.BleConnectionStatus
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 
 @SuppressLint("MissingPermission")
 object eSightBleManager {

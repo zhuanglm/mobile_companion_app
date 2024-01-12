@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
-import com.esightcorp.mobile.app.settings.viewmodels.DeviceDisconnectViewModel
+import com.esightcorp.mobile.app.settings.viewmodels.DisconnectConfirmationViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
@@ -30,9 +30,9 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 
 @Composable
-fun DeviceDisconnectRoute(
+fun DisconnectConfirmationRoute(
     navController: NavController,
-    vwModel: DeviceDisconnectViewModel = hiltViewModel(),
+    vwModel: DisconnectConfirmationViewModel = hiltViewModel(),
 ) {
     val uiState by vwModel.uiState.collectAsState()
 
@@ -48,7 +48,7 @@ fun DeviceDisconnectRoute(
             vwModel.navigateToDisconnectedScreen(navController)
         }
 
-        else -> DisconnectDeviceScreen(
+        else -> DisconnectConfirmationScreen(
             nav = navController,
             onCancelPressed = vwModel::navigateBack,
             onDisconnectPressed = { vwModel.disconnectToESight() },
@@ -58,8 +58,8 @@ fun DeviceDisconnectRoute(
 
 @Preview(showBackground = false)
 @Composable
-fun DisconnectDeviceScreenPreview() = MaterialTheme {
-    DisconnectDeviceScreen(
+private fun DisconnectConfirmationScreenPreview() = MaterialTheme {
+    DisconnectConfirmationScreen(
         nav = rememberNavController(),
         onCancelPressed = { },
         onDisconnectPressed = { },
@@ -68,7 +68,7 @@ fun DisconnectDeviceScreenPreview() = MaterialTheme {
 
 //region Internal impl
 @Composable
-internal fun DisconnectDeviceScreen(
+internal fun DisconnectConfirmationScreen(
     modifier: Modifier = Modifier,
     nav: NavController,
     onCancelPressed: (NavController) -> Unit,

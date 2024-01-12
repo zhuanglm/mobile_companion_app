@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DeviceDisconnectViewModel @Inject constructor(
+class DisconnectConfirmationViewModel @Inject constructor(
     application: Application,
     private val btConnRepo: BtConnectionRepository,
 ) : AndroidViewModel(application) {

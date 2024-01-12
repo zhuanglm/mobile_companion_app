@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.state.WifiSearchingUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiSearchingViewModel
@@ -24,11 +25,25 @@ fun SearchingForNetworksRoute(
     vm: WifiSearchingViewModel = hiltViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
-    Log.d("TAG", "SearchingForNetworksRoute: ")
-    vm.setWifiFlow(flow)
-    if(!uiState.isWifiEnabled){
+    Log.d("TAG", "SearchingForNetworksRoute: {$flow}")
+    LaunchedEffect(Unit ) {
+        vm.setWifiFlow(flow)
+    }
+
+    if (!uiState.isWifiEnabled) {
         NavigateToWifiOffScreen(navController = navController)
-    } else{
+    } else {
+        if (flow == WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION) {
+            if (uiState.isWifiConnected) {
+                vm.navigateToWifiAlreadyConnected(navController)
+            } else {
+                LaunchedEffect(Unit ) {
+                    vm.setWifiFlow(WifiNavigation.ScanningRoute.PARAM_BLUETOOTH)
+                }
+                Log.d("TAG", "Set flow to bluetooth")
+            }
+        }
+
         Log.d("TAG", "SearchingForNetworksRoute: WIFI ENABLED")
         SearchingForNetworksScreen(
             modifier = Modifier,

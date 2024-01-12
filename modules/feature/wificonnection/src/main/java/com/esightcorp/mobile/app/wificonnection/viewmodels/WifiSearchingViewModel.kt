@@ -5,8 +5,8 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiSearchingUiState
@@ -47,11 +47,15 @@ class WifiSearchingViewModel @Inject constructor(
             Log.d(_tag, "onWifiStatusUpdate: $status")
             updateWifiEnabledState(status)
         }
+
+        override fun onWifiAlreadyConnected(status: Boolean) {
+            Log.d(_tag, "onWifiAlreadyConnected: $status")
+            updateWifiStatusState(status)
+        }
     }
 
     init {
         repository.registerListener(repoListener)
-        repository.startWifiScan()
     }
 
     private fun updateScanningStatus(scanningStatus: ScanningStatus) {
@@ -72,9 +76,23 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
+    private fun updateWifiStatusState(status: Boolean) {
+        _uiState.update { state ->
+            state.copy(isWifiConnected = status)
+        }
+    }
+
     fun navigateToWifiNetworksScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route) {
-            popUpTo(WifiConnectionScreens.IncomingNavigationRoute.route) {
+        navController.navigate(WifiNavigation.SelectNetworkRoute.path) {
+            popUpTo(WifiNavigation.IncomingRoute.path) {
+                inclusive = true
+            }
+        }
+    }
+
+    fun navigateToWifiAlreadyConnected(navController: NavController) {
+        navController.navigate(WifiNavigation.AlreadyConnectedRoute.path) {
+            popUpTo(WifiNavigation.IncomingRoute.path) {
                 inclusive = true
             }
         }
@@ -82,5 +100,14 @@ class WifiSearchingViewModel @Inject constructor(
 
     fun setWifiFlow(flow: String?) {
         repository.setWifiFlow(flow!!)
+
+        //start job according to flow type
+        when (flow) {
+            WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION ->
+                repository.readWifiConnectionStatus()
+
+            WifiNavigation.ScanningRoute.PARAM_BLUETOOTH ->
+                repository.startWifiScan()
+        }
     }
 }

@@ -25,4 +25,9 @@ interface WifiNetworkScanListener {
     */
     fun onScanStatusUpdated(status: ScanningStatus): Unit
 
+    /**
+     * Glasses wifi connection status
+     */
+    fun onWifiAlreadyConnected(status: Boolean) {}
+
 }

@@ -11,6 +11,7 @@ object WifiCache {
     enum class WifiFlow {
         QrFlow,
         BluetoothFlow,
+        BleCheckWifiConnectionFlow,
         NotInUse,
     }
 

@@ -11,6 +11,7 @@ import android.os.Build
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleAction
 import com.esightcorp.mobile.app.bluetooth.BleService
+import com.esightcorp.mobile.app.bluetooth.WifiConnectionStatus
 import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
 import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
 import com.esightcorp.mobile.app.networking.sockets.SocketManager
@@ -74,6 +75,14 @@ class WifiModel(
                         else -> {
                             Log.i(_tag, "onReceive: ${intent.data.toString()}")
                         }
+                    }
+
+                    val exData = intent.extras?.getString(BleService.EXTRA_DATA)
+                    when (WifiConnectionStatus.from(exData)) {
+                        WifiConnectionStatus.WIFI_STATUS_ERROR,
+                        WifiConnectionStatus.WIFI_STATUS_NONE -> listener?.alreadyConnectedToWifi(false)
+
+                        else -> listener?.alreadyConnectedToWifi(true)
                     }
                 }
 
@@ -155,7 +164,7 @@ class WifiModel(
     }
 
     private fun makeWifiBleIntentFilter() = IntentFilter().apply {
-        addAction(BleService.ACTION_WIFI_CONNECTION_STATUS)
+        addAction(BleService.ACTION_DATA_AVAILABLE)
         addAction(BleService.ACTION_WIFI_ERROR)
         addAction(BleService.ACTION_WIFI_CONNECTED)
         addAction(BleService.ACTION_ERROR)
@@ -229,6 +238,11 @@ class WifiModel(
             "qr" -> {
                 Log.i(_tag, "setWifiFlow: QR")
                 WifiCache.setWifiFlow(WifiCache.WifiFlow.QrFlow)
+            }
+
+            "check_wifi_connection" -> {
+                Log.i(_tag, "setWifiFlow: Check Wifi Connection")
+                WifiCache.setWifiFlow(WifiCache.WifiFlow.BleCheckWifiConnectionFlow)
             }
 
             else -> {

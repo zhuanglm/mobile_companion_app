@@ -19,6 +19,7 @@ data class WifiConnectionUiState(
 data class WifiSearchingUiState(
     val isWifiEnabled: Boolean = false,
     val isBtEnabled: Boolean = true,
+    val isWifiConnected : Boolean = false,
     val scanningStatus: ScanningStatus = ScanningStatus.Unknown,
 )
 

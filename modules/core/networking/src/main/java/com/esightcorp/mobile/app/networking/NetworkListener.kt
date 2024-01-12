@@ -50,5 +50,5 @@ interface ErrorListener {
 // For special cases and screens
 interface SpecialCaseListener {
     // ConnectedToWifi screen
-    fun alreadyConnectedToWifi()
+    fun alreadyConnectedToWifi(status: Boolean)
 }

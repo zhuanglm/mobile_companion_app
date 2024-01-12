@@ -56,8 +56,9 @@ class WifiConnectionRepository @Inject constructor(
             connectionListener?.onBluetoothStatusUpdate(false)
         }
 
-        override fun alreadyConnectedToWifi() {
-            Log.i(_tag, "AlreadyConnectedToWifi: still need to figure this one out")
+        override fun alreadyConnectedToWifi(status: Boolean) {
+            Log.i(_tag, "AlreadyConnectedToWifi: $status")
+            networkScanListener?.onWifiAlreadyConnected(status)
         }
 
         override fun onErrorTest() {
@@ -135,6 +136,14 @@ class WifiConnectionRepository @Inject constructor(
     }
 
     fun startWifiScan() = wifiModel.startWifiScan()
+
+    fun readWifiConnectionStatus() {
+        with(eSightBleManager) {
+            if (!checkIfConnected()) return@with
+
+            getBleService()?.readWifiConnectionStatus()
+        }
+    }
 
     fun getCachedWifiList() {
         networkScanListener?.onNetworkListUpdated(WifiCache.getNetworkList())

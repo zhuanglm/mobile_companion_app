@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -17,16 +18,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.settings.viewmodels.SettingsViewModel
+import com.esightcorp.mobile.app.ui.components.ItemSpacer
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.FineText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
-import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 
 @Composable
-fun SettingsScreen(navController: NavController, vwModel: SettingsViewModel = hiltViewModel()) =
+fun SettingsScreen(navController: NavController, vwModel: SettingsViewModel = hiltViewModel()) {
+    val uiState = vwModel.settingsUiState.collectAsState().value
+    if (uiState.connState?.isConnectionDropped == true) {
+        LaunchedEffect(Unit) { vwModel.onBleDisconnected(navController) }
+        return
+    }
+
     SettingsScreenBody(navController = navController, vwModel = vwModel)
+}
 
 //region Internal impl
 @Preview(showBackground = true)
@@ -93,10 +101,10 @@ internal fun SettingsMyESight(
     )
 
     val settingState = vwModel?.settingsUiState?.collectAsState()?.value
-    if (settingState?.isConnected == true) {
+    if (settingState?.connState?.isConnected == true) {
         ItemSpacer()
         IconAndTextRectangularButton(
-            onClick = { vwModel.navigateToDisconnect(navController) },
+            onClick = { vwModel.navigateToDisconnectConfirmation(navController) },
             modifier,
             iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_disconnected_24,
             text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewDisconnectButtonText),

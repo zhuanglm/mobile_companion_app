@@ -16,7 +16,7 @@ sealed class HomeNavigation(override val path: String) : Navigation(path) {
 sealed class SettingsNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : SettingsNavigation("settings")
     object EntranceRoute : SettingsNavigation("settings_entrance")
-    object DisconnectRoute : SettingsNavigation("settings_disconnect_device")
+    object DisconnectConfirmationRoute : SettingsNavigation("settings_disconnect_device")
 }
 
 sealed class BtConnectionNavigation(override val path: String) : Navigation(path) {

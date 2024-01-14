@@ -18,16 +18,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
 import com.esightcorp.mobile.app.settings.viewmodels.DisconnectConfirmationViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 
 @Composable
 fun DisconnectConfirmationRoute(
@@ -36,13 +36,18 @@ fun DisconnectConfirmationRoute(
 ) {
     val uiState by vwModel.uiState.collectAsState()
 
-    when (uiState.disconnectState) {
-        State.Disconnecting -> LoadingScreenWithSpinner(
+    if (uiState.isConnectionDropped == true) {
+        LaunchedEffect(Unit) { vwModel.onBleDisconnected(navController) }
+        return
+    }
+
+    when (uiState.state) {
+        BleConnectionStatus.Disconnecting -> LoadingScreenWithSpinner(
             loadingText = stringResource(R.string.label_settings_disconnecting_esight),
             cancelButtonNeeded = false,
         )
 
-        State.Disconnected -> LaunchedEffect(Unit) {
+        BleConnectionStatus.Disconnected -> LaunchedEffect(Unit) {
             // Disconnection has been executed successfully
             // Now navigate to the Not-Connected screen
             vwModel.navigateToDisconnectedScreen(navController)

@@ -12,6 +12,6 @@ fun NavGraphBuilder.addSettingsNavigation(navController: NavController) {
     navigation(startDestination = EntranceRoute.path, route = IncomingRoute.path) {
         composable(EntranceRoute.path) { SettingsScreen(navController) }
 
-        composable(DisconnectRoute.path) { DisconnectConfirmationRoute(navController) }
+        composable(DisconnectConfirmationRoute.path) { DisconnectConfirmationRoute(navController) }
     }
 }

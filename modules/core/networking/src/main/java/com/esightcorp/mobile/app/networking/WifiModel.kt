@@ -240,11 +240,6 @@ class WifiModel(
                 WifiCache.setWifiFlow(WifiCache.WifiFlow.QrFlow)
             }
 
-            "check_wifi_connection" -> {
-                Log.i(_tag, "setWifiFlow: Check Wifi Connection")
-                WifiCache.setWifiFlow(WifiCache.WifiFlow.BleCheckWifiConnectionFlow)
-            }
-
             else -> {
                 Log.e(_tag, "setWifiFlow: Unknown")
             }

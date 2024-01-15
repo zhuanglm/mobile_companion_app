@@ -106,7 +106,8 @@ class WifiSearchingViewModel @Inject constructor(
             WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION ->
                 repository.readWifiConnectionStatus()
 
-            WifiNavigation.ScanningRoute.PARAM_BLUETOOTH ->
+            //bluetooth and QR
+            else ->
                 repository.startWifiScan()
         }
     }

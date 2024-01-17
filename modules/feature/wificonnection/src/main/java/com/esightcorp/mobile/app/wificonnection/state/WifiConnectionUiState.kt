@@ -16,10 +16,12 @@ data class WifiConnectionUiState(
     val bluetoothConnected: Boolean = false,
 )
 
+enum class WifiConnectionStatus { CONNECTED, DISCONNECTED, UNKNOWN }
 data class WifiSearchingUiState(
     val isWifiEnabled: Boolean = false,
     val isBtEnabled: Boolean = true,
     val isWifiConnected : Boolean = false,
+    val wifiConnectionStatus: WifiConnectionStatus = WifiConnectionStatus.UNKNOWN,
     val scanningStatus: ScanningStatus = ScanningStatus.Unknown,
 )
 

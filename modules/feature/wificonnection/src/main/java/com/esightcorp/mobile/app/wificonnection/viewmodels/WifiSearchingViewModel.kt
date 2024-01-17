@@ -9,6 +9,7 @@ import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
+import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus
 import com.esightcorp.mobile.app.wificonnection.state.WifiSearchingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,7 +79,9 @@ class WifiSearchingViewModel @Inject constructor(
 
     private fun updateWifiStatusState(status: Boolean) {
         _uiState.update { state ->
-            state.copy(isWifiConnected = status)
+            state.copy(wifiConnectionStatus =
+            if (status) WifiConnectionStatus.CONNECTED
+            else WifiConnectionStatus.DISCONNECTED)
         }
     }
 

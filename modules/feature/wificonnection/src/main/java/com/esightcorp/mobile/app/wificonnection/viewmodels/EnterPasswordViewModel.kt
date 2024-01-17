@@ -44,6 +44,10 @@ class EnterPasswordViewModel @Inject constructor(
         override fun onWifiStatusUpdate(status: Boolean) {
             Log.i(_tag, "onWifiStatusUpdate: ")
         }
+
+        override fun onWifiAlreadyConnected(status: Boolean) {
+            Log.i(_tag, "onWifiAlreadyConnected: $status")
+        }
     }
 
     init {

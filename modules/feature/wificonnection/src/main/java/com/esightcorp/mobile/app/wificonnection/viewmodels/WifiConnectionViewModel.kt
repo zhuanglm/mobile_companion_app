@@ -53,6 +53,10 @@ class WifiConnectionViewModel @Inject constructor(
         override fun onScanStatusUpdated(status: ScanningStatus) {
             Log.d(TAG, "onScanStatusUpdated: ")
         }
+
+        override fun onWifiAlreadyConnected(status: Boolean) {
+            Log.i(TAG, "onWifiAlreadyConnected: $status")
+        }
     }
 
     init {

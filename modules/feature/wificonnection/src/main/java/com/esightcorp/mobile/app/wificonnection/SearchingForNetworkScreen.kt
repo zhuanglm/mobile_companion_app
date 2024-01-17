@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,6 +16,9 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.CONNECTED
+import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.DISCONNECTED
+import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.UNKNOWN
 import com.esightcorp.mobile.app.wificonnection.state.WifiSearchingUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiSearchingViewModel
 
@@ -26,33 +30,49 @@ fun SearchingForNetworksRoute(
 ) {
     val uiState by vm.uiState.collectAsState()
     Log.d("TAG", "SearchingForNetworksRoute: {$flow}")
-    LaunchedEffect(Unit ) {
+    DisposableEffect(Unit ) {
         vm.setWifiFlow(flow)
+
+        onDispose {
+        }
     }
 
     if (!uiState.isWifiEnabled) {
         NavigateToWifiOffScreen(navController = navController)
     } else {
-        if (flow == WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION) {
-            if (uiState.isWifiConnected) {
-                vm.navigateToWifiAlreadyConnected(navController)
-            } else {
-                LaunchedEffect(Unit ) {
-                    vm.setWifiFlow(WifiNavigation.ScanningRoute.PARAM_BLUETOOTH)
-                }
-                Log.d("TAG", "Set flow to bluetooth")
-            }
+        if (flow != WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION) {
+            Log.d("TAG", "SearchingForNetworksRoute: WIFI ENABLED")
+            SearchingForNetworksScreen(
+                modifier = Modifier,
+                navController = navController,
+                vm = vm,
+                uiState = uiState,
+                loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle)
+            )
         }
-
-        Log.d("TAG", "SearchingForNetworksRoute: WIFI ENABLED")
-        SearchingForNetworksScreen(
-            modifier = Modifier,
-            navController = navController,
-            vm = vm,
-            uiState = uiState,
-            loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle))
     }
 
+    when(uiState.wifiConnectionStatus) {
+        CONNECTED -> {
+            Log.d("TAG", "go to already connected")
+            vm.navigateToWifiAlreadyConnected(navController)
+        }
+        DISCONNECTED ->  {
+            Log.d("TAG", "wifi not connected")
+            LaunchedEffect(Unit ) {
+                vm.setWifiFlow(WifiNavigation.ScanningRoute.PARAM_BLUETOOTH)
+            }
+
+            SearchingForNetworksScreen(
+                modifier = Modifier,
+                navController = navController,
+                vm = vm,
+                uiState = uiState,
+                loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle)
+            )
+        }
+        UNKNOWN ->  Log.d("TAG", "wifi status unknown")
+    }
 }
 
 @Composable

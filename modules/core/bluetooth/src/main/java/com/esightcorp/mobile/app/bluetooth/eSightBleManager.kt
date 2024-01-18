@@ -20,6 +20,7 @@ object eSightBleManager {
     private var bleDeviceList: MutableList<BluetoothDevice> = mutableListOf()
     private var modelListener: BluetoothModelListener? = null
     private var eshareBluetoothListener: EshareBluetoothModelListener? = null
+    private var btConnectionListener: BluetoothConnectionListener? = null
 
     var hotspotListener: HotspotModelListener? = null
 
@@ -36,6 +37,7 @@ object eSightBleManager {
 
     fun setModelListener(listener: BluetoothModelListener) {
         this.modelListener = listener
+        setBluetoothConnectionListener(listener)
     }
 
     fun getModelListener(): BluetoothModelListener? {
@@ -48,6 +50,14 @@ object eSightBleManager {
 
     fun getEshareBluetoothListener(): EshareBluetoothModelListener? {
         return eshareBluetoothListener
+    }
+
+    fun setBluetoothConnectionListener(listener: BluetoothConnectionListener) {
+        this.btConnectionListener = listener
+    }
+
+    fun getBluetoothConnectionListener(): BluetoothConnectionListener? {
+        return btConnectionListener
     }
 
     /**

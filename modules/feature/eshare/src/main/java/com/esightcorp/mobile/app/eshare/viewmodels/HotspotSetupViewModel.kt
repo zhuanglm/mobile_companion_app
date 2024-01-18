@@ -8,7 +8,6 @@ import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository.HotspotCredential
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
-import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
 import com.esightcorp.mobile.app.ui.R
@@ -26,13 +25,17 @@ import javax.inject.Inject
 class HotspotSetupViewModel @Inject constructor(
     private val application: Application,
     eshareRepository: EshareRepository,
-) : EshareViewModel(application), EshareRepositoryListener {
+) : EshareViewModel(application, eshareRepository), EshareRepositoryListener {
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(HotspotSetupUiState())
     val uiState: StateFlow<HotspotSetupUiState> = _uiState.asStateFlow()
 
     init {
+        configureBtConnectionListener {
+            _uiState.update { it.copy(isDeviceConnected = false) }
+        }
+
         eshareRepository.setupEshareListener(this)
 
         when (val hpCredential = eshareRepository.genHotspotCredential()) {
@@ -64,10 +67,6 @@ class HotspotSetupViewModel @Inject constructor(
     //endregion
 
     //region EshareRepositoryListener callback
-    override fun onBluetoothDeviceDisconnected() {
-        updateBluetoothConnectionState(false)
-    }
-
     override fun onBluetoothDisabled() {
         updateBluetoothState(false)
     }
@@ -100,10 +99,6 @@ class HotspotSetupViewModel @Inject constructor(
                 isBtEnabled = uiState.radioState.isBtEnabled, isWifiEnabled = state
             )
         )
-    }
-
-    private fun updateBluetoothConnectionState(state: Boolean) = _uiState.update { uiState ->
-        uiState.copy(isDeviceConnected = DeviceConnectionState(isDeviceConnected = state))
     }
     //endregion
 }

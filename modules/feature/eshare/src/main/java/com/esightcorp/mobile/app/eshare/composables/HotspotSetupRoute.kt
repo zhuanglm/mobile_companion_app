@@ -25,14 +25,14 @@ import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.state.HotspotSetupUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.HotspotSetupViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextSquareButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.UnableToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
@@ -42,7 +42,12 @@ fun HotspotSetupRoute(
     vm: HotspotSetupViewModel = hiltViewModel(),
 ) {
     val uiState by vm.uiState.collectAsState()
-    Log.i(TAG, "hotspotStatus: ${uiState.hotspotStatus}")
+    Log.i(TAG, "hotspotStatus: ${uiState.hotspotStatus}, isConnected: ${uiState.isDeviceConnected}")
+
+    if (!uiState.isDeviceConnected) {
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
+        return
+    }
 
     when (uiState.hotspotStatus) {
         HotspotStatus.ENABLED -> {

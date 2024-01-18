@@ -28,7 +28,8 @@ fun Context.safeUnregisterReceiver(receiver: BroadcastReceiver) {
     try {
         unregisterReceiver(receiver)
     } catch (ex: Throwable) {
-        Log.e(tag, "Unregister receiver failed: ${ex.message}", ex)
+        Log.e(tag, "Unregister receiver failed: ${ex.message}")
+        Log.w(tag, ex)
     }
 }
 

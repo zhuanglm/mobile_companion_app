@@ -34,6 +34,7 @@ class EshareRepository @Inject constructor(
     private val bluetoothModel: BluetoothModel
     private val wifiModel: WifiModel
     private lateinit var eShareRepositoryListener: EshareRepositoryListener
+    private var deviceDisconnectListener: (() -> Unit)? = null
 
     private var lastHotspotStatus: HotspotStatus? = null
 
@@ -41,6 +42,7 @@ class EshareRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
         with(bluetoothModel.bleManager) {
             setEshareBluetoothListener(this@EshareRepository)
+            setBluetoothConnectionListener(this@EshareRepository)
             hotspotListener = this@EshareRepository
         }
         wifiModel = WifiModel(context)
@@ -53,6 +55,10 @@ class EshareRepository @Inject constructor(
     fun setupEshareListener(eshareRepositoryListener: EshareRepositoryListener) {
         this.eShareRepositoryListener = eshareRepositoryListener
         eShareRepositoryListener.onWifiStateChanged(wifiModel.isWifiEnabled())
+    }
+
+    fun setupBtDisconnectListener(listener: () -> Unit) {
+        deviceDisconnectListener = listener
     }
 
     fun startEshareConnection() {
@@ -175,7 +181,8 @@ class EshareRepository @Inject constructor(
 
     //region BluetoothConnectionListener
     override fun onDeviceDisconnected(device: BluetoothDevice) {
-        updateBluetoothDeviceDisconnected()
+        deviceDisconnectListener?.invoke()
+
         bluetoothModel.unregisterEshareReceiver()
         bluetoothModel.unregisterHotspotReceiver()
     }
@@ -307,9 +314,6 @@ class EshareRepository @Inject constructor(
 
     private fun updateInputStream(inputStream: InputStream) =
         eShareRepositoryListener.onInputStreamCreated(inputStream)
-
-    private fun updateBluetoothDeviceDisconnected() =
-        eShareRepositoryListener.onBluetoothDeviceDisconnected()
 
     private fun updateBluetoothRadioDisabled() = eShareRepositoryListener.onBluetoothDisabled()
 

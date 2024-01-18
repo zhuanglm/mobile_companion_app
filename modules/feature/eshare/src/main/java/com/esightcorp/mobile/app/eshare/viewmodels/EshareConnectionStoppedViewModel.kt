@@ -2,6 +2,9 @@ package com.esightcorp.mobile.app.eshare.viewmodels
 
 import android.app.Application
 import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
+import com.esightcorp.mobile.app.eshare.repositories.EShareRepoManager
+import com.esightcorp.mobile.app.eshare.repositories.EShareRepoManagerImpl
+import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.state.EshareStoppedUiState
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
@@ -14,11 +17,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EshareConnectionStoppedViewModel @Inject constructor(
-    application: Application
-) : ESightBaseViewModel(application) {
+    application: Application,
+    private val eshareRepository: EshareRepository,
+) : ESightBaseViewModel(application),
+    EShareRepoManager by EShareRepoManagerImpl(eshareRepository) {
 
     private var _uiState = MutableStateFlow(EshareStoppedUiState())
     val uiState: StateFlow<EshareStoppedUiState> = _uiState.asStateFlow()
+
+    init {
+        configureBtConnectionListener {
+            _uiState.update { it.copy(isDeviceConnected = false) }
+        }
+    }
 
     fun updateState(stoppedReason: EShareStoppedReason?) = when (stoppedReason) {
         EShareStoppedReason.USER_DECLINED -> _uiState.update {

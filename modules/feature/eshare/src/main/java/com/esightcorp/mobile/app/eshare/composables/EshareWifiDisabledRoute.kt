@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,25 +19,34 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
 fun EshareWifiDisabledRoute(
     navController: NavController,
-    vwModel: EshareViewModel = hiltViewModel()
-) = EshareWifiDisabledScreen(
-    navController = navController,
-    onRetryPressed = vwModel::onRetryPressed,
-    onBackPressed = vwModel::gotoMainScreen,
-    onSetupHotspotPressed = vwModel::onSetupHotspotPressed
-)
+    vwModel: EshareViewModel = hiltViewModel(),
+) {
+    vwModel.initialize()
+    val isDeviceConnected by vwModel.devConnectionState.collectAsState()
+    if (!isDeviceConnected) {
+        LaunchedEffect(Unit) { vwModel.onBleDisconnected(navController) }
+        return
+    }
+
+    EshareWifiDisabledScreen(
+        navController = navController,
+        onRetryPressed = vwModel::onRetryPressed,
+        onBackPressed = vwModel::gotoMainScreen,
+        onSetupHotspotPressed = vwModel::onSetupHotspotPressed
+    )
+}
 
 //region Internal implementation
 

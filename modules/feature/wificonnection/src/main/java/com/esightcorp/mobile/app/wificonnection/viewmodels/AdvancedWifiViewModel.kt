@@ -26,8 +26,8 @@ class AdvancedWifiViewModel @Inject constructor(
     val uiState: StateFlow<WifiAdvancedSettingsUiState> = _uiState.asStateFlow()
 
     private val listener = object : WifiConnectionListener {
-        override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.d(_tag, "onBluetoothStatusUpdate: ")
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
+            Log.d(_tag, "onBleConnectionStatusUpdate - connected: $isConnected")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {

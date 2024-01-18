@@ -29,7 +29,7 @@ class EnterPasswordViewModel @Inject constructor(
     val uiState: StateFlow<WifiCredentialsUiState> = _uiState.asStateFlow()
 
     private val scanListener = object : WifiNetworkScanListener {
-        override fun onBluetoothStatusUpdate(status: Boolean) {
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
             Log.i(_tag, "onBluetoothStatusUpdate: ")
         }
 

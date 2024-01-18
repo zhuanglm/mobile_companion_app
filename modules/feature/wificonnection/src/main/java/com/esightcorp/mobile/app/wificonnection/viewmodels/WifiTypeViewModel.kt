@@ -21,34 +21,12 @@ class WifiTypeViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiTypeUiState())
     val uiState: StateFlow<WifiTypeUiState> = _uiState.asStateFlow()
 
-    init {
-
-    }
-
-
-
-    public override fun onCleared() {
-        super.onCleared();
-    }
-
     private fun onWifiTypeSelected(wifiType: String) {
-        _uiState.update {
-            it.copy(
-                wifiType = wifiType
-            )
-        }
+        _uiState.update { it.copy(wifiType = wifiType) }
     }
 
-    fun onTypePressed(navController: NavController, type: String){
+    fun onTypePressed(navController: NavController, type: String) {
         repository.setWifiType(type)
         navController.popBackStack()
     }
-
-
-
-
-
-
-
-
 }

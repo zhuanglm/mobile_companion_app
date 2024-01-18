@@ -28,9 +28,9 @@ class WifiSearchingViewModel @Inject constructor(
     val uiState: StateFlow<WifiSearchingUiState> = _uiState.asStateFlow()
 
     private val repoListener = object : WifiNetworkScanListener {
-        override fun onBluetoothStatusUpdate(status: Boolean) {
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
             Log.i(_tag, "onBluetoothStatusUpdate: ")
-            updateBtEnabledState(status)
+            updateBtEnabledState(isConnected)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {

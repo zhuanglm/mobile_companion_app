@@ -52,8 +52,8 @@ class WifiConnectionRepository @Inject constructor(
 
         override fun onBluetoothDisconnected() {
             Log.i(_tag, "onBluetoothDisconnected: ")
-            networkScanListener?.onBluetoothStatusUpdate(false)
-            connectionListener?.onBluetoothStatusUpdate(false)
+            networkScanListener?.onBleConnectionStatusUpdate(false)
+            connectionListener?.onBleConnectionStatusUpdate(false)
         }
 
         override fun alreadyConnectedToWifi() {
@@ -117,8 +117,8 @@ class WifiConnectionRepository @Inject constructor(
         when (eSightBleManager.checkIfConnected()) {
             false -> {
                 Log.d(_tag, "sendWifiCreds: No bt connection")
-                connectionListener?.onBluetoothStatusUpdate(false)
-                networkScanListener?.onBluetoothStatusUpdate(false)
+                connectionListener?.onBleConnectionStatusUpdate(false)
+                networkScanListener?.onBleConnectionStatusUpdate(false)
             }
 
             true -> {
@@ -153,7 +153,7 @@ class WifiConnectionRepository @Inject constructor(
         Log.d(_tag, "registerListener: $listener")
         with(listener) {
             onWifiStatusUpdate(isWifiEnabled())
-            onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+            onBleConnectionStatusUpdate(eSightBleManager.checkIfConnected())
 
             networkScanListener = this
         }
@@ -163,7 +163,7 @@ class WifiConnectionRepository @Inject constructor(
         Log.d(_tag, "registerListener: $listener")
         with(listener) {
             onWifiStatusUpdate(isWifiEnabled())
-            onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+            onBleConnectionStatusUpdate(eSightBleManager.checkIfConnected())
 
             connectionListener = this
         }

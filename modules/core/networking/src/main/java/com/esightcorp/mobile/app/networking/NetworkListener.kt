@@ -30,7 +30,7 @@ interface SystemStatusListener {
 
     fun onGoWifiDisabled()
 
-    // turn on bluetooth screen & send the user back to the launch screen
+    // Remote BLE device disconnected callback
     fun onBluetoothDisconnected()
 }
 

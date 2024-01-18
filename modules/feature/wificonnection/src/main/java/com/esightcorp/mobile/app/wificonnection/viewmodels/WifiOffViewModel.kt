@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiOffUiState
@@ -14,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,23 +20,24 @@ class WifiOffViewModel @Inject constructor(
     application: Application,
     val repository: WifiConnectionRepository
 ): AndroidViewModel(application) {
-    private val TAG = "WifiOffViewModel"
+    private val _tag = this.javaClass.simpleName
+
     private var _uiState = MutableStateFlow(WifiOffUiState())
     val uiState: StateFlow<WifiOffUiState> = _uiState.asStateFlow()
     private lateinit var navController: NavController
     private val listener = object : WifiNetworkScanListener {
 
-        override fun onBluetoothStatusUpdate(status: Boolean) {
-            _uiState.value = _uiState.value.copy(isBtEnabled = status)
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
+            _uiState.value = _uiState.value.copy(isBtEnabled = isConnected)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            Log.e(TAG, "onNetworkListUpdated: ")
+            Log.e(_tag, "onNetworkListUpdated: ")
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus)
         {
-            Log.e(TAG, "onScanStatusUpdated: This should not be called")
+            Log.e(_tag, "onScanStatusUpdated: This should not be called")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {

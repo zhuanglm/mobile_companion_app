@@ -29,7 +29,7 @@ class SelectNetworkViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(SelectNetworkUiState())
     val uiState: StateFlow<SelectNetworkUiState> = _uiState.asStateFlow()
     private val scanListener = object : WifiNetworkScanListener {
-        override fun onBluetoothStatusUpdate(status: Boolean) {
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
             Log.e(_tag, "onBluetoothStatusUpdate: ")
         }
 

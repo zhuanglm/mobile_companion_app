@@ -41,7 +41,12 @@ private fun AlreadyConnectedScreenPreview() = MaterialTheme {
 internal fun AlreadyConnectedScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = { navController.popBackStack() },
+    onBackPressed: () -> Unit = {
+        navController.navigate("home_first"){
+            popUpTo("home_first"){
+                inclusive = true
+            }
+    } },
 ) {
 
         BaseScreen(

@@ -100,9 +100,22 @@ class WifiSearchingViewModel @Inject constructor(
             }
         }
     }
+    fun onCancelClicked(navController: NavController){
+        Log.i("WifiSearchingViewModel", "onCancelClicked: ")
+        repository.cancelWifiScan()
+        navigateToHome(navController)
+    }
 
-    fun setWifiFlow(flow: String?) {
-        repository.setWifiFlow(flow!!)
+    private fun navigateToHome(navController: NavController){
+        navController.navigate("home_first"){
+            popUpTo("home_first"){
+                inclusive = true
+            }
+        }
+    }
+
+    fun setWifiFlow(flow: String) {
+        repository.setWifiFlow(flow)
 
         //start job according to flow type
         when (flow) {
@@ -110,8 +123,10 @@ class WifiSearchingViewModel @Inject constructor(
                 repository.readWifiConnectionStatus()
 
             //bluetooth and QR
-            else ->
+            else -> {
+                Log.i("WifiSearchingViewModel", "setWifiFlow: start scan")
                 repository.startWifiScan()
+            }
         }
     }
 }

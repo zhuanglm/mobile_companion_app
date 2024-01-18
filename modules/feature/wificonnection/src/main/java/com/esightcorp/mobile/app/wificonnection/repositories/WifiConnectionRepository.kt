@@ -136,6 +136,7 @@ class WifiConnectionRepository @Inject constructor(
     }
 
     fun startWifiScan() = wifiModel.startWifiScan()
+    fun cancelWifiScan() = wifiModel.stopWifiScan()
 
     fun readWifiConnectionStatus() {
         with(eSightBleManager) {

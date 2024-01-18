@@ -24,7 +24,11 @@ open class EshareViewModel @Inject constructor(
     private val _isDeviceConnected = MutableStateFlow(true)
     val devConnectionState: StateFlow<Boolean> = _isDeviceConnected.asStateFlow()
 
-    fun initialize() {
+    init {
+        initialize()
+    }
+
+    private fun initialize() {
         configureBtConnectionListener {
             _isDeviceConnected.update { false }
         }

@@ -14,10 +14,6 @@ class EshareWifiSetupViewModel @Inject constructor(
     eshareRepo: EshareRepository,
 ) : EshareViewModel(application, eshareRepo) {
 
-    init {
-        initialize()
-    }
-
     fun gotoWifiSetup(navController: NavController) = with(navController) {
         navigate(
             target = WifiNavigation.ScanningRoute,

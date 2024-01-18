@@ -2,6 +2,7 @@ package com.esightcorp.mobile.app.eshare.viewmodels
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.bluetooth.HotspotStatus
 import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,8 +34,10 @@ class HotspotSetupViewModel @Inject constructor(
     val uiState: StateFlow<HotspotSetupUiState> = _uiState.asStateFlow()
 
     init {
-        configureBtConnectionListener {
-            _uiState.update { it.copy(isDeviceConnected = false) }
+        viewModelScope.launch {
+            devConnectionState.collect { isConnected ->
+                _uiState.update { it.copy(isDeviceConnected = isConnected) }
+            }
         }
 
         eshareRepository.setupEshareListener(this)

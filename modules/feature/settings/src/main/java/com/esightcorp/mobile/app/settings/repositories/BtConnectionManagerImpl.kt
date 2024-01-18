@@ -15,7 +15,7 @@ class BtConnectionManagerImpl(private val btConnRepo: BtConnectionRepository) :
         with(btConnRepo) {
             registerListener(
                 object : BluetoothConnectionRepositoryCallback {
-                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
+                    override fun onDeviceConnected(device: BluetoothDevice?, connected: Boolean?) {
                         connectionState = connectionState.updateConnectionState(connected)
                         onStateChanged(connectionState)
                     }

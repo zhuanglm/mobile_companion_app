@@ -37,7 +37,7 @@ class BtConnectingViewModel @Inject constructor(
         with(btConnectionRepository) {
             registerListener(
                 object : BluetoothConnectionRepositoryCallback {
-                    override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
+                    override fun onDeviceConnected(device: BluetoothDevice?, connected: Boolean?) {
                         Log.d(_tag, "onDeviceConnected: $device -> $connected")
                         updateDeviceInfo(device, connected)
                     }
@@ -62,13 +62,13 @@ class BtConnectingViewModel @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private fun updateDeviceInfo(device: BluetoothDevice, connected: Boolean?) {
+    private fun updateDeviceInfo(device: BluetoothDevice?, connected: Boolean?) {
         val updateAction = {
             _uiState.update { state ->
                 state.copy(
                     didDeviceConnect = connected,
-                    deviceName = device.name,
-                    deviceAddress = device.address,
+                    deviceName = device?.name,
+                    deviceAddress = device?.address,
                 )
             }
         }

@@ -34,8 +34,6 @@ fun EshareUnableToConnectRoute(
     navController: NavController,
     vm: EshareViewModel = hiltViewModel(),
 ) {
-    vm.initialize()
-
     BackStackLogger(navController = navController, TAG)
 
     val isDeviceConnected by vm.devConnectionState.collectAsState()

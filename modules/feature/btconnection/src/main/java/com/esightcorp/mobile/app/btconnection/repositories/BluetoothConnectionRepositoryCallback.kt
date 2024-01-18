@@ -15,6 +15,6 @@ interface BluetoothConnectionRepositoryCallback {
      *   * `true`: Connected successfully
      *   * `false`: Either disconnected or connection failed
      */
-    fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {}
+    fun onDeviceConnected(device: BluetoothDevice?, connected: Boolean?) {}
     fun onBtStateUpdate(enabled: Boolean) {}
 }

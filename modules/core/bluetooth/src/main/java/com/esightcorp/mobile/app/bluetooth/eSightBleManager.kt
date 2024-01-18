@@ -37,7 +37,6 @@ object eSightBleManager {
 
     fun setModelListener(listener: BluetoothModelListener) {
         this.modelListener = listener
-        setBluetoothConnectionListener(listener)
     }
 
     fun getModelListener(): BluetoothModelListener? {

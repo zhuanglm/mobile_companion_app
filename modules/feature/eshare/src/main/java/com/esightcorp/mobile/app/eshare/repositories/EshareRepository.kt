@@ -180,7 +180,7 @@ class EshareRepository @Inject constructor(
     //endregion
 
     //region BluetoothConnectionListener
-    override fun onDeviceDisconnected(device: BluetoothDevice) {
+    override fun onDeviceDisconnected(device: BluetoothDevice?) {
         deviceDisconnectListener?.invoke()
 
         bluetoothModel.unregisterEshareReceiver()

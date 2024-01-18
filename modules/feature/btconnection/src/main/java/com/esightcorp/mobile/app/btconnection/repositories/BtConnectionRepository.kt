@@ -47,7 +47,7 @@ class BtConnectionRepository @Inject constructor(
             scanStatus(ScanningStatus.Cancelled)
         }
 
-        override fun onDeviceDisconnected(device: BluetoothDevice) {
+        override fun onDeviceDisconnected(device: BluetoothDevice?) {
             updateDeviceConnectionStatus(device, false)
         }
 
@@ -181,8 +181,8 @@ class BtConnectionRepository @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    private fun updateDeviceConnectionStatus(device: BluetoothDevice, connected: Boolean?) {
-        Log.d(_tag, "onDeviceConnected: ${device.name}, isConnected: $connected")
+    private fun updateDeviceConnectionStatus(device: BluetoothDevice?, connected: Boolean?) {
+        Log.d(_tag, "onDeviceConnected: ${device?.name}, isConnected: $connected")
         if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
             bluetoothConnectionRepositoryCallback.onDeviceConnected(device, connected)
         }

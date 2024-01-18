@@ -33,7 +33,6 @@ fun EshareWifiDisabledRoute(
     navController: NavController,
     vwModel: EshareViewModel = hiltViewModel(),
 ) {
-    vwModel.initialize()
     val isDeviceConnected by vwModel.devConnectionState.collectAsState()
     if (!isDeviceConnected) {
         LaunchedEffect(Unit) { vwModel.onBleDisconnected(navController) }

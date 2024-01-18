@@ -18,7 +18,7 @@ class HomeRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context).apply {
             bleManager.setModelListener(
                 object : BluetoothModelListener {
-                    override fun onDeviceDisconnected(device: BluetoothDevice) {
+                    override fun onDeviceDisconnected(device: BluetoothDevice?) {
                         repoListener.onBluetoothDeviceDisconnected()
                     }
 

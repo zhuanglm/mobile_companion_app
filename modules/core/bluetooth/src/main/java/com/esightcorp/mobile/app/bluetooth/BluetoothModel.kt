@@ -122,6 +122,7 @@ class BluetoothModel(
 
                     bleManager.getConnectedDevice()?.let { dev ->
                         bleManager.setConnectedDevice(dev, BleConnectionStatus.Connected)
+                        bleManager.getModelListener()?.onDeviceConnected(dev)
                         bleManager.getBluetoothConnectionListener()?.onDeviceConnected(dev)
                     }
                 }
@@ -130,10 +131,15 @@ class BluetoothModel(
                 BleAction.GATT_DISCONNECTED -> {
                     Log.w(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
 
-                    bleManager.getConnectedDevice()?.let {
-                        bleManager.getBluetoothConnectionListener()?.onDeviceDisconnected(it)
+                    with(bleManager) {
+                        val connectedDevice = getConnectedDevice()
+
+                        getModelListener()?.onDeviceDisconnected(connectedDevice)
+                        getBluetoothConnectionListener()?.onDeviceDisconnected(connectedDevice)
+
+                        if (connectedDevice != null)
+                            resetConnectedDevice()
                     }
-                    bleManager.resetConnectedDevice()
                 }
             }
         }

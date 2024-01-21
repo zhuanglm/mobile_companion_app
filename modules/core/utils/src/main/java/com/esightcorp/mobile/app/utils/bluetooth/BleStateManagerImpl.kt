@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
+import com.esightcorp.mobile.app.ui.navigation.GoProduct
 
 /**
  * Delegate implementation
@@ -15,7 +16,7 @@ class BleStateManagerImpl : IBleStateManager {
         Log.e(_tag, "--> onBleDisconnected - Going to Disconnection screen ...")
         navController.navigate(
             target = BtConnectionNavigation.DeviceDisconnectedRoute,
-            popCurrent = true,
+            popUntil = GoProduct.IncomingRoute,
         )
     }
 }

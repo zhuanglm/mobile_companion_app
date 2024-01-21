@@ -22,7 +22,9 @@ import javax.inject.Inject
 class EnterPasswordViewModel @Inject constructor(
     application: Application,
     private val repository: WifiConnectionRepository,
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application),
+    WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiCredentialsUiState())
@@ -30,7 +32,7 @@ class EnterPasswordViewModel @Inject constructor(
 
     private val scanListener = object : WifiNetworkScanListener {
         override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
-            Log.i(_tag, "onBluetoothStatusUpdate: ")
+            updateBleConnectionState(isConnected)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {

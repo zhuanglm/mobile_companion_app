@@ -31,6 +31,13 @@ fun WifiOffRoute(
     vm: WifiOffViewModel = hiltViewModel()
 ) {
     vm.setNavController(navController)
+
+    val isConnected by vm.connectionStateFlow().collectAsState()
+    if (isConnected == false) {
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
+        return
+    }
+
     val uiState by vm.uiState.collectAsState()
     WifiOffScreen(
         navController = navController,

@@ -23,14 +23,16 @@ import javax.inject.Inject
 class SelectNetworkViewModel @Inject constructor(
     application: Application,
     private val wifiRepository: WifiConnectionRepository
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application),
+    WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(wifiRepository) {
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(SelectNetworkUiState())
     val uiState: StateFlow<SelectNetworkUiState> = _uiState.asStateFlow()
     private val scanListener = object : WifiNetworkScanListener {
         override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
-            Log.e(_tag, "onBluetoothStatusUpdate: ")
+            updateBleConnectionState(isConnected)
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {

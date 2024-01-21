@@ -21,18 +21,14 @@ import javax.inject.Inject
 class WifiSearchingViewModel @Inject constructor(
     application: Application,
     private val repository: WifiConnectionRepository
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application){
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiSearchingUiState())
     val uiState: StateFlow<WifiSearchingUiState> = _uiState.asStateFlow()
 
     private val repoListener = object : WifiNetworkScanListener {
-        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
-            Log.i(_tag, "onBluetoothStatusUpdate: ")
-            updateBtEnabledState(isConnected)
-        }
-
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             Log.d(_tag, "onNetworkListUpdated: ")
             updateScanningStatus(ScanningStatus.Success)
@@ -50,8 +46,14 @@ class WifiSearchingViewModel @Inject constructor(
     }
 
     init {
-        repository.registerListener(repoListener)
-        repository.startWifiScan()
+        with(repository) {
+            // First, reset the wifiFlow
+            // Note: the actual flow will be initialized later from the composable
+            setWifiFlow(null)
+
+            registerListener(repoListener)
+            startWifiScan()
+        }
     }
 
     private fun updateScanningStatus(scanningStatus: ScanningStatus) {
@@ -66,12 +68,6 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
-    private fun updateBtEnabledState(enabled: Boolean) {
-        _uiState.update { state ->
-            state.copy(isBtEnabled = enabled)
-        }
-    }
-
     fun navigateToWifiNetworksScreen(navController: NavController) {
         navController.navigate(WifiConnectionScreens.SelectNetworkRoute.route) {
             popUpTo(WifiConnectionScreens.IncomingNavigationRoute.route) {
@@ -80,7 +76,5 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
-    fun setWifiFlow(flow: String?) {
-        repository.setWifiFlow(flow!!)
-    }
+    fun setWifiFlow(flow: String?) = repository.setWifiFlow(flow)
 }

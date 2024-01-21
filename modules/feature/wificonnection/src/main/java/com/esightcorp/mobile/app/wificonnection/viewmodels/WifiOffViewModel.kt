@@ -18,8 +18,10 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiOffViewModel @Inject constructor(
     application: Application,
-    val repository: WifiConnectionRepository
-): AndroidViewModel(application) {
+    repository: WifiConnectionRepository
+) : AndroidViewModel(application),
+    WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiOffUiState())
@@ -28,15 +30,14 @@ class WifiOffViewModel @Inject constructor(
     private val listener = object : WifiNetworkScanListener {
 
         override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
-            _uiState.value = _uiState.value.copy(isBtEnabled = isConnected)
+            updateBleConnectionState(isConnected)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             Log.e(_tag, "onNetworkListUpdated: ")
         }
 
-        override fun onScanStatusUpdated(status: ScanningStatus)
-        {
+        override fun onScanStatusUpdated(status: ScanningStatus) {
             Log.e(_tag, "onScanStatusUpdated: This should not be called")
         }
 
@@ -44,6 +45,7 @@ class WifiOffViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isWifiEnabled = status)
         }
     }
+
     init {
         repository.registerListener(listener)
     }
@@ -52,14 +54,14 @@ class WifiOffViewModel @Inject constructor(
         this.navController = navController
     }
 
-    fun onBackClicked(){
-        if(this::navController.isInitialized){
+    fun onBackClicked() {
+        if (this::navController.isInitialized) {
             navController.popBackStack()
         }
     }
 
-    fun navigateHome(){
-        if(this::navController.isInitialized){
+    fun navigateHome() {
+        if (this::navController.isInitialized) {
             navController.navigate("home_first")
         }
     }

@@ -149,6 +149,7 @@ class WifiConnectionRepository @Inject constructor(
         WifiCache.credentials.setWifiType(type)
     }
 
+    @Synchronized
     fun registerListener(listener: WifiNetworkScanListener) {
         Log.d(_tag, "registerListener: $listener")
         with(listener) {
@@ -159,6 +160,7 @@ class WifiConnectionRepository @Inject constructor(
         }
     }
 
+    @Synchronized
     fun registerListener(listener: WifiConnectionListener) {
         Log.d(_tag, "registerListener: $listener")
         with(listener) {
@@ -174,7 +176,8 @@ class WifiConnectionRepository @Inject constructor(
         Log.e(_tag, "unregisterListener: ")
     }
 
-    fun setWifiFlow(flow: String) {
+    @Synchronized
+    fun setWifiFlow(flow: String?) {
         wifiModel.setWifiFlow(flow)
     }
 

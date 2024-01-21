@@ -21,7 +21,9 @@ import javax.inject.Inject
 class WifiConnectingViewModel @Inject constructor(
     application: Application,
     repository: WifiConnectionRepository
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application),
+    WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiConnectingUiState())
@@ -29,6 +31,10 @@ class WifiConnectingViewModel @Inject constructor(
 
     //region WifiConnectionListener
     private val repoListener = object : WifiConnectionListener {
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
+            updateBleConnectionState(isConnected)
+        }
+
         override fun onWifiConnected(success: Boolean) {
             updateConnectionStatus(success)
         }

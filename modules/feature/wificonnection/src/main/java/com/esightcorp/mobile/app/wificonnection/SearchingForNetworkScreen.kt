@@ -23,9 +23,10 @@ fun SearchingForNetworksRoute(
     flow: String?,
     vm: WifiSearchingViewModel = hiltViewModel()
 ) {
-    val uiState by vm.uiState.collectAsState()
     Log.d("TAG", "SearchingForNetworksRoute: ")
     vm.setWifiFlow(flow)
+
+    val uiState by vm.uiState.collectAsState()
     if(!uiState.isWifiEnabled){
         NavigateToWifiOffScreen(navController = navController)
     } else{

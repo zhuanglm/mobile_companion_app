@@ -3,6 +3,7 @@ package com.esightcorp.mobile.app.wificonnection
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -12,10 +13,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.CustomEditText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.PasswordEditText
 import com.esightcorp.mobile.app.wificonnection.state.WifiAdvancedSettingsUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.AdvancedWifiViewModel
@@ -26,6 +27,13 @@ fun AdvancedWifiRoute(
     vm: AdvancedWifiViewModel = hiltViewModel()
 ) {
     vm.refreshUiState()
+
+    val isConnected by vm.connectionStateFlow().collectAsState()
+    if (isConnected == false) {
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
+        return
+    }
+
     AdvancedWifiScreen(
         navController = navController,
         modifier = Modifier,

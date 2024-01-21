@@ -19,7 +19,9 @@ import javax.inject.Inject
 class AdvancedWifiViewModel @Inject constructor(
     application: Application,
     private val repository: WifiConnectionRepository
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application),
+    WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiAdvancedSettingsUiState())
@@ -27,7 +29,7 @@ class AdvancedWifiViewModel @Inject constructor(
 
     private val listener = object : WifiConnectionListener {
         override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
-            Log.d(_tag, "onBleConnectionStatusUpdate - connected: $isConnected")
+            updateBleConnectionState(isConnected)
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
@@ -79,7 +81,7 @@ class AdvancedWifiViewModel @Inject constructor(
     fun refreshUiState() {
         with(repository.wifiCredentials) {
             when (val ssid = getSSID()) {
-                null -> Log.w(_tag, "SSID is null! Is there a valid wifi selected?", Exception())
+                 null -> Log.w(_tag, "SSID is null! Is there a valid wifi selected?", Exception())
 
                 else -> _uiState.update {
                     it.copy(ssid = ssid, password = getPassword(), wifiType = getWifiType())

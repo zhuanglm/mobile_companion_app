@@ -7,7 +7,6 @@ import com.esightcorp.mobile.app.utils.ScanningStatus
 
 data class WifiConnectionUiState(
     val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = true,
     val arePermissionsGranted: Boolean = false,
     val ssid: String = "",
     val qrCodeButtonVisibility: Boolean = false,
@@ -18,7 +17,6 @@ data class WifiConnectionUiState(
 
 data class WifiSearchingUiState(
     val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = true,
     val scanningStatus: ScanningStatus = ScanningStatus.Unknown,
 )
 
@@ -71,7 +69,6 @@ data class NoNetworksFoundUiState(
 
 data class WifiOffUiState(
     val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = false,
 )
 
 data class WifiAdvancedSettingsUiState(
@@ -81,7 +78,6 @@ data class WifiAdvancedSettingsUiState(
     val wifiType: String = "WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
     val passwordSubmitted: Boolean = false,
-    val isBtEnabled: Boolean = false,
     val ssidSubmitted: Boolean = false,
 )
 
@@ -89,10 +85,8 @@ data class WifiTypeUiState(
     val isWifiEnabled: Boolean = false,
     val wifiType: String = "WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
-    val isBtEnabled: Boolean = false,
 )
 
 data class WifiQrCodeUiState(
-    val isBtEnabled: Boolean = false,
     val qrString: String = "",
 )

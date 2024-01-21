@@ -21,22 +21,29 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
-fun BtConnectionLostRoute(navController: NavController) = BtConnectionLostScreen(
-    navController,
-    onReconnectCallback = { nav ->
-        nav.navigate(target = BtConnectionNavigation.BtSearchingRoute, popCurrent = true)
-    },
-    onCancelCallback = { nav ->
-        nav.navigate(target = BtConnectionNavigation.NoDeviceConnectedRoute, popCurrent = true)
-    },
-)
+fun BtConnectionLostRoute(navController: NavController) {
+    BackStackLogger(navController, TAG)
+
+    BtConnectionLostScreen(
+        navController,
+        onReconnectCallback = { nav ->
+            nav.navigate(target = BtConnectionNavigation.BtSearchingRoute, popCurrent = true)
+        },
+        onCancelCallback = { nav ->
+            nav.navigate(target = BtConnectionNavigation.NoDeviceConnectedRoute, popCurrent = true)
+        },
+    )
+}
 
 //region Private implementation
+private const val TAG = "BtConnectionLost"
+
 @Composable
 private fun BtConnectionLostScreen(
     navController: NavController,

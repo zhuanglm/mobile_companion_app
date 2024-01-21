@@ -11,12 +11,15 @@ import android.os.Build
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleAction
 import com.esightcorp.mobile.app.bluetooth.BleService
+import com.esightcorp.mobile.app.bluetooth.addAction
 import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
 import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
 import com.esightcorp.mobile.app.networking.sockets.SocketManager
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.networking.storage.eShareCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.utils.safeRegisterReceiver
+import com.esightcorp.mobile.app.utils.safeUnregisterReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,6 +69,7 @@ class WifiModel(
         }
     }
     private val wifiStateIntentFilter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             when (intent.action) {
@@ -75,10 +79,6 @@ class WifiModel(
                             Log.i(_tag, "onReceive: ${intent.data.toString()}")
                         }
                     }
-                }
-
-                BleAction.GATT_CONNECTED.actionName() -> {
-                    Log.e(_tag, "onReceive: CONNECTED")
                 }
 
                 BleAction.GATT_DISCONNECTED.actionName() -> {
@@ -148,17 +148,16 @@ class WifiModel(
                     }
 
                 }
-
             }
-
         }
     }
-
-    private fun makeWifiBleIntentFilter() = IntentFilter().apply {
+    private val makeWifiBleIntentFilter = IntentFilter().apply {
         addAction(BleService.ACTION_WIFI_CONNECTION_STATUS)
         addAction(BleService.ACTION_WIFI_ERROR)
         addAction(BleService.ACTION_WIFI_CONNECTED)
         addAction(BleService.ACTION_ERROR)
+
+        addAction(BleAction.GATT_DISCONNECTED)
     }
 
     private val makeWifiIntentFilter: IntentFilter = IntentFilter().apply {
@@ -167,14 +166,14 @@ class WifiModel(
     private var listener: WifiModelListener? = null
 
     init {
-        context.registerReceiver(gattUpdateReceiver, makeWifiBleIntentFilter())
-        context.registerReceiver(wifiStateChangeReceiver, wifiStateIntentFilter)
+        context.safeRegisterReceiver(gattUpdateReceiver, makeWifiBleIntentFilter)
+        context.safeRegisterReceiver(wifiStateChangeReceiver, wifiStateIntentFilter)
     }
 
     fun startWifiScan() {
         Log.i(_tag, "startWifiScan: ")
 
-        context.registerReceiver(wifiScanReceiver, makeWifiIntentFilter)
+        context.safeRegisterReceiver(wifiScanReceiver, makeWifiIntentFilter)
 
         val success = wifiManager.startScan()
         listener?.onScanStatusUpdated(ScanningStatus.InProgress)
@@ -207,11 +206,7 @@ class WifiModel(
     }
 
     fun stopWifiScan() {
-        try {
-            context.unregisterReceiver(wifiScanReceiver)
-        } catch (e: Exception) {
-            Log.e(_tag, "stopWifiScan: ${e.message}")
-        }
+        context.safeUnregisterReceiver(wifiScanReceiver)
     }
 
     fun isWifiEnabled(): Boolean {
@@ -219,8 +214,8 @@ class WifiModel(
         return wifiManager.isWifiEnabled
     }
 
-    fun setWifiFlow(flow: String) {
-        when (flow.lowercase()) {
+    fun setWifiFlow(flow: String?) {
+        when (flow?.lowercase()) {
             "bluetooth" -> {
                 Log.i(_tag, "setWifiFlow: WIFI")
                 WifiCache.setWifiFlow(WifiCache.WifiFlow.BluetoothFlow)
@@ -233,6 +228,7 @@ class WifiModel(
 
             else -> {
                 Log.e(_tag, "setWifiFlow: Unknown")
+                WifiCache.setWifiFlow(WifiCache.WifiFlow.NotInUse)
             }
         }
     }

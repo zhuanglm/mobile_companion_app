@@ -6,6 +6,13 @@ import androidx.navigation.navArgument
 
 abstract class Navigation(open val path: String)
 
+/**
+ * The 1st navigation route of all flows/functionalities
+ */
+sealed class GoProduct(override val path: String) : Navigation(path) {
+    object IncomingRoute : GoProduct("go_product")
+}
+
 sealed class HomeNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : HomeNavigation("home")
 

@@ -58,12 +58,6 @@ class WifiOffViewModel @Inject constructor(
         this.navController = navController
     }
 
-//    fun onBackClicked(){
-//        if(this::navController.isInitialized){
-//            navController.popBackStack()
-//        }
-//    }
-
     fun navigateHome(){
         if(this::navController.isInitialized){
             navController.navigate("home_first")

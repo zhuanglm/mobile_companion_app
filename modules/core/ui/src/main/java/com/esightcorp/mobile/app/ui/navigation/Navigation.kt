@@ -56,6 +56,8 @@ sealed class EShareNavigation(override val path: String) : Navigation(path) {
 sealed class WifiNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : WifiNavigation("wificonnection")
 
+    object SelectNetworkRoute : WifiNavigation("select_network")
+
     object WifiOffRoute : WifiNavigation("wifi_off")
 
     object ScanningRoute : WifiNavigation("searching_for_networks") {
@@ -64,12 +66,15 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
         val arguments = listOf(navArgument(flowArg) { type = NavType.StringType })
 
         const val PARAM_BLUETOOTH = "bluetooth"
+        const val PARAM_WIFI_CONNECTION = "check_wifi_connection"
 
         fun getFlowArgument(arguments: Bundle?) = arguments?.getString(flowArg)
     }
 
     object ConnectedRoute : WifiNavigation("connected")
     object UnableToConnectRoute : WifiNavigation("unable_to_connect")
+
+    object AlreadyConnectedRoute : WifiNavigation("already_connected")
 
     //TODO: migrate all other paths
 }

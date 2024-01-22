@@ -47,6 +47,10 @@ class SelectNetworkViewModel @Inject constructor(
         override fun onScanStatusUpdated(status: ScanningStatus) {
             Log.i(_tag, "onScanStatusUpdated: ")
         }
+
+        override fun onWifiAlreadyConnected(status: Boolean) {
+            Log.i(_tag, "onWifiAlreadyConnected: $status")
+        }
     }
 
     init {

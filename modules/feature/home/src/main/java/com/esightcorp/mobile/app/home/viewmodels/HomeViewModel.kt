@@ -90,7 +90,7 @@ class HomeViewModel @Inject constructor(
     fun navigateToWifiCredsOverBt(navController: NavController) {
         navController.navigate(
             target = WifiNavigation.ScanningRoute,
-            param = WifiNavigation.ScanningRoute.PARAM_BLUETOOTH,
+            param = WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION
         )
     }
 

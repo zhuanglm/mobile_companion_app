@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navDeepLink
 import com.esightcorp.mobile.app.ui.extensions.composable
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.ConnectedRoute
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.IncomingRoute
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.ScanningRoute
@@ -27,6 +28,10 @@ import com.esightcorp.mobile.app.wificonnection.WifiTypeRoute
 
 fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
     navigation(startDestination = WifiOffRoute.path, route = IncomingRoute.path) {
+
+        composable(WifiNavigation.AlreadyConnectedRoute) {
+            AlreadyConnectedRoute(navController = navController)
+        }
 
         composable(
             ScanningRoute.routeWithArgs,
@@ -63,9 +68,6 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
 
         composable(WifiConnectionScreens.NoNetworksFoundRoute.route) {
             NoNetworksFoundRoute(navController = navController)
-        }
-        composable(WifiConnectionScreens.AlreadyConnectedRoute.route) {
-            AlreadyConnectedRoute(navController = navController)
         }
         composable(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route) {
             AdvancedWifiRoute(navController = navController)

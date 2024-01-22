@@ -4,20 +4,18 @@ import android.net.wifi.ScanResult
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
-
-data class WifiConnectionUiState(
-    val isWifiEnabled: Boolean = false,
-    val arePermissionsGranted: Boolean = false,
-    val ssid: String = "",
-    val qrCodeButtonVisibility: Boolean = false,
-    val currentSelectedNetwork: ScanResult? = null,
-    val networkList: List<ScanResult> = mutableListOf(),
-    val bluetoothConnected: Boolean = false,
-)
+enum class WifiConnectionStatus {
+    CONNECTED,
+    DISCONNECTED,
+    UNKNOWN
+}
 
 data class WifiSearchingUiState(
     val isWifiEnabled: Boolean = false,
+    val isWifiConnected: Boolean = false,
+    val wifiConnectionStatus: WifiConnectionStatus = WifiConnectionStatus.UNKNOWN,
     val scanningStatus: ScanningStatus = ScanningStatus.Unknown,
+    val isWifiConnectedAlreadyOnGlasses: Boolean = false,
 )
 
 data class SelectNetworkUiState(

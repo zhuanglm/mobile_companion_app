@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiOffViewModel @Inject constructor(
     application: Application,
-    repository: WifiConnectionRepository
+    repository: WifiConnectionRepository,
 ) : ESightBaseViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
 
@@ -43,6 +43,10 @@ class WifiOffViewModel @Inject constructor(
 
         override fun onWifiStatusUpdate(status: Boolean) {
             _uiState.value = _uiState.value.copy(isWifiEnabled = status)
+        }
+
+        override fun onWifiAlreadyConnected(status: Boolean) {
+            Log.i(_tag, "onWifiAlreadyConnected: $status")
         }
     }
 

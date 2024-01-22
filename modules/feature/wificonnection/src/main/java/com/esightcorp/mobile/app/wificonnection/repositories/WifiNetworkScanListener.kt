@@ -19,4 +19,10 @@ interface WifiNetworkScanListener : BleConnectionStatusListener {
     Will be one of the ScanningStatus enum values
     */
     fun onScanStatusUpdated(status: ScanningStatus)
+
+    /**
+     * Glasses wifi connection status
+     */
+    fun onWifiAlreadyConnected(status: Boolean)
+
 }

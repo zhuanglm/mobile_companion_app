@@ -72,6 +72,7 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
         val arguments = listOf(navArgument(flowArg) { type = NavType.StringType })
 
         const val PARAM_BLUETOOTH = "bluetooth"
+        const val PARAM_QR = "qr"
 
         fun getFlowArgument(arguments: Bundle?) = arguments?.getString(flowArg)
     }

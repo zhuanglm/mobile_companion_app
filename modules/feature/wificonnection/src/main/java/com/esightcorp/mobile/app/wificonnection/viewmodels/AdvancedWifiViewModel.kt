@@ -81,7 +81,7 @@ class AdvancedWifiViewModel @Inject constructor(
     fun refreshUiState() {
         with(repository.wifiCredentials) {
             when (val ssid = getSSID()) {
-                 null -> Log.w(_tag, "SSID is null! Is there a valid wifi selected?", Exception())
+                 null -> Log.e(_tag, "SSID is null! Is there a valid wifi selected?")
 
                 else -> _uiState.update {
                     it.copy(ssid = ssid, password = getPassword(), wifiType = getWifiType())

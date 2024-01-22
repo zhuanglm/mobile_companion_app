@@ -24,6 +24,8 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.FineText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 
 @Composable
 fun SettingsScreen(navController: NavController, vwModel: SettingsViewModel = hiltViewModel()) {
@@ -60,7 +62,10 @@ internal fun SettingsScreenBody(
     bottomButton = { },
 ) {
     Column {
-        Header1Text(stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewTitleText), modifier)
+        Header1Text(
+            stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewTitleText),
+            modifier,
+        )
 
         val spacer = dimensionResource(R.dimen.settings_section_spacer)
 
@@ -94,7 +99,13 @@ internal fun SettingsMyESight(
     )
 
     IconAndTextRectangularButton(
-        onClick = { navController.navigate("searching_for_networks/qr") },
+        onClick = {
+            navController.navigate(
+                target = WifiNavigation.ScanningRoute,
+                param = WifiNavigation.ScanningRoute.PARAM_QR,
+                popUntil = WifiNavigation.IncomingRoute,
+            )
+        },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24),
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kCreateWifiCodeButtonText)

@@ -3,8 +3,8 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class WifiOffViewModel @Inject constructor(
     application: Application,
     repository: WifiConnectionRepository
-) : AndroidViewModel(application),
+) : ESightBaseViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
 
     private val _tag = this.javaClass.simpleName
@@ -62,8 +62,7 @@ class WifiOffViewModel @Inject constructor(
 
     fun navigateHome() {
         if (this::navController.isInitialized) {
-            navController.navigate("home_first")
+            gotoMainScreen(navController)
         }
     }
-
 }

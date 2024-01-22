@@ -13,6 +13,7 @@ import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.bluetooth.BleStateManagerImpl
 import com.esightcorp.mobile.app.utils.bluetooth.IBleStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -87,7 +88,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToWifiCredsOverBt(navController: NavController) {
-        navController.navigate("searching_for_networks/bluetooth")
+        navController.navigate(
+            target = WifiNavigation.ScanningRoute,
+            param = WifiNavigation.ScanningRoute.PARAM_BLUETOOTH,
+        )
     }
 
     fun navigateToBluetoothStart(navController: NavController) = with(navController) {

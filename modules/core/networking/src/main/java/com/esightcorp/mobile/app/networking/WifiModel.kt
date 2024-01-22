@@ -17,6 +17,7 @@ import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
 import com.esightcorp.mobile.app.networking.sockets.SocketManager
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.networking.storage.eShareCache
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.utils.safeRegisterReceiver
 import com.esightcorp.mobile.app.utils.safeUnregisterReceiver
@@ -216,12 +217,12 @@ class WifiModel(
 
     fun setWifiFlow(flow: String?) {
         when (flow?.lowercase()) {
-            "bluetooth" -> {
+            WifiNavigation.ScanningRoute.PARAM_BLUETOOTH -> {
                 Log.i(_tag, "setWifiFlow: WIFI")
                 WifiCache.setWifiFlow(WifiCache.WifiFlow.BluetoothFlow)
             }
 
-            "qr" -> {
+            WifiNavigation.ScanningRoute.PARAM_QR -> {
                 Log.i(_tag, "setWifiFlow: QR")
                 WifiCache.setWifiFlow(WifiCache.WifiFlow.QrFlow)
             }

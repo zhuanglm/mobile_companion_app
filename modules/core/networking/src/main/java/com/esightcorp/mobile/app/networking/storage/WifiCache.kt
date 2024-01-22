@@ -24,10 +24,12 @@ object WifiCache {
         credentials.setNetwork(network)
     }
 
+    @Synchronized
     fun setWifiFlow(flow: WifiFlow) {
         currentFlow = flow
     }
 
+    @Synchronized
     fun getWifiFlow() = currentFlow
 
     fun addNetworkToNetworkList(result: ScanResult): Boolean {

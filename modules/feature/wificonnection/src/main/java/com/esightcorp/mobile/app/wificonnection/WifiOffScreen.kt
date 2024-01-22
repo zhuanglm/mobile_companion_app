@@ -70,22 +70,6 @@ internal fun WifiOffScreen(
     val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
     val bodyTopMargin = dimensionResource(id = R.dimen.bt_disabled_body_top_margin)
 
-    /*BaseScreen(
-        modifier = modifier,
-        showBackButton = true,
-        showSettingsButton = false,
-        onBackButtonInvoked = onBackPressed,
-        onSettingsButtonInvoked = { },
-        isBottomButtonNeeded = false,
-        bottomButton = { }) {
-        WifiOffScreenBody(
-            modifier = Modifier.fillMaxSize(),
-            headerTopMargin = headerTopMargin,
-            bodyTopMargin = bodyTopMargin,
-            onTryAgain = {}
-        )
-    }*/
-
     BaseScreen(
         modifier = modifier,
         showBackButton = true,

@@ -229,7 +229,7 @@ class WifiModel(
     fun setWifiFlow(flow: String?) {
         when (flow?.lowercase()) {
             WifiNavigation.ScanningRoute.PARAM_BLUETOOTH -> {
-                Log.i(_tag, "setWifiFlow: WIFI")
+                Log.i(_tag, "setWifiFlow: Bluetooth")
                 WifiCache.setWifiFlow(WifiCache.WifiFlow.BluetoothFlow)
             }
 

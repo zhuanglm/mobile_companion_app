@@ -31,7 +31,7 @@ fun EshareSetupWifiRoute(
 ) {
     val isDeviceConnected by vm.devConnectionState.collectAsState()
     if (!isDeviceConnected) {
-        LaunchedEffect(UInt) { vm.onBleDisconnected(navController) }
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
         return
     }
 

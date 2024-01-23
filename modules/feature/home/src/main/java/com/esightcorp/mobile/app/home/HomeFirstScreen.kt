@@ -51,6 +51,7 @@ fun HomeFirstScreen(
         navController = navController,
         device = homeUiState.connectedDevice,
         modifier = Modifier,
+        onSettingsButtonInvoked = vm::navigateToSettings,
         onRemoteDeviceDisconnected = vm::onBleDisconnected
     )
 }
@@ -62,7 +63,7 @@ private fun BaseHomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     device: String = "0123456",
-    onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) },
+    onSettingsButtonInvoked: OnNavigationCallback,
     onRemoteDeviceDisconnected: OnNavigationCallback,
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
@@ -80,7 +81,7 @@ private fun BaseHomeScreen(
             showBackButton = false,
             showSettingsButton = true,
             onBackButtonInvoked = { },
-            onSettingsButtonInvoked = onSettingsButtonInvoked,
+            onSettingsButtonInvoked = { onSettingsButtonInvoked.invoke(navController) },
             bottomButton = { FeedbackButton(modifier, vm::showFeedbackPage) },
         ) {
             HomeScreenBody(

@@ -26,7 +26,10 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiOffViewModel
 
 @Composable
@@ -34,6 +37,8 @@ fun WifiOffRoute(
     navController: NavController,
     vm: WifiOffViewModel = hiltViewModel()
 ) {
+    BackStackLogger(navController)
+
     val isConnected by vm.connectionStateFlow().collectAsState()
     if (isConnected == false) {
         LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
@@ -43,11 +48,9 @@ fun WifiOffRoute(
     val uiState by vm.uiState.collectAsState()
     WifiOffScreen(
         navController = navController,
-        onBackPressed = vm::gotoMainScreen,
+        onDismissed = vm::onDismissed,
         onRetryPressed = vm::onRetryPressed,
-        onWifiTurnedOn = vm::gotoMainScreen,
         isWifiEnabled = uiState.isWifiEnabled,
-        onCancelPressed = vm::gotoMainScreen,
     )
 }
 
@@ -64,9 +67,7 @@ internal fun WifiOffScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     onRetryPressed: OnNavigationCallback? = null,
-    onCancelPressed: OnNavigationCallback? = null,
-    onBackPressed: OnNavigationCallback? = null,
-    onWifiTurnedOn: OnNavigationCallback? = null,
+    onDismissed: OnNavigationCallback? = null,
     isWifiEnabled: Boolean = false,
 ) {
     val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
@@ -76,7 +77,7 @@ internal fun WifiOffScreen(
         modifier = modifier,
         showBackButton = true,
         showSettingsButton = false,
-        onBackButtonInvoked = { onBackPressed?.invoke(navController) },
+        onBackButtonInvoked = { onDismissed?.invoke(navController) },
         onSettingsButtonInvoked = { },
         isBottomButtonNeeded = false,
         bottomButton = { },
@@ -112,7 +113,7 @@ internal fun WifiOffScreen(
 
             ItemSpacer(20.dp)
             OutlinedTextRectangularButton(
-                onClick = { onCancelPressed?.invoke(navController) },
+                onClick = { onDismissed?.invoke(navController) },
                 modifier = modifier,
                 text = stringResource(id = R.string.kCancel),
                 textAlign = TextAlign.Center,
@@ -123,7 +124,7 @@ internal fun WifiOffScreen(
 
     if (isWifiEnabled) {
         LaunchedEffect(Unit) {
-            onWifiTurnedOn?.invoke(navController)
+            onDismissed?.invoke(navController)
         }
     }
 }
@@ -131,6 +132,6 @@ internal fun WifiOffScreen(
 @Composable
 fun NavigateToWifiOffScreen(navController: NavController) {
     LaunchedEffect(Unit) {
-        navController.navigate(WifiConnectionScreens.WifiOffRoute.route)
+        navController.navigate(target = WifiNavigation.WifiOffRoute)
     }
 }

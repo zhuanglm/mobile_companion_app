@@ -106,6 +106,7 @@ class WifiSearchingViewModel @Inject constructor(
         gotoMainScreen(navController)
     }
 
+    @Synchronized
     fun setWifiFlow(flow: String?) {
         repository.setWifiFlow(flow)
 
@@ -117,6 +118,11 @@ class WifiSearchingViewModel @Inject constructor(
 
                 //bluetooth and QR
                 else -> {
+                    if (!_uiState.value.isWifiEnabled) {
+                        Log.e(_tag, "setWifiFlow: skipped scanning as wifi is off!")
+                        return@let
+                    }
+
                     Log.i(_tag, "setWifiFlow: start scan")
                     repository.startWifiScan()
                 }

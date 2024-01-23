@@ -3,9 +3,9 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.networking.storage.WifiCache
-import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class WifiOffViewModel @Inject constructor(
     application: Application,
     private val repository: WifiConnectionRepository,
-) : ESightBaseViewModel(application),
+) : AndroidViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
 
     private val _tag = this.javaClass.simpleName
@@ -57,12 +57,23 @@ class WifiOffViewModel @Inject constructor(
     }
 
     fun onRetryPressed(navController: NavController) {
+        if (!_uiState.value.isWifiEnabled) {
+            Log.e(_tag, "onRetryPressed - ignored as wifi is still off!")
+            return
+        }
+
+        val targetRoute = when (repository.wifiFlow) {
+            WifiCache.WifiFlow.QrFlow -> WifiNavigation.ScanningRoute.PARAM_QR
+            else -> WifiNavigation.ScanningRoute.PARAM_BLUETOOTH
+        }
+
         navController.navigate(
             target = WifiNavigation.ScanningRoute,
-            param = when (repository.wifiFlow) {
-                WifiCache.WifiFlow.QrFlow -> WifiNavigation.ScanningRoute.PARAM_QR
-                else -> WifiNavigation.ScanningRoute.PARAM_BLUETOOTH
-            }
+            param = targetRoute
         )
+    }
+
+    fun onDismissed(navController: NavController) {
+        navController.popBackStack()
     }
 }

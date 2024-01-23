@@ -4,7 +4,10 @@ import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
@@ -18,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiOffViewModel @Inject constructor(
     application: Application,
-    repository: WifiConnectionRepository,
+    private val repository: WifiConnectionRepository,
 ) : ESightBaseViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
 
@@ -26,9 +29,8 @@ class WifiOffViewModel @Inject constructor(
 
     private var _uiState = MutableStateFlow(WifiOffUiState())
     val uiState: StateFlow<WifiOffUiState> = _uiState.asStateFlow()
-    private lateinit var navController: NavController
-    private val listener = object : WifiNetworkScanListener {
 
+    private val listener = object : WifiNetworkScanListener {
         override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
             updateBleConnectionState(isConnected)
         }
@@ -54,19 +56,13 @@ class WifiOffViewModel @Inject constructor(
         repository.registerListener(listener)
     }
 
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
-
-    fun onBackClicked() {
-        if (this::navController.isInitialized) {
-            navController.popBackStack()
-        }
-    }
-
-    fun navigateHome() {
-        if (this::navController.isInitialized) {
-            gotoMainScreen(navController)
-        }
+    fun onRetryPressed(navController: NavController) {
+        navController.navigate(
+            target = WifiNavigation.ScanningRoute,
+            param = when (repository.wifiFlow) {
+                WifiCache.WifiFlow.QrFlow -> WifiNavigation.ScanningRoute.PARAM_QR
+                else -> WifiNavigation.ScanningRoute.PARAM_BLUETOOTH
+            }
+        )
     }
 }

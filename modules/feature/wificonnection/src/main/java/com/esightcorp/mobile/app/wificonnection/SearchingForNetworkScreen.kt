@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.CONNECTED
@@ -47,6 +48,7 @@ fun SearchingForNetworksRoute(
         setWifiFlow = vm::setWifiFlow,
         onCancelClicked = vm::onCancelClicked,
         navigateToWifiNetworksScreen = vm::navigateToWifiNetworksScreen,
+        navigateToNoWifiScreen = vm::navigateToNoNetworksScreen,
         uiState = uiState,
         loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle)
     )
@@ -58,10 +60,11 @@ private const val TAG = "SearchingForNetworksScreen"
 @Composable
 internal fun SearchingForNetworksScreen(
     modifier: Modifier = Modifier,
-    loadingText: String = "Searching for Wi-Fi networks",
-    navigateToWifiAlreadyConnected: (NavController) -> Unit,
-    navigateToWifiNetworksScreen: (NavController) -> Unit,
-    onCancelClicked: (NavController) -> Unit,
+    loadingText: String,
+    navigateToWifiAlreadyConnected: OnNavigationCallback,
+    navigateToWifiNetworksScreen: OnNavigationCallback,
+    navigateToNoWifiScreen: OnNavigationCallback,
+    onCancelClicked: OnNavigationCallback,
     setWifiFlow: (String) -> Unit,
     navController: NavController,
     uiState: WifiSearchingUiState
@@ -69,6 +72,9 @@ internal fun SearchingForNetworksScreen(
     when (uiState.scanningStatus) {
         ScanningStatus.Failed -> {
             Log.e(TAG, "SearchingForNetworksScreen: SCAN STATUS FAILED")
+            LaunchedEffect(Unit) {
+                navigateToNoWifiScreen(navController)
+            }
         }
 
         ScanningStatus.Success -> {

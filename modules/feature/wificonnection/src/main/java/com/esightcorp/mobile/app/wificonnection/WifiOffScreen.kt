@@ -1,28 +1,32 @@
 package com.esightcorp.mobile.app.wificonnection
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
-import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
-import com.esightcorp.mobile.app.wificonnection.state.WifiOffUiState
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiOffViewModel
 
 @Composable
@@ -30,8 +34,6 @@ fun WifiOffRoute(
     navController: NavController,
     vm: WifiOffViewModel = hiltViewModel()
 ) {
-    vm.setNavController(navController)
-
     val isConnected by vm.connectionStateFlow().collectAsState()
     if (isConnected == false) {
         LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
@@ -41,22 +43,32 @@ fun WifiOffRoute(
     val uiState by vm.uiState.collectAsState()
     WifiOffScreen(
         navController = navController,
-        onBackPressed = vm::onBackClicked,
-        onWifiTurnedOn = vm::navigateHome,
-        uiState = uiState,
+        onBackPressed = vm::gotoMainScreen,
+        onRetryPressed = vm::onRetryPressed,
+        onWifiTurnedOn = vm::gotoMainScreen,
+        isWifiEnabled = uiState.isWifiEnabled,
+        onCancelPressed = vm::gotoMainScreen,
     )
+}
 
+@Preview
+@Composable
+private fun WifiOffScreenPreview() = MaterialTheme {
+    WifiOffScreen(
+        navController = rememberNavController(),
+    )
 }
 
 @Composable
 internal fun WifiOffScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit,
-    onWifiTurnedOn: () -> Unit,
-    uiState: WifiOffUiState
+    onRetryPressed: OnNavigationCallback? = null,
+    onCancelPressed: OnNavigationCallback? = null,
+    onBackPressed: OnNavigationCallback? = null,
+    onWifiTurnedOn: OnNavigationCallback? = null,
+    isWifiEnabled: Boolean = false,
 ) {
-    val TAG = "WifiOffScreen"
     val headerTopMargin = dimensionResource(id = R.dimen.bt_disabled_header_top_margin)
     val bodyTopMargin = dimensionResource(id = R.dimen.bt_disabled_body_top_margin)
 
@@ -64,95 +76,55 @@ internal fun WifiOffScreen(
         modifier = modifier,
         showBackButton = true,
         showSettingsButton = false,
-        onBackButtonInvoked = onBackPressed,
-        onSettingsButtonInvoked = { Unit },
+        onBackButtonInvoked = { onBackPressed?.invoke(navController) },
+        onSettingsButtonInvoked = { },
         isBottomButtonNeeded = false,
-        bottomButton = { Unit }) {
-        WifiOffScreenBody(
-            modifier = Modifier.fillMaxSize(),
-            headerTopMargin = headerTopMargin,
-            bodyTopMargin = bodyTopMargin
-        )
-    }
-    if (uiState.isWifiEnabled) {
-        LaunchedEffect(Unit) {
-            onWifiTurnedOn()
+        bottomButton = { },
+    ) {
+        Column(
+            modifier = modifier.padding(vertical = 30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            BigIcon(drawableId = R.drawable.round_wifi_24)
+
+            ItemSpacer(headerTopMargin)
+            Header1Text(
+                text = stringResource(R.string.kWifiErrorWifiDisabledTitle),
+                modifier = modifier,
+                textAlign = TextAlign.Center,
+            )
+
+            ItemSpacer(bodyTopMargin)
+            Subheader(
+                text = stringResource(R.string.kWifiErrorWifiDisabledSubtitle),
+                modifier = modifier,
+                textAlign = TextAlign.Center
+            )
+
+            ItemSpacer(50.dp)
+            TextRectangularButton(
+                onClick = { onRetryPressed?.invoke(navController) },
+                modifier = modifier,
+                text = stringResource(R.string.kRetryButtonTitle),
+                textAlign = TextAlign.Center,
+            )
+
+            ItemSpacer(20.dp)
+            OutlinedTextRectangularButton(
+                onClick = { onCancelPressed?.invoke(navController) },
+                modifier = modifier,
+                text = stringResource(id = R.string.kCancel),
+                textAlign = TextAlign.Center,
+                textColor = MaterialTheme.colors.onSurface,
+            )
         }
     }
 
-}
-
-@Composable
-private fun WifiOffScreenBody(
-    modifier: Modifier,
-    headerTopMargin: Dp,
-    bodyTopMargin: Dp
-) {
-    ConstraintLayout {
-        val (bigIcon, headerText, header2Text, retry, cancel) = createRefs()
-
-        BigIcon(
-            painter = painterResource(id = R.drawable.round_wifi_24),
-            contentDescription = stringResource(R.string.content_desc_wifi_icon),
-            modifier = modifier.constrainAs(bigIcon) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            })
-
-        Header1Text(
-            text = stringResource(id = R.string.kWifiErrorWifiDisabledTitle),
-            modifier = modifier.constrainAs(headerText) {
-                top.linkTo(bigIcon.bottom, margin = headerTopMargin)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            })
-
-        Subheader(
-            text = stringResource(id = R.string.kWifiErrorWifiDisabledSubtitle),
-            modifier = modifier
-                .padding(
-                    dimensionResource(id = R.dimen.bt_disabled_horizontal_padding),
-                    dimensionResource(
-                        id = R.dimen.zero
-                    )
-                )
-                .constrainAs(header2Text) {
-                    top.linkTo(headerText.bottom, margin = bodyTopMargin)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            textAlign = TextAlign.Center
-
-        )
-        TextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier.constrainAs(retry){
-
-        }, text = stringResource(
-            id = R.string.kRetryButtonTitle
-        ))
-        OutlinedTextRectangularButton(onClick = { /*TODO*/ }, modifier = modifier.constrainAs(cancel){
-
-        }, text = stringResource(id = R.string.kCancel))
-
-        /* This code block will actually launch settings for us
-            TODO: check if we want this with product
-
-        val launcher = rememberLauncherForActivityResult(
-             contract = ActivityResultContracts.StartActivityForResult(),
-             onResult = {
-                 Log.d("TAG", "isWifiEnabled: $it")
-             }
-         )
-
-         DisposableEffect(Unit) {
-             val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-             launcher.launch(intent)
-             onDispose {
-                 // clean up any resources if needed
-             }
-         }*/
-
+    if (isWifiEnabled) {
+        LaunchedEffect(Unit) {
+            onWifiTurnedOn?.invoke(navController)
+        }
     }
 }
 
@@ -160,6 +132,5 @@ private fun WifiOffScreenBody(
 fun NavigateToWifiOffScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         navController.navigate(WifiConnectionScreens.WifiOffRoute.route)
-
     }
 }

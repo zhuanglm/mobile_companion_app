@@ -21,13 +21,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToScanButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.rememberQrBitmapPainter
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
+import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.state.WifiQrCodeUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiQrViewModel
@@ -59,7 +60,7 @@ private fun WifiQrCodeScreen(
     uiState: WifiQrCodeUiState,
     modifier: Modifier = Modifier,
     onBackPressed: OnNavigationCallback? = null,
-    onHowToScanClicked: OnNavigationCallback? = null,
+    onHowToScanClicked: OnActionCallback? = null,
     onReturnToHomeClicked: OnNavigationCallback? = null,
 ) {
     BaseScreen(
@@ -69,8 +70,10 @@ private fun WifiQrCodeScreen(
         onBackButtonInvoked = { onBackPressed?.invoke(navController) },
         onSettingsButtonInvoked = { },
         bottomButton = {
-            HowToScanButton(modifier = modifier,
-                onScanClick = { onHowToScanClicked?.invoke(navController) })
+            HowToScanButton(
+                modifier = modifier,
+                onScanClick = { onHowToScanClicked?.invoke() }
+            )
         },
     ) {
         WifiQrCodeScreenBody(

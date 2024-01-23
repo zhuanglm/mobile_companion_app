@@ -60,11 +60,6 @@ data class UnableToConnectUiState(
     val ssid: String = "",
 )
 
-data class NoNetworksFoundUiState(
-    val isWifiEnabled: Boolean = false,
-    val ssid: String = "",
-)
-
 data class WifiOffUiState(
     val isWifiEnabled: Boolean = false,
 )

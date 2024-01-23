@@ -3,12 +3,7 @@ package com.esightcorp.mobile.app.wificonnection.repositories
 import android.net.wifi.ScanResult
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
-interface WifiNetworkScanListener {
-    /*
-    If the mobile phone has bluetooth enabled or not
-    */
-    fun onBluetoothStatusUpdate(status: Boolean)
-
+interface WifiNetworkScanListener : BleConnectionStatusListener {
     /*
     If the mobile phone has wifi enabled or not
     */

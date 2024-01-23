@@ -11,7 +11,6 @@ import com.esightcorp.mobile.app.bluetooth.EshareBluetoothModelListener
 import com.esightcorp.mobile.app.bluetooth.HotspotModelListener
 import com.esightcorp.mobile.app.bluetooth.HotspotStatus
 import com.esightcorp.mobile.app.bluetooth.WifiConnectionStatus
-import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.SystemStatusListener
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
@@ -35,13 +34,17 @@ class EshareRepository @Inject constructor(
     private val bluetoothModel: BluetoothModel
     private val wifiModel: WifiModel
     private lateinit var eShareRepositoryListener: EshareRepositoryListener
+    private var deviceDisconnectListener: (() -> Unit)? = null
 
     private var lastHotspotStatus: HotspotStatus? = null
 
     init {
         bluetoothModel = BluetoothModel(context)
-        eSightBleManager.setEshareBluetoothListener(this)
-        eSightBleManager.hotspotListener = this
+        with(bluetoothModel.bleManager) {
+            setEshareBluetoothListener(this@EshareRepository)
+            setBluetoothConnectionListener(this@EshareRepository)
+            hotspotListener = this@EshareRepository
+        }
         wifiModel = WifiModel(context)
     }
 
@@ -54,25 +57,28 @@ class EshareRepository @Inject constructor(
         eShareRepositoryListener.onWifiStateChanged(wifiModel.isWifiEnabled())
     }
 
+    fun setupBtDisconnectListener(listener: () -> Unit) {
+        deviceDisconnectListener = listener
+    }
+
     fun startEshareConnection() {
         Log.w(_tag, "startEshareConnection: Lets get this thing going!!!")
-        if (wifiModel.isWifiEnabled()) {
-            bluetoothModel.registerEshareReceiver()
+        when (wifiModel.isWifiEnabled()) {
+            false -> eShareRepositoryListener.onWifiStateChanged(false)
 
-            with(eSightBleManager) {
-                if (!checkIfConnected()) return@with
-
-                getBleService()?.readWifiConnectionStatus()
+            true -> with(bluetoothModel) {
+                registerEshareReceiver()
+                bleService?.readWifiConnectionStatus()
             }
-        } else {
-            eShareRepositoryListener.onWifiStateChanged(false)
         }
     }
 
     fun cancelEshareConnection() {
         Log.i(_tag, "cancelEshareConnection: Never mind")
-        bluetoothModel.unregisterEshareReceiver()
-        eSightBleManager.getBleService()?.stopEshare()
+        with(bluetoothModel) {
+            unregisterEshareReceiver()
+            bleService?.stopEshare()
+        }
     }
 
     fun startStreamFromHMD(surface: Surface, inputStream: InputStream) {
@@ -82,10 +88,11 @@ class EshareRepository @Inject constructor(
 
     fun startHotspotOnHMD(credential: HotspotCredential) {
         Log.i(_tag, "startHotspotOnHMD")
-        bluetoothModel.registerHotspotReceiver()
-        if (eSightBleManager.checkIfConnected()) {
+        with(bluetoothModel) {
+            registerHotspotReceiver()
+
             try {
-                eSightBleManager.getBleService()?.startHotspot(credential.ssid, credential.password)
+                bleService?.startHotspot(credential.ssid, credential.password)
             } catch (exception: NullPointerException) {
                 Log.e(_tag, "startHotspotOnHMD: BleService has not been initialized ", exception)
             } catch (exception: UninitializedPropertyAccessException) {
@@ -94,91 +101,78 @@ class EshareRepository @Inject constructor(
         }
     }
 
-    fun genHotspotCredential() = when (val shortName = eSightBleManager.getShortDeviceName()) {
-        null -> null
-        else -> HotspotCredential(shortName, HotspotCredentialGenerator.generateHotspotPassword())
-    }
+    fun genHotspotCredential() =
+        when (val shortName = bluetoothModel.bleManager.getShortDeviceName()) {
+            null -> null
+            else -> HotspotCredential(
+                shortName,
+                HotspotCredentialGenerator.generateHotspotPassword()
+            )
+        }
 
     //region Remote controller
 
     fun writeUpButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeUpButtonPress()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeUpButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeUpButtonPress()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeUpButtonPress", exception)
         }
     }
 
     fun writeDownButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeDownButtonPress()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeDownButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeDownButtonPress()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeDownButtonPress", exception)
         }
-
     }
 
     fun writeModeButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeModeButtonPress()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeDownButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeModeButtonPress()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeDownButtonPress", exception)
         }
     }
 
     fun writeMenuButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeMenuButtonPress()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeMenuButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeMenuButtonPress()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeMenuButtonPress", exception)
         }
     }
 
     fun writeVolumeUpButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeVolumeUpButtonPress()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeVolumeUpButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeVolumeUpButtonPress()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeVolumeUpButtonPress", exception)
         }
     }
 
     fun writeVolumeDownButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeVolumeDownButtonPress()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeVolumeDownButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeVolumeDownButtonPress()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeVolumeDownButtonPress", exception)
         }
     }
 
     fun writeFinderButtonPress() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeFinderButtonPressDownEvent()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeFinderButtonPress", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeFinderButtonPressDownEvent()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeFinderButtonPress", exception)
         }
     }
 
     fun writeActionUpEvent() {
-        if (eSightBleManager.checkIfConnected()) {
-            try {
-                eSightBleManager.getBleService()?.writeActionUpEvent()
-            } catch (exception: Exception) {
-                Log.e(_tag, "writeActionUpEvent", exception)
-            }
+        try {
+            bluetoothModel.bleService?.writeActionUpEvent()
+        } catch (exception: Exception) {
+            Log.e(_tag, "writeActionUpEvent", exception)
         }
     }
     //endregion
@@ -186,8 +180,9 @@ class EshareRepository @Inject constructor(
     //endregion
 
     //region BluetoothConnectionListener
-    override fun onDeviceDisconnected(device: BluetoothDevice) {
-        updateBluetoothDeviceDisconnected()
+    override fun onDeviceDisconnected(device: BluetoothDevice?) {
+        deviceDisconnectListener?.invoke()
+
         bluetoothModel.unregisterEshareReceiver()
         bluetoothModel.unregisterHotspotReceiver()
     }
@@ -295,7 +290,7 @@ class EshareRepository @Inject constructor(
     private fun checkIfEshareIsRunningAlready() {
         //check if eshare is running already
         try {
-            eSightBleManager.getBleService()?.checkIfEshareIsRunning()
+            bluetoothModel.bleService?.checkIfEshareIsRunning()
         } catch (e: Exception) {
             Log.e(_tag, "checkIfEshareIsRunningAlready: ", e)
         }
@@ -304,7 +299,7 @@ class EshareRepository @Inject constructor(
     private fun writeStreamOutPortIpToHMD() {
         Log.i(_tag, "writeStreamOutPortIpToHMD")
         try {
-            eSightBleManager.getBleService()?.sendPortAndIp(
+            bluetoothModel.bleService?.sendPortAndIp(
                 port = eShareCache.getPort(), ip = eShareCache.getIpAddress()
             )
         } catch (exception: NullPointerException) {
@@ -320,15 +315,12 @@ class EshareRepository @Inject constructor(
     private fun updateInputStream(inputStream: InputStream) =
         eShareRepositoryListener.onInputStreamCreated(inputStream)
 
-    private fun updateBluetoothDeviceDisconnected() =
-        eShareRepositoryListener.onBluetoothDeviceDisconnected()
-
     private fun updateBluetoothRadioDisabled() = eShareRepositoryListener.onBluetoothDisabled()
 
     private val createSocketListener = object : CreateSocketListener {
         override fun onSocketCreated() {
             //send ip and port over bt
-            if (eSightBleManager.checkIfConnected()) {
+            if (bluetoothModel.bleManager.checkIfConnected()) {
                 checkIfEshareIsRunningAlready()
             } else {
                 Log.d(_tag, "sendPortAndIp: No bt connection")

@@ -27,17 +27,16 @@ import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectedViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
 import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
-import com.esightcorp.mobile.app.utils.NavigateToBluetoothDisabled
-import com.esightcorp.mobile.app.utils.NavigateToDeviceDisconnected
+import com.esightcorp.mobile.app.utils.bluetooth.NavigateToBluetoothDisabled
 
 @Composable
 fun EshareConnectedRoute(
@@ -59,13 +58,13 @@ fun EshareConnectedRoute(
         return
     }
 
-    if (!uiState.deviceConnectionState.isDeviceConnected) {
+    if (!uiState.isDeviceConnected) {
         Log.i(TAG, "EshareConnectedRoute: Device is not connected")
-        NavigateToDeviceDisconnected(navController = navController)
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
         return
     }
 
-    if (uiState.radioState.isBtEnabled && uiState.deviceConnectionState.isDeviceConnected) {
+    if (uiState.radioState.isBtEnabled) {
         BackHandler { vm.onCancelButtonClicked(navController) }
 
         EShareConnectedScreen(

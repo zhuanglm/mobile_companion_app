@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,10 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.PasswordEditText
 import com.esightcorp.mobile.app.wificonnection.viewmodels.EnterPasswordViewModel
 
@@ -29,6 +31,13 @@ fun EnterPasswordRoute(
     viewModel: EnterPasswordViewModel = hiltViewModel()
 ) {
     Log.d(TAG, "EnterPasswordRoute:")
+
+    val isConnected by viewModel.connectionStateFlow().collectAsState()
+    if (isConnected == false) {
+        LaunchedEffect(Unit) { viewModel.onBleDisconnected(navController) }
+        return
+    }
+
     EnterPasswordScreen(
         navController = navController,
         vwModel = viewModel

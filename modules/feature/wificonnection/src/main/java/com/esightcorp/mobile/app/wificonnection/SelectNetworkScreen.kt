@@ -21,10 +21,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.SelectNetworkViewModel
 
@@ -34,6 +35,14 @@ fun SelectNetworkRoute(
     navController: NavController,
     vm: SelectNetworkViewModel = hiltViewModel()
 ) {
+    BackStackLogger(navController, TAG)
+
+    val isConnected by vm.connectionStateFlow().collectAsState()
+    if (isConnected == false) {
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
+        return
+    }
+
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isWifiEnabled) {
         NavigateToWifiOffScreen(navController = navController)
@@ -58,6 +67,7 @@ fun SelectNetworkRoute(
 
 }
 
+private const val TAG = "SelectNetworkScreen"
 
 //TODO: String resources
 @Composable

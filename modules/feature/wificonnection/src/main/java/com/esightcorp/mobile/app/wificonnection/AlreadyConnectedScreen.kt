@@ -18,6 +18,9 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 
 @Composable
 fun AlreadyConnectedRoute(
@@ -37,27 +40,29 @@ private fun AlreadyConnectedScreenPreview() = MaterialTheme {
         onBackPressed = {},
     )
 }
+
 @Composable
 internal fun AlreadyConnectedScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {
-        navController.navigate("home_first"){
-            popUpTo("home_first"){
-                inclusive = true
-            }
-    } },
+        navController.navigate(
+            target = HomeNavigation.FirstScreenRoute,
+            popUntil = WifiNavigation.IncomingRoute
+        )
+    },
 ) {
 
-        BaseScreen(
-            modifier = modifier,
-            showBackButton = true,
-            showSettingsButton = false,
-            onBackButtonInvoked = onBackPressed,
-            isBottomButtonNeeded = false,
-            bottomButton = {}) {
-            AlreadyConnectedScreenBody(modifier = modifier, navController = navController)
-        }
+    BaseScreen(
+        modifier = modifier,
+        showBackButton = true,
+        showSettingsButton = false,
+        onBackButtonInvoked = onBackPressed,
+        isBottomButtonNeeded = false,
+        bottomButton = {},
+    ) {
+        AlreadyConnectedScreenBody(modifier = modifier, navController = navController)
+    }
 }
 
 @Composable
@@ -65,30 +70,40 @@ private fun AlreadyConnectedScreenBody(
     modifier: Modifier,
     navController: NavController
 ) {
-     ConstraintLayout(modifier = modifier.fillMaxSize()) {
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (headerText, header2Text, helpText, button) = createRefs()
 
-        Header1Text(text = stringResource(id =R.string.kWifiConnectedTitle), modifier = modifier.constrainAs(headerText) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-        })
+        Header1Text(
+            text = stringResource(id = R.string.kWifiConnectedTitle),
+            modifier = modifier.constrainAs(headerText) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+            },
+        )
 
-        BodyText(text = stringResource(id = R.string.kWifiAlreadyConnectedSubtitle),
+        BodyText(
+            text = stringResource(id = R.string.kWifiAlreadyConnectedSubtitle),
             modifier = modifier.constrainAs(header2Text) {
                 top.linkTo(headerText.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
             },
-            color = MaterialTheme.colors.onSurface)
+            color = MaterialTheme.colors.onSurface
+        )
 
-        Subheader(text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
+        Subheader(
+            text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
             modifier = modifier.constrainAs(helpText) {
                 top.linkTo(header2Text.bottom, margin = 20.dp)
                 start.linkTo(parent.start)
-            })
+            },
+        )
 
         IconAndTextRectangularButton(
             onClick = {
-                navController.navigate("searching_for_networks/bluetooth")
+                navController.navigate(
+                    target = WifiNavigation.ScanningRoute,
+                    param = WifiNavigation.ScanningRoute.PARAM_BLUETOOTH,
+                )
             },
             modifier = modifier.constrainAs(button) {
                 top.linkTo(helpText.bottom, margin = 20.dp)

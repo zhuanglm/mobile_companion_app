@@ -10,9 +10,10 @@ import android.view.TextureView.SurfaceTextureListener
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.eshare.navigation.EShareStoppedReason
+import com.esightcorp.mobile.app.eshare.repositories.EShareRepoManager
+import com.esightcorp.mobile.app.eshare.repositories.EShareRepoManagerImpl
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
-import com.esightcorp.mobile.app.eshare.state.DeviceConnectionState
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
@@ -34,19 +35,24 @@ import javax.inject.Inject
 class EshareConnectedViewModel @Inject constructor(
     application: Application,
     private val eShareRepository: EshareRepository
-) : ESightBaseViewModel(application), EshareRepositoryListener, SurfaceTextureListener {
+) : ESightBaseViewModel(application), EshareRepositoryListener, SurfaceTextureListener,
+    EShareRepoManager by EShareRepoManagerImpl(eShareRepository) {
 
     private val _tag = this.javaClass.simpleName
 
     private var surfaceTexture: SurfaceTexture? = null
 
-    private var _uiState = MutableStateFlow(EshareConnectedUiState())
+    private val _uiState = MutableStateFlow(EshareConnectedUiState())
     val uiState: StateFlow<EshareConnectedUiState> = _uiState.asStateFlow()
     private var wasStoppedByMobile: Boolean = false
 
     init {
         eShareRepository.setupEshareListener(this)
-        wasStoppedByMobile = false
+
+        configureBtConnectionListener {
+            // Callback when disconnection happen
+            _uiState.update { it.copy(isDeviceConnected = false) }
+        }
     }
 
     //region EshareRepositoryListener
@@ -60,12 +66,15 @@ class EshareConnectedViewModel @Inject constructor(
         updateConnectionState(state)
     }
 
-    override fun onBluetoothDeviceDisconnected() {
-        updateBluetoothDeviceState(false)
-    }
-
     override fun onBluetoothDisabled() {
-        updateBluetoothRadioState(false)
+        _uiState.update {
+            it.copy(
+                radioState = RadioState(
+                    isBtEnabled = false,
+                    isWifiEnabled = it.radioState.isWifiEnabled
+                )
+            )
+        }
     }
 
     override fun onWifiStateChanged(state: Boolean) {
@@ -177,18 +186,6 @@ class EshareConnectedViewModel @Inject constructor(
 
     private fun updateConnectionState(state: EShareConnectionStatus) =
         _uiState.update { it.copy(connectionState = state) }
-
-    private fun updateBluetoothDeviceState(state: Boolean) =
-        _uiState.update { it.copy(deviceConnectionState = DeviceConnectionState(state)) }
-
-    private fun updateBluetoothRadioState(state: Boolean) = _uiState.update {
-        it.copy(
-            radioState = RadioState(
-                isBtEnabled = state,
-                isWifiEnabled = it.radioState.isWifiEnabled
-            )
-        )
-    }
 
     private fun updateWifiRadioState(state: Boolean) = _uiState.update {
         it.copy(

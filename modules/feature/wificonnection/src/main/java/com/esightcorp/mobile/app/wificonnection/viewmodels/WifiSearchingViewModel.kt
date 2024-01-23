@@ -3,8 +3,8 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
@@ -23,18 +23,14 @@ import javax.inject.Inject
 class WifiSearchingViewModel @Inject constructor(
     application: Application,
     private val repository: WifiConnectionRepository
-) : AndroidViewModel(application) {
+) : ESightBaseViewModel(application) {
+
     private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(WifiSearchingUiState())
     val uiState: StateFlow<WifiSearchingUiState> = _uiState.asStateFlow()
 
     private val repoListener = object : WifiNetworkScanListener {
-        override fun onBluetoothStatusUpdate(status: Boolean) {
-            Log.i(_tag, "onBluetoothStatusUpdate: ")
-            updateBtEnabledState(status)
-        }
-
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
             Log.d(_tag, "onNetworkListUpdated: ")
             updateScanningStatus(ScanningStatus.Success)
@@ -57,7 +53,13 @@ class WifiSearchingViewModel @Inject constructor(
     }
 
     init {
-        repository.registerListener(repoListener)
+        with(repository) {
+            // First, reset the wifiFlow
+            // Note: the actual flow will be initialized later from the composable
+            setWifiFlow(null)
+
+            registerListener(repoListener)
+        }
     }
 
     private fun updateScanningStatus(scanningStatus: ScanningStatus) {
@@ -72,17 +74,13 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
-    private fun updateBtEnabledState(enabled: Boolean) {
-        _uiState.update { state ->
-            state.copy(isBtEnabled = enabled)
-        }
-    }
-
     private fun updateWifiStatusState(status: Boolean) {
         _uiState.update { state ->
-            state.copy(wifiConnectionStatus =
-            if (status) WifiConnectionStatus.CONNECTED
-            else WifiConnectionStatus.DISCONNECTED)
+            state.copy(
+                wifiConnectionStatus =
+                if (status) WifiConnectionStatus.CONNECTED
+                else WifiConnectionStatus.DISCONNECTED
+            )
         }
     }
 
@@ -101,32 +99,33 @@ class WifiSearchingViewModel @Inject constructor(
             }
         }
     }
-    fun onCancelClicked(navController: NavController){
-        Log.i("WifiSearchingViewModel", "onCancelClicked: ")
+
+    fun onCancelClicked(navController: NavController) {
+        Log.i(_tag, "onCancelClicked: ")
         repository.cancelWifiScan()
-        navigateToHome(navController)
+        gotoMainScreen(navController)
     }
 
-    private fun navigateToHome(navController: NavController){
-        navController.navigate("home_first"){
-            popUpTo("home_first"){
-                inclusive = true
-            }
-        }
-    }
-
-    fun setWifiFlow(flow: String) {
+    @Synchronized
+    fun setWifiFlow(flow: String?) {
         repository.setWifiFlow(flow)
 
-        //start job according to flow type
-        when (flow) {
-            WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION ->
-                repository.readWifiConnectionStatus()
+        // start job according to flow type
+        flow?.let {
+            when (it) {
+                WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION ->
+                    repository.readWifiConnectionStatus()
 
-            //bluetooth and QR
-            else -> {
-                Log.i("WifiSearchingViewModel", "setWifiFlow: start scan")
-                repository.startWifiScan()
+                //bluetooth and QR
+                else -> {
+                    if (!_uiState.value.isWifiEnabled) {
+                        Log.e(_tag, "setWifiFlow: skipped scanning as wifi is off!")
+                        return@let
+                    }
+
+                    Log.i(_tag, "setWifiFlow: start scan")
+                    repository.startWifiScan()
+                }
             }
         }
     }

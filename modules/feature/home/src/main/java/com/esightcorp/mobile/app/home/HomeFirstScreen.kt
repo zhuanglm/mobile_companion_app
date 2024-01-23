@@ -32,6 +32,7 @@ import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.ui.components.text.PersonalGreeting
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 private const val TAG = "Home Screen"
 
@@ -49,7 +50,9 @@ fun HomeFirstScreen(
         homeUiState = homeUiState,
         navController = navController,
         device = homeUiState.connectedDevice,
-        modifier = Modifier
+        modifier = Modifier,
+        onSettingsButtonInvoked = vm::navigateToSettings,
+        onRemoteDeviceDisconnected = vm::onBleDisconnected
     )
 }
 
@@ -60,12 +63,13 @@ private fun BaseHomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     device: String = "0123456",
-    onSettingsButtonInvoked: () -> Unit = { vm.navigateToSettings(navController) }
+    onSettingsButtonInvoked: OnNavigationCallback,
+    onRemoteDeviceDisconnected: OnNavigationCallback,
 ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
         Log.d(TAG, "BaseHomeScreen: Not connected but are Enabled")
         LaunchedEffect(Unit) {
-            vm.navigateToBluetoothStart(navController)
+            onRemoteDeviceDisconnected(navController)
         }
     } else if (!homeUiState.isBluetoothEnabled) {
         LaunchedEffect(Unit) {
@@ -77,7 +81,7 @@ private fun BaseHomeScreen(
             showBackButton = false,
             showSettingsButton = true,
             onBackButtonInvoked = { },
-            onSettingsButtonInvoked = onSettingsButtonInvoked,
+            onSettingsButtonInvoked = { onSettingsButtonInvoked.invoke(navController) },
             bottomButton = { FeedbackButton(modifier, vm::showFeedbackPage) },
         ) {
             HomeScreenBody(
@@ -167,7 +171,7 @@ private fun SquareTileCardLayout(
                 text = stringResource(card.labelId),
                 painter = painterResource(id = card.iconResId),
                 onClick = card.onClick,
-                modifier = modifier.padding( top = 25.dp ),
+                modifier = modifier.padding(top = 25.dp),
             )
         }
     }

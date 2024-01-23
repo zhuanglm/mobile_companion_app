@@ -3,8 +3,8 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -20,25 +20,26 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiOffViewModel @Inject constructor(
     application: Application,
-    val repository: WifiConnectionRepository
-): ESightBaseViewModel(application) {
-    private val TAG = "WifiOffViewModel"
+    repository: WifiConnectionRepository,
+) : AndroidViewModel(application),
+    WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
+
+    private val _tag = this.javaClass.simpleName
+
     private var _uiState = MutableStateFlow(WifiOffUiState())
     val uiState: StateFlow<WifiOffUiState> = _uiState.asStateFlow()
-    private lateinit var navController: NavController
-    private val listener = object : WifiNetworkScanListener {
 
-        override fun onBluetoothStatusUpdate(status: Boolean) {
-            _uiState.value = _uiState.value.copy(isBtEnabled = status)
+    private val listener = object : WifiNetworkScanListener {
+        override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
+            updateBleConnectionState(isConnected)
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            Log.e(TAG, "onNetworkListUpdated: ")
+            Log.e(_tag, "onNetworkListUpdated: ")
         }
 
-        override fun onScanStatusUpdated(status: ScanningStatus)
-        {
-            Log.e(TAG, "onScanStatusUpdated: This should not be called")
+        override fun onScanStatusUpdated(status: ScanningStatus) {
+            Log.e(_tag, "onScanStatusUpdated: This should not be called")
         }
 
         override fun onWifiStatusUpdate(status: Boolean) {
@@ -46,28 +47,27 @@ class WifiOffViewModel @Inject constructor(
         }
 
         override fun onWifiAlreadyConnected(status: Boolean) {
-            Log.i(TAG, "onWifiAlreadyConnected: $status")
+            Log.i(_tag, "onWifiAlreadyConnected: $status")
         }
     }
+
     init {
         repository.registerListener(listener)
     }
 
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
-
-    fun navigateHome(){
-        if(this::navController.isInitialized){
-            navController.navigate("home_first")
-        }
-    }
-
     fun onRetryPressed(navController: NavController) {
+        if (!_uiState.value.isWifiEnabled) {
+            Log.e(_tag, "onRetryPressed - ignored as wifi is still off!")
+            return
+        }
+
         navController.navigate(
             target = WifiNavigation.ScanningRoute,
             param = WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION
         )
     }
 
+    fun onDismissed(navController: NavController) {
+        navController.popBackStack()
+    }
 }

@@ -43,6 +43,13 @@ fun NavController.navigate(
 
 fun NavController.navigate(
     target: Navigation,
+    popCurrent: Boolean,
+) = navigate(target.path) {
+    if (popCurrent) popBackStack()
+}
+
+fun NavController.navigate(
+    target: Navigation,
     param: String? = null,
     popUntil: Navigation? = null,
     popIncluded: Boolean = true,

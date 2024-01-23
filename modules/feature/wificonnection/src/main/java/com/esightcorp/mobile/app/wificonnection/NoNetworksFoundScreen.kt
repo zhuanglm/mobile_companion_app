@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
@@ -20,6 +21,7 @@ import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.viewmodels.NoNetworksFoundViewModel
 
 @Composable
@@ -27,10 +29,10 @@ fun NoNetworksFoundRoute(
     navController: NavController,
     vm: NoNetworksFoundViewModel = hiltViewModel()
 ) {
-    vm.setNavController(navController)
     NoNetworksFoundScreen(
         modifier = Modifier,
-        onBackPressed = vm::navigateHome,
+        navController = navController,
+        onBackPressed = vm::gotoMainScreen,
         onTryAgainClicked = vm::tryAgain,
         onHelpClicked = vm::showHowToConnectPage,
     )
@@ -41,34 +43,35 @@ fun NoNetworksFoundRoute(
 private fun NoNetworksFoundScreenPreview() = MaterialTheme {
     NoNetworksFoundScreen(
         modifier = Modifier,
-        onBackPressed = {},
-        onTryAgainClicked = {},
-        onHelpClicked = {})
+        navController = rememberNavController()
+    )
 }
 
 @Composable
 internal fun NoNetworksFoundScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit,
-    onTryAgainClicked: () -> Unit,
-    onHelpClicked: () -> Unit,
+    onBackPressed: OnNavigationCallback? = null,
+    onTryAgainClicked: OnNavigationCallback? = null,
+    onHelpClicked: OnActionCallback? = null,
 ) {
     BaseScreen(
         modifier = modifier,
         showBackButton = true,
         showSettingsButton = false,
-        onBackButtonInvoked = onBackPressed,
+        onBackButtonInvoked = { onBackPressed?.invoke(navController) },
         onSettingsButtonInvoked = { },
         bottomButton = {
             CantFindDeviceButton(
                 modifier.padding(top = dimensionResource(R.dimen.bottom_button_top_padding)),
                 R.string.kWifiTroubleshootingNoWifiFooterButtonTitle,
-                onHelpClicked
+                onHelpClick = { onHelpClicked?.invoke() }
             )
         },
     ) {
         NoNetworksFoundScreenBody(
             modifier = modifier,
+            navController = navController,
             onTryAgainClicked = onTryAgainClicked
         )
     }
@@ -76,18 +79,21 @@ internal fun NoNetworksFoundScreen(
 
 @Composable
 private fun NoNetworksFoundScreenBody(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    onTryAgainClicked: OnActionCallback,
+    onTryAgainClicked: OnNavigationCallback? = null,
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (headerText, header2Text, nhiOne, nhiTwo, button) = createRefs()
 
-        Header1Text(text = stringResource(id = R.string.kWifiTroubleshootingNoWifiTitle),
+        Header1Text(
+            text = stringResource(id = R.string.kWifiTroubleshootingNoWifiTitle),
             modifier = modifier
                 .constrainAs(headerText) {
                     top.linkTo(parent.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
-                })
+                },
+        )
 
         BodyText(
             text = stringResource(id = R.string.kTroubleShootingTryFollowingSteps),
@@ -99,22 +105,27 @@ private fun NoNetworksFoundScreenBody(
             color = MaterialTheme.colors.onSurface
         )
 
-        NumberedHelpItem(number = 1,
+        NumberedHelpItem(
+            number = 1,
             text = stringResource(id = R.string.kTroubleshootingInstructionRestartESightDevice),
             modifier = modifier
                 .constrainAs(nhiOne) {
                     top.linkTo(header2Text.bottom, margin = 36.dp)
                     start.linkTo(parent.start)
-                })
-        NumberedHelpItem(number = 2,
+                },
+        )
+        NumberedHelpItem(
+            number = 2,
             text = stringResource(id = R.string.kTroubleshootingInstructionRestartRouter),
             modifier = modifier
                 .constrainAs(nhiTwo) {
                     top.linkTo(nhiOne.bottom, margin = 36.dp)
                     start.linkTo(parent.start)
-                })
+                },
+        )
+
         TextRectangularButton(
-            onClick = onTryAgainClicked,
+            onClick = { onTryAgainClicked?.invoke(navController) },
             modifier = modifier
                 .constrainAs(button) {
                     top.linkTo(nhiTwo.bottom, margin = 36.dp)

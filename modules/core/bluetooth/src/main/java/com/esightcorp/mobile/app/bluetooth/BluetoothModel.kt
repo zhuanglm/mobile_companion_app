@@ -5,63 +5,110 @@ import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.*
-import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleService.LocalBinder
-import com.esightcorp.mobile.app.utils.BleConnectionStatus
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
+import com.esightcorp.mobile.app.utils.safeRegisterReceiver
+import com.esightcorp.mobile.app.utils.safeUnregisterReceiver
 import java.util.*
 
-@SuppressLint("MissingPermission", "UnspecifiedRegisterReceiverFlag")
+@SuppressLint("MissingPermission")
 class BluetoothModel(
     val context: Context
 ) {
     private val _tag = this.javaClass.simpleName
 
-    private var scanning = false
-        @Synchronized get
-        @Synchronized set
-
-    private val handler = Handler(Looper.getMainLooper())
-    private val bleManager = eSightBleManager
-
     /**
      * Service lifecycle callback
      */
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
+        @Synchronized
         override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
             Log.w(_tag, "onServiceConnected ...")
 
-            when (bleManager.getBleService()) {
+            when (bleService) {
                 null -> {
-                    val bleService = (service as LocalBinder).getService()
-                    when (bleService.initialize()) {
+                    val serviceInstance = (service as LocalBinder).getService()
+                    when (serviceInstance.initialize()) {
                         false -> Log.e(_tag, "onServiceConnected: Unable to initialize bluetooth")
-                        true -> bleManager.setupBleService(bleService)
+                        true -> bleManager.setBleService(serviceInstance)
                     }
+                    Log.i(_tag, "BleService configured ...")
                 }
 
                 else -> return
             }
         }
 
+        @Synchronized
         override fun onServiceDisconnected(p0: ComponentName?) {
             Log.w(_tag, "onServiceDisconnected!!!")
-            bleManager.resetBleService()
-            context.unregisterReceiver(gattUpdateReceiver)
+            bleManager.setBleService(null)
+            context.safeUnregisterReceiver(gattUpdateReceiver)
         }
     }
 
-    fun shutdownReceivers() {
-        try {
-            context.unregisterReceiver(gattUpdateReceiver)
-            context.unregisterReceiver(bluetoothStateReceiver)
-        } catch (e: Exception) {
-            Log.e(_tag, "shutdownReceivers: ${e.message}")
-        }
+    //region Public interface
+
+    val bleManager = eSightBleManager
+    val bleService = bleManager.getConnectedBleService()
+        @Synchronized get
+
+    @Synchronized
+    fun registerEshareReceiver() {
+        context.safeRegisterReceiver(eShareReceiver, makeEShareIntentFilter())
     }
+
+    @Synchronized
+    fun unregisterEshareReceiver() {
+        context.safeUnregisterReceiver(eShareReceiver)
+    }
+
+    @Synchronized
+    fun registerHotspotReceiver() {
+        context.safeRegisterReceiver(hotspotReceiver, makeHotspotIntentFilter())
+    }
+
+    @Synchronized
+    fun unregisterHotspotReceiver() {
+        context.safeUnregisterReceiver(hotspotReceiver)
+    }
+
+    /**
+     * Scan and then trigger callback to repository when ready
+     */
+    fun triggerBleScan() {
+        scanLeDevices()
+    }
+
+    fun stopScan() {
+        bleManager.getLeScanner()?.stopScan(leScanCallback)
+        scanning = false
+        bleManager.getModelListener()?.onScanCancelled()
+    }
+
+    fun connectToDevice(device: BluetoothDevice) {
+        val result = bleManager.getBleService()?.connect(device.address)
+        if (result == true) {
+            bleManager.setConnectedDevice(device, status = BleConnectionStatus.Connecting)
+            stopScan()
+        }
+        Log.i(_tag, "connectToDevice - result: $result")
+    }
+
+    fun disconnectToDevice(): Boolean = (bleManager.getBleService()?.disconnect() ?: false)
+
+    //endregion
+
+    //region Private implementation
+    private var scanning = false
+        @Synchronized get
+        @Synchronized set
+
+    private val handler = Handler(Looper.getMainLooper())
 
     /**
      * receiver to capture changes to the connection state
@@ -82,13 +129,17 @@ class BluetoothModel(
 
                 BleAction.GATT_CONNECT_FAILED,
                 BleAction.GATT_DISCONNECTED -> {
-                    Log.e(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
+                    Log.w(_tag, "onReceive - gattUpdateReceiver --> Action: $action")
 
-                    bleManager.getConnectedDevice()?.let {
-                        bleManager.getModelListener()?.onDeviceDisconnected(it)
-                        bleManager.getBluetoothConnectionListener()?.onDeviceDisconnected(it)
+                    with(bleManager) {
+                        val connectedDevice = getConnectedDevice()
+
+                        getModelListener()?.onDeviceDisconnected(connectedDevice)
+                        getBluetoothConnectionListener()?.onDeviceDisconnected(connectedDevice)
+
+                        if (connectedDevice != null)
+                            resetConnectedDevice()
                     }
-                    bleManager.resetConnectedDevice()
                 }
             }
         }
@@ -160,7 +211,7 @@ class BluetoothModel(
                         BluetoothAdapter.STATE_OFF -> {
                             // Bluetooth is disabled
                             Log.d(_tag, "onReceive: Bluetooth is disabled")
-                            eSightBleManager.getModelListener()?.onBluetoothDisabled()
+                            bleManager.getModelListener()?.onBluetoothDisabled()
                         }
 
                         BluetoothAdapter.STATE_TURNING_OFF -> {
@@ -171,7 +222,7 @@ class BluetoothModel(
                         BluetoothAdapter.STATE_ON -> {
                             // Bluetooth is enabled
                             Log.d(_tag, "onReceive: Bluetooth is Enabled")
-                            eSightBleManager.getModelListener()?.onBluetoothEnabled()
+                            bleManager.getModelListener()?.onBluetoothEnabled()
                         }
 
                         BluetoothAdapter.STATE_TURNING_ON -> {
@@ -190,79 +241,14 @@ class BluetoothModel(
         val gattServiceIntent = Intent(context, BleService::class.java)
         bleManager.setupBluetoothManager(context)
         context.bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                gattUpdateReceiver, makeGattUpdateIntentFilter(), Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
-        }
-        context.registerReceiver(bluetoothStateReceiver, btStateFilter)
-    }
 
-    fun registerGattUpdateReceiver() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                gattUpdateReceiver, makeGattUpdateIntentFilter(), Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
-        }
-    }
+        with(context) {
+            // GATT update receiver
+            safeRegisterReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
 
-    fun unregisterGattUpdateReceiver() {
-        try {
-            context.unregisterReceiver(gattUpdateReceiver)
-        } catch (e: Exception) {
-            Log.e(_tag, "deregisterGattUpdateReceiver: ${e.message}")
+            // Bluetooth state receiver
+            safeRegisterReceiver(bluetoothStateReceiver, btStateFilter)
         }
-    }
-
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    @Synchronized
-    fun registerEshareReceiver() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                eShareReceiver, makeEShareIntentFilter(), Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(eShareReceiver, makeEShareIntentFilter())
-        }
-    }
-
-    @Synchronized
-    fun unregisterEshareReceiver() {
-        try {
-            context.unregisterReceiver(eShareReceiver)
-        } catch (e: Exception) {
-            Log.e(_tag, "deregisterEshareReceiver: ${e.message}")
-        }
-    }
-
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    fun registerHotspotReceiver() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                hotspotReceiver, makeHotspotIntentFilter(), Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(hotspotReceiver, makeHotspotIntentFilter())
-        }
-    }
-
-    fun unregisterHotspotReceiver() {
-        try {
-            context.unregisterReceiver(hotspotReceiver)
-        } catch (e: Exception) {
-            Log.e(_tag, "deregisterHotspotReceiver: ${e.message}")
-        }
-    }
-
-    /**
-     * Scan and then trigger callback to repository when ready
-     */
-    fun triggerBleScan() {
-        scanLeDevices()
     }
 
     /**
@@ -292,12 +278,6 @@ class BluetoothModel(
         }
     }
 
-    fun stopScan() {
-        bleManager.getLeScanner()?.stopScan(leScanCallback)
-        scanning = false
-        bleManager.getModelListener()?.onScanCancelled()
-    }
-
     /**
      * Callback for Ble Scan, this will trigger flows based on what it finds
      */
@@ -324,16 +304,6 @@ class BluetoothModel(
         }
     }
 
-    fun connectToDevice(device: BluetoothDevice) {
-        val result = bleManager.getBleService()?.connect(device.address)
-        if (result == true) {
-            bleManager.setConnectedDevice(device, status = BleConnectionStatus.Connecting)
-            stopScan()
-        }
-    }
-
-    fun disconnectToDevice(): Boolean = (bleManager.getBleService()?.disconnect() ?: false)
-
     private fun makeGattUpdateIntentFilter() = IntentFilter().apply {
         addAction(BleAction.GATT_CONNECTED)
         addAction(BleAction.GATT_DISCONNECTED)
@@ -347,6 +317,8 @@ class BluetoothModel(
     private fun makeHotspotIntentFilter(): IntentFilter = IntentFilter().apply {
         addAction(HotspotAction.StatusChanged)
     }
+
+    //endregion
 
     companion object {
         private const val SCAN_PERIOD: Long = 20000 //20 seconds, what we had in e4

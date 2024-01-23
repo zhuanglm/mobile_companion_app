@@ -9,24 +9,21 @@ data class RadioState(
     val isWifiEnabled: Boolean = true,
 )
 
-data class DeviceConnectionState(
-    val isDeviceConnected: Boolean = true
-)
-
 data class EshareConnectedUiState(
     val radioState: RadioState = RadioState(),
     val connectionState: EShareConnectionStatus = EShareConnectionStatus.Unknown,
-    val deviceConnectionState: DeviceConnectionState = DeviceConnectionState(),
+    val isDeviceConnected: Boolean = true,
 )
 
 data class EshareStoppedUiState(
     val titleId: Int = -1,
     val descriptionId: Int = -1,
+    val isDeviceConnected: Boolean = true,
 )
 
 data class HotspotSetupUiState(
     val radioState: RadioState = RadioState(),
     val hotspotCredential: HotspotCredential? = null,
-    val isDeviceConnected: DeviceConnectionState = DeviceConnectionState(),
+    val isDeviceConnected: Boolean = true,
     val hotspotStatus: HotspotStatus? = null,
 )

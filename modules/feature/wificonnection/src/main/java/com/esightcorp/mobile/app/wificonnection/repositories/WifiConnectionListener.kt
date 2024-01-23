@@ -1,11 +1,6 @@
 package com.esightcorp.mobile.app.wificonnection.repositories
 
-interface WifiConnectionListener {
-    /**
-     * If the mobile phone has bluetooth enabled or not
-     */
-    fun onBluetoothStatusUpdate(status: Boolean) {}
-
+interface WifiConnectionListener : BleConnectionStatusListener {
     /**
      * If the mobile phone has wifi enabled or not
      */

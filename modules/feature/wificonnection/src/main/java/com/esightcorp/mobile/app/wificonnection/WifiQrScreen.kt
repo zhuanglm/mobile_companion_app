@@ -70,8 +70,10 @@ private fun WifiQrCodeScreen(
         onBackButtonInvoked = { onBackPressed?.invoke(navController) },
         onSettingsButtonInvoked = { },
         bottomButton = {
-            HowToScanButton(modifier = modifier,
-                onScanClick = { onHowToScanClicked?.invoke() })
+            HowToScanButton(
+                modifier = modifier,
+                onScanClick = { onHowToScanClicked?.invoke() }
+            )
         },
     ) {
         WifiQrCodeScreenBody(
@@ -146,7 +148,6 @@ private fun WifiQrCodeScreenPreview() = MaterialTheme {
     WifiQrCodeScreen(
         navController = rememberNavController(),
         uiState = WifiQrCodeUiState(qrString = "QR-Code-12345678"),
-        onHowToScanClicked = {},
     )
 }
 

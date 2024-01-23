@@ -39,8 +39,8 @@ class NoDevicesConnectedViewModel @Inject constructor(
      */
     private val btRepositoryListener = object : BluetoothConnectionRepositoryCallback {
         @SuppressLint("MissingPermission")
-        override fun onDeviceConnected(device: BluetoothDevice, connected: Boolean?) {
-            updateBtConnectedState(connected, device.name)
+        override fun onDeviceConnected(device: BluetoothDevice?, connected: Boolean?) {
+            updateBtConnectedState(connected, device?.name)
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
@@ -68,9 +68,13 @@ class NoDevicesConnectedViewModel @Inject constructor(
         currentState.copy(isBtEnabled = state)
     }
 
-    private fun updateBtConnectedState(state: Boolean?, device: String) =
+    private fun updateBtConnectedState(state: Boolean?, device: String?) =
         _uiState.update { currentState ->
-            currentState.copy(btConnectionStatus = (state == true), connectedDevice = device)
+            val connStatus = (state == true)
+            when (device) {
+                null -> currentState.copy(btConnectionStatus = connStatus)
+                else -> currentState.copy(btConnectionStatus = connStatus, connectedDevice = device)
+            }
         }
 
     //endregion

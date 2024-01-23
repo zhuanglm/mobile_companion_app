@@ -4,23 +4,15 @@ import android.net.wifi.ScanResult
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
+enum class WifiConnectionStatus {
+    CONNECTED,
+    DISCONNECTED,
+    UNKNOWN
+}
 
-data class WifiConnectionUiState(
-    val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = true,
-    val arePermissionsGranted: Boolean = false,
-    val ssid: String = "",
-    val qrCodeButtonVisibility: Boolean = false,
-    val currentSelectedNetwork: ScanResult? = null,
-    val networkList: List<ScanResult> = mutableListOf(),
-    val bluetoothConnected: Boolean = false,
-)
-
-enum class WifiConnectionStatus { CONNECTED, DISCONNECTED, UNKNOWN }
 data class WifiSearchingUiState(
     val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = true,
-    val isWifiConnected : Boolean = false,
+    val isWifiConnected: Boolean = false,
     val wifiConnectionStatus: WifiConnectionStatus = WifiConnectionStatus.UNKNOWN,
     val scanningStatus: ScanningStatus = ScanningStatus.Unknown,
     val isWifiConnectedAlreadyOnGlasses: Boolean = false,
@@ -68,14 +60,8 @@ data class UnableToConnectUiState(
     val ssid: String = "",
 )
 
-data class NoNetworksFoundUiState(
-    val isWifiEnabled: Boolean = false,
-    val ssid: String = "",
-)
-
 data class WifiOffUiState(
     val isWifiEnabled: Boolean = false,
-    val isBtEnabled: Boolean = false,
 )
 
 data class WifiAdvancedSettingsUiState(
@@ -85,7 +71,6 @@ data class WifiAdvancedSettingsUiState(
     val wifiType: String = "WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
     val passwordSubmitted: Boolean = false,
-    val isBtEnabled: Boolean = false,
     val ssidSubmitted: Boolean = false,
 )
 
@@ -93,10 +78,8 @@ data class WifiTypeUiState(
     val isWifiEnabled: Boolean = false,
     val wifiType: String = "WPA/WPA2",
     val wifiTypeSubmitted: Boolean = false,
-    val isBtEnabled: Boolean = false,
 )
 
 data class WifiQrCodeUiState(
-    val isBtEnabled: Boolean = false,
     val qrString: String = "",
 )

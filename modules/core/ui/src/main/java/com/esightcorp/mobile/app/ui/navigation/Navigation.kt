@@ -6,6 +6,13 @@ import androidx.navigation.navArgument
 
 abstract class Navigation(open val path: String)
 
+/**
+ * The 1st navigation route of all flows/functionalities
+ */
+sealed class GoProduct(override val path: String) : Navigation(path) {
+    object IncomingRoute : GoProduct("go_product")
+}
+
 sealed class HomeNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : HomeNavigation("home")
 
@@ -16,7 +23,7 @@ sealed class HomeNavigation(override val path: String) : Navigation(path) {
 sealed class SettingsNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : SettingsNavigation("settings")
     object EntranceRoute : SettingsNavigation("settings_entrance")
-    object DisconnectRoute : SettingsNavigation("settings_disconnect_device")
+    object DisconnectConfirmationRoute : SettingsNavigation("settings_disconnect_device")
 }
 
 sealed class BtConnectionNavigation(override val path: String) : Navigation(path) {
@@ -28,6 +35,7 @@ sealed class BtConnectionNavigation(override val path: String) : Navigation(path
     object BtConnectedRoute : BtConnectionNavigation("bt_connected")
     object BtSearchingRoute : BtConnectionNavigation("bt_searching")
     object NoDevicesFoundRoute : BtConnectionNavigation("no_devices_found_bt")
+    object DeviceDisconnectedRoute : BtConnectionNavigation("bt_device_disconnected")
 
     object BtDisabledScreen : BtConnectionNavigation("bt_disabled")
     object UnableToConnectRoute : BtConnectionNavigation("unable_to_connect_bt")
@@ -66,6 +74,7 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
         val arguments = listOf(navArgument(flowArg) { type = NavType.StringType })
 
         const val PARAM_BLUETOOTH = "bluetooth"
+        const val PARAM_QR = "qr"
         const val PARAM_WIFI_CONNECTION = "check_wifi_connection"
 
         fun getFlowArgument(arguments: Bundle?) = arguments?.getString(flowArg)

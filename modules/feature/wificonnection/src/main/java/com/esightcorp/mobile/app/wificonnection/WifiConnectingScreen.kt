@@ -26,6 +26,12 @@ fun WifiConnectingRoute(
     navController: NavController,
     vm: WifiConnectingViewModel = hiltViewModel(),
 ) {
+    val isConnected by vm.connectionStateFlow().collectAsState()
+    if (isConnected == false) {
+        LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }
+        return
+    }
+
     val uiState by vm.uiState.collectAsState()
 
     WifiConnectingScreen(

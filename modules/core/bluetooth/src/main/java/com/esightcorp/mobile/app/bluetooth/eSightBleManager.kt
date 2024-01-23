@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.util.Log
-import com.esightcorp.mobile.app.utils.BleConnectionStatus
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 
 @SuppressLint("MissingPermission")
 object eSightBleManager {
@@ -51,6 +51,10 @@ object eSightBleManager {
         return eshareBluetoothListener
     }
 
+    fun setBluetoothConnectionListener(listener: BluetoothConnectionListener) {
+        this.btConnectionListener = listener
+    }
+
     fun getBluetoothConnectionListener(): BluetoothConnectionListener? {
         return btConnectionListener
     }
@@ -68,11 +72,9 @@ object eSightBleManager {
         var added = false
 
         do {
-            if (!device.name.contains(DEVICE_NAME_CRITERION))
-                break
+            if (!device.name.contains(DEVICE_NAME_CRITERION)) break
 
-            if (bleDeviceList.find { it.address == device.address } != null)
-                break
+            if (bleDeviceList.find { it.address == device.address } != null) break
 
             added = bleDeviceList.add(device)
             Log.d(_tag, "addToBleDeviceList: ${device.name} ($device) --> $added")
@@ -114,16 +116,32 @@ object eSightBleManager {
         return this.connectedDevice
     }
 
-    fun setupBleService(service: BleService) {
+    @Synchronized
+    fun setBleService(service: BleService?) {
         this.bleService = service
     }
 
-    fun resetBleService() {
-        this.bleService = null
+    /**
+     * Retrieve a BleService instance (as-is)
+     *
+     * @return service instance
+     */
+    @Synchronized
+    fun getBleService(): BleService? {
+        return bleService
     }
 
-    fun getBleService(): BleService? {
-        return this.bleService
+    /**
+     * Retrieve a **connected** BleService if any
+     *
+     * @return
+     *   * a BLE service instance (nullable) if a connection has been established
+     *   * `null` if there is no active connection
+     */
+    @Synchronized
+    fun getConnectedBleService() = when (checkIfConnected()) {
+        false -> null
+        true -> bleService
     }
 
     @Synchronized

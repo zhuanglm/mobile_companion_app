@@ -14,6 +14,8 @@ import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
+import com.esightcorp.mobile.app.utils.bluetooth.BleStateManagerImpl
+import com.esightcorp.mobile.app.utils.bluetooth.IBleStateManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +27,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val application: Application,
     homeRepository: HomeRepository,
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application),
+    IBleStateManager by BleStateManagerImpl() {
     private val _tag = this.javaClass.simpleName
 
     /**

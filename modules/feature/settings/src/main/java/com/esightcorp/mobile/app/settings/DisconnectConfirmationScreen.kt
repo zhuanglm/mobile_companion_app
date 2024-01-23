@@ -18,37 +18,42 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.esightcorp.mobile.app.settings.state.DisconnectUiState.State
-import com.esightcorp.mobile.app.settings.viewmodels.DeviceDisconnectViewModel
+import com.esightcorp.mobile.app.settings.viewmodels.DisconnectConfirmationViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
+import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 
 @Composable
-fun DeviceDisconnectRoute(
+fun DisconnectConfirmationRoute(
     navController: NavController,
-    vwModel: DeviceDisconnectViewModel = hiltViewModel(),
+    vwModel: DisconnectConfirmationViewModel = hiltViewModel(),
 ) {
     val uiState by vwModel.uiState.collectAsState()
 
-    when (uiState.disconnectState) {
-        State.Disconnecting -> LoadingScreenWithSpinner(
+    if (uiState.isConnectionDropped == true) {
+        LaunchedEffect(Unit) { vwModel.onBleDisconnected(navController) }
+        return
+    }
+
+    when (uiState.state) {
+        BleConnectionStatus.Disconnecting -> LoadingScreenWithSpinner(
             loadingText = stringResource(R.string.label_settings_disconnecting_esight),
             cancelButtonNeeded = false,
         )
 
-        State.Disconnected -> LaunchedEffect(Unit) {
+        BleConnectionStatus.Disconnected -> LaunchedEffect(Unit) {
             // Disconnection has been executed successfully
             // Now navigate to the Not-Connected screen
             vwModel.navigateToDisconnectedScreen(navController)
         }
 
-        else -> DisconnectDeviceScreen(
+        else -> DisconnectConfirmationScreen(
             nav = navController,
             onCancelPressed = vwModel::navigateBack,
             onDisconnectPressed = { vwModel.disconnectToESight() },
@@ -58,8 +63,8 @@ fun DeviceDisconnectRoute(
 
 @Preview(showBackground = false)
 @Composable
-fun DisconnectDeviceScreenPreview() = MaterialTheme {
-    DisconnectDeviceScreen(
+private fun DisconnectConfirmationScreenPreview() = MaterialTheme {
+    DisconnectConfirmationScreen(
         nav = rememberNavController(),
         onCancelPressed = { },
         onDisconnectPressed = { },
@@ -68,7 +73,7 @@ fun DisconnectDeviceScreenPreview() = MaterialTheme {
 
 //region Internal impl
 @Composable
-internal fun DisconnectDeviceScreen(
+internal fun DisconnectConfirmationScreen(
     modifier: Modifier = Modifier,
     nav: NavController,
     onCancelPressed: (NavController) -> Unit,

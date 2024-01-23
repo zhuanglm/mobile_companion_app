@@ -52,8 +52,8 @@ class WifiConnectionRepository @Inject constructor(
 
         override fun onBluetoothDisconnected() {
             Log.i(_tag, "onBluetoothDisconnected: ")
-            networkScanListener?.onBluetoothStatusUpdate(false)
-            connectionListener?.onBluetoothStatusUpdate(false)
+            networkScanListener?.onBleConnectionStatusUpdate(false)
+            connectionListener?.onBleConnectionStatusUpdate(false)
         }
 
         override fun alreadyConnectedToWifi(status: Boolean) {
@@ -118,8 +118,8 @@ class WifiConnectionRepository @Inject constructor(
         when (eSightBleManager.checkIfConnected()) {
             false -> {
                 Log.d(_tag, "sendWifiCreds: No bt connection")
-                connectionListener?.onBluetoothStatusUpdate(false)
-                networkScanListener?.onBluetoothStatusUpdate(false)
+                connectionListener?.onBleConnectionStatusUpdate(false)
+                networkScanListener?.onBleConnectionStatusUpdate(false)
             }
 
             true -> {
@@ -139,11 +139,7 @@ class WifiConnectionRepository @Inject constructor(
     fun cancelWifiScan() = wifiModel.stopWifiScan()
 
     fun readWifiConnectionStatus() {
-        with(eSightBleManager) {
-            if (!checkIfConnected()) return@with
-
-            getBleService()?.readWifiConnectionStatus()
-        }
+        eSightBleManager.getConnectedBleService()?.readWifiConnectionStatus()
     }
 
     fun getCachedWifiList() {
@@ -159,21 +155,23 @@ class WifiConnectionRepository @Inject constructor(
         WifiCache.credentials.setWifiType(type)
     }
 
+    @Synchronized
     fun registerListener(listener: WifiNetworkScanListener) {
         Log.d(_tag, "registerListener: $listener")
         with(listener) {
             onWifiStatusUpdate(isWifiEnabled())
-            onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+            onBleConnectionStatusUpdate(eSightBleManager.checkIfConnected())
 
             networkScanListener = this
         }
     }
 
+    @Synchronized
     fun registerListener(listener: WifiConnectionListener) {
         Log.d(_tag, "registerListener: $listener")
         with(listener) {
             onWifiStatusUpdate(isWifiEnabled())
-            onBluetoothStatusUpdate(eSightBleManager.checkIfConnected())
+            onBleConnectionStatusUpdate(eSightBleManager.checkIfConnected())
 
             connectionListener = this
         }
@@ -184,7 +182,8 @@ class WifiConnectionRepository @Inject constructor(
         Log.e(_tag, "unregisterListener: ")
     }
 
-    fun setWifiFlow(flow: String) {
+    @Synchronized
+    fun setWifiFlow(flow: String?) {
         wifiModel.setWifiFlow(flow)
     }
 

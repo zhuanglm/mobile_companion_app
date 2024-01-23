@@ -29,6 +29,10 @@ import com.esightcorp.mobile.app.wificonnection.WifiTypeRoute
 fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
     navigation(startDestination = WifiOffRoute.path, route = IncomingRoute.path) {
 
+        composable(WifiNavigation.AlreadyConnectedRoute) {
+            AlreadyConnectedRoute(navController = navController)
+        }
+
         composable(
             ScanningRoute.routeWithArgs,
             arguments = ScanningRoute.arguments,
@@ -44,6 +48,7 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
 
         composable(ConnectedRoute) { ConnectedRoute(navController) }
         composable(UnableToConnectRoute) { UnableToConnectRoute(navController) }
+        composable(WifiOffRoute) { WifiOffRoute(navController) }
 
         composable(
             WifiConnectionScreens.EnterPasswordRoute.route
@@ -58,15 +63,8 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
             WifiConnectingRoute(navController = navController)
         }
 
-        composable(WifiConnectionScreens.WifiOffRoute.route) {
-            WifiOffRoute(navController = navController)
-        }
-
         composable(WifiConnectionScreens.NoNetworksFoundRoute.route) {
             NoNetworksFoundRoute(navController = navController)
-        }
-        composable(WifiNavigation.AlreadyConnectedRoute) {
-            AlreadyConnectedRoute(navController = navController)
         }
         composable(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route) {
             AdvancedWifiRoute(navController = navController)

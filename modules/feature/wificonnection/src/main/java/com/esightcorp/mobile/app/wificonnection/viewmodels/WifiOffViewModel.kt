@@ -3,11 +3,10 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
-import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
@@ -64,7 +63,11 @@ class WifiOffViewModel @Inject constructor(
         }
     }
 
-    fun onRetryPressed(navController: NavController) =
-        navController.navigate("searching_for_networks/bluetooth")
+    fun onRetryPressed(navController: NavController) {
+        navController.navigate(
+            target = WifiNavigation.ScanningRoute,
+            param = WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION
+        )
+    }
 
 }

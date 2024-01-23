@@ -5,7 +5,6 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -21,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WifiOffViewModel @Inject constructor(
     application: Application,
-    private val repository: WifiConnectionRepository,
+    repository: WifiConnectionRepository,
 ) : AndroidViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(repository) {
 
@@ -62,14 +61,9 @@ class WifiOffViewModel @Inject constructor(
             return
         }
 
-        val targetRoute = when (repository.wifiFlow) {
-            WifiCache.WifiFlow.QrFlow -> WifiNavigation.ScanningRoute.PARAM_QR
-            else -> WifiNavigation.ScanningRoute.PARAM_BLUETOOTH
-        }
-
         navController.navigate(
             target = WifiNavigation.ScanningRoute,
-            param = targetRoute
+            param = WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION
         )
     }
 

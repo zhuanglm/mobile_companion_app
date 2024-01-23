@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus
@@ -126,6 +127,14 @@ class WifiSearchingViewModel @Inject constructor(
             else -> {
                 Log.i("WifiSearchingViewModel", "setWifiFlow: start scan")
                 repository.startWifiScan()
+            }
+        }
+    }
+
+    fun navigateToNoNetworksScreen(navController: NavController) {
+        navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route) {
+            popUpTo(WifiConnectionScreens.IncomingNavigationRoute.route) {
+                inclusive = true
             }
         }
     }

@@ -5,6 +5,9 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
@@ -19,7 +22,7 @@ import javax.inject.Inject
 class WifiOffViewModel @Inject constructor(
     application: Application,
     val repository: WifiConnectionRepository
-): AndroidViewModel(application) {
+): ESightBaseViewModel(application) {
     private val TAG = "WifiOffViewModel"
     private var _uiState = MutableStateFlow(WifiOffUiState())
     val uiState: StateFlow<WifiOffUiState> = _uiState.asStateFlow()
@@ -55,16 +58,13 @@ class WifiOffViewModel @Inject constructor(
         this.navController = navController
     }
 
-    fun onBackClicked(){
-        if(this::navController.isInitialized){
-            navController.popBackStack()
-        }
-    }
-
     fun navigateHome(){
         if(this::navController.isInitialized){
             navController.navigate("home_first")
         }
     }
+
+    fun onRetryPressed(navController: NavController) =
+        navController.navigate("searching_for_networks/bluetooth")
 
 }

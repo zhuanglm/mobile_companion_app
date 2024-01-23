@@ -49,6 +49,7 @@ fun SearchingForNetworksRoute(
             setWifiFlow = vm::setWifiFlow,
             onCancelClicked = vm::onCancelClicked,
             navigateToWifiNetworksScreen = vm::navigateToWifiNetworksScreen,
+            navigateToNoWifiScreen = vm::navigateToNoNetworksScreen,
             uiState = uiState,
             loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle)
         )
@@ -64,6 +65,7 @@ internal fun SearchingForNetworksScreen(
     loadingText: String = "Searching for Wi-Fi networks",
     navigateToWifiAlreadyConnected: (NavController) -> Unit,
     navigateToWifiNetworksScreen: (NavController) -> Unit,
+    navigateToNoWifiScreen: (NavController) -> Unit,
     onCancelClicked: (NavController) -> Unit,
     setWifiFlow: (String) -> Unit,
     navController: NavController,
@@ -72,6 +74,9 @@ internal fun SearchingForNetworksScreen(
     when(uiState.scanningStatus){
         ScanningStatus.Failed -> {
             Log.e("SearchingForNetworksScreen", "SearchingForNetworksScreen: SCAN STATUS FAILED")
+            LaunchedEffect(Unit){
+                navigateToNoWifiScreen(navController)
+            }
         }
         ScanningStatus.Success -> {
             Log.d("TAG", "SearchingForNetworksScreen: SUCCESS")

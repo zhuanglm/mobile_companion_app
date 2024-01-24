@@ -1,3 +1,10 @@
+<!--
+  ~ /**LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+  ~ Reserved.The software and information contained herein are proprietary to, and
+  ~ comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+  ~ preserve as trade secrets such software and information.*/
+  -->
+
 <vector android:autoMirrored="true" android:height="24dp"
     android:tint="#000000" android:viewportHeight="24"
     android:viewportWidth="24" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">

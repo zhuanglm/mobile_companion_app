@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?><!--
+  ~ /**LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+  ~ Reserved.The software and information contained herein are proprietary to, and
+  ~ comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+  ~ preserve as trade secrets such software and information.*/
+  -->
+
+<!--
    Sample data extraction rules file; uncomment and customize as necessary.
    See https://developer.android.com/about/versions/12/backup-restore#xml-changes
    for details.

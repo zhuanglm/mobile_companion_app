@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /**LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+  ~ Reserved.The software and information contained herein are proprietary to, and
+  ~ comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+  ~ preserve as trade secrets such software and information.*/
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>

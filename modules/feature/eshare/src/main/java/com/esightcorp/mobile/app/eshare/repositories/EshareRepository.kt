@@ -61,6 +61,7 @@ class EshareRepository @Inject constructor(
         deviceDisconnectListener = listener
     }
 
+    @Synchronized
     fun startEshareConnection() {
         Log.w(_tag, "startEshareConnection: Lets get this thing going!!!")
         when (wifiModel.isWifiEnabled()) {
@@ -73,6 +74,7 @@ class EshareRepository @Inject constructor(
         }
     }
 
+    @Synchronized
     fun cancelEshareConnection() {
         Log.i(_tag, "cancelEshareConnection: Never mind")
         with(bluetoothModel) {

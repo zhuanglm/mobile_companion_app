@@ -115,7 +115,7 @@ internal fun EShareConnectedScreen(
     actionUpButtonPress: OnActionCallback? = null,
     navigateToWifiSetupRoute: OnNavigationCallback? = null,
 ) {
-    Log.e(TAG, "eShare-connection state: ${uiState.connectionState}")
+    Log.i(TAG, "eShare-connection state: ${uiState.connectionState}")
 
     // Prepare the streaming view
     with(uiState.connectionState) {

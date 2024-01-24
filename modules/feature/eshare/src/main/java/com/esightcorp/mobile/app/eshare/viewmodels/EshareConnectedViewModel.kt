@@ -22,6 +22,7 @@ import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -129,9 +130,15 @@ class EshareConnectedViewModel @Inject constructor(
 
         // Request to start eShare session
         eShareRepository.startEshareConnection()
+
+        connectionTimer = startConnectionTimer()
     }
 
-    fun cancelEshareConnection() = eShareRepository.cancelEshareConnection()
+    fun cancelEshareConnection() {
+        stopConnectionTimer()
+
+        eShareRepository.cancelEshareConnection()
+    }
 
     fun onCancelButtonClicked(navController: NavController) {
         Log.i(_tag, "onCancelButtonClicked")
@@ -184,8 +191,20 @@ class EshareConnectedViewModel @Inject constructor(
 
     //region Internal implementation
 
-    private fun updateConnectionState(state: EShareConnectionStatus) =
+    private var connectionTimer: Job? = null
+        @Synchronized get
+        @Synchronized set
+
+    @Synchronized
+    private fun updateConnectionState(state: EShareConnectionStatus) {
+        if (state == EShareConnectionStatus.Connected)
+            stopConnectionTimer()
+
         _uiState.update { it.copy(connectionState = state) }
+    }
+
+    @Synchronized
+    private fun getConnectionState() = _uiState.value.connectionState
 
     private fun updateWifiRadioState(state: Boolean) = _uiState.update {
         it.copy(
@@ -196,5 +215,26 @@ class EshareConnectedViewModel @Inject constructor(
         )
     }
 
+    private fun startConnectionTimer() = viewModelScope.launch(Dispatchers.IO) {
+        Log.e(_tag, "Eshare connection timer started ...")
+
+        delay(CONNECTION_ESTABLISHING_TIMEOUT)
+
+        if (getConnectionState() != EShareConnectionStatus.Connected) {
+            Log.e(_tag, "Eshare connection timeout!")
+            updateConnectionState(EShareConnectionStatus.Timeout)
+        }
+    }
+
+    @Synchronized
+    private fun stopConnectionTimer() {
+        connectionTimer?.cancel()
+        connectionTimer = null
+        Log.w(_tag, "Eshare connection timer cancelled!")
+    }
     //endregion
+
+    companion object {
+        private const val CONNECTION_ESTABLISHING_TIMEOUT = 60 * 1000L
+    }
 }

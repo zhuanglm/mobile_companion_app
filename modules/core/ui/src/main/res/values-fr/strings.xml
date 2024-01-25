@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ /**LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
   ~ Reserved.The software and information contained herein are proprietary to, and
   ~ comprise valuable trade secrets of, Gentex Technology Canada, which intends to
@@ -19,7 +20,7 @@
     <string name="kAdvancedSettingsButtonText" >Paramètres avancés</string>
     <string name="kWifiQRViewScanWiFiTitleText" >Scanner le code Wi-Fi</string>
     <string name="kQRViewScanWifiSubtitleText" >Utilisez le scanner QR dans les paramètres d\'eSight</string>
-    <string name="kQRViewReturnHomeButtonText" >Retour à l\'écran d'accueil</string>
+    <string name="kQRViewReturnHomeButtonText" >Retour à l\'écran d\'accueil</string>
     <string name="kQRViewHowToScanButtonText" >Comment scanner</string>
     <string name="kWifiTroubleshootingHowToScanTitle" >Comment scanner un code Wi-Fi</string>
     <string name="kWifiTroubleshootingHowToScanFirstText" >Appuyez sur le bouton Menu sur votre eSight</string>
@@ -37,7 +38,7 @@
     <string name="kTroubleshootingInstructionEsightWithinRangeShort" >eSight est à portée du réseau.</string>
     <string name="kTroubleshootingInstructionsSufficientChargeShort" >eSight est suffisamment chargé.</string>
     <string name="kTryAgainButtonTitle" >Réessayer</string>
-    <string name="kWifiTroubleshootingUnableToConnectFooter" >Si la connexion au réseau Wi-Fi n\'aboutit toujours pas, cliquez sur le lien ci-dessous pour obtenir de plus amples informations ou contactez l'assistance.</string>
+    <string name="kWifiTroubleshootingUnableToConnectFooter" >Si la connexion au réseau Wi-Fi n\'aboutit toujours pas, cliquez sur le lien ci-dessous pour obtenir de plus amples informations ou contactez l\'assistance.</string>
     <string name="kFooterButtonHowToConnectTitle" >Comment se connecter</string>
     <string name="kSettingsViewTitleText" >Paramètres</string>
     <string name="kSettingsViewMyeSightSubTitleText" >Mon eSight</string>
@@ -60,7 +61,7 @@
     <string name="kBTSearchSpinnerTitle" >Recherche d\'appareils eSight en cours</string>
     <string name="kBTPairingHeader" >Sélectionnez votre eSight</string>
     <string name="kBTDeviceFoundeSightGo" >eSight Go</string>
-    <string name="kBTDeviceFoundeSightGoSN" >N° série :</string>
+    <string name="kBTDeviceFoundeSightGoSN" >N° série:</string>
     <string name="kBTPairingCantFindESightButtonText" >Vous ne trouvez pas votre eSight?</string>
     <string name="kBTConnectSpinnerTitle" >Connexion à eSight en cours</string>
     <string name="kBTPairingConnectedTitle" >Connecté à eSight</string>
@@ -72,7 +73,7 @@
     <string name="kTroubleshootingInstructionRestartESightDevice" >Éteignez puis rallumez votre eSight.</string>
     <string name="kTroubleshootingInstructionESightWithinRange" >Assurez-vous que votre eSight est à portée du réseau.</string>
     <string name="kTroubleshootingInstructionSufficientCharge" >Assurez-vous que votre eSight est suffisamment chargé.</string>
-    <string name="kBTTroubleshootingUnableToConnectDescriptionText" >Si le couplage n\'aboutit toujours pas, cliquez sur le lien ci-dessous pour obtenir de plus amples informations ou contactez l'assistance.</string>
+    <string name="kBTTroubleshootingUnableToConnectDescriptionText" >Si le couplage n\'aboutit toujours pas, cliquez sur le lien ci-dessous pour obtenir de plus amples informations ou contactez l\'assistance.</string>
     <string name="kHomeRootViewConnectedSubHeader" >Votre appareil est connecté à</string>
     <string name="kConnectWifiLabelText" >Se connecter au Wi-Fi</string>
     <string name="kHomeRootViewConnectedeShareButtonText" >Partager votre vue</string>
@@ -131,11 +132,11 @@
     <string name="kAccessibilityButtonMode" >Bouton Mode</string>
     <string name="kAccessibilityButtonUp" >Bouton Haut</string>
     <string name="kAccessibilityButtonDown" >Bouton Bas</string>
-    <string name="kAccessibilityButtonVolume Up" >Bouton d\'augmentation du volume</string>
-    <string name="kAccessibilityButtonVolume Down" >Bouton de réduction du volume</string>
+    <string name="kAccessibilityButtonVolumeUp" >Bouton d\'augmentation du volume</string>
+    <string name="kAccessibilityButtonVolumeDown" >Bouton de réduction du volume</string>
     <string name="kAccessibilityButtonMenu" >Bouton Menu</string>
     <string name="kAccessibilityButtonExit" >Bouton Quitter</string>
-    <string name="kAccessibilityIconLoading spinner" >Icône de chargement</string>
+    <string name="kAccessibilityIconLoadingSpinner" >Icône de chargement</string>
     <string name="kAccessibilityIconBluetooth" >Icône Bluetooth</string>
     <string name="kAccessibilityIconWiFi" >Icône Wi-Fi</string>
     <string name="kAccessibilityIconDisconnected" >Icône Déconnecté</string>

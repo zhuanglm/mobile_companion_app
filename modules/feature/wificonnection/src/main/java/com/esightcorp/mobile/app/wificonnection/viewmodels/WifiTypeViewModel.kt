@@ -1,9 +1,17 @@
+/*
+ * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+ * Reserved.The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * preserve as trade secrets such software and information.
+ */
+
 package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
+import com.esightcorp.mobile.app.wificonnection.state.WifiType
 import com.esightcorp.mobile.app.wificonnection.state.WifiTypeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +29,21 @@ class WifiTypeViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiTypeUiState())
     val uiState: StateFlow<WifiTypeUiState> = _uiState.asStateFlow()
 
-    private fun onWifiTypeSelected(wifiType: String) {
-        _uiState.update { it.copy(wifiType = wifiType) }
-    }
-
-    fun onTypePressed(navController: NavController, type: String) {
+    fun onTypePressed(navController: NavController, type: Int) {
         repository.setWifiType(type)
         navController.popBackStack()
+    }
+
+    init {
+        refreshUiState()
+    }
+
+    private fun refreshUiState() {
+        with(repository.wifiCredentials) {
+            val wifiType = getWifiType()
+            _uiState.update {
+                it.copy(wifiType = WifiType.fromValue(wifiType) ?: WifiType.WAP)
+            }
+        }
     }
 }

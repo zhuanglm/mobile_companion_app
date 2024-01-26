@@ -1,3 +1,10 @@
+/*
+ * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+ * Reserved.The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * preserve as trade secrets such software and information.
+ */
+
 package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
@@ -6,6 +13,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.networking.storage.WifiCache
+import com.esightcorp.mobile.app.ui.MIN_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -57,10 +65,6 @@ class EnterPasswordViewModel @Inject constructor(
         updateWifiFlow(repository.wifiFlow)
     }
 
-    companion object {
-        private const val MIN_PASSWORD_LENGTH = 8
-    }
-
     fun updatePassword(password: String) {
         Log.d("WifiCredentialsViewModel", "updatePassword: $password")
         _uiState.update { state ->
@@ -91,6 +95,7 @@ class EnterPasswordViewModel @Inject constructor(
     }
 
     fun onAdvancedButtonPressed(navController: NavController) {
+        repository.setWifiPassword(_uiState.value.password)
         navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
     }
 
@@ -100,7 +105,8 @@ class EnterPasswordViewModel @Inject constructor(
 
     private fun sendWifiCredsViaBluetooth() {
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
-        repository.sendWifiCreds(_uiState.value.password, _uiState.value.wifiType)
+        repository.sendWifiCreds(_uiState.value.password,
+            getApplication<Application>().getString(_uiState.value.wifiType.stringValueResId))
     }
 
     private fun navigateToConnectingScreen(navController: NavController) {

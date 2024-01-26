@@ -1,3 +1,11 @@
+<!--
+  ~ LICENSE
+  ~ Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+  ~ The software and information contained herein are proprietary to, and
+  ~ comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
+  ~ preserve as trade secrets such software and information.
+  -->
+
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Mobile_companion_app" parent="Theme.MaterialComponents.DayNight.DarkActionBar">

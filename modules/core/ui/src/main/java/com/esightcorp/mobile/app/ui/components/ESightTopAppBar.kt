@@ -116,7 +116,7 @@ fun TopAppBarNavIconButton(
     ) {
         Icon(
             Icons.Rounded.ArrowBack,
-            contentDescription = stringResource(R.string.back),
+            contentDescription = stringResource(R.string.kAccessibilityButtonBack),
             modifier = modifier.size(dimensionResource(R.dimen.filled_icon_top_app_bar_size)),
         )
     }

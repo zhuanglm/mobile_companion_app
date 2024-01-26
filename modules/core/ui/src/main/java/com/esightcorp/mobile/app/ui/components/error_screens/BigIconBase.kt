@@ -57,7 +57,7 @@ fun BigIconBase(
             // Set up the big Bluetooth icon
             BigIcon(
                 painter = painterResource(id = R.drawable.baseline_bluetooth_24),
-                contentDescription = stringResource(R.string.content_desc_bt_icon),
+                contentDescription = stringResource(R.string.kAccessibilityIconBluetooth),
                 modifier = modifier.constrainAs(icon) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)

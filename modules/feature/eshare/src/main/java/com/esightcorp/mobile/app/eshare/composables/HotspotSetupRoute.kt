@@ -75,7 +75,7 @@ fun HotspotSetupRoute(
 
         else -> {
             LoadingScreenWithSpinner(
-                loadingText = stringResource(R.string.kHotspostViewControllerConnectingSpinnerTitle),
+                loadingText = stringResource(R.string.kHotspotViewControllerConnectingSpinnerTitle),
                 cancelButtonNeeded = false,
                 onCancelButtonClicked = { },
             )

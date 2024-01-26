@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ LICENSE
+  ~ Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+  ~ The software and information contained herein are proprietary to, and
+  ~ comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
+  ~ preserve as trade secrets such software and information.
+  -->
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="200dp"

@@ -1,18 +1,15 @@
 /*
- * LICENSE
- * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
- * The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
+ * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+ * Reserved.The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
  * preserve as trade secrets such software and information.
  */
 
 package com.esightcorp.mobile.app.wificonnection
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,6 +22,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
@@ -39,23 +37,29 @@ fun EnterPasswordRoute(
     viewModel: EnterPasswordViewModel = hiltViewModel()
 ) {
     Log.d(TAG, "EnterPasswordRoute:")
-
+    val wifiUiState by viewModel.uiState.collectAsState()
+    var buttonText = stringResource(R.string.kWifiViewConnectButtonText)
     val isConnected by viewModel.connectionStateFlow().collectAsState()
     if (isConnected == false) {
         LaunchedEffect(Unit) { viewModel.onBleDisconnected(navController) }
         return
     }
 
+    if(wifiUiState.wifiFlow == WifiCache.WifiFlow.QrFlow)
+        buttonText = stringResource(R.string.kCreateWifiCodeButtonText)
+
     EnterPasswordScreen(
         navController = navController,
-        vwModel = viewModel
+        vwModel = viewModel,
+        buttonText = buttonText
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun EnterPasswordScreenPreview() = MaterialTheme {
-    EnterPasswordScreen(navController = rememberNavController())
+    EnterPasswordScreen(navController = rememberNavController(),
+        buttonText = "connect & create")
 }
 
 //region Private implementation
@@ -65,20 +69,23 @@ private const val TAG = "WifiCredentialsRoute"
 internal fun EnterPasswordScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    vwModel: EnterPasswordViewModel? = null
+    vwModel: EnterPasswordViewModel? = null,
+    buttonText: String
 ) = PasswordField(
     modifier = modifier,
     navController = navController,
-    vwModel = vwModel
+    vwModel = vwModel,
+    buttonText = buttonText
 )
 
 @Composable
 private fun PasswordField(
     modifier: Modifier,
     navController: NavController,
-    vwModel: EnterPasswordViewModel? = null
+    vwModel: EnterPasswordViewModel? = null,
+    buttonText: String
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {}
+
 
     BaseScreen(
         modifier = modifier,
@@ -96,7 +103,8 @@ private fun PasswordField(
         PasswordBody(
             modifier = modifier,
             navController = navController,
-            vwModel = vwModel
+            vwModel = vwModel,
+            buttonText = buttonText
         )
     }
 }
@@ -105,7 +113,8 @@ private fun PasswordField(
 private fun PasswordBody(
     modifier: Modifier,
     navController: NavController,
-    vwModel: EnterPasswordViewModel? = null
+    vwModel: EnterPasswordViewModel? = null,
+    buttonText: String
 ) {
     ConstraintLayout {
         val (header, editText, button) = createRefs()
@@ -139,7 +148,7 @@ private fun PasswordBody(
                 start.linkTo(editText.start)
                 end.linkTo(editText.end)
             },
-            text = stringResource(R.string.kWifiViewConnectButtonText),
+            text = buttonText,
             enabled = wifiUiState?.isPasswordValid ?: false
         )
     }

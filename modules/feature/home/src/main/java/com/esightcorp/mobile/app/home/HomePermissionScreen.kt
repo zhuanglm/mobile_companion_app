@@ -77,7 +77,7 @@ private fun PermissionScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         Header1Text(
-            text = stringResource(R.string.label_home_screen_request_permission_title),
+            text = stringResource(R.string.kPermissionRequiredTitle),
             modifier = modifier
         )
         ItemSpacer(30.dp)
@@ -91,7 +91,7 @@ private fun PermissionScreen(
 
         TextRectangularButton(
             modifier = modifier,
-            text = stringResource(R.string.label_home_screen_request_permission_button_confirm),
+            text = stringResource(R.string.kPermissionRequestButton),
             onClick = { onRequestPermissions?.invoke() },
             textAlign = TextAlign.Center,
         )
@@ -100,7 +100,7 @@ private fun PermissionScreen(
         OutlinedTextRectangularButton(
             onClick = { onOpenAppSettings?.invoke() },
             modifier = modifier,
-            text = stringResource(R.string.label_home_screen_request_permission_goto_app_settings),
+            text = stringResource(R.string.kPermissionOpenSettingsButton),
             textAlign = TextAlign.Center,
             textColor = MaterialTheme.colors.onSurface,
         )

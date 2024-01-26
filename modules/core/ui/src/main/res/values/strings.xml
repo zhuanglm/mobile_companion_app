@@ -11,33 +11,54 @@
     <string name="hyphen" translatable="false">-</string>
     <!--    This is a string used for a debug screen -->
     <string name="something_went_wrong" translatable="false">Something went horribly wrong!</string>
-    <!--    TODO: Need to add all content descriptions and get translations for them -->
-    <string name="content_desc_bt_icon">Bluetooth Icon</string>
-    <string name="content_desc_wifi_icon">Wifi Icon</string>
-    <string name="back">Back</string>
 
-    <!--    Didn't find these in the ditto strings -->
-
+<!--region Content Descriptors-->
+    <string name="kAccessibilityButtonBack" >Back </string>
+    <string name="kAccessibilityButtonSettings" >Settings </string>
+    <string name="kAccessibilityButtonFinder" >Finder </string>
+    <string name="kAccessibilityButtonMode" >Mode </string>
+    <string name="kAccessibilityButtonUp" >Up </string>
+    <string name="kAccessibilityButtonDown" >Down </string>
+    <string name="kAccessibilityButtonVolumeUp" >Volume Up </string>
+    <string name="kAccessibilityButtonVolumeDown" >Volume Down </string>
+    <string name="kAccessibilityButtonMenu" >Menu </string>
+    <string name="kAccessibilityButtonExit" >Exit </string>
+    <string name="kAccessibilityIconLoadingSpinner" >Loading spinner</string>
+    <string name="kAccessibilityIconBluetooth" >Bluetooth icon</string>
+    <string name="kAccessibilityIconWiFi" >WiFi icon</string>
+    <string name="kAccessibilityIconDisconnected" >Disconnected icon</string>
+    <string name="kAccessibilityIconExclamation" >Exclamation icon</string>
+    <string name="kAccessibilityIconQRImage" >WiFi QR code</string>
+    <string name="kAccessibilityIconeSightLogo" >eSight logo</string>
+<!--endregion-->
+<!--    TODO: Refactor label_eshare_stopped_hotspot_setup_error_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kHotspotUnreachable -->
     <string name="label_eshare_stopped_hotspot_setup_error_message">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
-    <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
+    <string name="kHotspotUnreachable" >Your eSight device is currently unreachable via hotspot</string>
 
-    <string name="settings_disconnect_esight_confirm">Are you sure you want to disconnect?</string>
-    <string name="label_btn_disconnect">Disconnect</string>
-    <string name="label_settings_disconnecting_esight">Disconnecting from eSight</string>
+
+    <!--    TODO: Refactor label_eshare_stopped_busy_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kEshareErrorActiveSessionInProgress -->
+
+    <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
+    <string name="kEshareErrorActiveSessionInProgress" >There\'s already an active eShare session in progress.</string>
+
+
     <string name="ego_model_name">eSight Go</string>
 
-    <!--    <string name="wifi_advanced_BT_finishButton">Connect to network</string>-->
-
     <!-- region HomeScreen -->
-    <string name="label_home_screen_request_permission_title">Permissions are required</string>
+<!--    TODO: Replace label_home_screen_request_permission_description with bluetooth and location strings-->
     <string name="label_home_screen_request_permission_description">These permissions allow you to have access to the full functionality of the app.</string>
-    <string name="label_home_screen_request_permission_button_confirm">Request Permissions</string>
-    <string name="label_home_screen_request_permission_goto_app_settings">Open app\'s Settings</string>
+
+    <string name="kPermissionBluetooth" >Allow Bluetooth to enable your eSight to pair with your phone for connectivity features.</string>
+    <string name="kPermissionLocation" >Location permission are required for Wi-Fi connectivity, allowing eSight to access your network connections.</string>
+    <string name="kPermissionRequiredTitle" >Permissions Required</string>
+    <string name="kPermissionRequiredBody" >To unlock all the features of this app, please enable the necessary permissions.</string>
+    <string name="kPermissionRequestButton" >Request permissions</string>
+    <string name="kPermissionOpenSettingsButton" >Open app settings</string>
     <!-- endregion -->
 
     <!-- region External URL -->
-    <string name="url_esight_home">https://www.esighteyewear.com/</string>
-    <string name="url_esight_privacy_policy">https://www.esighteyewear.com/privacy-policy/</string>
+    <string name="url_esight_home" translatable="false">https://www.esighteyewear.com/</string>
+    <string name="url_esight_privacy_policy" translatable="false">https://www.esighteyewear.com/privacy-policy/</string>
     <string name="url_esight_feedback" translatable="false">https://20vycous4b4.typeform.com/to/dP3zzlVw</string>
     <string name="url_esight_support" translatable="false">https://www.esighteyewear.com/support/</string>
     <!-- endregion -->
@@ -46,6 +67,9 @@
     <string name="kHotspotTroubleshootingEnterPassword">Enter this password: "%1$s"</string>
     <string name="kSettingViewApplicationVersion">Version %1$s</string>
 
+    <string name="kBTDisconnectTitle">Are you sure you want to disconnect?</string>
+    <string name="kBTDiconnect">Disconnect</string>
+    <string name="kSettingDisconnectingSpinnerTitle">Disconnecting from eSight</string>
     <string name="kWifiViewControllerSelectSecurityLabelText">Select security</string>
     <string name="kWifiSecurityTypeWPA">WPA/WPA2/WPA3</string>
     <string name="kWifiSecurityTypeWEP">WEP</string>
@@ -148,7 +172,9 @@
     <string name="kEshareErrorViewControllerConnectionUnavailableTitle">Connection unavailable</string>
     <string name="kEshareErrorViewControllerConnectionStoppedTitle">Connection stopped</string>
     <string name="kEshareErrorViewControllerConnectionStoppedDescription">The eSight wearer has stopped the session.</string>
-    <string name="kHotspostViewControllerConnectingSpinnerTitle">Starting a Hotspot</string>
+    <string name="kHotspotViewControllerConnectingSpinnerTitle">Starting a Hotspot</string>
+    <string name="kWiFiNetworkUnavailable">Network Unavailable</string>
+    <string name="kWiFiNetworkUnavailableDescription">Ensure your Wi-Fi is on and connected to a network</string>
 
 
 </resources>

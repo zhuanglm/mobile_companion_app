@@ -43,7 +43,7 @@ fun DisconnectConfirmationRoute(
 
     when (uiState.state) {
         BleConnectionStatus.Disconnecting -> LoadingScreenWithSpinner(
-            loadingText = stringResource(R.string.label_settings_disconnecting_esight),
+            loadingText = stringResource(R.string.kSettingDisconnectingSpinnerTitle),
             cancelButtonNeeded = false,
         )
 
@@ -98,7 +98,7 @@ internal fun DisconnectConfirmationScreen(
         )
 
         Header1Text(
-            text = stringResource(R.string.settings_disconnect_esight_confirm),
+            text = stringResource(R.string.kBTDisconnectTitle),
             modifier.padding(
                 vertical = dimensionResource(
                     com.esightcorp.mobile.app.settings.R.dimen.settings_disconnect_title_margin
@@ -118,7 +118,7 @@ internal fun DisconnectConfirmationScreen(
         OutlinedTextRectangularButton(
             onClick = { onDisconnectPressed.invoke(nav) },
             modifier = modifier,
-            text = stringResource(R.string.label_btn_disconnect),
+            text = stringResource(R.string.kBTDiconnect),
             textAlign = TextAlign.Center,
             textColor = MaterialTheme.colors.onSurface,
         )

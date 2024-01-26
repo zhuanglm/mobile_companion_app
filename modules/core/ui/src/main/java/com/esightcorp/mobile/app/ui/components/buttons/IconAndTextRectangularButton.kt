@@ -1,8 +1,7 @@
 /*
- * LICENSE
- * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
- * The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
+ * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
+ * Reserved.The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -18,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.components.text.ButtonText
+import com.esightcorp.mobile.app.ui.extensions.debugBorder
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @Composable
@@ -136,6 +137,55 @@ fun OutlinedTextRectangularButton(
             )
         }
     }
+}
+
+@Composable
+fun TextAndIconRectangularButton(
+    onClick: () -> Unit,
+    modifier: Modifier,
+    icon: ImageVector? = null,
+    @DrawableRes iconDrawableId: Int? = null,
+    iconContextDescription: String? = null,
+    text: String,
+) {
+    ElevatedButton(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        enabled = true,
+        colors = ButtonDefaults.elevatedButtonColors(
+            MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
+        ),
+        elevation = ButtonDefaults.elevatedButtonElevation(),
+        shape = RoundedCornerShape(10.dp),
+        contentPadding = PaddingValues(20.dp, 10.dp),
+    ) {
+        ButtonText(
+            text = text, modifier = modifier
+                .weight(1f)
+
+        )
+
+        when (icon) {
+            null -> if (iconDrawableId != null) {
+                Icon(
+                    painter = rememberDrawablePainter(
+                        AppCompatResources.getDrawable(LocalContext.current, iconDrawableId)
+                    ),
+                    iconContextDescription,
+                )
+            }
+
+            else -> Icon(icon, contentDescription = iconContextDescription)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TextAndIconRectangularButtonPreview() {
+    TextAndIconRectangularButton(
+        onClick = { }, modifier = Modifier.debugBorder(), icon = Icons.Rounded.Check, text = "WPA/WPA2/WPA3"
+    )
 }
 
 @Preview

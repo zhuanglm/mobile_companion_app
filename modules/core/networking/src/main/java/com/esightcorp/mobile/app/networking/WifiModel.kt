@@ -25,6 +25,7 @@ import com.esightcorp.mobile.app.networking.sockets.InputStreamListener
 import com.esightcorp.mobile.app.networking.sockets.SocketManager
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.networking.storage.eShareCache
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.utils.safeRegisterReceiver
@@ -258,7 +259,12 @@ class WifiModel(
 
     fun getQrString() = when (val nwName = WifiCache.credentials.getSSID()) {
         null -> null
-        else -> "WIFI:S:${nwName};T:${context.getString(WifiCache.credentials.getWifiType())};P:${WifiCache.credentials.getPassword()};;"
+        else -> {
+            val wifiType = WifiCache.credentials.getWifiType()
+            val typeStr = if(wifiType == R.string.kWifiSecurityTypeNone) "nopass" else context.getString(wifiType)
+
+            "WIFI:S:${nwName};T:${typeStr};P:${WifiCache.credentials.getPassword()};;"
+        }
     }
 
     fun openSocket(

@@ -47,7 +47,7 @@
     <string name="kSettingsViewAbouteSightSubTitleText" >Acerca de eSight</string>
     <string name="kSettingsViewVisitWebsiteButtonText" >Visitar el sitio web</string>
     <string name="kDataPolicy" >Política de privacidad</string>
-    <string name="kSettingViewApplicationVersion" >Versión</string>
+    <string name="kSettingViewApplicationVersion" >Versión %1$s</string>
     <string name="kGreetingsTextEvening" >Buenas noches</string>
     <string name="kHomeRootViewUnconnectedSubHeader" >eSight no está conectado.</string>
     <string name="kHomeRootViewUnconnectedConnectButtonText" >Conectar con eSight Go</string>
@@ -110,7 +110,7 @@
     <string name="kEshareErrorViewControllerConnectionUnavailableTitle" >Conexión no disponible</string>
     <string name="kEshareErrorViewControllerConnectionStoppedTitle" >Conexión interrumpida</string>
     <string name="kEshareErrorViewControllerConnectionStoppedDescription" >El usuario de eSight interrumpió la sesión.</string>
-    <string name="kHotspotTroubleshootingEnterPassword" >Ingresa esta contraseña:</string>
+    <string name="kHotspotTroubleshootingEnterPassword" >Ingresa esta contraseña: "%1$s"</string>
     <string name="kHotspotViewControllerConnectingSpinnerTitle" >Iniciar un punto de acceso</string>
     <string name="kHotspotUnreachable" >Tu dispositivo eSight es actualmente inaccesible a través del punto de acceso.</string>
     <string name="kEshareErrorActiveSessionInProgress" >Ya hay una sesión eShare activa en curso.</string>

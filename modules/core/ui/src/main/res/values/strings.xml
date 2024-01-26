@@ -4,7 +4,7 @@
  translations, and so we don't have to map to two different sets of keys-->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="action_settings">Settings</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="default_serial_number" translatable="false">1000101</string>
@@ -32,21 +32,21 @@
     <string name="kAccessibilityIconeSightLogo" >eSight logo</string>
 <!--endregion-->
 <!--    TODO: Refactor label_eshare_stopped_hotspot_setup_error_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kHotspotUnreachable -->
-    <string name="label_eshare_stopped_hotspot_setup_error_message">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
+    <string name="label_eshare_stopped_hotspot_setup_error_message" translatable="false">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
     <string name="kHotspotUnreachable" >Your eSight device is currently unreachable via hotspot</string>
 
 
     <!--    TODO: Refactor label_eshare_stopped_busy_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kEshareErrorActiveSessionInProgress -->
 
-    <string name="label_eshare_stopped_busy_message">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
+    <string name="label_eshare_stopped_busy_message" translatable="false">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
     <string name="kEshareErrorActiveSessionInProgress" >There\'s already an active eShare session in progress.</string>
 
 
-    <string name="ego_model_name">eSight Go</string>
+    <string name="ego_model_name" translatable="false">eSight Go</string>
 
     <!-- region HomeScreen -->
 <!--    TODO: Replace label_home_screen_request_permission_description with bluetooth and location strings-->
-    <string name="label_home_screen_request_permission_description">These permissions allow you to have access to the full functionality of the app.</string>
+    <string name="label_home_screen_request_permission_description" translatable="false">These permissions allow you to have access to the full functionality of the app.</string>
 
     <string name="kPermissionBluetooth" >Allow Bluetooth to enable your eSight to pair with your phone for connectivity features.</string>
     <string name="kPermissionLocation" >Location permission are required for Wi-Fi connectivity, allowing eSight to access your network connections.</string>
@@ -63,7 +63,7 @@
     <string name="url_esight_support" translatable="false">https://www.esighteyewear.com/support/</string>
     <!-- endregion -->
 
-    <string name="kHotspotTroubleshootingConnectToeSight">Connect to the eSight\'s " %1$s " network</string>
+    <string name="kHotspotTroubleshootingConnectToeSight">Connect to the eSight\'s</string>
     <string name="kHotspotTroubleshootingEnterPassword">Enter this password: "%1$s"</string>
     <string name="kSettingViewApplicationVersion">Version %1$s</string>
 

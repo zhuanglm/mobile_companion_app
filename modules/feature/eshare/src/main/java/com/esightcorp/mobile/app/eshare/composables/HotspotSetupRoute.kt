@@ -145,9 +145,8 @@ private fun HotspotSetupBody(
             NumberedHelpItem(
                 number = 2,
                 text = stringResource(
-                    R.string.kHotspotTroubleshootingConnectToeSight,
-                    uiState.hotspotCredential!!.ssid
-                ),
+                    R.string.kHotspotTroubleshootingConnectToeSight
+                ) + uiState.hotspotCredential!!.ssid + stringResource(id = R.string.kHotspotTroubleshootingNetwork),
             )
             ItemSpacer()
 

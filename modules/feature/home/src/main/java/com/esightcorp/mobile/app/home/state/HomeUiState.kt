@@ -8,9 +8,21 @@
 
 package com.esightcorp.mobile.app.home.state
 
+import java.util.EnumSet
+
 
 data class HomeUiState(
     val isBluetoothConnected: Boolean = true,
     val isBluetoothEnabled: Boolean = true,
     val connectedDevice: String = "Devicename"
 )
+
+data class HomePermissionUiState(
+    val allPermissionsGranted: Boolean? = null,
+    val rationaleReasons: EnumSet<RationaleReason>? = null,
+) {
+    enum class RationaleReason {
+        FOR_BLUETOOTH,
+        FOR_LOCATION
+    }
+}

@@ -42,12 +42,14 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
  * @param onBackButtonInvoked A lambda function that will be triggered when the back button is clicked.
  * @param onSettingsButtonInvoked A lambda function that will be triggered when the settings button is clicked.
  * @param isBottomButtonNeeded If `true`, a bottom button is rendered at the bottom of the screen.
+ * @param isContentCentered If `true`, the whole content (`everythingElse`) will be centered of the screen.
  * @param bottomButton A composable function that renders the bottom button.
  * @param bottomAlignedContent A composable function that stick on the bottom of content
  * @param everythingElse A composable function that renders the contents of the screen between the `ESightTopAppBar` and the bottom button.
  *
  * @see ConstraintLayout
  * @see ESightTopAppBar
+ * @see Centered
  * @sample BaseScreenPreview
  */
 @Composable
@@ -58,6 +60,7 @@ fun BaseScreen(
     onBackButtonInvoked: OnActionCallback? = null,
     onSettingsButtonInvoked: OnActionCallback? = null,
     isBottomButtonNeeded: Boolean = true,
+    isContentCentered: Boolean = false,
     bottomButton: @Composable () -> Unit,
     bottomAlignedContent: @Composable (() -> Unit)? = null,
     everythingElse: @Composable () -> Unit,
@@ -80,8 +83,9 @@ fun BaseScreen(
         },
         bottomBar = {
             if (isBottomButtonNeeded) {
-                Box(modifier = Modifier
-                    .fillMaxWidth(),
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     bottomButton()
@@ -90,13 +94,14 @@ fun BaseScreen(
 
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .height(IntrinsicSize.Max)
-        ) {
+        var contentModifier = Modifier
+            .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+        if (isContentCentered)
+            contentModifier = contentModifier.height(IntrinsicSize.Max)
+
+        Column(modifier = contentModifier) {
             everythingElse()
 
             bottomAlignedContent?.let {
@@ -164,12 +169,13 @@ fun HomeBaseScreen(
             )
         },
         bottomBar = {
-                Box(modifier = Modifier
+            Box(
+                modifier = Modifier
                     .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    bottomButton()
-                }
+                contentAlignment = Alignment.Center
+            ) {
+                bottomButton()
+            }
 
         },
     ) { innerPadding ->

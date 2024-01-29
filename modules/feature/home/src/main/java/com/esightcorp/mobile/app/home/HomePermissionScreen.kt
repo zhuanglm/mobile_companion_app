@@ -102,6 +102,7 @@ private fun PermissionScreen(
     modifier = modifier,
     showBackButton = false,
     showSettingsButton = false,
+    isContentCentered = true,
     bottomButton = { },
 ) {
     Centered {

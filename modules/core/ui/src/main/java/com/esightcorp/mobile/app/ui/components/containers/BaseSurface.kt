@@ -10,16 +10,17 @@ package com.esightcorp.mobile.app.ui.components.containers
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,16 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
-
-@Composable
-fun BaseSurface(
-    modifier: Modifier = Modifier,
-    everythingElse: @Composable () -> Unit,
-) {
-    Surface(modifier = modifier, color = MaterialTheme.colors.surface) {
-        everythingElse()
-    }
-}
 
 /**
  * Represents the base structure of a screen. It contains an `ESightTopAppBar` at the top,
@@ -51,12 +42,14 @@ fun BaseSurface(
  * @param onBackButtonInvoked A lambda function that will be triggered when the back button is clicked.
  * @param onSettingsButtonInvoked A lambda function that will be triggered when the settings button is clicked.
  * @param isBottomButtonNeeded If `true`, a bottom button is rendered at the bottom of the screen.
+ * @param isContentCentered If `true`, the whole content (`everythingElse`) will be centered of the screen.
  * @param bottomButton A composable function that renders the bottom button.
  * @param bottomAlignedContent A composable function that stick on the bottom of content
  * @param everythingElse A composable function that renders the contents of the screen between the `ESightTopAppBar` and the bottom button.
  *
  * @see ConstraintLayout
  * @see ESightTopAppBar
+ * @see Centered
  * @sample BaseScreenPreview
  */
 @Composable
@@ -67,6 +60,7 @@ fun BaseScreen(
     onBackButtonInvoked: OnActionCallback? = null,
     onSettingsButtonInvoked: OnActionCallback? = null,
     isBottomButtonNeeded: Boolean = true,
+    isContentCentered: Boolean = false,
     bottomButton: @Composable () -> Unit,
     bottomAlignedContent: @Composable (() -> Unit)? = null,
     everythingElse: @Composable () -> Unit,
@@ -89,8 +83,9 @@ fun BaseScreen(
         },
         bottomBar = {
             if (isBottomButtonNeeded) {
-                Box(modifier = Modifier
-                    .fillMaxWidth(),
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     bottomButton()
@@ -99,12 +94,14 @@ fun BaseScreen(
 
         },
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
+        var contentModifier = Modifier
+            .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+        if (isContentCentered)
+            contentModifier = contentModifier.height(IntrinsicSize.Max)
+
+        Column(modifier = contentModifier) {
             everythingElse()
 
             bottomAlignedContent?.let {
@@ -172,12 +169,13 @@ fun HomeBaseScreen(
             )
         },
         bottomBar = {
-                Box(modifier = Modifier
+            Box(
+                modifier = Modifier
                     .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    bottomButton()
-                }
+                contentAlignment = Alignment.Center
+            ) {
+                bottomButton()
+            }
 
         },
     ) { innerPadding ->

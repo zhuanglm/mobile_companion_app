@@ -11,7 +11,7 @@
 <!--We are following the naming convention from iOS, hence the ViewController naming. This is to support string
  translations, and so we don't have to map to two different sets of keys-->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="action_settings" translatable="false">Settings</string>
 
     <!-- Strings used for fragments for navigation -->
@@ -20,48 +20,49 @@
     <!--    This is a string used for a debug screen -->
     <string name="something_went_wrong" translatable="false">Something went horribly wrong!</string>
 
-<!--region Content Descriptors-->
-    <string name="kAccessibilityButtonBack" >Back </string>
-    <string name="kAccessibilityButtonSettings" >Settings </string>
-    <string name="kAccessibilityButtonFinder" >Finder </string>
-    <string name="kAccessibilityButtonMode" >Mode </string>
-    <string name="kAccessibilityButtonUp" >Up </string>
-    <string name="kAccessibilityButtonDown" >Down </string>
-    <string name="kAccessibilityButtonVolumeUp" >Volume Up </string>
-    <string name="kAccessibilityButtonVolumeDown" >Volume Down </string>
-    <string name="kAccessibilityButtonMenu" >Menu </string>
-    <string name="kAccessibilityButtonExit" >Exit </string>
-    <string name="kAccessibilityIconLoadingSpinner" >Loading spinner</string>
-    <string name="kAccessibilityIconBluetooth" >Bluetooth icon</string>
-    <string name="kAccessibilityIconWiFi" >WiFi icon</string>
-    <string name="kAccessibilityIconDisconnected" >Disconnected icon</string>
-    <string name="kAccessibilityIconExclamation" >Exclamation icon</string>
-    <string name="kAccessibilityIconQRImage" >WiFi QR code</string>
-    <string name="kAccessibilityIconeSightLogo" >eSight logo</string>
-<!--endregion-->
-<!--    TODO: Refactor label_eshare_stopped_hotspot_setup_error_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kHotspotUnreachable -->
+    <!--region Content Descriptors-->
+    <string name="kAccessibilityButtonBack">Back </string>
+    <string name="kAccessibilityButtonSettings">Settings </string>
+    <string name="kAccessibilityButtonFinder">Finder </string>
+    <string name="kAccessibilityButtonMode">Mode </string>
+    <string name="kAccessibilityButtonUp">Up </string>
+    <string name="kAccessibilityButtonDown">Down </string>
+    <string name="kAccessibilityButtonVolumeUp">Volume Up </string>
+    <string name="kAccessibilityButtonVolumeDown">Volume Down </string>
+    <string name="kAccessibilityButtonMenu">Menu </string>
+    <string name="kAccessibilityButtonExit">Exit </string>
+    <string name="kAccessibilityIconLoadingSpinner">Loading spinner</string>
+    <string name="kAccessibilityIconBluetooth">Bluetooth icon</string>
+    <string name="kAccessibilityIconWiFi">WiFi icon</string>
+    <string name="kAccessibilityIconDisconnected">Disconnected icon</string>
+    <string name="kAccessibilityIconExclamation">Exclamation icon</string>
+    <string name="kAccessibilityIconQRImage">WiFi QR code</string>
+    <string name="kAccessibilityIconeSightLogo">eSight logo</string>
+    <!--endregion-->
+
+    <!--    TODO: Refactor label_eshare_stopped_hotspot_setup_error_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kHotspotUnreachable -->
     <string name="label_eshare_stopped_hotspot_setup_error_message" translatable="false">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
-    <string name="kHotspotUnreachable" >Your eSight device is currently unreachable via hotspot</string>
+    <string name="kHotspotUnreachable">Your eSight device is currently unreachable via hotspot</string>
 
 
     <!--    TODO: Refactor label_eshare_stopped_busy_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kEshareErrorActiveSessionInProgress -->
 
     <string name="label_eshare_stopped_busy_message" translatable="false">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
-    <string name="kEshareErrorActiveSessionInProgress" >There\'s already an active eShare session in progress.</string>
+    <string name="kEshareErrorActiveSessionInProgress">There\'s already an active eShare session in progress.</string>
 
 
     <string name="ego_model_name" translatable="false">eSight Go</string>
 
     <!-- region HomeScreen -->
-<!--    TODO: Replace label_home_screen_request_permission_description with bluetooth and location strings-->
-    <string name="label_home_screen_request_permission_description" translatable="false">These permissions allow you to have access to the full functionality of the app.</string>
+    <!--    TODO: Replace label_home_screen_request_permission_description with bluetooth and location strings-->
+    <string name="label_home_screen_request_permission_description" translatable="false">To unlock all the features of this app, please enable the necessary permissions.</string>
 
-    <string name="kPermissionBluetooth" >Allow Bluetooth to enable your eSight to pair with your phone for connectivity features.</string>
-    <string name="kPermissionLocation" >Location permission are required for Wi-Fi connectivity, allowing eSight to access your network connections.</string>
-    <string name="kPermissionRequiredTitle" >Permissions Required</string>
-    <string name="kPermissionRequiredBody" >To unlock all the features of this app, please enable the necessary permissions.</string>
-    <string name="kPermissionRequestButton" >Request permissions</string>
-    <string name="kPermissionOpenSettingsButton" >Open app settings</string>
+    <string name="kPermissionBluetooth">Allow Bluetooth to enable your eSight to pair with your phone for connectivity features.</string>
+    <string name="kPermissionLocation">Location permission are required for Wi-Fi connectivity, allowing eSight to access your network connections.</string>
+    <string name="kPermissionRequiredTitle">Permissions Required</string>
+    <string name="kPermissionRequiredBody">To unlock all the features of this app, please enable the necessary permissions.</string>
+    <string name="kPermissionRequestButton">Request permissions</string>
+    <string name="kPermissionOpenSettingsButton">Open app settings</string>
     <!-- endregion -->
 
     <!-- region External URL -->

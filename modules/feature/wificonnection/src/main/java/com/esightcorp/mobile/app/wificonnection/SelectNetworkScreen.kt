@@ -29,7 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
@@ -148,7 +148,7 @@ private fun SelectNetworkBody(
                 width = Dimension.fillToConstraints
             }) {
             items(uiState.networkList) { network ->
-                IconAndTextRectangularButton(
+                LeadingIconTextButton(
                     onClick = {
                         vm.selectNetwork(network)
                         vm.navigateToPasswordScreen(navController)

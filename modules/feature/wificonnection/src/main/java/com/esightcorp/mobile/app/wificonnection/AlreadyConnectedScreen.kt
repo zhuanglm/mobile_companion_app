@@ -21,7 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
@@ -106,7 +106,7 @@ private fun AlreadyConnectedScreenBody(
             },
         )
 
-        IconAndTextRectangularButton(
+        LeadingIconTextButton(
             onClick = {
                 navController.navigate(
                     target = WifiNavigation.ScanningRoute,

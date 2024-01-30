@@ -9,26 +9,14 @@
 package com.esightcorp.mobile.app.wificonnection.state
 
 import android.net.wifi.ScanResult
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.storage.WifiCache
-import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
 enum class WifiConnectionStatus {
     CONNECTED,
     DISCONNECTED,
     UNKNOWN
-}
-
-enum class WifiType(val stringValueResId: Int) {
-    WAP(R.string.kWifiSecurityTypeWPA),
-    WEP(R.string.kWifiSecurityTypeWEP),
-    NONE(R.string.kWifiSecurityTypeNone);
-
-    companion object {
-        fun fromValue(value: Int): WifiType? {
-            return values().find { it.stringValueResId == value }
-        }
-    }
 }
 
 data class WifiSearchingUiState(
@@ -49,7 +37,7 @@ data class WifiCredentialsUiState(
     val password: String = "",
     val isPasswordValid: Boolean = false,
     val passwordSubmitted: Boolean = false,
-    val wifiType: WifiType = WifiType.WAP,
+    val wifiType: WifiType = WifiType.WPA,
     val wifiTypeSubmitted: Boolean = false,
     val wifiFlow: WifiCache.WifiFlow = WifiCache.WifiFlow.NotInUse,
 )
@@ -90,15 +78,16 @@ data class WifiAdvancedSettingsUiState(
     val ssid: String = "",
     val password: String = "",
     val isPasswordValid: Boolean = false,
-    val wifiType: WifiType = WifiType.WAP,
+    val wifiType: WifiType = WifiType.WPA,
     val wifiTypeSubmitted: Boolean = false,
     val passwordSubmitted: Boolean = false,
     val ssidSubmitted: Boolean = false,
+    val wifiFlow: WifiCache.WifiFlow = WifiCache.WifiFlow.NotInUse,
 )
 
 data class WifiTypeUiState(
     val isWifiEnabled: Boolean = false,
-    val wifiType: WifiType = WifiType.WAP,
+    val wifiType: WifiType = WifiType.WPA,
     val wifiTypeSubmitted: Boolean = false,
 )
 

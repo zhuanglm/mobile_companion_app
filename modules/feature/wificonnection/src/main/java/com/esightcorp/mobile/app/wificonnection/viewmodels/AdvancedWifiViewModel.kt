@@ -1,7 +1,8 @@
 /*
- * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
- * Reserved.The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * LICENSE
+ * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -11,12 +12,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.WifiType
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.MIN_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiAdvancedSettingsUiState
-import com.esightcorp.mobile.app.wificonnection.state.WifiType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -84,7 +86,14 @@ class AdvancedWifiViewModel @Inject constructor(
 
     init {
         repository.registerListener(listener)
+        updateWifiFlow(repository.wifiFlow)
         refreshUiState()
+    }
+
+    private fun updateWifiFlow(flow: WifiCache.WifiFlow) {
+        _uiState.update { state ->
+            state.copy(wifiFlow = flow)
+        }
     }
 
     fun refreshUiState() {
@@ -93,7 +102,7 @@ class AdvancedWifiViewModel @Inject constructor(
                 null -> {
                     Log.e(_tag, "SSID is null! Is there a valid wifi selected?")
                     _uiState.update {
-                        it.copy(wifiType = WifiType.fromValue(getWifiType()) ?: WifiType.WAP,
+                        it.copy(wifiType = getWifiType(),
                             isPasswordValid = false)
                     }
                 }
@@ -103,10 +112,8 @@ class AdvancedWifiViewModel @Inject constructor(
                         it.copy(
                             ssid = ssid,
                             password = getPassword(),
-                            wifiType = WifiType.fromValue(getWifiType()) ?: WifiType.WAP,
-                            isPasswordValid = (getPassword().length >= MIN_PASSWORD_LENGTH
-                                    || getWifiType() == WifiType.NONE.stringValueResId)
-                                    && ssid != ""
+                            wifiType = getWifiType(),
+                            isPasswordValid = isPasswordValid(ssid, getPassword())
                         )
                     }
                 }
@@ -120,16 +127,24 @@ class AdvancedWifiViewModel @Inject constructor(
         repository.unregisterListener(listener)
     }
 
+    private fun isPasswordValid(ssid: String, password: String) : Boolean {
+        if(ssid == "") return false
+        with(_uiState.value) {
+            return when(wifiType) {
+                WifiType.WPA -> password.length >= MIN_PASSWORD_LENGTH
+                WifiType.WEP -> password != ""
+                WifiType.NONE -> true
+            }
+        }
+
+    }
+
     fun onSsidUpdated(ssid: String) = _uiState.update { state ->
-        state.copy(ssid = ssid,
-            isPasswordValid = (_uiState.value.password.length >= MIN_PASSWORD_LENGTH
-                    || _uiState.value.wifiType.stringValueResId == WifiType.NONE.stringValueResId)
-                    && ssid != "")
+        state.copy(ssid = ssid, isPasswordValid = isPasswordValid(ssid, _uiState.value.password))
     }
 
     fun onPasswordUpdated(password: String) = _uiState.update { state ->
-        state.copy(password = password,
-            isPasswordValid = password.length >= MIN_PASSWORD_LENGTH && _uiState.value.ssid != ""
+        state.copy(password = password, isPasswordValid = isPasswordValid(_uiState.value.ssid, password)
         )
     }
 
@@ -138,7 +153,8 @@ class AdvancedWifiViewModel @Inject constructor(
     }
 
     fun onSecurityButtonPressed(navController: NavController) {
-        repository.setWifiNetwork(_uiState.value.ssid, _uiState.value.wifiType.stringValueResId, _uiState.value.password)
+        //avoid to lost user input
+        repository.setWifiNetwork(_uiState.value.ssid, _uiState.value.wifiType, _uiState.value.password)
         navController.navigate(WifiConnectionScreens.SelectNetworkSecurityRoute.route)
     }
 
@@ -147,13 +163,29 @@ class AdvancedWifiViewModel @Inject constructor(
         navController.navigate(WifiConnectionScreens.WifiQRCodeRoute.route)
     }
 
+    private fun sendWifiCredsViaBluetooth() {
+        Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
+        repository.sendWifiCreds(_uiState.value.password,_uiState.value.wifiType.typeString)
+    }
+
+    private fun navigateToConnectingScreen(navController: NavController) {
+        Log.i(_tag, "navigateToConnectingScreen: Bluetooth route selected")
+        navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
+    }
+
     fun onFinishButtonPressed(navController: NavController) {
         Log.i(_tag, "onFinishButtonPressed: ")
         _uiState.update { state ->
             state.copy(passwordSubmitted = true)
         }
-        repository.setWifiNetwork(_uiState.value.ssid, _uiState.value.wifiType.stringValueResId, _uiState.value.password)
-        navigateToQrScreen(navController)
+        repository.setWifiNetwork(_uiState.value.ssid, _uiState.value.wifiType, _uiState.value.password)
+
+        if (_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow) {
+            sendWifiCredsViaBluetooth()
+            navigateToConnectingScreen(navController)
+        } else if (_uiState.value.wifiFlow == WifiCache.WifiFlow.QrFlow) {
+            navigateToQrScreen(navController)
+        }
 
     }
 }

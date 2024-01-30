@@ -1,7 +1,8 @@
 /*
- * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
- * Reserved.The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * LICENSE
+ * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -34,7 +35,7 @@ import com.esightcorp.mobile.app.ui.extensions.debugBorder
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @Composable
-fun IconAndTextRectangularButton(
+fun LeadingIconTextButton(
     onClick: () -> Unit,
     modifier: Modifier,
     icon: ImageVector? = null,
@@ -140,7 +141,7 @@ fun OutlinedTextRectangularButton(
 }
 
 @Composable
-fun TextAndIconRectangularButton(
+fun TrailingIconButton(
     onClick: () -> Unit,
     modifier: Modifier,
     icon: ImageVector? = null,
@@ -183,7 +184,7 @@ fun TextAndIconRectangularButton(
 @Preview
 @Composable
 private fun TextAndIconRectangularButtonPreview() {
-    TextAndIconRectangularButton(
+    TrailingIconButton(
         onClick = { }, modifier = Modifier.debugBorder(), icon = Icons.Rounded.Check, text = "WPA/WPA2/WPA3"
     )
 }
@@ -191,7 +192,7 @@ private fun TextAndIconRectangularButtonPreview() {
 @Preview
 @Composable
 private fun IconAndTextRectangularButtonPreview() {
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = { }, modifier = Modifier, icon = Icons.Default.Star, text = "Preview"
     )
 }

@@ -1,7 +1,8 @@
 /*
- * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
- * Reserved.The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * LICENSE
+ * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -12,6 +13,7 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
@@ -95,7 +97,7 @@ class SelectNetworkViewModel @Inject constructor(
     }
 
     fun onAdvancedButtonClicked(navController: NavController) {
-        wifiRepository.setWifiNetwork("",0,"")
+        wifiRepository.setWifiNetwork("",WifiType.WPA,"")     //clean up the saved network
         navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
     }
 }

@@ -1,7 +1,8 @@
 /*
- * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
- * Reserved.The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * LICENSE
+ * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -13,6 +14,7 @@ import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -158,7 +160,7 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.stopWifiScan()
     }
 
-    fun setWifiType(type: Int) {
+    fun setWifiType(type: WifiType) {
         WifiCache.credentials.setWifiType(type)
     }
 
@@ -198,7 +200,7 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.setWifiPassword(pwd)
     }
 
-    fun setWifiNetwork(ssid: String, securityType: Int, password: String) {
+    fun setWifiNetwork(ssid: String, securityType: WifiType, password: String) {
         WifiCache.credentials.setNetwork(ssid, securityType, password)
     }
 

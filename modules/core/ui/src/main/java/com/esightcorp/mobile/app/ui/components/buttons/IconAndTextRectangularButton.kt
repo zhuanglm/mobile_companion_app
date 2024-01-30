@@ -52,7 +52,7 @@ fun LeadingIconTextButton(
             MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         when (icon) {
@@ -94,7 +94,7 @@ fun TextRectangularButton(
             disabledContentColor = MaterialTheme.colors.onPrimary
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         ButtonText(
@@ -122,7 +122,7 @@ fun OutlinedTextRectangularButton(
             contentColor = MaterialTheme.colors.onSurface,
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         border = BorderStroke(4.dp, MaterialTheme.colors.primary),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
@@ -158,7 +158,7 @@ fun TrailingIconButton(
             MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         ButtonText(
@@ -178,7 +178,7 @@ fun TrailingIconButton(
                 )
             }
 
-            else -> Icon(icon, contentDescription = iconContextDescription, modifier = Modifier.size(32.dp))
+            else -> Icon(icon, contentDescription = iconContextDescription, modifier = Modifier.size(50.dp, 40.dp))
         }
     }
 }

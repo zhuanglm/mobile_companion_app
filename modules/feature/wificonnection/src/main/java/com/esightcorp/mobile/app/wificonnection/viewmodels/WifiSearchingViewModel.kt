@@ -109,9 +109,9 @@ class WifiSearchingViewModel @Inject constructor(
     }
 
     fun onCancelClicked(navController: NavController) {
-        Log.i(_tag, "onCancelClicked: ")
+        Log.i(_tag, "onCancelClicked - flow: ${repository.wifiFlow}")
         repository.cancelWifiScan()
-        gotoMainScreen(navController)
+        navController.popBackStack()
     }
 
     @Synchronized

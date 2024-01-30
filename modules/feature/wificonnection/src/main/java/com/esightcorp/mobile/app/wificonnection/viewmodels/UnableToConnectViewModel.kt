@@ -10,42 +10,31 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
-import com.esightcorp.mobile.app.wificonnection.state.UnableToConnectUiState
+import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 
 @HiltViewModel
 class UnableToConnectViewModel @Inject constructor(
     application: Application,
+    private val wifiRepo: WifiConnectionRepository,
 ) : ESightBaseViewModel(application) {
-    private var _uiState = MutableStateFlow(UnableToConnectUiState())
-    val uiState: StateFlow<UnableToConnectUiState> = _uiState.asStateFlow()
 
-    private lateinit var navController: NavController
-
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
-
-    fun onTryAgain() {
-        if (this::navController.isInitialized) {
-            navController.navigate(
-                target = WifiNavigation.ScanningRoute,
-                param = WifiNavigation.ScanningRoute.PARAM_BLUETOOTH,
-            )
+    fun onTryAgain(navController: NavController) = navController.navigate(
+        target = WifiNavigation.ScanningRoute,
+        param = when (wifiRepo.wifiFlow) {
+            WifiCache.WifiFlow.QrFlow -> WifiNavigation.ScanningRoute.PARAM_QR
+            else -> WifiNavigation.ScanningRoute.PARAM_BLUETOOTH
         }
-    }
+    )
 
-    fun onBackPressed() {
-        if (this::navController.isInitialized) {
-            gotoMainScreen(navController)
-        }
+    fun onBackPressed(navController: NavController) = when (wifiRepo.wifiFlow) {
+        WifiCache.WifiFlow.QrFlow -> navController.popBackStack()
+        else -> gotoMainScreen(nav = navController, popUntil = WifiNavigation.IncomingRoute)
     }
 }

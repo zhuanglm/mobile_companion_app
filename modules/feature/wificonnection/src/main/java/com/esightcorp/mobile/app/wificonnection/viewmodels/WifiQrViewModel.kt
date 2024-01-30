@@ -11,11 +11,11 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import android.util.Log
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiQrCodeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,8 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WifiQrViewModel @Inject constructor(
-    private val application: Application,
-    val repository: WifiConnectionRepository
+    application: Application,
+    repository: WifiConnectionRepository
 ) : ESightBaseViewModel(application) {
 
     private val _tag = this.javaClass.simpleName
@@ -44,8 +44,8 @@ class WifiQrViewModel @Inject constructor(
         navController.popBackStack()
     }
 
-    fun onHowToScanClicked() = with(application.applicationContext) {
-        openExternalUrl(getString(com.esightcorp.mobile.app.ui.R.string.url_esight_support))
+    fun onHowToScanClicked(navController: NavController) = with(navController) {
+        navigate(target = WifiNavigation.HowToScanRoute, popCurrent = false)
     }
 
     fun onGotoHomeScreen(navController: NavController) = with(navController) {

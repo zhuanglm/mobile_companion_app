@@ -14,7 +14,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.storage.WifiCache
-import com.esightcorp.mobile.app.ui.MIN_PASSWORD_LENGTH
+import com.esightcorp.mobile.app.ui.WPA_MAX_PASSWORD_LENGTH
+import com.esightcorp.mobile.app.ui.WPA_MIN_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -131,8 +132,11 @@ class AdvancedWifiViewModel @Inject constructor(
         if(ssid == "") return false
         with(_uiState.value) {
             return when(wifiType) {
-                WifiType.WPA -> password.length >= MIN_PASSWORD_LENGTH
-                WifiType.WEP -> password != ""
+                WifiType.WPA -> password.length in WPA_MIN_PASSWORD_LENGTH..WPA_MAX_PASSWORD_LENGTH
+                WifiType.WEP -> when(password.length) {
+                    10,26,58 -> true
+                    else -> false
+                }
                 WifiType.NONE -> true
             }
         }

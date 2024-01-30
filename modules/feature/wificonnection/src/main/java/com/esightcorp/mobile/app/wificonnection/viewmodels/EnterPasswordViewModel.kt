@@ -15,7 +15,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.storage.WifiCache
-import com.esightcorp.mobile.app.ui.MIN_PASSWORD_LENGTH
+import com.esightcorp.mobile.app.ui.WPA_MAX_PASSWORD_LENGTH
+import com.esightcorp.mobile.app.ui.WPA_MIN_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -62,20 +63,25 @@ class EnterPasswordViewModel @Inject constructor(
         }
     }
 
+    private val wifiType: WifiType
+    private val ssid: String?
+
     init {
         repository.registerListener(scanListener)
+        wifiType = repository.wifiCredentials.getWifiType()
+        ssid = repository.wifiCredentials.getSSID()
         updateWifiFlow(repository.wifiFlow)
     }
 
-    private fun isPasswordValid(password: String) : Boolean {
-        with(_uiState.value) {
-            return when(wifiType) {
-                WifiType.WPA -> password.length >= MIN_PASSWORD_LENGTH
-                WifiType.WEP -> password != ""
-                WifiType.NONE -> true
+    private fun isPasswordValid(password: String): Boolean {
+        return when (wifiType) {
+            WifiType.WPA -> password.length in WPA_MIN_PASSWORD_LENGTH..WPA_MAX_PASSWORD_LENGTH
+            WifiType.WEP -> when(password.length) {
+                10,26,58 -> true
+                else -> false
             }
+            WifiType.NONE -> true
         }
-
     }
 
     fun updatePassword(password: String) {
@@ -98,7 +104,8 @@ class EnterPasswordViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(passwordSubmitted = true)
         }
-        repository.setWifiPassword(_uiState.value.password)
+        //make sure selected ssid and wifi type not be changed
+        repository.setWifiNetwork(ssid?:"", wifiType, _uiState.value.password)
         if (_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow) {
             sendWifiCredsViaBluetooth()
             navigateToConnectingScreen(navController)
@@ -118,7 +125,7 @@ class EnterPasswordViewModel @Inject constructor(
 
     private fun sendWifiCredsViaBluetooth() {
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
-        repository.sendWifiCreds(_uiState.value.password,_uiState.value.wifiType.typeString)
+        repository.sendWifiCreds(_uiState.value.password,wifiType.typeString)
     }
 
     private fun navigateToConnectingScreen(navController: NavController) {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -173,10 +174,11 @@ fun TrailingIconButton(
                         AppCompatResources.getDrawable(LocalContext.current, iconDrawableId)
                     ),
                     iconContextDescription,
+                    modifier = Modifier.size(32.dp)
                 )
             }
 
-            else -> Icon(icon, contentDescription = iconContextDescription)
+            else -> Icon(icon, contentDescription = iconContextDescription, modifier = Modifier.size(32.dp))
         }
     }
 }

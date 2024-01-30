@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.esightcorp.mobile.app.ui.R
 import java.time.LocalDateTime
 
 
@@ -33,30 +35,38 @@ import java.time.LocalDateTime
  */
 @Composable
 fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
-    Box(modifier = modifier.fillMaxWidth().wrapContentHeight().semantics(mergeDescendants = true){}) {
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .semantics(mergeDescendants = true) {}) {
         ConstraintLayout(
             modifier = modifier
         ) {
             val (greeting, connectionStatus) = createRefs()
             when (LocalDateTime.now().hour) {
                 in 0..12 -> {
-                    Header1Text(text = "Good Morning",
+                    Header1Text(
+                        text = stringResource(R.string.kGreetingsTextMorning),
                         modifier = Modifier.constrainAs(greeting) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                         }, color = MaterialTheme.colors.onSurface
                     )
                 }
+
                 in 12..16 -> {
-                    Header1Text(text = "Good Afternoon",
+                    Header1Text(
+                        text = stringResource(R.string.kGreetingsTextAfternoon),
                         modifier = Modifier.constrainAs(greeting) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                         }, color = MaterialTheme.colors.onSurface
                     )
                 }
+
                 else -> {
-                    Header1Text(text = "Good Evening",
+                    Header1Text(
+                        text = stringResource(R.string.kGreetingsTextEvening),
                         modifier = Modifier.constrainAs(greeting) {
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
@@ -65,7 +75,8 @@ fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
                 }
             }
             if (!connected) {
-                BodyText(text = "You are not connected to an eSight",
+                BodyText(
+                    text = stringResource(R.string.kHomeRootViewUnconnectedSubHeader),
                     modifier = Modifier.constrainAs(connectionStatus) {
                         top.linkTo(greeting.bottom, margin = 8.dp)
                         start.linkTo(parent.start)
@@ -73,7 +84,7 @@ fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
                 )
             } else {
                 BodyText(
-                    text = "You are connected to",
+                    text = stringResource(R.string.kHomeRootViewConnectedSubHeader),
                     modifier = Modifier.constrainAs(connectionStatus) {
                         top.linkTo(greeting.bottom, margin = 8.dp)
                         start.linkTo(parent.start)

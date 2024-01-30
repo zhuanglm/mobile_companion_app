@@ -259,7 +259,7 @@ class WifiModel(
 
     fun getQrString() = when (val nwName = WifiCache.credentials.getSSID()) {
         null -> null
-        else -> "WIFI:S:${nwName};T:${context.getString(WifiCache.credentials.getWifiType())};P:${WifiCache.credentials.getPassword()};;"
+        else -> "WIFI:S:${nwName};T:${WifiCache.credentials.getWifiType()};P:${WifiCache.credentials.getPassword()};;"
     }
 
     fun openSocket(

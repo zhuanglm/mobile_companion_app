@@ -42,7 +42,7 @@ fun DeviceCard(
     borderColor: Color = MaterialTheme.colors.primary,
     border: Boolean = true,
     modifier: Modifier,
-    onClick : () -> Unit
+    onClick: () -> Unit
 ) {
     val borderStroke = BorderStroke(6.dp, borderColor)
     OutlinedCard(
@@ -71,7 +71,11 @@ fun DeviceCard(
                     .weight(1F), horizontalAlignment = Alignment.Start
             ) {
                 ButtonText(text = stringResource(R.string.ego_model_name), modifier = Modifier)
-                WrappableButton2Text(text = "S/N: $serialNumber", modifier = Modifier, textAlign = TextAlign.Start)
+                WrappableButton2Text(
+                    text = "${stringResource(R.string.kBTDeviceFoundeSightGoSN)} $serialNumber",
+                    modifier = Modifier,
+                    textAlign = TextAlign.Start
+                )
             }
 
 
@@ -105,7 +109,8 @@ fun ImageForDeviceCard(
         contentDescription = "Image of the eSight Go",
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight())
+            .fillMaxHeight()
+    )
 }
 
 @Preview

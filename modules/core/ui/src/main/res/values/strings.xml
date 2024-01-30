@@ -120,7 +120,6 @@
     <string name="kSettingsViewAbouteSightSubTitleText">About eSight</string>
     <string name="kSettingsViewVisitWebsiteButtonText">Visit website</string>
     <string name="kDataPolicy">Privacy Policy</string>
-    <string name="kGreetingsTextEvening">Good evening</string>
     <string name="kHomeRootViewUnconnectedSubHeader">You are not connected to an eSight</string>
     <string name="kHomeRootViewUnconnectedConnectButtonText">Connect to eSight Go</string>
     <string name="kTermsOfServiceAgreementPartOne">By continuing, you agree to our</string>
@@ -174,6 +173,7 @@
     <string name="kSettingsViewDisconnectButtonText">Disconnect eSight</string>
     <string name="kGreetingsTextMorning">Good morning</string>
     <string name="kGreetingsTextAfternoon">Good afternoon</string>
+    <string name="kGreetingsTextEvening">Good evening</string>
     <string name="kEshareErrorViewControllerButtonTitle">Return</string>
     <string name="kEshareErrorViewControllerConnectionUnsuccessfulTitle">Connection unsuccessful</string>
     <string name="kEshareErrorViewControllerConnectionUnsuccessfulDescription">The eSight wearer has declined the viewing request.</string>

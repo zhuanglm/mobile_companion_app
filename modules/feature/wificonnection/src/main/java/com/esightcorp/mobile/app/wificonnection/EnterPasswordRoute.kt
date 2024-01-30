@@ -111,7 +111,7 @@ private fun PasswordBody(
         val (header, editText, button) = createRefs()
 
         Header1Text(
-            text = "Enter Wi-Fi password",
+            text = stringResource(R.string.kWifiViewWifiPasswordLabelText),
             modifier = modifier.constrainAs(header) {
                 top.linkTo(parent.top, margin = 50.dp)
                 start.linkTo(parent.start)

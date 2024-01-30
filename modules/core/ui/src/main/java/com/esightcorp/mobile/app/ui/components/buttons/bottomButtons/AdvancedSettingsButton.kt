@@ -11,6 +11,7 @@ package com.esightcorp.mobile.app.ui.components.buttons.bottomButtons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.esightcorp.mobile.app.ui.R
 
 @Composable
@@ -22,7 +23,7 @@ fun AdvancedSettingsButton(
     SupportButtonTemplate(
         modifier = modifier,
         onClick = onAdvancedSettingsClick,
-        text = "Advanced Settings",
+        text = stringResource(R.string.kAdvancedSettingsButtonText),
         painter = painterResource(id = R.drawable.blackgear_yellowbackground)
     )
 }

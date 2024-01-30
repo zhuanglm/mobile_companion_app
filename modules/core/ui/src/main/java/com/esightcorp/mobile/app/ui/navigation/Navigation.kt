@@ -90,6 +90,7 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
 
     object ConnectedRoute : WifiNavigation("connected")
     object UnableToConnectRoute : WifiNavigation("unable_to_connect")
+    object HowToScanRoute : WifiNavigation("how_to_scan")
 
     object AlreadyConnectedRoute : WifiNavigation("already_connected")
 

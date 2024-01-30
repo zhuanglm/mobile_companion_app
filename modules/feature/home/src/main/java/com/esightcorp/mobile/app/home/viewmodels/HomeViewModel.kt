@@ -71,7 +71,6 @@ class HomeViewModel @Inject constructor(
                 else -> updateConnectedDevice(connectedDev)
             }
         }
-        updateConnectedDevice(homeRepository.getConnectedDevice())
     }
 
     private fun updateConnectedDevice(device: String?) {

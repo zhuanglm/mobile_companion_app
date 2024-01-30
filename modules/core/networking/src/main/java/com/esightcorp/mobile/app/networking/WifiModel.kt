@@ -190,6 +190,7 @@ class WifiModel(
         context.safeRegisterReceiver(wifiStateChangeReceiver, wifiStateIntentFilter)
     }
 
+    @Synchronized
     fun startWifiScan() {
         Log.i(_tag, "startWifiScan: ")
 
@@ -225,6 +226,7 @@ class WifiModel(
         listener?.onScanStatusUpdated(ScanningStatus.Failed)
     }
 
+    @Synchronized
     fun stopWifiScan() {
         context.safeUnregisterReceiver(wifiScanReceiver)
     }

@@ -48,26 +48,6 @@ data class WifiConnectingUiState(
     val ssid: String = "",
 )
 
-data class WifiConnectedUiState(
-    val isWifiEnabled: Boolean = false,
-    val ssid: String = "",
-)
-
-data class WifiConnectionErrorUiState(
-    val isWifiEnabled: Boolean = false,
-    val error: String = "",
-)
-
-data class AlreadyConnectedUiState(
-    val isWifiEnabled: Boolean = false,
-    val ssid: String = "",
-)
-
-data class UnableToConnectUiState(
-    val isWifiEnabled: Boolean = false,
-    val ssid: String = "",
-)
-
 data class WifiOffUiState(
     val isWifiEnabled: Boolean = false,
 )

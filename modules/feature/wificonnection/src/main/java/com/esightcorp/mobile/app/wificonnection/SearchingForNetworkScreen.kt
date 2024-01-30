@@ -9,6 +9,7 @@
 package com.esightcorp.mobile.app.wificonnection
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -37,6 +39,8 @@ fun SearchingForNetworksRoute(
     flow: String?,
     vm: WifiSearchingViewModel = hiltViewModel()
 ) {
+    BackStackLogger(navController)
+
     val uiState by vm.uiState.collectAsState()
     Log.d(TAG, "SearchingForNetworksRoute: {$flow}")
     if (flow != null) {
@@ -77,6 +81,8 @@ internal fun SearchingForNetworksScreen(
     navController: NavController,
     uiState: WifiSearchingUiState
 ) {
+    BackHandler { onCancelClicked(navController) }
+
     when (uiState.scanningStatus) {
         ScanningStatus.Failed -> {
             Log.e(TAG, "SearchingForNetworksScreen: SCAN STATUS FAILED")

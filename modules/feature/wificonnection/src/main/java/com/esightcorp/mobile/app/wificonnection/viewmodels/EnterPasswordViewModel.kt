@@ -13,6 +13,7 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.MIN_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -66,12 +67,23 @@ class EnterPasswordViewModel @Inject constructor(
         updateWifiFlow(repository.wifiFlow)
     }
 
+    private fun isPasswordValid(password: String) : Boolean {
+        with(_uiState.value) {
+            return when(wifiType) {
+                WifiType.WPA -> password.length >= MIN_PASSWORD_LENGTH
+                WifiType.WEP -> password != ""
+                WifiType.NONE -> true
+            }
+        }
+
+    }
+
     fun updatePassword(password: String) {
         Log.d("WifiCredentialsViewModel", "updatePassword: $password")
         _uiState.update { state ->
             state.copy(
                 password = password,
-                isPasswordValid = password.length >= MIN_PASSWORD_LENGTH,
+                isPasswordValid = isPasswordValid(password)
             )
         }
     }
@@ -106,8 +118,7 @@ class EnterPasswordViewModel @Inject constructor(
 
     private fun sendWifiCredsViaBluetooth() {
         Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
-        repository.sendWifiCreds(_uiState.value.password,
-            getApplication<Application>().getString(_uiState.value.wifiType.stringValueResId))
+        repository.sendWifiCreds(_uiState.value.password,_uiState.value.wifiType.typeString)
     }
 
     private fun navigateToConnectingScreen(navController: NavController) {

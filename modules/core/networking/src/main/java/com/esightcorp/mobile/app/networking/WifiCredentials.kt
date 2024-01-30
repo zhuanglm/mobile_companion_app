@@ -1,7 +1,8 @@
 /*
- * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
- * Reserved.The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * LICENSE
+ * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -9,12 +10,11 @@ package com.esightcorp.mobile.app.networking
 
 import android.net.wifi.ScanResult
 import android.util.Log
-import com.esightcorp.mobile.app.ui.R
 
 object WifiCredentials {
     private var password: String = ""
-    private var wifiType: Int = R.string.kWifiSecurityTypeWPA
-    private var ssid: String? = null
+    private var wifiType = WifiType.WPA
+    private var ssid: String? = ""
 
     private fun getSSID(network: ScanResult?): String? {
         if(network != null){
@@ -23,14 +23,30 @@ object WifiCredentials {
         return network?.ssidName()?.removePrefix("\"")?.removeSuffix("\"")
     }
 
-    fun setNetwork(network: ScanResult) {
-        this.ssid = getSSID(network)
+    private fun getSecurityType(scanResult: ScanResult): WifiType {
+        val capabilities = scanResult.capabilities
+
+        return when {
+            capabilities.contains("WPA3") -> WifiType.WPA
+            capabilities.contains("WPA2") -> WifiType.WPA
+            capabilities.contains("WPA") -> WifiType.WPA
+            capabilities.contains("WEP") -> WifiType.WEP
+            else -> WifiType.NONE // No security
+        }
     }
 
-    fun setNetwork(ssid: String, securityType: Int, password: String?) {
+    fun setNetwork(network: ScanResult) {
+        this.ssid = getSSID(network)
+        this.wifiType = getSecurityType(network)
+    }
+
+    fun setNetwork(ssid: String, securityType: WifiType, password: String?) {
         this.ssid = ssid
         this.wifiType = securityType
-        this.password = password?:""
+        if(securityType == WifiType.NONE)
+            this.password = ""
+        else
+            this.password = password?:""
     }
     fun getSSID(): String? {
         return ssid
@@ -40,7 +56,7 @@ object WifiCredentials {
         return password
     }
 
-    fun getWifiType(): Int {
+    fun getWifiType(): WifiType {
         return wifiType
     }
 
@@ -48,7 +64,7 @@ object WifiCredentials {
         this.password = pwd
     }
 
-    fun setWifiType(type: Int) {
+    fun setWifiType(type: WifiType) {
         this.wifiType = type
     }
 }

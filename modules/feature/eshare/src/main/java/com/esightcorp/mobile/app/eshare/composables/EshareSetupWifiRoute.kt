@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareWifiSetupViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
@@ -92,7 +92,7 @@ private fun EshareSetupWifiScreen(
             }
         )
 
-        IconAndTextRectangularButton(
+        LeadingIconTextButton(
             onClick = { onSetupWifiPressed?.invoke(navController) },
             modifier = modifier.constrainAs(button) {
                 top.linkTo(subHeader.bottom, margin = 50.dp)

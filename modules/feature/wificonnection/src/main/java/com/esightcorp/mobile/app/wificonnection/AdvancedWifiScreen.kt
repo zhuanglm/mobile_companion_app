@@ -1,7 +1,8 @@
 /*
- * LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
- * Reserved.The software and information contained herein are proprietary to, and
- * comprise valuable trade secrets of, Gentex Technology Canada, which intends to
+ * LICENSE
+ * Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
  * preserve as trade secrets such software and information.
  */
 
@@ -21,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.networking.WifiType
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
@@ -29,7 +32,6 @@ import com.esightcorp.mobile.app.ui.components.text.CustomEditText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.PasswordEditText
 import com.esightcorp.mobile.app.wificonnection.state.WifiAdvancedSettingsUiState
-import com.esightcorp.mobile.app.wificonnection.state.WifiType
 import com.esightcorp.mobile.app.wificonnection.viewmodels.AdvancedWifiViewModel
 
 @Composable
@@ -69,6 +71,10 @@ internal fun AdvancedWifiScreen(
     onFinishButtonPressed: (NavController) -> Unit,
 ) {
     val wifiUiState by vm.uiState.collectAsState()
+    var buttonText = stringResource(R.string.kWifiViewConnectButtonText)
+
+    if(wifiUiState.wifiFlow == WifiCache.WifiFlow.QrFlow)
+        buttonText = stringResource(R.string.kCreateWifiCodeButtonText)
 
     BaseScreen(
         modifier = modifier,
@@ -84,6 +90,7 @@ internal fun AdvancedWifiScreen(
             modifier = modifier,
             navController = navController,
             wifiUiState = wifiUiState,
+            buttonText = buttonText,
             onSsidUpdated = onSsidUpdated,
             onPasswordUpdated = onPasswordUpdated,
             onSecurityButtonPressed = onSecurityButtonPressed,
@@ -99,6 +106,7 @@ private fun WifiTypePreview() {
     AdvancedWifiBody(modifier = Modifier,
         navController = rememberNavController(),
         wifiUiState = WifiAdvancedSettingsUiState(),
+        buttonText = "connect & create",
         onSsidUpdated = {_ ->  },
         onPasswordUpdated = {_ ->},
         onSecurityButtonPressed = {_ ->},
@@ -110,6 +118,7 @@ private fun AdvancedWifiBody(
     modifier: Modifier,
     navController: NavController,
     wifiUiState: WifiAdvancedSettingsUiState,
+    buttonText: String,
     onSsidUpdated: (String) -> Unit,
     onPasswordUpdated: (String) -> Unit,
     onSecurityButtonPressed: (NavController) -> Unit,
@@ -136,7 +145,7 @@ private fun AdvancedWifiBody(
             ItemSpacer(25.dp)
             PasswordEditText(
                 value = wifiUiState.password,
-                onValueChange = onPasswordUpdated,
+                onValueChange = { onPasswordUpdated(it) },
                 modifier = modifier.fillMaxWidth()
             )
         }
@@ -158,7 +167,7 @@ private fun AdvancedWifiBody(
             onClick = { onFinishButtonPressed(navController)},
             modifier = modifier.wrapContentWidth(),
             enabled = wifiUiState.isPasswordValid,
-            text = stringResource(id = R.string.kCreateWifiCodeButtonText)
+            text = buttonText
         )
 
     }

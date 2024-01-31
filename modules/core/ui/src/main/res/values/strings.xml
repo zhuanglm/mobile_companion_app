@@ -184,6 +184,7 @@
     <string name="kHotspotViewControllerConnectingSpinnerTitle">Starting a Hotspot</string>
     <string name="kWiFiNetworkUnavailable">Network Unavailable</string>
     <string name="kWiFiNetworkUnavailableDescription">Ensure your Wi-Fi is on and connected to a network</string>
+    <string name="kAccessbilityDeviceCard">available device</string>
 
 
 </resources>

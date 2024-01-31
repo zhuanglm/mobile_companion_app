@@ -182,7 +182,7 @@ private fun TopAppBarTitle(
     ) {
         Image(
             painter = painterResource(R.drawable.logo),
-            contentDescription = "eSight Logo",
+            contentDescription = "",
             modifier = Modifier
                 .height(IntrinsicSize.Min)
                 .width(IntrinsicSize.Min)

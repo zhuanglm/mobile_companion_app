@@ -13,9 +13,9 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.ui.extensions.navigate
-import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.AdvancedNetworkSettingsRoute
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.EnterPasswordRoute
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
@@ -31,7 +31,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectNetworkViewModel @Inject constructor(
     application: Application,
-    private val wifiRepository: WifiConnectionRepository
+    private val wifiRepository: WifiConnectionRepository,
 ) : AndroidViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(wifiRepository) {
 
@@ -78,23 +78,17 @@ class SelectNetworkViewModel @Inject constructor(
 
     fun onNetworkSelected(navController: NavController, selectedNetwork: ScanResult) {
         wifiRepository.setSelectedNetwork(selectedNetwork)
-        navController.navigate(target = WifiNavigation.EnterPasswordRoute, popCurrent = false)
+        navController.navigate(target = EnterPasswordRoute, popCurrent = false)
     }
 
     fun onBackButtonClicked(navController: NavController) {
         navController.popBackStack()
     }
 
-    fun navigateToNoNetworksFoundScreen(navController: NavController) = with(navController) {
-        navigate(target = WifiNavigation.NoNetworksFoundRoute)
-    }
-
     fun onAdvancedButtonClicked(navController: NavController) {
-        wifiRepository.setWifiNetwork("", WifiType.WPA, "")     //clean up the saved network
+        // clean up the saved network
+        wifiRepository.wifiCredentials.clear()
 
-        navController.navigate(
-            target = WifiNavigation.AdvancedNetworkSettingsRoute,
-            popCurrent = false
-        )
+        navController.navigate(target = AdvancedNetworkSettingsRoute, popCurrent = false)
     }
 }

@@ -131,7 +131,7 @@ class WifiConnectionRepository @Inject constructor(
             true -> {
                 try {
                     eSightBleManager.getBleService()
-                        ?.sendWifiCreds(WifiCache.credentials.getSSID()!!, pwd, type)
+                        ?.sendWifiCreds(wifiCredentials.getSSID()!!, pwd, type)
                 } catch (exception: NullPointerException) {
                     Log.e(_tag, "sendWifiCreds: BleService has not been initialized ", exception)
                 } catch (exception: UninitializedPropertyAccessException) {
@@ -143,7 +143,7 @@ class WifiConnectionRepository @Inject constructor(
 
     @Synchronized
     fun startWifiScan() {
-        WifiCache.getNetworkList().clear()
+        WifiCache.clearCache()
         wifiModel.startWifiScan()
     }
 
@@ -165,9 +165,7 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.stopWifiScan()
     }
 
-    fun setWifiType(type: WifiType) {
-        WifiCache.credentials.setWifiType(type)
-    }
+    fun setWifiType(type: WifiType) = wifiCredentials.setWifiType(type)
 
     @Synchronized
     fun registerListener(listener: WifiNetworkScanListener) {
@@ -204,10 +202,8 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.setWifiPassword(pwd)
     }
 
-    fun setWifiNetwork(ssid: String, securityType: WifiType, password: String) {
-        WifiCache.credentials.setNetwork(ssid, securityType, password)
-    }
-
+    fun setWifiNetwork(ssid: String, securityType: WifiType, password: String) =
+        wifiCredentials.setNetwork(ssid, securityType, password)
     //endregion
 
     //region Private implementation

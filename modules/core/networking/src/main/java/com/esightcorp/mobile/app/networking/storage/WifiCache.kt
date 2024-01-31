@@ -26,6 +26,14 @@ object WifiCache {
     val credentials = WifiCredentials
     private var currentFlow: WifiFlow = WifiFlow.NotInUse
 
+    /**
+     * Clear the cached wifi info
+     */
+    fun clearCache() {
+        networkList.clear()
+        credentials.clear()
+    }
+
     @Synchronized
     fun getNetworkList() = networkList
 

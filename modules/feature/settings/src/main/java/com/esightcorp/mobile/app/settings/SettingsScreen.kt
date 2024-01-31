@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.settings.viewmodels.SettingsViewModel
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.buttons.IconAndTextRectangularButton
+import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.FineText
@@ -106,7 +106,7 @@ internal fun SettingsMyESight(
         MaterialTheme.colors.onSurface,
     )
 
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = {
             navController.navigate(
                 target = WifiNavigation.ScanningRoute,
@@ -122,7 +122,7 @@ internal fun SettingsMyESight(
     val settingState = vwModel?.settingsUiState?.collectAsState()?.value
     if (settingState?.connState?.isConnected == true) {
         ItemSpacer()
-        IconAndTextRectangularButton(
+        LeadingIconTextButton(
             onClick = { vwModel.navigateToDisconnectConfirmation(navController) },
             modifier,
             iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_disconnected_24,
@@ -142,7 +142,7 @@ internal fun SettingsHelp(
         MaterialTheme.colors.onSurface,
     )
 
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_question_mark_24),
@@ -150,7 +150,7 @@ internal fun SettingsHelp(
     )
 
     ItemSpacer()
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_feedback) },
         modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_chat_bubble_outline_24),
@@ -169,7 +169,7 @@ internal fun SettingsAbout(
         MaterialTheme.colors.onSurface,
     )
 
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
         modifier = modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_website_24,
@@ -177,7 +177,7 @@ internal fun SettingsAbout(
     )
 
     ItemSpacer()
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_privacy_policy) },
         modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_privacy_24,

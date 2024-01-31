@@ -12,27 +12,51 @@ import android.net.wifi.ScanResult
 import android.util.Log
 
 object WifiCredentials {
-
-    private var network: ScanResult? = null
     private var password: String = ""
-    private var wifiType: String = "WPA/WPA2"
+    private var wifiType = WifiType.WPA
+    private var ssid: String? = ""
 
-    fun getSSID(): String? {
+    private fun getSSID(network: ScanResult?): String? {
         if(network != null){
-            Log.d("WifiCredentials", "getSSID: ${network!!.ssidName()}")
+            Log.d("WifiCredentials", "getSSID: ${network.ssidName()}")
         }
         return network?.ssidName()?.removePrefix("\"")?.removeSuffix("\"")
     }
 
+    private fun getSecurityType(scanResult: ScanResult): WifiType {
+        val capabilities = scanResult.capabilities
+
+        return when {
+            capabilities.contains("WPA3") -> WifiType.WPA
+            capabilities.contains("WPA2") -> WifiType.WPA
+            capabilities.contains("WPA") -> WifiType.WPA
+            capabilities.contains("WEP") -> WifiType.WEP
+            else -> WifiType.NONE // No security
+        }
+    }
+
     fun setNetwork(network: ScanResult) {
-        this.network = network
+        this.ssid = getSSID(network)
+        this.wifiType = getSecurityType(network)
+    }
+
+    fun setNetwork(ssid: String, securityType: WifiType, password: String?) {
+        this.ssid = ssid
+        this.wifiType = securityType
+        if(securityType == WifiType.NONE)
+            this.password = ""
+        else
+            this.password = password?:""
+    }
+    fun getSSID(): String? {
+        return ssid
     }
 
     fun getPassword(): String {
         return password
     }
 
-    fun getWifiType(): String {
+    fun getWifiType(): WifiType {
         return wifiType
     }
 
@@ -40,7 +64,7 @@ object WifiCredentials {
         this.password = pwd
     }
 
-    fun setWifiType(type: String) {
+    fun setWifiType(type: WifiType) {
         this.wifiType = type
     }
 }

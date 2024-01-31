@@ -13,6 +13,7 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
@@ -96,6 +97,7 @@ class SelectNetworkViewModel @Inject constructor(
     }
 
     fun onAdvancedButtonClicked(navController: NavController) {
+        wifiRepository.setWifiNetwork("",WifiType.WPA,"")     //clean up the saved network
         navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
     }
 }

@@ -13,9 +13,9 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus
@@ -93,19 +93,11 @@ class WifiSearchingViewModel @Inject constructor(
     }
 
     fun navigateToWifiNetworksScreen(navController: NavController) {
-        navController.navigate(WifiNavigation.SelectNetworkRoute.path) {
-            popUpTo(WifiNavigation.IncomingRoute.path) {
-                inclusive = true
-            }
-        }
+        navController.navigate(target = WifiNavigation.SelectNetworkRoute)
     }
 
     fun navigateToWifiAlreadyConnected(navController: NavController) {
-        navController.navigate(WifiNavigation.AlreadyConnectedRoute.path) {
-            popUpTo(WifiNavigation.IncomingRoute.path) {
-                inclusive = true
-            }
-        }
+        navController.navigate(target = WifiNavigation.AlreadyConnectedRoute)
     }
 
     fun onCancelClicked(navController: NavController) {
@@ -138,11 +130,7 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
-    fun navigateToNoNetworksScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route) {
-            popUpTo(WifiConnectionScreens.IncomingNavigationRoute.route) {
-                inclusive = true
-            }
-        }
+    fun navigateToNoNetworksScreen(navController: NavController) = with(navController) {
+        navigate(target = WifiNavigation.NoNetworksFoundRoute)
     }
 }

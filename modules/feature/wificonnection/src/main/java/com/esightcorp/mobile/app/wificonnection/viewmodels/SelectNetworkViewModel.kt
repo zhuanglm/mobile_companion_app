@@ -15,6 +15,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.ssidName
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -77,23 +79,19 @@ class SelectNetworkViewModel @Inject constructor(
 
     private fun updateWifiEnabledState(enabled: Boolean) {
         _uiState.update { state -> state.copy(isWifiEnabled = enabled) }
-
     }
 
-    fun selectNetwork(network: ScanResult) {
-        wifiRepository.setSelectedNetwork(network)
-    }
-
-    fun navigateToPasswordScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.EnterPasswordRoute.route)
+    fun onNetworkSelected(navController: NavController, selectedNetwork: ScanResult) {
+        wifiRepository.setSelectedNetwork(selectedNetwork)
+        navController.navigate(target = WifiNavigation.EnterPasswordRoute, popCurrent = false)
     }
 
     fun onBackButtonClicked(navController: NavController) {
         navController.popBackStack()
     }
 
-    fun navigateToNoNetworksFoundScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route)
+    fun navigateToNoNetworksFoundScreen(navController: NavController) = with(navController) {
+        navigate(target = WifiNavigation.NoNetworksFoundRoute)
     }
 
     fun onAdvancedButtonClicked(navController: NavController) {

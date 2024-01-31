@@ -19,8 +19,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
@@ -62,7 +64,6 @@ fun SearchingForNetworksRoute(
         navigateToWifiNetworksScreen = vm::navigateToWifiNetworksScreen,
         navigateToNoWifiScreen = vm::navigateToNoNetworksScreen,
         uiState = uiState,
-        loadingText = stringResource(id = com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle)
     )
 }
 
@@ -72,7 +73,6 @@ private const val TAG = "SearchingForNetworksScreen"
 @Composable
 internal fun SearchingForNetworksScreen(
     modifier: Modifier = Modifier,
-    loadingText: String,
     navigateToWifiAlreadyConnected: OnNavigationCallback,
     navigateToWifiNetworksScreen: OnNavigationCallback,
     navigateToNoWifiScreen: OnNavigationCallback,
@@ -102,10 +102,11 @@ internal fun SearchingForNetworksScreen(
             Log.i(TAG, "Searching for networks...")
             Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
                 LoadingScreenWithSpinner(
-                    loadingText = loadingText,
+                    loadingText = stringResource(com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle),
                     modifier = modifier,
                     cancelButtonNeeded = true,
-                    onCancelButtonClicked = { onCancelClicked(navController) })
+                    onCancelButtonClicked = { onCancelClicked(navController) },
+                )
             }
             when (uiState.wifiConnectionStatus) {
                 CONNECTED -> {
@@ -129,5 +130,19 @@ internal fun SearchingForNetworksScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun SearchingForNetworksScreenPreview() = MaterialTheme {
+    SearchingForNetworksScreen(
+        navController = rememberNavController(),
+        onCancelClicked = { },
+        navigateToNoWifiScreen = { },
+        navigateToWifiAlreadyConnected = { },
+        uiState = WifiSearchingUiState(),
+        navigateToWifiNetworksScreen = { },
+        setWifiFlow = { _ -> },
+    )
 }
 //endregion

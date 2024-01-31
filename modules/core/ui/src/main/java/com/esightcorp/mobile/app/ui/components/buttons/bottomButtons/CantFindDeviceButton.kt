@@ -25,6 +25,7 @@ fun CantFindDeviceButton(
     SupportButtonTemplate(
         onClick = onHelpClick,
         text = stringResource(labelId),
+        description = stringResource(id = labelId),
         painter = painterResource(id = R.drawable.round_question_mark_24),
         modifier = modifier
     )

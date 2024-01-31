@@ -23,6 +23,7 @@ fun UnableToConnectButton(
     SupportButtonTemplate(
         onClick =  onClick ,
         text = stringResource(id = R.string.kFooterButtonStillUnableToConnectTitle),
+        description = stringResource(id = R.string.kFooterButtonStillUnableToConnectTitle),
         painter = painterResource(id = R.drawable.round_question_mark_24),
         modifier = modifier
     )
@@ -32,5 +33,5 @@ fun UnableToConnectButton(
 @Preview
 @Composable
 fun UnableToConnectPreview() {
-    UnableToConnectButton { Unit }
+    UnableToConnectButton { }
 }

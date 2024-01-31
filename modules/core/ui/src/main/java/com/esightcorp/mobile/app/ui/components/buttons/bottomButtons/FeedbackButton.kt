@@ -23,6 +23,7 @@ fun FeedbackButton(
     SupportButtonTemplate(
         onClick = onFeedbackClick,
         painter = painterResource(id = R.drawable.round_chat_bubble_outline_24),
-        text = stringResource(id = R.string.kFeedbackButtonText)
+        text = stringResource(id = R.string.kFeedbackButtonText),
+        description = stringResource(id = R.string.kFeedbackButtonText)
     )
 }

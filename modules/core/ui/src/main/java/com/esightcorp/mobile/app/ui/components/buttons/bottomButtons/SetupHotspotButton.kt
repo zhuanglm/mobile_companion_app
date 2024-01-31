@@ -24,5 +24,6 @@ fun SetupHotspotButton(
     modifier = modifier,
     onClick = onClick,
     text = stringResource(R.string.kEshareTroubleshootingUnableToConnectFooterButtonText),
+    description = stringResource(R.string.kEshareTroubleshootingUnableToConnectFooterButtonText),
     painter = painterResource(R.drawable.round_question_mark_24)
 )

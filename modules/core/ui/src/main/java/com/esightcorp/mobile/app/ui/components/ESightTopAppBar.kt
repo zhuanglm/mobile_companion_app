@@ -186,7 +186,7 @@ private fun TopAppBarTitle(
                     R.drawable.ic_logo
                 )
             ),
-            contentDescription = "eSight Logo",
+            contentDescription = "",
         )
     }
 }

@@ -11,6 +11,7 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiTypeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,12 +30,20 @@ class WifiTypeViewModel @Inject constructor(
     private var _uiState = MutableStateFlow(WifiTypeUiState())
     val uiState: StateFlow<WifiTypeUiState> = _uiState.asStateFlow()
 
-    private fun onWifiTypeSelected(wifiType: String) {
-        _uiState.update { it.copy(wifiType = wifiType) }
-    }
-
-    fun onTypePressed(navController: NavController, type: String) {
+    fun onTypePressed(navController: NavController, type: WifiType) {
         repository.setWifiType(type)
         navController.popBackStack()
+    }
+
+    init {
+        refreshUiState()
+    }
+
+    private fun refreshUiState() {
+        with(repository.wifiCredentials) {
+            _uiState.update {
+                it.copy(wifiType = getWifiType())
+            }
+        }
     }
 }

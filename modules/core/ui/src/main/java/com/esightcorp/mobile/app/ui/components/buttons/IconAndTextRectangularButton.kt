@@ -14,10 +14,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -30,10 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.components.text.ButtonText
+import com.esightcorp.mobile.app.ui.extensions.debugBorder
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @Composable
-fun IconAndTextRectangularButton(
+fun LeadingIconTextButton(
     onClick: () -> Unit,
     modifier: Modifier,
     icon: ImageVector? = null,
@@ -49,7 +52,7 @@ fun IconAndTextRectangularButton(
             MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         when (icon) {
@@ -91,7 +94,7 @@ fun TextRectangularButton(
             disabledContentColor = MaterialTheme.colors.onPrimary
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
         ButtonText(
@@ -119,7 +122,7 @@ fun OutlinedTextRectangularButton(
             contentColor = MaterialTheme.colors.onSurface,
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(18.dp),
         border = BorderStroke(4.dp, MaterialTheme.colors.primary),
         contentPadding = PaddingValues(20.dp, 10.dp),
     ) {
@@ -138,10 +141,60 @@ fun OutlinedTextRectangularButton(
     }
 }
 
+@Composable
+fun TrailingIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier,
+    icon: ImageVector? = null,
+    @DrawableRes iconDrawableId: Int? = null,
+    iconContextDescription: String? = null,
+    text: String,
+) {
+    ElevatedButton(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        enabled = true,
+        colors = ButtonDefaults.elevatedButtonColors(
+            MaterialTheme.colors.primary, MaterialTheme.colors.onPrimary
+        ),
+        elevation = ButtonDefaults.elevatedButtonElevation(),
+        shape = RoundedCornerShape(18.dp),
+        contentPadding = PaddingValues(20.dp, 10.dp),
+    ) {
+        ButtonText(
+            text = text, modifier = modifier
+                .weight(1f)
+
+        )
+
+        when (icon) {
+            null -> if (iconDrawableId != null) {
+                Icon(
+                    painter = rememberDrawablePainter(
+                        AppCompatResources.getDrawable(LocalContext.current, iconDrawableId)
+                    ),
+                    iconContextDescription,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+
+            else -> Icon(icon, contentDescription = iconContextDescription, modifier = Modifier.size(50.dp, 40.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TextAndIconRectangularButtonPreview() {
+    TrailingIconButton(
+        onClick = { }, modifier = Modifier.debugBorder(), icon = Icons.Rounded.Check, text = "WPA/WPA2/WPA3"
+    )
+}
+
 @Preview
 @Composable
 private fun IconAndTextRectangularButtonPreview() {
-    IconAndTextRectangularButton(
+    LeadingIconTextButton(
         onClick = { }, modifier = Modifier, icon = Icons.Default.Star, text = "Preview"
     )
 }

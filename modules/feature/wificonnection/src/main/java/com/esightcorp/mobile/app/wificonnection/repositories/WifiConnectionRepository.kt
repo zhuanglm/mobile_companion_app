@@ -14,6 +14,7 @@ import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
+import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
@@ -159,7 +160,7 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.stopWifiScan()
     }
 
-    fun setWifiType(type: String) {
+    fun setWifiType(type: WifiType) {
         WifiCache.credentials.setWifiType(type)
     }
 
@@ -197,6 +198,10 @@ class WifiConnectionRepository @Inject constructor(
 
     fun setWifiPassword(pwd: String) {
         wifiModel.setWifiPassword(pwd)
+    }
+
+    fun setWifiNetwork(ssid: String, securityType: WifiType, password: String) {
+        WifiCache.credentials.setNetwork(ssid, securityType, password)
     }
 
     //endregion

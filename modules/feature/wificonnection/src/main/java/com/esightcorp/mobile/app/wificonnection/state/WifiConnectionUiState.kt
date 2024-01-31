@@ -25,11 +25,16 @@ data class WifiSearchingUiState(
     val wifiConnectionStatus: WifiConnectionStatus = WifiConnectionStatus.UNKNOWN,
     val scanningStatus: ScanningStatus = ScanningStatus.Unknown,
     val isWifiConnectedAlreadyOnGlasses: Boolean = false,
+    val scanResults: List<ScanResult> = mutableListOf(),
 )
 
 data class SelectNetworkUiState(
     val isWifiEnabled: Boolean = false,
-    val networkList: List<ScanResult> = mutableListOf(),
+
+    /**
+     * When reaching the SelectNetwork screen, the `networkList` must not be empty
+     */
+    val networkList: List<ScanResult>? = null,
 )
 
 data class WifiCredentialsUiState(

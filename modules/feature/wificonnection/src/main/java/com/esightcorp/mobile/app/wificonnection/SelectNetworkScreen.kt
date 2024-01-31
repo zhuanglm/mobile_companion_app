@@ -59,11 +59,6 @@ fun SelectNetworkRoute(
         return
     }
 
-    if (uiState.networkList.isEmpty()) {
-        LaunchedEffect(Unit) { vm.navigateToNoNetworksFoundScreen(navController) }
-        return
-    }
-
     SelectNetworkScreen(
         modifier = Modifier,
         navController = navController,
@@ -135,14 +130,18 @@ private fun SelectNetworkBody(
                 width = Dimension.fillToConstraints
             },
         ) {
-            items(uiState.networkList) { network ->
-                LeadingIconTextButton(
-                    onClick = { onNetworkSelected(navController, network) },
-                    modifier = Modifier,
-                    icon = ImageVector.vectorResource(R.drawable.round_wifi_24),
-                    text = network.ssidName() ?: ""
-                )
-                ItemSpacer(space = 10.dp)
+            uiState.networkList?.let { networks ->
+                items(networks) { network ->
+                    network.ssidName()?.let { name ->
+                        LeadingIconTextButton(
+                            onClick = { onNetworkSelected(navController, network) },
+                            modifier = Modifier,
+                            icon = ImageVector.vectorResource(R.drawable.round_wifi_24),
+                            text = name
+                        )
+                        ItemSpacer(space = 10.dp)
+                    }
+                }
             }
         }
     }

@@ -96,5 +96,7 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
 
     object AlreadyConnectedRoute : WifiNavigation("already_connected")
 
+    object AdvancedNetworkSettingsRoute : WifiNavigation("advanced_network_settings")
+
     //TODO: migrate all other paths
 }

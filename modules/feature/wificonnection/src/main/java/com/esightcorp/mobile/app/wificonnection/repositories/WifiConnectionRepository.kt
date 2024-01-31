@@ -15,7 +15,6 @@ import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
 import com.esightcorp.mobile.app.networking.WifiType
-import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,16 +26,14 @@ class WifiConnectionRepository @Inject constructor(
     private val _tag = this.javaClass.simpleName
 
     private val wifiModel = WifiModel(context)
-    private val networkList: MutableList<ScanResult> = mutableListOf()
+
     private var networkScanListener: WifiNetworkScanListener? = null
     private var connectionListener: WifiConnectionListener? = null
 
     //region WifiModelListener
     private val wifiModelListener = object : WifiModelListener {
         override fun onWifiNetworkFound(result: ScanResult) {
-            Log.e(_tag, "onWifiNetworkFound: ${result.ssidName()}")
-            networkList.add(result)
-            networkScanListener?.onNetworkListUpdated(networkList)
+            networkScanListener?.onNetworkListUpdated(WifiCache.getNetworkList())
         }
 
         override fun onNetworkConnected() {
@@ -144,8 +141,16 @@ class WifiConnectionRepository @Inject constructor(
         }
     }
 
-    fun startWifiScan() = wifiModel.startWifiScan()
-    fun cancelWifiScan() = wifiModel.stopWifiScan()
+    @Synchronized
+    fun startWifiScan() {
+        WifiCache.getNetworkList().clear()
+        wifiModel.startWifiScan()
+    }
+
+    @Synchronized
+    fun cancelWifiScan() {
+        wifiModel.stopWifiScan()
+    }
 
     fun readWifiConnectionStatus() {
         eSightBleManager.getConnectedBleService()?.readWifiConnectionStatus()
@@ -187,7 +192,6 @@ class WifiConnectionRepository @Inject constructor(
     }
 
     fun unregisterListener(listener: WifiConnectionListener) {
-//        TODO("Not yet implemented")
         Log.e(_tag, "unregisterListener: ")
     }
 

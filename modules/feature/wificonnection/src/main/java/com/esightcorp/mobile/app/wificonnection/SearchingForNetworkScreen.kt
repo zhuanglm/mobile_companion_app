@@ -30,7 +30,6 @@ import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.CONNECTED
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.DISCONNECTED
-import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus.UNKNOWN
 import com.esightcorp.mobile.app.wificonnection.state.WifiSearchingUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiSearchingViewModel
 import kotlinx.coroutines.delay
@@ -45,11 +44,10 @@ fun SearchingForNetworksRoute(
 
     val uiState by vm.uiState.collectAsState()
     Log.d(TAG, "SearchingForNetworksRoute: {$flow}")
-    if (flow != null) {
-        LaunchedEffect(Unit) {
-            vm.setWifiFlow(flow)
-        }
+    flow?.let {
+        LaunchedEffect(Unit) { vm.setWifiFlow(it) }
     }
+
     if (!uiState.isWifiEnabled) {
         NavigateToWifiOffScreen(navController = navController)
         return
@@ -61,8 +59,7 @@ fun SearchingForNetworksRoute(
         navigateToWifiAlreadyConnected = vm::navigateToWifiAlreadyConnected,
         setWifiFlow = vm::setWifiFlow,
         onCancelClicked = vm::onCancelClicked,
-        navigateToWifiNetworksScreen = vm::navigateToWifiNetworksScreen,
-        navigateToNoWifiScreen = vm::navigateToNoNetworksScreen,
+        onScanCompleted = vm::onWifiScanCompletedCallback,
         uiState = uiState,
     )
 }
@@ -73,33 +70,26 @@ private const val TAG = "SearchingForNetworksScreen"
 @Composable
 internal fun SearchingForNetworksScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
+    uiState: WifiSearchingUiState,
     navigateToWifiAlreadyConnected: OnNavigationCallback,
-    navigateToWifiNetworksScreen: OnNavigationCallback,
-    navigateToNoWifiScreen: OnNavigationCallback,
     onCancelClicked: OnNavigationCallback,
     setWifiFlow: (String) -> Unit,
-    navController: NavController,
-    uiState: WifiSearchingUiState
+    onScanCompleted: OnNavigationCallback,
 ) {
     BackHandler { onCancelClicked(navController) }
 
+    Log.w(TAG, "SearchingForNetworksScreen - scanningStatus: ${uiState.scanningStatus}")
     when (uiState.scanningStatus) {
-        ScanningStatus.Failed -> {
-            Log.e(TAG, "SearchingForNetworksScreen: SCAN STATUS FAILED")
-            LaunchedEffect(Unit) {
-                navigateToNoWifiScreen(navController)
-            }
-        }
-
-        ScanningStatus.Success -> {
-            Log.d(TAG, "SearchingForNetworksScreen: SUCCESS")
-            LaunchedEffect(Unit) {
-                navigateToWifiNetworksScreen(navController)
-            }
+        ScanningStatus.Failed, ScanningStatus.Success -> {
+            LaunchedEffect(Unit) { onScanCompleted(navController) }
         }
 
         else -> {
-            Log.i(TAG, "Searching for networks...")
+            Log.i(
+                TAG,
+                "Searching for networks, wifiConnectionStatus: ${uiState.wifiConnectionStatus}"
+            )
             Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
                 LoadingScreenWithSpinner(
                     loadingText = stringResource(com.esightcorp.mobile.app.ui.R.string.kWifiSearchSpinnerTitle),
@@ -124,9 +114,7 @@ internal fun SearchingForNetworksScreen(
                     }
                 }
 
-                UNKNOWN -> {
-                    Log.i(TAG, " Not sure if we are already connected or not")
-                }
+                else -> Unit
             }
         }
     }
@@ -138,10 +126,9 @@ private fun SearchingForNetworksScreenPreview() = MaterialTheme {
     SearchingForNetworksScreen(
         navController = rememberNavController(),
         onCancelClicked = { },
-        navigateToNoWifiScreen = { },
         navigateToWifiAlreadyConnected = { },
         uiState = WifiSearchingUiState(),
-        navigateToWifiNetworksScreen = { },
+        onScanCompleted = { },
         setWifiFlow = { _ -> },
     )
 }

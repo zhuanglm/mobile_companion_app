@@ -64,14 +64,12 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
 
         composable(WifiNavigation.EnterPasswordRoute) { EnterPasswordRoute(navController) }
 
+        composable(WifiNavigation.AdvancedNetworkSettingsRoute) { AdvancedWifiRoute(navController) }
 
         composable(WifiConnectionScreens.ConnectingRoute.route) {
             WifiConnectingRoute(navController = navController)
         }
 
-        composable(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route) {
-            AdvancedWifiRoute(navController = navController)
-        }
         composable(WifiConnectionScreens.SelectNetworkSecurityRoute.route) {
             WifiTypeRoute(navController = navController)
         }

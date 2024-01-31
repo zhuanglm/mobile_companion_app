@@ -14,6 +14,5 @@ sealed class WifiConnectionScreens(val route: String) {
     object ConnectingRoute : WifiConnectionScreens("connecting")
 
     object WifiQRCodeRoute : WifiConnectionScreens("wifi_qrcode")
-    object AdvancedNetworkSettingsRoute : WifiConnectionScreens("advanced_network_settings")
     object SelectNetworkSecurityRoute : WifiConnectionScreens("select_network_security")
 }

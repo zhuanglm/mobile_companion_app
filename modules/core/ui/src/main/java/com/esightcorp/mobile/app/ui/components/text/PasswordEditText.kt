@@ -13,6 +13,8 @@ import androidx.compose.material3.Shapes
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.esightcorp.mobile.app.ui.R
@@ -23,6 +25,7 @@ fun PasswordEditText(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    description: String = "",
     label: @Composable (() -> Unit)? = null,
 ) {
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }
@@ -30,7 +33,7 @@ fun PasswordEditText(
 
     OutlinedTextField(value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.semantics { contentDescription = description },
         label = label,
         shape = Shapes().medium,
         colors = TextFieldDefaults.textFieldColors(

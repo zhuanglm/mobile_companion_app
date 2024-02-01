@@ -44,7 +44,7 @@ fun DeviceCard(
     onClick: () -> Unit
 ) {
     val borderStroke = BorderStroke(6.dp, borderColor)
-    val readLabel = stringResource(R.string.kAccessbilityDeviceCard)
+    val readLabel = stringResource(R.string.kBTPairingHeader)
 
     OutlinedCard(
         modifier = modifier
@@ -79,7 +79,7 @@ fun DeviceCard(
                     modifier = Modifier.clearAndSetSemantics {  })
                 WrappableButton2Text(
                     text = "${stringResource(R.string.kBTDeviceFoundeSightGoSN)} $serialNumber",
-                    modifier = Modifier,
+                    modifier = Modifier.clearAndSetSemantics {  },
                     textAlign = TextAlign.Start
                 )
             }

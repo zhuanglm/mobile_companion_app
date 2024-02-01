@@ -22,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,47 +46,51 @@ fun DeviceCard(
     onClick: () -> Unit
 ) {
     val borderStroke = BorderStroke(6.dp, borderColor)
-    val readLabel = stringResource(R.string.kBTPairingHeader)
+    val readLabel = stringResource(R.string.ego_model_name) + serialNumber
 
-    OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(100.dp), //TODO: need to swap this to take up width
-        colors = CardDefaults.outlinedCardColors(containerColor),
-        enabled = true,
-        border = borderStroke,
-        shape = RoundedCornerShape(18.dp),
-        onClick = onClick,
-        elevation = CardDefaults.cardElevation(20.dp)
-    ) {
-        Row(
-            modifier = Modifier
+    //this Box is using for accessibility do not narrate "button" when it is not clickable
+    Box(modifier = modifier.semantics {
+        contentDescription = if(isClickable) "" else readLabel
+    }) {
+        OutlinedCard(
+            modifier = modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .height(100.dp), //TODO: need to swap this to take up width
+            colors = CardDefaults.outlinedCardColors(containerColor),
+            enabled = true,
+            border = borderStroke,
+            shape = RoundedCornerShape(18.dp),
+            onClick = onClick,
+            elevation = CardDefaults.cardElevation(20.dp)
         ) {
-            ImageForDeviceCard(Modifier.weight(1F))
-            Spacer(modifier = Modifier.size(10.dp))
-            Column(
+            Row(
                 modifier = Modifier
-                    .semantics(mergeDescendants = true) {
-                        //avoid talkBack read it as "double click to active"
-                        contentDescription = if (isClickable) readLabel else ""
-                    }
-                    .weight(1F), horizontalAlignment = Alignment.Start
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                ButtonText(text = stringResource(R.string.ego_model_name),
-                    modifier = Modifier.clearAndSetSemantics {  })
-                WrappableButton2Text(
-                    text = "${stringResource(R.string.kBTDeviceFoundeSightGoSN)} $serialNumber",
-                    modifier = Modifier.clearAndSetSemantics {  },
-                    textAlign = TextAlign.Start
-                )
+                ImageForDeviceCard(Modifier.weight(1F))
+                Spacer(modifier = Modifier.size(10.dp))
+                Column(
+                    modifier = Modifier
+                        .semantics {
+                            //avoid talkBack read it as "double click to active"
+                            contentDescription = if (isClickable) readLabel else ""
+                            role = Role.Image
+                        }
+                        .weight(1F), horizontalAlignment = Alignment.Start
+                ) {
+                    ButtonText(text = stringResource(R.string.ego_model_name),
+                        modifier = Modifier.clearAndSetSemantics { })
+                    WrappableButton2Text(
+                        text = "${stringResource(R.string.kBTDeviceFoundeSightGoSN)} $serialNumber",
+                        modifier = Modifier.clearAndSetSemantics { },
+                        textAlign = TextAlign.Start
+                    )
+                }
             }
-
-
         }
     }
 }
@@ -114,6 +120,9 @@ fun ImageForDeviceCard(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .semantics {
+                role = Role.Image
+            }
     )
 }
 

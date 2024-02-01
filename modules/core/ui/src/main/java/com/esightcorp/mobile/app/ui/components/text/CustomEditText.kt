@@ -14,20 +14,22 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun CustomEditText(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    description: String = "",
     label: @Composable (() -> Unit)? = null,
 ) {
 
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.semantics { contentDescription = description },
         label = label,
         shape = Shapes().medium,
         colors = TextFieldDefaults.textFieldColors(

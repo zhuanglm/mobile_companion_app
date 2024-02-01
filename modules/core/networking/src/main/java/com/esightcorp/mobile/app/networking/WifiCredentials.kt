@@ -9,19 +9,11 @@
 package com.esightcorp.mobile.app.networking
 
 import android.net.wifi.ScanResult
-import android.util.Log
 
 object WifiCredentials {
     private var password: String = ""
     private var wifiType = WifiType.WPA
     private var ssid: String? = ""
-
-    private fun getSSID(network: ScanResult?): String? {
-        if (network != null) {
-            Log.d("WifiCredentials", "getSSID: ${network.ssidName()}")
-        }
-        return network?.ssidName()?.removePrefix("\"")?.removeSuffix("\"")
-    }
 
     private fun getSecurityType(scanResult: ScanResult): WifiType {
         val capabilities = scanResult.capabilities
@@ -36,7 +28,7 @@ object WifiCredentials {
     }
 
     fun setNetwork(network: ScanResult) {
-        this.ssid = getSSID(network)
+        this.ssid = network.ssidName()
         this.wifiType = getSecurityType(network)
     }
 

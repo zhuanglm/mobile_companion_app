@@ -106,10 +106,14 @@ class WifiSearchingViewModel @Inject constructor(
                 ScanningStatus.Success -> when (scanResults.isNotEmpty()) {
                     true -> WifiNavigation.SelectNetworkRoute
 
-                    false -> when (repository.wifiFlow) {
-                        WifiCache.WifiFlow.QrFlow -> WifiNavigation.AdvancedNetworkSettingsRoute
+                    false -> {
+                        Log.i(_tag, "scanResults is empty!")
 
-                        else -> WifiNavigation.NoNetworksFoundRoute
+                        when (repository.wifiFlow) {
+                            WifiCache.WifiFlow.QrFlow -> WifiNavigation.AdvancedNetworkSettingsRoute
+
+                            else -> WifiNavigation.NoNetworksFoundRoute
+                        }
                     }
                 }
 

@@ -122,7 +122,6 @@ private fun HomeScreenBody(
                 end.linkTo(parent.end)
             },
             onClick = { },
-            deviceModel = device.substringBeforeLast('-'),
             serialNumber = device.substringAfterLast('-'),
         )
 

@@ -48,15 +48,12 @@ class WifiModel(
     private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
     private val wifiScanReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
-            Log.w(_tag, "wifiScanReceiver - exResultUpdated success: $success")
-
-            when (success) {
-                true -> scanSuccess()
-                false -> scanFailure()
-            }
+            processScanResult(intent)
         }
     }
+    private var isScanningStopped: Boolean = true
+        @Synchronized get
+        @Synchronized set
 
     private val wifiStateChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -192,15 +189,17 @@ class WifiModel(
 
     @Synchronized
     fun startWifiScan() {
-        Log.i(_tag, "startWifiScan: ")
+        Log.i(_tag, "startWifiScan - $this")
 
         context.safeRegisterReceiver(wifiScanReceiver, makeWifiIntentFilter)
 
-        val success = wifiManager.startScan()
+        val isScanStarted = wifiManager.startScan()
         listener?.onScanStatusUpdated(ScanningStatus.InProgress)
-        if (!success) {
+
+        isScanningStopped = !isScanStarted
+
+        if (isScanningStopped)
             scanFailure()
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -209,8 +208,6 @@ class WifiModel(
         listener?.onScanStatusUpdated(ScanningStatus.Success)
         for (result in results) {
             if (result.ssidName() != "" && (result.frequency in 2201..2499)) {
-                Log.d(_tag, "scanSuccess: ${result.ssidName()}")
-                Log.i(_tag, "scanSuccess: ${result.frequency}")
                 WifiCache.addNetworkToNetworkList(result)
                 listener?.onWifiNetworkFound(result)
             }
@@ -228,7 +225,23 @@ class WifiModel(
 
     @Synchronized
     fun stopWifiScan() {
+        isScanningStopped = true
+
         context.safeUnregisterReceiver(wifiScanReceiver)
+        Log.i(_tag, "stopWifiScan - receiver unregistered")
+    }
+
+    @Synchronized
+    private fun processScanResult(intent: Intent) {
+        if (isScanningStopped) return
+
+        val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
+        Log.w(_tag, "wifiScanReceiver - exResultUpdated success: $success - $this")
+
+        when (success) {
+            true -> scanSuccess()
+            false -> scanFailure()
+        }
     }
 
     fun isWifiEnabled(): Boolean {
@@ -373,7 +386,7 @@ class WifiModel(
 @Suppress("Deprecation")
 fun ScanResult.ssidName(): String? {
     if (Build.VERSION.SDK_INT >= 33)
-        return wifiSsid?.toString()
+        return wifiSsid?.toString()?.removePrefix("\"")?.removeSuffix("\"")
 
     return SSID
 }

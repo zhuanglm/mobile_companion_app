@@ -12,10 +12,11 @@ import android.app.Application
 import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
+import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectionStatus
@@ -40,8 +41,7 @@ class WifiSearchingViewModel @Inject constructor(
 
     private val repoListener = object : WifiNetworkScanListener {
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            Log.d(_tag, "onNetworkListUpdated: ")
-            updateScanningStatus(ScanningStatus.Success)
+            _uiState.update { it.copy(scanResults = list) }
         }
 
         override fun onScanStatusUpdated(status: ScanningStatus) {
@@ -92,20 +92,41 @@ class WifiSearchingViewModel @Inject constructor(
         }
     }
 
-    fun navigateToWifiNetworksScreen(navController: NavController) {
-        navController.navigate(WifiNavigation.SelectNetworkRoute.path) {
-            popUpTo(WifiNavigation.IncomingRoute.path) {
-                inclusive = true
+    /**
+     * Navigating to the next screen depends on the scan status:
+     * * If `WifiCache.WifiFlow.QrFlow` and could not find any wifi network, navigate to manual input screen
+     * * If having result, go to select-network screen
+     * * else, go to no-result-found screen
+     */
+    fun onWifiScanCompletedCallback(navController: NavController) {
+        val routeTarget = with(_uiState.value) {
+            when (scanningStatus) {
+                ScanningStatus.Failed -> WifiNavigation.NoNetworksFoundRoute
+//                ScanningStatus.Failed,
+                ScanningStatus.Success -> when (scanResults.isNotEmpty()) {
+                    true -> WifiNavigation.SelectNetworkRoute
+
+                    false -> {
+                        Log.i(_tag, "scanResults is empty!")
+
+                        when (repository.wifiFlow) {
+                            WifiCache.WifiFlow.QrFlow -> WifiNavigation.AdvancedNetworkSettingsRoute
+
+                            else -> WifiNavigation.NoNetworksFoundRoute
+                        }
+                    }
+                }
+
+                // should not reach here
+                else -> null
             }
         }
+
+        routeTarget?.let { navController.navigate(target = it) }
     }
 
     fun navigateToWifiAlreadyConnected(navController: NavController) {
-        navController.navigate(WifiNavigation.AlreadyConnectedRoute.path) {
-            popUpTo(WifiNavigation.IncomingRoute.path) {
-                inclusive = true
-            }
-        }
+        navController.navigate(target = WifiNavigation.AlreadyConnectedRoute)
     }
 
     fun onCancelClicked(navController: NavController) {
@@ -134,14 +155,6 @@ class WifiSearchingViewModel @Inject constructor(
                     Log.i(_tag, "setWifiFlow: start scan")
                     repository.startWifiScan()
                 }
-            }
-        }
-    }
-
-    fun navigateToNoNetworksScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route) {
-            popUpTo(WifiConnectionScreens.IncomingNavigationRoute.route) {
-                inclusive = true
             }
         }
     }

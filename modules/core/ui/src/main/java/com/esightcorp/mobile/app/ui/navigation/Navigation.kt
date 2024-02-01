@@ -73,6 +73,7 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
     object IncomingRoute : WifiNavigation("wificonnection")
 
     object SelectNetworkRoute : WifiNavigation("select_network")
+    object EnterPasswordRoute: WifiNavigation("enter_password")
 
     object WifiOffRoute : WifiNavigation("wifi_off")
 
@@ -87,12 +88,15 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
 
         fun getFlowArgument(arguments: Bundle?) = arguments?.getString(flowArg)
     }
+    object NoNetworksFoundRoute: WifiNavigation("no_networks_found")
 
     object ConnectedRoute : WifiNavigation("connected")
     object UnableToConnectRoute : WifiNavigation("unable_to_connect")
     object HowToScanRoute : WifiNavigation("how_to_scan")
 
     object AlreadyConnectedRoute : WifiNavigation("already_connected")
+
+    object AdvancedNetworkSettingsRoute : WifiNavigation("advanced_network_settings")
 
     //TODO: migrate all other paths
 }

@@ -17,6 +17,8 @@ import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.WPA_MAX_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.ui.WPA_MIN_PASSWORD_LENGTH
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
@@ -76,16 +78,17 @@ class EnterPasswordViewModel @Inject constructor(
     private fun isPasswordValid(password: String): Boolean {
         return when (wifiType) {
             WifiType.WPA -> password.length in WPA_MIN_PASSWORD_LENGTH..WPA_MAX_PASSWORD_LENGTH
-            WifiType.WEP -> when(password.length) {
-                10,26,58 -> true
+            WifiType.WEP -> when (password.length) {
+                10, 26, 58 -> true
                 else -> false
             }
+
             WifiType.NONE -> true
         }
     }
 
     fun updatePassword(password: String) {
-        Log.d("WifiCredentialsViewModel", "updatePassword: $password")
+        Log.d(_tag, "updatePassword: $password")
         _uiState.update { state ->
             state.copy(
                 password = password,
@@ -105,7 +108,7 @@ class EnterPasswordViewModel @Inject constructor(
             state.copy(passwordSubmitted = true)
         }
         //make sure selected ssid and wifi type not be changed
-        repository.setWifiNetwork(ssid?:"", wifiType, _uiState.value.password)
+        repository.setWifiNetwork(ssid ?: "", wifiType, _uiState.value.password)
         if (_uiState.value.wifiFlow == WifiCache.WifiFlow.BluetoothFlow) {
             sendWifiCredsViaBluetooth()
             navigateToConnectingScreen(navController)
@@ -116,7 +119,11 @@ class EnterPasswordViewModel @Inject constructor(
 
     fun onAdvancedButtonPressed(navController: NavController) {
         repository.setWifiPassword(_uiState.value.password)
-        navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
+
+        navController.navigate(
+            target = WifiNavigation.AdvancedNetworkSettingsRoute,
+            popCurrent = false
+        )
     }
 
     fun onBackButtonPressed(navController: NavController) {
@@ -124,8 +131,8 @@ class EnterPasswordViewModel @Inject constructor(
     }
 
     private fun sendWifiCredsViaBluetooth() {
-        Log.d("WifiCredentialsViewModel", "sendWifiCredsViaBluetooth: ")
-        repository.sendWifiCreds(_uiState.value.password,wifiType.typeString)
+        Log.d(_tag, "sendWifiCredsViaBluetooth: ")
+        repository.sendWifiCreds(_uiState.value.password, wifiType.typeString)
     }
 
     private fun navigateToConnectingScreen(navController: NavController) {

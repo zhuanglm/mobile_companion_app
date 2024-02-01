@@ -15,7 +15,6 @@ import com.esightcorp.mobile.app.bluetooth.eSightBleManager
 import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.networking.WifiModelListener
 import com.esightcorp.mobile.app.networking.WifiType
-import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.utils.ScanningStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,16 +26,14 @@ class WifiConnectionRepository @Inject constructor(
     private val _tag = this.javaClass.simpleName
 
     private val wifiModel = WifiModel(context)
-    private val networkList: MutableList<ScanResult> = mutableListOf()
+
     private var networkScanListener: WifiNetworkScanListener? = null
     private var connectionListener: WifiConnectionListener? = null
 
     //region WifiModelListener
     private val wifiModelListener = object : WifiModelListener {
         override fun onWifiNetworkFound(result: ScanResult) {
-            Log.e(_tag, "onWifiNetworkFound: ${result.ssidName()}")
-            networkList.add(result)
-            networkScanListener?.onNetworkListUpdated(networkList)
+            networkScanListener?.onNetworkListUpdated(WifiCache.getNetworkList())
         }
 
         override fun onNetworkConnected() {
@@ -134,7 +131,7 @@ class WifiConnectionRepository @Inject constructor(
             true -> {
                 try {
                     eSightBleManager.getBleService()
-                        ?.sendWifiCreds(WifiCache.credentials.getSSID()!!, pwd, type)
+                        ?.sendWifiCreds(wifiCredentials.getSSID()!!, pwd, type)
                 } catch (exception: NullPointerException) {
                     Log.e(_tag, "sendWifiCreds: BleService has not been initialized ", exception)
                 } catch (exception: UninitializedPropertyAccessException) {
@@ -144,8 +141,16 @@ class WifiConnectionRepository @Inject constructor(
         }
     }
 
-    fun startWifiScan() = wifiModel.startWifiScan()
-    fun cancelWifiScan() = wifiModel.stopWifiScan()
+    @Synchronized
+    fun startWifiScan() {
+        WifiCache.clearCache()
+        wifiModel.startWifiScan()
+    }
+
+    @Synchronized
+    fun cancelWifiScan() {
+        wifiModel.stopWifiScan()
+    }
 
     fun readWifiConnectionStatus() {
         eSightBleManager.getConnectedBleService()?.readWifiConnectionStatus()
@@ -160,9 +165,7 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.stopWifiScan()
     }
 
-    fun setWifiType(type: WifiType) {
-        WifiCache.credentials.setWifiType(type)
-    }
+    fun setWifiType(type: WifiType) = wifiCredentials.setWifiType(type)
 
     @Synchronized
     fun registerListener(listener: WifiNetworkScanListener) {
@@ -187,7 +190,6 @@ class WifiConnectionRepository @Inject constructor(
     }
 
     fun unregisterListener(listener: WifiConnectionListener) {
-//        TODO("Not yet implemented")
         Log.e(_tag, "unregisterListener: ")
     }
 
@@ -200,10 +202,8 @@ class WifiConnectionRepository @Inject constructor(
         wifiModel.setWifiPassword(pwd)
     }
 
-    fun setWifiNetwork(ssid: String, securityType: WifiType, password: String) {
-        WifiCache.credentials.setNetwork(ssid, securityType, password)
-    }
-
+    fun setWifiNetwork(ssid: String, securityType: WifiType, password: String) =
+        wifiCredentials.setNetwork(ssid, securityType, password)
     //endregion
 
     //region Private implementation

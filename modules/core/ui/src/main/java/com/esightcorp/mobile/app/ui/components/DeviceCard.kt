@@ -78,7 +78,6 @@ fun DeviceCard(
                         .semantics {
                             //avoid talkBack read it as "double click to active"
                             contentDescription = if (isClickable) readLabel else ""
-                            role = Role.Image
                         }
                         .weight(1F), horizontalAlignment = Alignment.Start
                 ) {

@@ -24,6 +24,8 @@ fun AdvancedSettingsButton(
         modifier = modifier,
         onClick = onAdvancedSettingsClick,
         text = stringResource(R.string.kAdvancedSettingsButtonText),
+        description = stringResource(id = R.string.kAdvancedSettingsButtonText),
         painter = painterResource(id = R.drawable.blackgear_yellowbackground)
+
     )
 }

@@ -11,7 +11,6 @@ package com.esightcorp.mobile.app.wificonnection
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -36,7 +35,6 @@ import com.esightcorp.mobile.app.ui.components.rememberQrBitmapPainter
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.Subheader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
-import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.state.WifiQrCodeUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiQrViewModel
@@ -68,7 +66,7 @@ private fun WifiQrCodeScreen(
     uiState: WifiQrCodeUiState,
     modifier: Modifier = Modifier,
     onBackPressed: OnNavigationCallback? = null,
-    onHowToScanClicked: OnActionCallback? = null,
+    onHowToScanClicked: OnNavigationCallback? = null,
     onReturnToHomeClicked: OnNavigationCallback? = null,
 ) {
     BaseScreen(
@@ -80,7 +78,7 @@ private fun WifiQrCodeScreen(
         bottomButton = {
             HowToScanButton(
                 modifier = modifier,
-                onScanClick = { onHowToScanClicked?.invoke() }
+                onScanClick = { onHowToScanClicked?.invoke(navController) }
             )
         },
     ) {
@@ -100,7 +98,7 @@ private fun WifiQrCodeScreenBody(
     navController: NavController,
     uiState: WifiQrCodeUiState
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+    ConstraintLayout {
         val (header, subHeader, qrcode, button) = createRefs()
 
         Header1Text(

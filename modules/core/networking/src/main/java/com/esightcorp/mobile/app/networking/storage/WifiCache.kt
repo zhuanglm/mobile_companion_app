@@ -22,10 +22,19 @@ object WifiCache {
         NotInUse,
     }
 
-    private var networkList: MutableList<ScanResult> = mutableListOf()
+    private val networkList: MutableList<ScanResult> = mutableListOf()
     val credentials = WifiCredentials
     private var currentFlow: WifiFlow = WifiFlow.NotInUse
 
+    /**
+     * Clear the cached wifi info
+     */
+    fun clearCache() {
+        networkList.clear()
+        credentials.clear()
+    }
+
+    @Synchronized
     fun getNetworkList() = networkList
 
     fun selectNetwork(network: ScanResult) {
@@ -40,10 +49,12 @@ object WifiCache {
     @Synchronized
     fun getWifiFlow() = currentFlow
 
+    @Synchronized
     fun addNetworkToNetworkList(result: ScanResult): Boolean {
-        Log.d(_tag, "addNetworkToNetworkList: $result")
         return if (networkList.none { it.BSSID == result.BSSID || (it.ssidName() == result.ssidName()) }) {
             networkList.add(result)
+            Log.d(_tag, "addNetworkToNetworkList: $result")
+
             true
         } else {
             false

@@ -8,13 +8,11 @@
 
 package com.esightcorp.mobile.app.wificonnection
 
-import androidx.compose.foundation.layout.Spacer
+import android.net.wifi.ScanResult
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,12 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.networking.ssidName
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.AdvancedSettingsButton
 import com.esightcorp.mobile.app.ui.components.containers.HomeBaseScreen
@@ -54,72 +56,51 @@ fun SelectNetworkRoute(
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isWifiEnabled) {
         NavigateToWifiOffScreen(navController = navController)
-    } else {
-        if (uiState.networkList.isEmpty()) {
-            LaunchedEffect(Unit) {
-                vm.navigateToNoNetworksFoundScreen(navController)
-            }
-        } else {
-            SelectNetworkScreen(
-                modifier = Modifier,
-                navController = navController,
-                onBackButtonClicked = vm::onBackButtonClicked,
-                onAdvancedButtonClicked = vm::onAdvancedButtonClicked,
-                uiState = uiState,
-                vm = vm
-            )
-        }
-
+        return
     }
 
-
+    SelectNetworkScreen(
+        modifier = Modifier,
+        navController = navController,
+        uiState = uiState,
+        onBackButtonClicked = vm::onBackButtonClicked,
+        onAdvancedButtonClicked = vm::onAdvancedButtonClicked,
+        onNetworkSelected = vm::onNetworkSelected,
+    )
 }
 
+//region Private Implementation
 private const val TAG = "SelectNetworkScreen"
 
-//TODO: String resources
 @Composable
 internal fun SelectNetworkScreen(
     modifier: Modifier = Modifier,
-    onBackButtonClicked: (NavController) -> Unit,
-    onAdvancedButtonClicked: (NavController) -> Unit,
     navController: NavController,
     uiState: SelectNetworkUiState,
-    vm: SelectNetworkViewModel
-
+    onBackButtonClicked: (NavController) -> Unit,
+    onAdvancedButtonClicked: (NavController) -> Unit,
+    onNetworkSelected: (NavController, ScanResult) -> Unit,
 ) {
-    val dummyNetworkList = listOf<String>(
-        "Home Wi-Fi",
-        "Office Wi-Fi",
-        "It burns when IP",
-        "FBI Mobile Unit",
-        "VIRUS.EXE"
-    )
-
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-    }
     HomeBaseScreen(
         modifier = modifier,
         showBackButton = true,
         showSettingsButton = false,
         onBackButtonInvoked = { onBackButtonClicked(navController) },
-        onSettingsButtonInvoked = { /*Unused*/ },
+        onSettingsButtonInvoked = { },
         bottomButton = {
             AdvancedSettingsButton(
                 modifier = modifier,
-                onAdvancedSettingsClick = { onAdvancedButtonClicked(navController) }
+                onAdvancedSettingsClick = { onAdvancedButtonClicked(navController) },
             )
-        }) {
-
+        },
+    ) {
         SelectNetworkBody(
             modifier = modifier,
             navController = navController,
             uiState = uiState,
-            vm = vm
+            onNetworkSelected = onNetworkSelected,
         )
-
     }
-
 }
 
 @Composable
@@ -127,41 +108,54 @@ private fun SelectNetworkBody(
     modifier: Modifier,
     navController: NavController,
     uiState: SelectNetworkUiState,
-    vm: SelectNetworkViewModel
+    onNetworkSelected: (NavController, ScanResult) -> Unit,
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (header, networkContainer) = createRefs()
         Header1Text(
-            text = stringResource(id = R.string.kWifiViewSelectWifiNameLabelText),
-            modifier = modifier
-                .constrainAs(header) {
-                    top.linkTo(parent.top, margin = 35.dp)
-                    start.linkTo(parent.start)
-                })
-        LazyColumn(modifier = modifier
-            .constrainAs(networkContainer) {
+            text = stringResource(R.string.kWifiViewSelectWifiNameLabelText),
+            modifier = modifier.constrainAs(header) {
+                top.linkTo(parent.top, margin = 35.dp)
+                start.linkTo(parent.start)
+            },
+        )
+
+        LazyColumn(
+            modifier = modifier.constrainAs(networkContainer) {
                 top.linkTo(header.bottom, margin = 35.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
                 height = Dimension.fillToConstraints
                 width = Dimension.fillToConstraints
-            }) {
-            items(uiState.networkList) { network ->
-                LeadingIconTextButton(
-                    onClick = {
-                        vm.selectNetwork(network)
-                        vm.navigateToPasswordScreen(navController)
-                    },
-                    modifier = Modifier,
-                    icon = ImageVector.vectorResource(id = R.drawable.round_wifi_24),
-                    text = network.SSID
-                )
-                Spacer(modifier = modifier.padding(10.dp))
-
+            },
+        ) {
+            uiState.networkList?.let { networks ->
+                items(networks) { network ->
+                    network.ssidName()?.let { name ->
+                        LeadingIconTextButton(
+                            onClick = { onNetworkSelected(navController, network) },
+                            modifier = Modifier,
+                            icon = ImageVector.vectorResource(R.drawable.round_wifi_24),
+                            text = name
+                        )
+                        ItemSpacer(space = 10.dp)
+                    }
+                }
             }
-
         }
     }
-
 }
+
+@Preview
+@Composable
+private fun SelectNetworkScreenPreview() = MaterialTheme {
+    SelectNetworkScreen(
+        navController = rememberNavController(),
+        uiState = SelectNetworkUiState(),
+        onBackButtonClicked = { },
+        onAdvancedButtonClicked = { },
+        onNetworkSelected = { _, _ -> },
+    )
+}
+//endregion

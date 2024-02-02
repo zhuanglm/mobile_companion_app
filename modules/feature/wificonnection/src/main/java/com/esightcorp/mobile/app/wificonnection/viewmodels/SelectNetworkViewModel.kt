@@ -13,10 +13,10 @@ import android.net.wifi.ScanResult
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.networking.WifiType
-import com.esightcorp.mobile.app.networking.ssidName
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.AdvancedNetworkSettingsRoute
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation.EnterPasswordRoute
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.SelectNetworkUiState
@@ -31,13 +31,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectNetworkViewModel @Inject constructor(
     application: Application,
-    private val wifiRepository: WifiConnectionRepository
+    private val wifiRepository: WifiConnectionRepository,
 ) : AndroidViewModel(application),
     WifiBleConnectionStateManager by WifiBleConnectionStateManagerImpl(wifiRepository) {
 
     private val _tag = this.javaClass.simpleName
 
-    private var _uiState = MutableStateFlow(SelectNetworkUiState())
+    private val _uiState = MutableStateFlow(SelectNetworkUiState())
     val uiState: StateFlow<SelectNetworkUiState> = _uiState.asStateFlow()
     private val scanListener = object : WifiNetworkScanListener {
         override fun onBleConnectionStatusUpdate(isConnected: Boolean) {
@@ -49,9 +49,6 @@ class SelectNetworkViewModel @Inject constructor(
         }
 
         override fun onNetworkListUpdated(list: MutableList<ScanResult>) {
-            list.forEach {
-                Log.d(_tag, "onNetworkListUpdated: ${it.ssidName()}")
-            }
             updateNetworkList(list)
         }
 
@@ -69,7 +66,7 @@ class SelectNetworkViewModel @Inject constructor(
         wifiRepository.getCachedWifiList()
     }
 
-    fun updateNetworkList(list: MutableList<ScanResult>) {
+    private fun updateNetworkList(list: MutableList<ScanResult>) {
         _uiState.update { state ->
             state.copy(networkList = list)
         }
@@ -77,27 +74,21 @@ class SelectNetworkViewModel @Inject constructor(
 
     private fun updateWifiEnabledState(enabled: Boolean) {
         _uiState.update { state -> state.copy(isWifiEnabled = enabled) }
-
     }
 
-    fun selectNetwork(network: ScanResult) {
-        wifiRepository.setSelectedNetwork(network)
-    }
-
-    fun navigateToPasswordScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.EnterPasswordRoute.route)
+    fun onNetworkSelected(navController: NavController, selectedNetwork: ScanResult) {
+        wifiRepository.setSelectedNetwork(selectedNetwork)
+        navController.navigate(target = EnterPasswordRoute, popCurrent = false)
     }
 
     fun onBackButtonClicked(navController: NavController) {
         navController.popBackStack()
     }
 
-    fun navigateToNoNetworksFoundScreen(navController: NavController) {
-        navController.navigate(WifiConnectionScreens.NoNetworksFoundRoute.route)
-    }
-
     fun onAdvancedButtonClicked(navController: NavController) {
-        wifiRepository.setWifiNetwork("",WifiType.WPA,"")     //clean up the saved network
-        navController.navigate(WifiConnectionScreens.AdvancedNetworkSettingsRoute.route)
+        // clean up the saved network
+        wifiRepository.wifiCredentials.clear()
+
+        navController.navigate(target = AdvancedNetworkSettingsRoute, popCurrent = false)
     }
 }

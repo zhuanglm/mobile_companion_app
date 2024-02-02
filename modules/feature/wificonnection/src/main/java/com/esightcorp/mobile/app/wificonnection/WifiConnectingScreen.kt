@@ -67,6 +67,7 @@ private fun WifiConnectingScreen(
             loadingText = stringResource(
                 R.string.kWifiViewControllerWifiConnectingSpinnerTitle
             ),
+            cancelButtonNeeded = false
         )
     }
 

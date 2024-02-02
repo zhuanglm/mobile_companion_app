@@ -12,6 +12,7 @@
  translations, and so we don't have to map to two different sets of keys-->
 
 <resources>
+    <string name="app_name" translatable="false">eSight Go Companion</string>
     <string name="action_settings" translatable="false">Settings</string>
 
     <!-- Strings used for fragments for navigation -->

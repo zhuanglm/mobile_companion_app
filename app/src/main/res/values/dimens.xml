@@ -8,11 +8,6 @@
   ~ preserve as trade secrets such software and information.
   -->
 
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/esight_launcher_background" />
-    <foreground>
-        <inset
-            android:drawable="@mipmap/esight_launcher_foreground"
-            android:inset="@dimen/ic_launcher_padding" />
-    </foreground>
-</adaptive-icon>
+<resources>
+    <dimen name="ic_launcher_padding">15dp</dimen>
+</resources>

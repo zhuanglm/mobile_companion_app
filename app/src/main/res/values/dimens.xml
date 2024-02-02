@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ LICENSE
   ~ Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
@@ -7,5 +9,5 @@
   -->
 
 <resources>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="ic_launcher_padding">15dp</dimen>
 </resources>

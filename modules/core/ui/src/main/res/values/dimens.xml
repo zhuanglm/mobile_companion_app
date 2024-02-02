@@ -22,6 +22,7 @@
     <dimen name="filled_icon_bottom_button_size">30dp</dimen>
     <dimen name="filled_icon_top_app_bar_size">30dp</dimen>
     <dimen name="logo_corner_radius_top_app_bar">10dp</dimen>
+    <dimen name="top_bar_logo_icon_size">50dp</dimen>
     <dimen name="button_corner_radius">10dp</dimen>
     <dimen name="add_device_content_padding_vert">10dp</dimen>
     <dimen name="add_device_content_padding_horiz">20dp</dimen>

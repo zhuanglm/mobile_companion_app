@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ LICENSE
   ~ Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
@@ -6,6 +8,9 @@
   ~ preserve as trade secrets such software and information.
   -->
 
-<resources>
-    <dimen name="fab_margin">48dp</dimen>
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="@dimen/top_bar_logo_icon_size"
+        android:height="@dimen/top_bar_logo_icon_size"
+        android:drawable="@drawable/logo" />
+</layer-list>

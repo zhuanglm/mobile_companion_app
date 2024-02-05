@@ -77,7 +77,8 @@ internal fun EshareWifiDisabledScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        BigIcon(drawableId = R.drawable.round_wifi_24)
+        BigIcon(drawableId = R.drawable.round_wifi_24,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconWiFi))
 
         ItemSpacer(30.dp)
         Header1Text(

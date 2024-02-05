@@ -256,6 +256,7 @@ internal fun TextureViewAndCancelButton(
             secondaryColor = Color.Red,
             icon = R.drawable.close_eshare_button,
             size = 40.dp,
+            contentDescription = stringResource(id = R.string.kAccessibilityButtonExit),
             onClick = { onClick?.invoke(navController) },
         )
     }

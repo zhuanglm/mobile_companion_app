@@ -103,7 +103,8 @@ private fun BtDisabledBody(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BigIcon(drawableId = R.drawable.baseline_bluetooth_24)
+        BigIcon(drawableId = R.drawable.baseline_bluetooth_24,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconBluetooth))
         ItemSpacer(30.dp)
 
         // Set up the header text

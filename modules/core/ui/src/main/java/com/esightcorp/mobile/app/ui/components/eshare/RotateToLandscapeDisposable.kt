@@ -11,26 +11,29 @@ package com.esightcorp.mobile.app.ui.components.eshare
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.ActivityInfo
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
 
-@Composable
-fun RotateToLandscape(){
-    val context = LocalContext.current
-    DisposableEffect(Unit){
-        val activity = context.findActivity() ?: return@DisposableEffect onDispose { }
-        val originalOrientation = activity.requestedOrientation
-        activity.requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        onDispose {
-            activity.requestedOrientation = originalOrientation
-        }
-
+/**
+ * Rotate the screen to the expected orientation
+ * @param context The current application's context
+ * @param expectedOrientation The expected orientation
+ * @param onRotatedResult Callback executed once the rotation is done. The return parameter is the original orientation (if any)
+ */
+fun rotateScreen(
+    context: Context,
+    expectedOrientation: Int,
+    onRotatedResult: ((Int?) -> Unit)? = null
+) {
+    val activity = context.findActivity() ?: run {
+        onRotatedResult?.invoke(null)
+        return
     }
+
+    val originalOrientation = activity.requestedOrientation
+    activity.requestedOrientation = expectedOrientation
+    onRotatedResult?.invoke(originalOrientation)
 }
 
-fun Context.findActivity(): Activity? = when (this) {
+private fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null

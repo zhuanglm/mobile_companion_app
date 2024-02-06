@@ -8,6 +8,7 @@
 
 package com.esightcorp.mobile.app.eshare.composables
 
+import android.content.pm.ActivityInfo
 import android.graphics.SurfaceTexture
 import android.util.Log
 import android.view.TextureView
@@ -21,12 +22,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,9 +45,9 @@ import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.viewmodels.EshareConnectedViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
-import com.esightcorp.mobile.app.ui.components.eshare.RotateToLandscape
 import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
+import com.esightcorp.mobile.app.ui.components.eshare.rotateScreen
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
@@ -96,6 +102,7 @@ fun EshareConnectedRoute(
             finderButtonPress = vm::finderButtonPress,
             actionUpButtonPress = vm::actionUpButtonPress,
             navigateToWifiSetupRoute = vm::navigateToWifiSetupRoute,
+            onStreamingReady = vm::onStreamingReady,
         )
         return
     }
@@ -125,44 +132,63 @@ internal fun EShareConnectedScreen(
     finderButtonPress: OnActionCallback? = null,
     actionUpButtonPress: OnActionCallback? = null,
     navigateToWifiSetupRoute: OnNavigationCallback? = null,
+    onStreamingReady: OnActionCallback? = null,
 ) {
-    Log.i(TAG, "eShare-connection state: ${uiState.connectionState}")
+    var isScreenRotating by rememberSaveable { mutableStateOf<Boolean?>(null) }
+    var originalOrientation by rememberSaveable { mutableStateOf<Int?>(null) }
 
-    // Prepare the streaming view
-    with(uiState.connectionState) {
-        if (this == EShareConnectionStatus.Unknown || this == EShareConnectionStatus.Connected) {
-            Row(modifier = Modifier.background(Color.Black)) {
-                Box(
-                    modifier = Modifier
-                        .weight(3f)
-                        .fillMaxHeight()
-                ) {
-                    TextureViewAndCancelButton(
-                        textureViewListener = textureViewListener,
-                        modifier = modifier.align(Alignment.Center),
-                        navController = navController,
-                        onClick = onCancelButtonClicked,
-                    )
+    Log.i(
+        TAG,
+        "eShare-connection state: ${uiState.connectionState} -> screenRotating: $isScreenRotating"
+    )
+
+    val context = LocalContext.current
+    if (isScreenRotating == false) {
+        // Cleaning up - restore the original orientation
+        DisposableEffect(Unit) {
+            onDispose {
+                Log.w(TAG, "=>> Screen disposed ...")
+                originalOrientation?.let {
+                    Log.i(TAG, "=>> Restore screen orientation mode: $it")
+                    rotateScreen(context, it)
                 }
+            }
+        }
+    }
 
-                EshareRemote(
-                    modifier = Modifier.weight(1f),
-                    onFinderButtonPressedEventDown = finderButtonPress,
-                    onFinderButtonPressedEventUp = actionUpButtonPress,
-                    onModeButtonPressedEventDown = modeButtonPress,
-                    onModeButtonPressedEventUp = actionUpButtonPress,
-                    onUpButtonPressedEventDown = upButtonPress,
-                    onUpButtonPressedEventUp = actionUpButtonPress,
-                    onDownButtonPressedEventDown = downButtonPress,
-                    onDownButtonPressedEventUp = actionUpButtonPress,
-                    onVolumeUpButtonPressedEventDown = volUpButtonPress,
-                    onVolumeUpButtonPressedEventUp = actionUpButtonPress,
-                    onVolumeDownButtonPressedEventDown = volDownButtonPress,
-                    onVolumeDownButtonPressedEventUp = actionUpButtonPress,
-                    onMenuButtonPressedEventDown = menuButtonPress,
-                    onMenuButtonPressedEventUp = actionUpButtonPress,
+    // Prepare the streaming view: Texture surface & the remote
+    if (uiState.connectionState == EShareConnectionStatus.Connected && isScreenRotating == false) {
+        Row(modifier = Modifier.background(Color.Black)) {
+            Box(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxHeight()
+            ) {
+                TextureViewAndCancelButton(
+                    textureViewListener = textureViewListener,
+                    modifier = modifier.align(Alignment.Center),
+                    navController = navController,
+                    onClick = onCancelButtonClicked,
                 )
             }
+
+            EshareRemote(
+                modifier = Modifier.weight(1f),
+                onFinderButtonPressedEventDown = finderButtonPress,
+                onFinderButtonPressedEventUp = actionUpButtonPress,
+                onModeButtonPressedEventDown = modeButtonPress,
+                onModeButtonPressedEventUp = actionUpButtonPress,
+                onUpButtonPressedEventDown = upButtonPress,
+                onUpButtonPressedEventUp = actionUpButtonPress,
+                onDownButtonPressedEventDown = downButtonPress,
+                onDownButtonPressedEventUp = actionUpButtonPress,
+                onVolumeUpButtonPressedEventDown = volUpButtonPress,
+                onVolumeUpButtonPressedEventUp = actionUpButtonPress,
+                onVolumeDownButtonPressedEventDown = volDownButtonPress,
+                onVolumeDownButtonPressedEventUp = actionUpButtonPress,
+                onMenuButtonPressedEventDown = menuButtonPress,
+                onMenuButtonPressedEventUp = actionUpButtonPress,
+            )
         }
     }
 
@@ -187,10 +213,40 @@ internal fun EShareConnectedScreen(
         }
 
         EShareConnectionStatus.Connected -> {
-            RotateToLandscape()
+            when (isScreenRotating) {
+                // The 1st state after connected
+                null -> LaunchedEffect(Unit) {
+                    rotateScreen(
+                        context,
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    ) { orientation ->
+                        isScreenRotating = true
+
+                        // Note: since the app prefers running in PORTRAIT mode, we save it when the user does not specify any mode
+                        // The logic needs to be updated when we have other requirement for the landscape/portrait mode.
+                        originalOrientation = when (orientation) {
+                            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                            else -> orientation
+                        }
+
+                        Log.w(TAG, "=>> orientation state updated")
+                    }
+                }
+
+                // Rotation requested
+                true -> LaunchedEffect(Unit) {
+                    Log.i(TAG, "->> Landscape mode activated ...")
+                    onStreamingReady?.invoke()
+                    isScreenRotating = false
+                }
+
+                else -> Unit
+            }
         }
 
         EShareConnectionStatus.Disconnected -> {
+            RestoreScreenOrientation(originalOrientation)
+
             LaunchedEffect(Unit) {
                 navigateToStoppedRoute?.invoke(
                     navController,
@@ -217,10 +273,14 @@ internal fun EShareConnectedScreen(
             }
         }
 
+        EShareConnectionStatus.StreamingError,
         EShareConnectionStatus.Timeout,
         EShareConnectionStatus.IpNotReachable,
         EShareConnectionStatus.AddressNotAvailable -> {
+            Log.e(TAG, "->> EShareConnectionStatus: ${uiState.connectionState}")
             BackStackLogger(navController, TAG)
+
+            RestoreScreenOrientation(originalOrientation)
 
             LaunchedEffect(Unit) {
                 // Send stop command to clean up current session
@@ -232,6 +292,16 @@ internal fun EShareConnectedScreen(
     }
 }
 
+@Composable
+private fun RestoreScreenOrientation(expectedOrientation: Int?) {
+    val context = LocalContext.current
+    expectedOrientation?.let {
+        LaunchedEffect(Unit) {
+            Log.w(TAG, "=>> Restoring screen orientation to: $expectedOrientation")
+            rotateScreen(context, expectedOrientation)
+        }
+    }
+}
 
 @Composable
 internal fun TextureViewAndCancelButton(

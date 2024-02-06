@@ -10,8 +10,6 @@ package com.esightcorp.mobile.app.eshare.viewmodels
 
 import android.app.Application
 import android.graphics.SurfaceTexture
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
@@ -38,6 +36,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.InputStream
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,6 +50,14 @@ class EshareConnectedViewModel @Inject constructor(
     private val _tag = this.javaClass.simpleName
 
     private var surfaceTexture: SurfaceTexture? = null
+
+    /**
+     * The streaming latch conditions, which are:
+     *   * The surface has been created
+     *   * The screen has been rotated into landscape mode properly
+     *     (also means that streaming input stream has been established successfully)
+     */
+    private var streamingLatch: CountDownLatch? = null
 
     private val _uiState = MutableStateFlow(EshareConnectedUiState())
     val uiState: StateFlow<EshareConnectedUiState> = _uiState.asStateFlow()
@@ -92,16 +100,39 @@ class EshareConnectedViewModel @Inject constructor(
 
     override fun onInputStreamCreated(inputStream: InputStream) {
         Log.i(_tag, "onInputStreamCreated")
-        surfaceTexture?.let {
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    Log.d(_tag, "onInputStreamCreated: starting stream")
-                    eShareRepository.startStreamFromHMD(Surface(surfaceTexture!!), inputStream)
-                },
-                1000,
-            )
+
+        /**
+         * Input stream is ready, now wait until the screen is in landscape mode
+         */
+        streamingLatch?.let { latch ->
+
+            // Start a new thread to wait for streaming conditions ready
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    Log.i(_tag, "streamingLatch await ...")
+                    if (!latch.await(STREAMING_INITIALIZING_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                        // Timeout!
+                        Log.e(_tag, "Waiting latch timeout, report streamingError!")
+                        updateConnectionState(EShareConnectionStatus.StreamingError)
+                        return@launch
+                    }
+
+                    Log.w(_tag, "Streaming ready, go go go ...")
+
+                    surfaceTexture?.let {
+                        eShareRepository.startStreamFromHMD(Surface(it), inputStream)
+                    } ?: throw Exception("surfaceTexture is null!")
+                } catch (ex: Throwable) {
+                    Log.e(_tag, "bindSurfaceForStreaming failed!", ex)
+                }
+            }
+
         } ?: run {
-            Log.e(_tag, "surfaceTexture is NULL", Exception())
+            Log.e(
+                _tag,
+                "Something is wrong seriously ... streamingLatch is not initialized yet!",
+                Exception()
+            )
         }
     }
 
@@ -109,21 +140,25 @@ class EshareConnectedViewModel @Inject constructor(
 
     //region SurfaceTextureListener
 
+    @Synchronized
     override fun onSurfaceTextureAvailable(
         surfaceTexture: SurfaceTexture,
         width: Int,
         height: Int
     ) {
-//        Log.i(_tag, "onSurfaceTextureAvailable: $width $height")
         this.surfaceTexture = surfaceTexture
+        streamingLatch?.countDown()
+        Log.i(_tag, "onSurfaceTextureAvailable: ($width, $height) -> $streamingLatch")
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-//        Log.i(_tag, "onSurfaceTextureSizeChanged: ")
+        Log.i(_tag, "onSurfaceTextureSizeChanged: ($width, $height)")
     }
 
+    @Synchronized
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-//        Log.i(_tag, "onSurfaceTextureDestroyed: ")
+        Log.e(_tag, "onSurfaceTextureDestroyed: ")
+        surfaceTexture = null
         return true
     }
 
@@ -139,6 +174,12 @@ class EshareConnectedViewModel @Inject constructor(
         // Request to start eShare session
         eShareRepository.startEshareConnection()
 
+        // Require 2 conditions
+        // - The surface is created
+        // - The screen is rotated to landscape
+        streamingLatch = CountDownLatch(2)
+        Log.w(_tag, "startEshareConnection - latch: $streamingLatch")
+
         connectionTimer = startConnectionTimer()
     }
 
@@ -146,6 +187,16 @@ class EshareConnectedViewModel @Inject constructor(
         stopConnectionTimer()
 
         eShareRepository.cancelEshareConnection()
+        streamingLatch = null
+    }
+
+    /**
+     * This function is triggered from the UI/screen to inform that the streaming is ready.
+     * In this case, it means the screen has been completed rotated into landscape mode.
+     */
+    @Synchronized
+    fun onStreamingReady() {
+        streamingLatch?.countDown()
     }
 
     fun onCancelButtonClicked(navController: NavController) {
@@ -244,5 +295,10 @@ class EshareConnectedViewModel @Inject constructor(
 
     companion object {
         private const val CONNECTION_ESTABLISHING_TIMEOUT = 60 * 1000L
+
+        /**
+         * Timeout waiting for streaming ready
+         */
+        private const val STREAMING_INITIALIZING_TIMEOUT = 10000L
     }
 }

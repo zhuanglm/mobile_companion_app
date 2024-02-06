@@ -14,6 +14,7 @@ enum class EShareConnectionStatus {
     Connected,
     Disconnected,
     ReceivedUserRejection,
+    StreamingError,
     Timeout,
     AddressNotAvailable,
     IpNotReachable,

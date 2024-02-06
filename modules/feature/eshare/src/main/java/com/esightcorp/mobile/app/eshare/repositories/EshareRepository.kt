@@ -367,11 +367,6 @@ class EshareRepository @Inject constructor(
     }
 
     private val streamOutListener = object : StreamOutListener {
-        override fun onConnectionEstablished() {
-            Log.d(_tag, "onConnectionEstablished")
-            updateEshareState(EShareConnectionStatus.Connected)
-        }
-
         override fun onConnectionClosed() {
             Log.d(_tag, "onConnectionClosed")
             updateEshareState(EShareConnectionStatus.Disconnected)
@@ -379,7 +374,7 @@ class EshareRepository @Inject constructor(
 
         override fun onConnectionError() {
             Log.d(_tag, "onConnectionError")
-
+            updateEshareState(EShareConnectionStatus.StreamingError)
         }
 
         override fun onConnectionTimeout() {

@@ -9,6 +9,7 @@
 package com.esightcorp.mobile.app.networking.streaming
 
 import android.media.MediaCodec
+import android.media.MediaCodec.CodecException
 import android.media.MediaCodecList
 import android.media.MediaFormat
 import android.util.Log
@@ -17,7 +18,7 @@ import java.io.IOException
 import java.nio.ByteBuffer
 
 class DecoderImpl(
-    val surface: Surface?
+    surface: Surface?
 ) : Decoder(surface) {
 
     override var mDecoder: MediaCodec? = null
@@ -27,6 +28,7 @@ class DecoderImpl(
     override fun initializeDecoder() {
         mSurface?.let {
             try {
+                Log.w(TAG, "Surface size: ($mWidth, $mHeight), $mMime")
                 val mediaFormat = MediaFormat.createVideoFormat(mMime, mWidth, mHeight)
                 mDecoder = getDecoder(mediaFormat)
                 mMediaInfo = MediaCodec.BufferInfo()
@@ -36,7 +38,13 @@ class DecoderImpl(
                     isConfigured = true
                     mDecoder.start()
                 }
+                Log.w(TAG, "->> initializeDecoder - done")
             } catch (e: Exception) {
+                Log.e(TAG, "Initialize failed!", e)
+                if (e is CodecException) {
+                    Log.w(TAG, "diagnosticInfo: ${e.diagnosticInfo}")
+                }
+
                 close()
                 e.printStackTrace()
                 throw IOException("Decoder Start Exception")

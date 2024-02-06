@@ -10,6 +10,7 @@ package com.esightcorp.mobile.app.ui.components.eshare
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.TextureView
@@ -44,19 +45,22 @@ class AutoFitTextureView @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val height = MeasureSpec.getSize(heightMeasureSpec)
+        Log.i(TAG, "onMeasure: w:$width  h:$height")
         if (0 == mRatioWidth || 0 == mRatioHeight) {
             setMeasuredDimension(width, height)
         } else {
             if (width < height * mRatioWidth / mRatioHeight) {
+                Log.i(TAG, "onMeasure:1 Setting dimensions to w:$width , h:${width * mRatioHeight/mRatioWidth}")
                 setMeasuredDimension(width, width * mRatioHeight / mRatioWidth)
             } else {
+                Log.i(TAG, "onMeasure:2 Setting dimensions to w:${height * mRatioWidth / mRatioHeight} , h:${height}")
                 setMeasuredDimension(height * mRatioWidth / mRatioHeight, height)
             }
         }
     }
 
     init {
-        setAspectRatio(16, 9)
+        setAspectRatio(4, 3)
     }
 
     companion object{

@@ -12,10 +12,13 @@ import android.graphics.SurfaceTexture
 import android.util.Log
 import android.view.TextureView
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -128,7 +131,7 @@ internal fun EShareConnectedScreen(
     // Prepare the streaming view
     with(uiState.connectionState) {
         if (this == EShareConnectionStatus.Unknown || this == EShareConnectionStatus.Connected) {
-            Row {
+            Row(modifier = Modifier.background(Color.Black)) {
                 Box(
                     modifier = Modifier
                         .weight(3f)
@@ -136,7 +139,7 @@ internal fun EShareConnectedScreen(
                 ) {
                     TextureViewAndCancelButton(
                         textureViewListener = textureViewListener,
-                        modifier = modifier,
+                        modifier = modifier.align(Alignment.Center),
                         navController = navController,
                         onClick = onCancelButtonClicked,
                     )
@@ -237,12 +240,12 @@ internal fun TextureViewAndCancelButton(
     modifier: Modifier = Modifier,
     onClick: OnNavigationCallback? = null,
 ) {
-    Box(modifier = Modifier.fillMaxHeight()) {
+    Box(modifier = modifier) {
         AndroidView(
             factory = { context ->
                 AutoFitTextureView(context).apply { surfaceTextureListener = textureViewListener }
             },
-            modifier = modifier.align(Alignment.Center)
+            modifier = modifier
         )
 
         ColorContrastButton(

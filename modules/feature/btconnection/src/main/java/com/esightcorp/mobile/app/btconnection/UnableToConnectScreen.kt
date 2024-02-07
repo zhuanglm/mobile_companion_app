@@ -25,7 +25,7 @@ import com.esightcorp.mobile.app.btconnection.viewmodels.UnableToConnectViewMode
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
@@ -74,7 +74,7 @@ private fun UnableToConnectBody(modifier: Modifier,
                 },
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(id = R.string.kTroubleshootingUnableToConnectSubtitle),
             modifier = modifier
                 .constrainAs(subtitle) {

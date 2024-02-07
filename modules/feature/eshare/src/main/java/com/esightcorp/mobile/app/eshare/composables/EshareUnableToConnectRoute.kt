@@ -33,7 +33,7 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
@@ -89,7 +89,7 @@ private fun EshareUnableToConnectScreen(
                 },
             )
 
-            Subheader(
+            BoldSubheader(
                 stringResource(R.string.kTroubleshootingUnableToConnectSubtitle),
                 modifier.constrainAs(subtitle) {
                     top.linkTo(header.bottom, margin = 10.dp)

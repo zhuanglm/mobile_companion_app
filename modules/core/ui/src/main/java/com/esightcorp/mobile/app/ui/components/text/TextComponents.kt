@@ -8,7 +8,6 @@
 
 package com.esightcorp.mobile.app.ui.components.text
 
-import android.util.Log
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -42,17 +41,33 @@ fun Header1Text(
 
 
 @Composable
-fun Subheader(
+fun BoldSubheader(
     text: String,
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onSurface,
     textAlign: TextAlign? = TextAlign.Start
 ) {
-    Log.d("TAG", "Subheader: $color")
+    SubHeader(
+        text = text,
+        modifier = modifier,
+        color = color,
+        textAlign = textAlign,
+        fontWeight = FontWeight.Bold
+    )
+}
+
+@Composable
+fun SubHeader(
+    text: String,
+    modifier: Modifier,
+    color: Color = MaterialTheme.colors.onSurface,
+    textAlign: TextAlign? = TextAlign.Start,
+    fontWeight: FontWeight? = null
+) {
     Text(
         text = text,
         modifier = modifier,
-        fontWeight = FontWeight.Bold,
+        fontWeight = fontWeight,
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,
         textAlign = textAlign,

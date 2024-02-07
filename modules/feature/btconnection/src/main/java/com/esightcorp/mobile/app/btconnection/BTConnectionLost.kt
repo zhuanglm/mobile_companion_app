@@ -28,7 +28,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
@@ -82,7 +82,7 @@ private fun BtConnectionLostScreen(
         )
 
         ItemSpacer(30.dp)
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kBTErrorConnectionLostDescriptionText),
             modifier = modifier,
             textAlign = TextAlign.Center

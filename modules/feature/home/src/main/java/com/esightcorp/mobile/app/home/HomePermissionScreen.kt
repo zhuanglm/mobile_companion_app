@@ -36,7 +36,7 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.containers.Centered
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -117,7 +117,7 @@ private fun PermissionScreen(
 
         when (rationaleReasons) {
             null -> {
-                Subheader(
+                BoldSubheader(
                     text = stringResource(R.string.label_home_screen_request_permission_description),
                     modifier = modifier,
                     textAlign = TextAlign.Center
@@ -127,7 +127,7 @@ private fun PermissionScreen(
             else -> rationaleReasons.forEach { reason: RationaleReason ->
                 when (reason) {
                     RationaleReason.FOR_BLUETOOTH -> {
-                        Subheader(
+                        BoldSubheader(
                             text = stringResource(R.string.kPermissionBluetooth),
                             modifier = modifier.padding(vertical = 10.dp),
                             color = MaterialTheme.colors.onSurface,
@@ -135,7 +135,7 @@ private fun PermissionScreen(
                     }
 
                     RationaleReason.FOR_LOCATION -> {
-                        Subheader(
+                        BoldSubheader(
                             text = stringResource(R.string.kPermissionLocation),
                             modifier = modifier.padding(vertical = 10.dp),
                             color = MaterialTheme.colors.onSurface,

@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 
 
 @Composable
@@ -45,7 +45,7 @@ fun LoadingScreenWithIcon(
                 }
             )
 
-            Subheader(
+            BoldSubheader(
                 text = loadingText,
                 textAlign = TextAlign.Center,
                 modifier = modifier.constrainAs(text) {

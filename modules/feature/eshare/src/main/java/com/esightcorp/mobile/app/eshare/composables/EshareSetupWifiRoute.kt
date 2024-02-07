@@ -29,7 +29,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspo
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -85,7 +85,7 @@ private fun EshareSetupWifiScreen(
             }
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kEShareViewControllerWifiNotConnectedSubHeaderText),
             modifier = modifier.constrainAs(subHeader) {
                 top.linkTo(header.bottom, margin = 20.dp)

@@ -25,7 +25,7 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.viewmodels.UnableToConnectViewModel
@@ -95,7 +95,7 @@ private fun ScreenBody(
             },
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kTroubleshootingUnableToConnectSubtitle),
             modifier = modifier.constrainAs(header2Text) {
                 top.linkTo(headerText.bottom, margin = 16.dp)

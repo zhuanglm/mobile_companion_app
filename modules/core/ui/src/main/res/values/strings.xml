@@ -41,17 +41,8 @@
     <string name="kAccessibilityIconeSightLogo">eSight logo</string>
     <!--endregion-->
 
-    <!--    TODO: Refactor label_eshare_stopped_hotspot_setup_error_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kHotspotUnreachable -->
-    <string name="label_eshare_stopped_hotspot_setup_error_message" translatable="false">Your eSight device is currently unreachable via hotspot.\n\nPlease try again later</string>
     <string name="kHotspotUnreachable">Your eSight device is currently unreachable via hotspot</string>
-
-
-    <!--    TODO: Refactor label_eshare_stopped_busy_message to use two separate strings using kEshareErrorViewControllerTryAgainLater and kEshareErrorActiveSessionInProgress -->
-
-    <string name="label_eshare_stopped_busy_message" translatable="false">There\'s already an active eShare session in progress.\n\nPlease try again later</string>
     <string name="kEshareErrorActiveSessionInProgress">There\'s already an active eShare session in progress.</string>
-
-
     <string name="ego_model_name" translatable="false">eSight Go</string>
 
     <!-- region HomeScreen -->

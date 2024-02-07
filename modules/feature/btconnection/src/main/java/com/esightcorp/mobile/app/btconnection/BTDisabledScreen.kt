@@ -35,7 +35,7 @@ import com.esightcorp.mobile.app.btconnection.viewmodels.BtDisabledViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 
@@ -114,7 +114,7 @@ private fun BtDisabledBody(
         ItemSpacer(60.dp)
 
         // Set up the body text
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kBTErrorBluetoothOffDescription),
             modifier = modifier,
             textAlign = TextAlign.Center

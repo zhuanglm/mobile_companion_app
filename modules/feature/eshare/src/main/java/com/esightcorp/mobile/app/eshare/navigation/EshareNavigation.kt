@@ -12,7 +12,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.esightcorp.mobile.app.eshare.composables.EshareBusyRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectedRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareConnectionStoppedRoute
 import com.esightcorp.mobile.app.eshare.composables.EshareSetupWifiRoute
@@ -25,7 +24,6 @@ import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionReject
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.ConnectionStoppedRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.HotspotSetupRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.IncomingRoute
-import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.RemoteBusyRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.UnableToConnectRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.WifiDisabledRoute
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation.WifiSetupRoute
@@ -36,7 +34,8 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
         composable(ConnectedRoute) { EshareConnectedRoute(navController) }
 
         composable(
-            ConnectionStoppedRoute.routeWithArgs, arguments = ConnectionStoppedRoute.arguments
+            ConnectionStoppedRoute.routeWithArgs,
+            arguments = ConnectionStoppedRoute.arguments,
         ) {
             EshareConnectionStoppedRoute(
                 navController,
@@ -47,8 +46,6 @@ fun NavGraphBuilder.addEshareNavigation(navController: NavController) {
         composable(UnableToConnectRoute) { EshareUnableToConnectRoute(navController) }
 
         composable(HotspotSetupRoute) { HotspotSetupRoute(navController) }
-
-        composable(RemoteBusyRoute) { EshareBusyRoute(navController) }
 
         composable(WifiDisabledRoute) { EshareWifiDisabledRoute(navController) }
         composable(ConnectionRejectedRoute) { EshareConnectedRoute(navController) }

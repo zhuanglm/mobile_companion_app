@@ -11,6 +11,7 @@ package com.esightcorp.mobile.app.ui.components.eshare
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import com.esightcorp.mobile.app.ui.KEY_IS_ORIENTATION_CHANGING
 
 /**
  * Rotate the screen to the expected orientation
@@ -21,7 +22,7 @@ import android.content.ContextWrapper
 fun rotateScreen(
     context: Context,
     expectedOrientation: Int,
-    onRotatedResult: ((Int?) -> Unit)? = null
+    onRotatedResult: ((Int?) -> Unit)? = null,
 ) {
     val activity = context.findActivity() ?: run {
         onRotatedResult?.invoke(null)
@@ -30,6 +31,8 @@ fun rotateScreen(
 
     val originalOrientation = activity.requestedOrientation
     activity.requestedOrientation = expectedOrientation
+    activity.intent?.putExtra(KEY_IS_ORIENTATION_CHANGING, true)
+
     onRotatedResult?.invoke(originalOrientation)
 }
 

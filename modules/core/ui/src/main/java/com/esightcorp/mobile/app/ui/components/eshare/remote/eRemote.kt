@@ -72,7 +72,7 @@ fun EshareRemote(
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(0.8f).clearAndSetSemantics {  },
+                modifier = Modifier.fillMaxWidth(0.8f),
             ) {
                 //row for little round buttons
                 TinyCircleButton(
@@ -80,9 +80,11 @@ fun EshareRemote(
                     onUpEvent = onFinderButtonPressedEventUp,
                     icon = R.drawable.finder_icon,
                     contentPadding = PaddingValues(10.dp),
+                    contentDescription = stringResource(id = R.string.kAccessibilityButtonFinder),
                 )
 
                 TinyCircleButton(
+                    modifier = Modifier.clearAndSetSemantics {  },
                     onDownEvent = onBluetoothButtonPressedEventDown,
                     onUpEvent = onBluetoothButtonPressedEventUp,
                     icon = R.drawable.baseline_bluetooth_24,

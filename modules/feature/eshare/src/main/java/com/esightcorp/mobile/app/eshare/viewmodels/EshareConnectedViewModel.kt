@@ -22,11 +22,9 @@ import com.esightcorp.mobile.app.eshare.repositories.EshareRepository
 import com.esightcorp.mobile.app.eshare.repositories.EshareRepositoryListener
 import com.esightcorp.mobile.app.eshare.state.EshareConnectedUiState
 import com.esightcorp.mobile.app.eshare.state.RadioState
-import com.esightcorp.mobile.app.ui.TOUCH_EVENT_DELAY
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
-import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -72,14 +70,6 @@ class EshareConnectedViewModel @Inject constructor(
             // Callback when disconnection happen
             _uiState.update { it.copy(isDeviceConnected = false) }
         }
-    }
-
-    //simulate tap down and up for TalkBack
-    suspend fun accessibilityTouchEvent(downEvent: OnActionCallback?, upEvent: OnActionCallback?) {
-        downEvent?.invoke()
-        if (downEvent != null && upEvent != null)
-            delay(TOUCH_EVENT_DELAY)
-        upEvent?.invoke()
     }
 
     //region EshareRepositoryListener

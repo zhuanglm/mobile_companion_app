@@ -45,7 +45,7 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
-import com.esightcorp.mobile.app.ui.components.eshare.rotateScreen
+import com.esightcorp.mobile.app.utils.rotateScreen
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback

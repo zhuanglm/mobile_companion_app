@@ -133,7 +133,8 @@ private fun AdvancedWifiBody(
         ItemSpacer(25.dp)
         CustomEditText(value = wifiUiState.ssid,
             onValueChange = onSsidUpdated,
-            modifier = modifier.fillMaxWidth())
+            modifier = modifier.fillMaxWidth(),
+            description = stringResource(R.string.kWifiViewWifiNameLabelText))
 
         if(wifiUiState.wifiType != WifiType.NONE) {
             ItemSpacer(35.dp)
@@ -146,7 +147,8 @@ private fun AdvancedWifiBody(
             PasswordEditText(
                 value = wifiUiState.password,
                 onValueChange = { onPasswordUpdated(it) },
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier.fillMaxWidth(),
+                description = stringResource(id = R.string.kWifiViewWifiPasswordLabelText),
             )
         }
 

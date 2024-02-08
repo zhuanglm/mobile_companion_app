@@ -97,11 +97,13 @@ fun TinyCircleButton(
     onUpEvent: OnActionCallback? = null,
     @DrawableRes icon: Int = DefaultIconResource,
     contentPadding: PaddingValues = PaddingValues(),
+    contentDescription: String? = null,
 ) {
     CircleButton(
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
         size = TinyButtonSize,
+        contentDescription = contentDescription,
         modifier = modifier,
         iconId = icon,
         contentPadding = contentPadding,
@@ -117,6 +119,7 @@ fun RegularCircleButton(
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
     size: Dp = RegularButtonSize,
+    contentDescription: String? = null,
     @DrawableRes icon: Int = DefaultIconResource,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -125,6 +128,7 @@ fun RegularCircleButton(
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
         size = size,
+        contentDescription = contentDescription,
         iconId = icon,
         contentPadding = contentPadding,
     )
@@ -137,6 +141,7 @@ fun ColorContrastButton(
     primaryColor: Color,
     secondaryColor: Color,
     @DrawableRes icon: Int = DefaultIconResource,
+    contentDescription: String? = null,
     size: Dp = RegularButtonSize
 ) {
     CircleButton(
@@ -146,6 +151,7 @@ fun ColorContrastButton(
         iconTint = primaryColor,
         iconId = icon,
         size = size,
+        contentDescription = contentDescription,
         border = BorderStroke(2.dp, primaryColor)
     )
 }

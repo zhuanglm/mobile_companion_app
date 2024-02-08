@@ -102,7 +102,7 @@ internal fun DisconnectConfirmationScreen(
     ) {
         BigIcon(
             drawableId = R.drawable.warning,
-            contentDescription = "",
+            contentDescription = stringResource(id = R.string.kAccessibilityIconExclamation),
         )
 
         Header1Text(

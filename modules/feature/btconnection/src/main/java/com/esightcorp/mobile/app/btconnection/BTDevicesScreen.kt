@@ -132,12 +132,9 @@ internal fun BtDevicesScreen(
             ) {
                 items(uiState.listOfAvailableDevices) { device ->
                     if (device.contains(stringResource(id = R.string.hyphen))) {
-                        val deviceModel =
-                            device.substringBeforeLast(stringResource(id = R.string.hyphen))
                         val serialNumber =
                             device.substringAfterLast(stringResource(id = R.string.hyphen))
                         YellowDeviceCard(
-                            deviceModel = deviceModel,
                             serialNumber = serialNumber,
                             modifier = modifier.padding(dimensionResource(id = R.dimen.yellow_device_card_padding)),
                             onClick = {
@@ -148,7 +145,6 @@ internal fun BtDevicesScreen(
                     } else {
                         val serialNumber = stringResource(id = R.string.default_serial_number)
                         YellowDeviceCard(
-                            deviceModel = device,
                             serialNumber = serialNumber,
                             modifier = modifier.padding(dimensionResource(id = R.dimen.yellow_device_card_padding)),
                             onClick = { Log.e(TAG, "This device is not an eSight device") },

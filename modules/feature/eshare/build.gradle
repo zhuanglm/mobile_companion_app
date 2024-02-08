@@ -58,7 +58,7 @@ dependencies {
 // Integration with activities
     implementation "androidx.activity:activity-compose:$activity_compose"
 // Compose Material Design
-    implementation "androidx.compose.material:material:$compose_material"
+    implementation "androidx.compose.material:material:$eshare_compose_material"
 // Animations
     implementation "androidx.compose.animation:animation:$animations"
 // Tooling support (Previews, etc.)

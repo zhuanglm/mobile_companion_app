@@ -170,23 +170,23 @@ internal fun EShareConnectedScreen(
                 )
             }
 
-                EshareRemote(
-                    modifier = Modifier.weight(1f),
-                    onFinderButtonPressedEventDown = finderButtonPress,
-                    onFinderButtonPressedEventUp = actionUpButtonPress,
-                    onModeButtonPressedEventDown = modeButtonPress,
-                    onModeButtonPressedEventUp = actionUpButtonPress,
-                    onUpButtonPressedEventDown = upButtonPress,
-                    onUpButtonPressedEventUp = actionUpButtonPress,
-                    onDownButtonPressedEventDown = downButtonPress,
-                    onDownButtonPressedEventUp = actionUpButtonPress,
-                    onVolumeUpButtonPressedEventDown = volUpButtonPress,
-                    onVolumeUpButtonPressedEventUp = actionUpButtonPress,
-                    onVolumeDownButtonPressedEventDown = volDownButtonPress,
-                    onVolumeDownButtonPressedEventUp = actionUpButtonPress,
-                    onMenuButtonPressedEventDown = menuButtonPress,
-                    onMenuButtonPressedEventUp = actionUpButtonPress,
-                )
+            EshareRemote(
+                modifier = Modifier.weight(1f),
+                onFinderButtonPressedEventDown = finderButtonPress,
+                onFinderButtonPressedEventUp = actionUpButtonPress,
+                onModeButtonPressedEventDown = modeButtonPress,
+                onModeButtonPressedEventUp = actionUpButtonPress,
+                onUpButtonPressedEventDown = upButtonPress,
+                onUpButtonPressedEventUp = actionUpButtonPress,
+                onDownButtonPressedEventDown = downButtonPress,
+                onDownButtonPressedEventUp = actionUpButtonPress,
+                onVolumeUpButtonPressedEventDown = volUpButtonPress,
+                onVolumeUpButtonPressedEventUp = actionUpButtonPress,
+                onVolumeDownButtonPressedEventDown = volDownButtonPress,
+                onVolumeDownButtonPressedEventUp = actionUpButtonPress,
+                onMenuButtonPressedEventDown = menuButtonPress,
+                onMenuButtonPressedEventUp = actionUpButtonPress,
+            )
         }
     }
 

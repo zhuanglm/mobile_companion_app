@@ -10,6 +10,7 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -42,7 +43,8 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
  *
  * @param modifier Modifier to be applied to the button.
  * @param size Size of the oblong button. Width is derived from the height to maintain the oblong shape.
- * @param contentDescription Description of the icon for accessibility purposes.
+ * @param firstContentDescription Description of the icon for accessibility purposes.
+ * @param secondContentDescription Description of the icon for accessibility purposes.
  * @param backgroundColor Background color of the button.
  * @param iconTint Tint color of the icon.
  */
@@ -54,7 +56,8 @@ fun RockerButton(
     onVolumeDownEventDown: OnActionCallback? = null,
     onVolumeDownEventUp: OnActionCallback? = null,
     size: Dp = DefaultOblongButtonHeight,
-    contentDescription: String? = null,
+    firstContentDescription: String? = null,
+    secondContentDescription: String? = null,
     painter1: Painter = painterResource(R.drawable.round_question_mark_24),
     painter2: Painter = painterResource(R.drawable.round_question_mark_24),
     backgroundColor: Color = MaterialTheme.colors.secondary,
@@ -80,6 +83,7 @@ fun RockerButton(
             // Volume Up
             Column(
                 modifier = Modifier
+                    .clickable(onClickLabel = firstContentDescription) { }
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
                     .gestureHandler(onVolumeUpEventDown, onVolumeUpEventUp)
@@ -90,7 +94,7 @@ fun RockerButton(
                 Icon(
                     painter = painter1,
                     tint = iconTint,
-                    contentDescription = contentDescription,
+                    contentDescription = firstContentDescription,
                     modifier = Modifier.size(iconSize)
                 )
             }
@@ -98,6 +102,7 @@ fun RockerButton(
             // Volume Down
             Column(
                 modifier = Modifier
+                    .clickable(onClickLabel = secondContentDescription) { }
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
                     .gestureHandler(onVolumeDownEventDown, onVolumeDownEventUp)
@@ -108,7 +113,7 @@ fun RockerButton(
                 Icon(
                     painter = painter2,
                     tint = iconTint,
-                    contentDescription = contentDescription,
+                    contentDescription = secondContentDescription,
                     modifier = Modifier.size(iconSize)
                 )
             }

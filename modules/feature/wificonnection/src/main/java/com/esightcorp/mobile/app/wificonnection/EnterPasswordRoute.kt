@@ -140,6 +140,7 @@ private fun PasswordBody(
                     end.linkTo(parent.end)
                 }
                 .fillMaxWidth(),
+            description = stringResource(R.string.kWifiViewWifiPasswordLabelText),
         )
 
         TextRectangularButton(

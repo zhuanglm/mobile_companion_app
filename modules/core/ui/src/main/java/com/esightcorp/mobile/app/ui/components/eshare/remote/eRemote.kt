@@ -28,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -78,9 +80,11 @@ fun EshareRemote(
                     onUpEvent = onFinderButtonPressedEventUp,
                     icon = R.drawable.finder_icon,
                     contentPadding = PaddingValues(10.dp),
+                    contentDescription = stringResource(id = R.string.kAccessibilityButtonFinder),
                 )
 
                 TinyCircleButton(
+                    modifier = Modifier.clearAndSetSemantics {  },
                     onDownEvent = onBluetoothButtonPressedEventDown,
                     onUpEvent = onBluetoothButtonPressedEventUp,
                     icon = R.drawable.baseline_bluetooth_24,
@@ -99,6 +103,7 @@ fun EshareRemote(
                     onUpEvent = onModeButtonPressedEventUp,
                     iconDrawableId = R.drawable.remote_button_home,
                     contentPadding = PaddingValues(1.dp),
+                    contentDescription = stringResource(id = R.string.kAccessibilityButtonMode)
                 )
             }
             //endregion
@@ -123,6 +128,7 @@ fun EshareRemote(
                     onUpEvent = onMenuButtonPressedEventUp,
                     iconDrawableId = R.drawable.menu_button,
                     contentPadding = PaddingValues(1.dp),
+                    contentDescription = stringResource(id = R.string.kAccessibilityButtonMenu)
                 )
             }
             //endregion
@@ -158,6 +164,7 @@ fun VolumeRockerAndUpDownButtons(
         ) {
             RegularCircleButton(
                 size = size,
+                contentDescription = stringResource(id = R.string.kAccessibilityButtonUp),
                 onUpEvent = onUpButtonPressedEventUp,
                 onDownEvent = onUpButtonPressedEventDown,
                 icon = R.drawable.arrow_up_button,
@@ -166,6 +173,7 @@ fun VolumeRockerAndUpDownButtons(
             Spacer(modifier = Modifier.height(circleButtonSpacerSize))
             RegularCircleButton(
                 size = size,
+                contentDescription = stringResource(id = R.string.kAccessibilityButtonDown),
                 onUpEvent = onDownButtonPressedEventUp,
                 onDownEvent = onDownButtonPressedEventDown,
                 icon = R.drawable.arrow_down_button,
@@ -183,6 +191,8 @@ fun VolumeRockerAndUpDownButtons(
             onVolumeUpEventDown = onVolumeUpButtonPressedEventDown,
             onVolumeUpEventUp = onVolumeUpButtonPressedEventUp,
             size = rockerButtonSize,
+            firstContentDescription = stringResource(id = R.string.kAccessibilityButtonVolumeUp),
+            secondContentDescription = stringResource(id = R.string.kAccessibilityButtonVolumeDown),
             backgroundColor = Color.White,
             painter1 = painterResource(R.drawable.volume_up_button),
             painter2 = painterResource(R.drawable.volume_down_button)

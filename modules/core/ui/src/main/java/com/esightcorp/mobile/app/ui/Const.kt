@@ -14,3 +14,9 @@ package com.esightcorp.mobile.app.ui
 const val UI_DELAY_TIMER = 2500L
 const val WPA_MIN_PASSWORD_LENGTH = 8
 const val WPA_MAX_PASSWORD_LENGTH = 63
+
+/**
+ * An intent's key to notify that the orientation change is happening.
+ * It is used during the activity recreation process.
+ */
+const val KEY_IS_ORIENTATION_CHANGING = "isOrientationChanging"

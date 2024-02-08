@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
+import kotlin.reflect.KSuspendFunction2
 
 @Composable
 fun EshareRemote(
@@ -55,7 +56,8 @@ fun EshareRemote(
     onVolumeDownButtonPressedEventDown: OnActionCallback? = null,
     onMenuButtonPressedEventUp: OnActionCallback? = null,
     onMenuButtonPressedEventDown: OnActionCallback? = null,
-) {
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
+    ) {
     Surface(
         modifier = modifier
             .fillMaxHeight()
@@ -103,7 +105,8 @@ fun EshareRemote(
                     onUpEvent = onModeButtonPressedEventUp,
                     iconDrawableId = R.drawable.remote_button_home,
                     contentPadding = PaddingValues(1.dp),
-                    contentDescription = stringResource(id = R.string.kAccessibilityButtonMode)
+                    contentDescription = stringResource(id = R.string.kAccessibilityButtonMode),
+                    accessibilityTouchEvent = accessibilityTouchEvent
                 )
             }
             //endregion
@@ -117,7 +120,9 @@ fun EshareRemote(
                 onVolumeDownButtonPressedEventUp = onVolumeDownButtonPressedEventUp,
                 onVolumeDownButtonPressedEventDown = onVolumeDownButtonPressedEventDown,
                 onVolumeUpButtonPressedEventDown = onVolumeUpButtonPressedEventDown,
-                onVolumeUpButtonPressedEventUp = onVolumeUpButtonPressedEventUp
+                onVolumeUpButtonPressedEventUp = onVolumeUpButtonPressedEventUp,
+                accessibilityTouchEvent = accessibilityTouchEvent,
+
             )
             //endregion
 
@@ -128,7 +133,8 @@ fun EshareRemote(
                     onUpEvent = onMenuButtonPressedEventUp,
                     iconDrawableId = R.drawable.menu_button,
                     contentPadding = PaddingValues(1.dp),
-                    contentDescription = stringResource(id = R.string.kAccessibilityButtonMenu)
+                    contentDescription = stringResource(id = R.string.kAccessibilityButtonMenu),
+                    accessibilityTouchEvent = accessibilityTouchEvent
                 )
             }
             //endregion
@@ -147,6 +153,7 @@ fun VolumeRockerAndUpDownButtons(
     onVolumeDownButtonPressedEventDown: OnActionCallback? = null,
     onVolumeUpButtonPressedEventUp: OnActionCallback? = null,
     onVolumeUpButtonPressedEventDown: OnActionCallback? = null,
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
 ) {
     val circleButtonSpacerSize = size.times(0.5f)
     val betweenColumnSpacerSize = size.times(0.3f)
@@ -169,6 +176,7 @@ fun VolumeRockerAndUpDownButtons(
                 onDownEvent = onUpButtonPressedEventDown,
                 icon = R.drawable.arrow_up_button,
                 contentPadding = PaddingValues(bottom = 5.dp),
+                accessibilityTouchEvent = accessibilityTouchEvent
             )
             Spacer(modifier = Modifier.height(circleButtonSpacerSize))
             RegularCircleButton(
@@ -178,6 +186,7 @@ fun VolumeRockerAndUpDownButtons(
                 onDownEvent = onDownButtonPressedEventDown,
                 icon = R.drawable.arrow_down_button,
                 contentPadding = PaddingValues(top = 5.dp),
+                accessibilityTouchEvent = accessibilityTouchEvent
             )
         }
         //endregion
@@ -190,6 +199,7 @@ fun VolumeRockerAndUpDownButtons(
             onVolumeDownEventUp = onVolumeDownButtonPressedEventUp,
             onVolumeUpEventDown = onVolumeUpButtonPressedEventDown,
             onVolumeUpEventUp = onVolumeUpButtonPressedEventUp,
+            accessibilityTouchEvent = accessibilityTouchEvent,
             size = rockerButtonSize,
             firstContentDescription = stringResource(id = R.string.kAccessibilityButtonVolumeUp),
             secondContentDescription = stringResource(id = R.string.kAccessibilityButtonVolumeDown),
@@ -213,8 +223,11 @@ internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
 internal fun EshareRemotePreview() = MaterialTheme {
     Surface {
         Row {
-            Spacer(modifier = Modifier.weight(3f))
-            EshareRemote(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(2f))
+            EshareRemote(
+                modifier = Modifier.weight(1f),
+                accessibilityTouchEvent = null
+            )
         }
     }
 }

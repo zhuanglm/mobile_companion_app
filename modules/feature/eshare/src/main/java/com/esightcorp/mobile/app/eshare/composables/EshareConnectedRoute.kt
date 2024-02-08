@@ -52,6 +52,7 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import com.esightcorp.mobile.app.utils.bluetooth.NavigateToBluetoothDisabled
+import kotlin.reflect.KSuspendFunction2
 
 @Composable
 fun EshareConnectedRoute(
@@ -101,6 +102,7 @@ fun EshareConnectedRoute(
             actionUpButtonPress = vm::actionUpButtonPress,
             navigateToWifiSetupRoute = vm::navigateToWifiSetupRoute,
             onStreamingReady = vm::onStreamingReady,
+            accessibilityTouchEvent = vm::accessibilityTouchEvent,
         )
         return
     }
@@ -131,6 +133,7 @@ internal fun EShareConnectedScreen(
     actionUpButtonPress: OnActionCallback? = null,
     navigateToWifiSetupRoute: OnNavigationCallback? = null,
     onStreamingReady: OnActionCallback? = null,
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
 ) {
     var isScreenRotating by rememberSaveable { mutableStateOf<Boolean?>(null) }
     var originalOrientation by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -170,23 +173,24 @@ internal fun EShareConnectedScreen(
                 )
             }
 
-            EshareRemote(
-                modifier = Modifier.weight(1f),
-                onFinderButtonPressedEventDown = finderButtonPress,
-                onFinderButtonPressedEventUp = actionUpButtonPress,
-                onModeButtonPressedEventDown = modeButtonPress,
-                onModeButtonPressedEventUp = actionUpButtonPress,
-                onUpButtonPressedEventDown = upButtonPress,
-                onUpButtonPressedEventUp = actionUpButtonPress,
-                onDownButtonPressedEventDown = downButtonPress,
-                onDownButtonPressedEventUp = actionUpButtonPress,
-                onVolumeUpButtonPressedEventDown = volUpButtonPress,
-                onVolumeUpButtonPressedEventUp = actionUpButtonPress,
-                onVolumeDownButtonPressedEventDown = volDownButtonPress,
-                onVolumeDownButtonPressedEventUp = actionUpButtonPress,
-                onMenuButtonPressedEventDown = menuButtonPress,
-                onMenuButtonPressedEventUp = actionUpButtonPress,
-            )
+                EshareRemote(
+                    modifier = Modifier.weight(1f),
+                    onFinderButtonPressedEventDown = finderButtonPress,
+                    onFinderButtonPressedEventUp = actionUpButtonPress,
+                    onModeButtonPressedEventDown = modeButtonPress,
+                    onModeButtonPressedEventUp = actionUpButtonPress,
+                    onUpButtonPressedEventDown = upButtonPress,
+                    onUpButtonPressedEventUp = actionUpButtonPress,
+                    onDownButtonPressedEventDown = downButtonPress,
+                    onDownButtonPressedEventUp = actionUpButtonPress,
+                    onVolumeUpButtonPressedEventDown = volUpButtonPress,
+                    onVolumeUpButtonPressedEventUp = actionUpButtonPress,
+                    onVolumeDownButtonPressedEventDown = volDownButtonPress,
+                    onVolumeDownButtonPressedEventUp = actionUpButtonPress,
+                    onMenuButtonPressedEventDown = menuButtonPress,
+                    onMenuButtonPressedEventUp = actionUpButtonPress,
+                    accessibilityTouchEvent = accessibilityTouchEvent,
+                )
         }
     }
 

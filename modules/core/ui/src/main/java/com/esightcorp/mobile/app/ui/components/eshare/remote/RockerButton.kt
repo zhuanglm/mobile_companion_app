@@ -10,7 +10,6 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -35,10 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.extensions.accessibilityClickOnEvent
 import com.esightcorp.mobile.app.ui.extensions.gestureHandler
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
-import kotlinx.coroutines.launch
-import kotlin.reflect.KSuspendFunction2
 
 
 /**
@@ -58,7 +56,6 @@ fun RockerButton(
     onVolumeUpEventUp: OnActionCallback? = null,
     onVolumeDownEventDown: OnActionCallback? = null,
     onVolumeDownEventUp: OnActionCallback? = null,
-    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
     size: Dp = DefaultOblongButtonHeight,
     firstContentDescription: String? = null,
     secondContentDescription: String? = null,
@@ -88,11 +85,8 @@ fun RockerButton(
             // Volume Up
             Column(
                 modifier = Modifier
-                    .clickable(onClickLabel = firstContentDescription) {
-                        coroutineScope.launch {
-                            accessibilityTouchEvent?.invoke(onVolumeUpEventDown, onVolumeUpEventUp)
-                        }
-                    }
+                    .accessibilityClickOnEvent(coroutineScope, firstContentDescription,
+                        onVolumeUpEventDown, onVolumeUpEventUp)
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
                     .gestureHandler(onVolumeUpEventDown, onVolumeUpEventUp)
@@ -111,11 +105,8 @@ fun RockerButton(
             // Volume Down
             Column(
                 modifier = Modifier
-                    .clickable(onClickLabel = secondContentDescription) {
-                        coroutineScope.launch {
-                            accessibilityTouchEvent?.invoke(onVolumeDownEventDown, onVolumeDownEventUp)
-                        }
-                    }
+                    .accessibilityClickOnEvent(coroutineScope, secondContentDescription,
+                        onVolumeDownEventDown, onVolumeDownEventUp)
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
                     .gestureHandler(onVolumeDownEventDown, onVolumeDownEventUp)

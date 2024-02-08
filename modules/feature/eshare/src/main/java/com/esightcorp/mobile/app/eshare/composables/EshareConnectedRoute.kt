@@ -13,12 +13,10 @@ import android.util.Log
 import android.view.TextureView
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,6 +46,7 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.utils.EShareConnectionStatus
 import com.esightcorp.mobile.app.utils.bluetooth.NavigateToBluetoothDisabled
+import kotlin.reflect.KSuspendFunction2
 
 @Composable
 fun EshareConnectedRoute(
@@ -96,6 +95,7 @@ fun EshareConnectedRoute(
             finderButtonPress = vm::finderButtonPress,
             actionUpButtonPress = vm::actionUpButtonPress,
             navigateToWifiSetupRoute = vm::navigateToWifiSetupRoute,
+            accessibilityTouchEvent = vm::accessibilityTouchEvent,
         )
         return
     }
@@ -125,7 +125,8 @@ internal fun EShareConnectedScreen(
     finderButtonPress: OnActionCallback? = null,
     actionUpButtonPress: OnActionCallback? = null,
     navigateToWifiSetupRoute: OnNavigationCallback? = null,
-) {
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
+    ) {
     Log.i(TAG, "eShare-connection state: ${uiState.connectionState}")
 
     // Prepare the streaming view
@@ -161,6 +162,7 @@ internal fun EShareConnectedScreen(
                     onVolumeDownButtonPressedEventUp = actionUpButtonPress,
                     onMenuButtonPressedEventDown = menuButtonPress,
                     onMenuButtonPressedEventUp = actionUpButtonPress,
+                    accessibilityTouchEvent = accessibilityTouchEvent,
                 )
             }
         }
@@ -266,8 +268,6 @@ internal fun TextureViewAndCancelButton(
 @Composable
 internal fun EShareConnectedScreenPreview() = MaterialTheme {
     EShareConnectedScreen(
-        uiState = EshareConnectedUiState(connectionState = EShareConnectionStatus.Connected),
-        navController = rememberNavController(),
         textureViewListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {}
 
@@ -276,7 +276,9 @@ internal fun EShareConnectedScreenPreview() = MaterialTheme {
             override fun onSurfaceTextureDestroyed(p0: SurfaceTexture): Boolean = false
 
             override fun onSurfaceTextureUpdated(p0: SurfaceTexture) {}
-        }
+        },
+        uiState = EshareConnectedUiState(connectionState = EShareConnectionStatus.Connected),
+        navController = rememberNavController(),
     )
 }
 //endregion

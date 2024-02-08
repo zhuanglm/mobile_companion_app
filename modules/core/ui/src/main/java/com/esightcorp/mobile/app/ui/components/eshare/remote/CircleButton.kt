@@ -11,6 +11,7 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,6 +35,8 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.extensions.gestureHandler
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.launch
+import kotlin.reflect.KSuspendFunction2
 
 /**
  * Represents a circular button with a customizable icon.
@@ -53,10 +57,18 @@ fun CircleButton(
     backgroundColor: Color = MaterialTheme.colors.secondary,
     iconTint: Color = Color.Black,
     contentPadding: PaddingValues = PaddingValues(),
-    border: BorderStroke? = null
+    border: BorderStroke? = null,
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     ElevatedButton(
-        modifier = modifier
+        modifier = modifier.clickable(onClick = {
+            coroutineScope.launch {
+                accessibilityTouchEvent?.invoke(onDownEvent,onUpEvent)
+            }
+
+        })
             .size(size)
             .clip(CircleShape)
             .gestureHandler(onDownEvent, onUpEvent),
@@ -98,6 +110,7 @@ fun TinyCircleButton(
     @DrawableRes icon: Int = DefaultIconResource,
     contentPadding: PaddingValues = PaddingValues(),
     contentDescription: String? = null,
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
 ) {
     CircleButton(
         onDownEvent = onDownEvent,
@@ -107,6 +120,7 @@ fun TinyCircleButton(
         modifier = modifier,
         iconId = icon,
         contentPadding = contentPadding,
+        accessibilityTouchEvent = accessibilityTouchEvent
     )
 }
 
@@ -122,15 +136,17 @@ fun RegularCircleButton(
     contentDescription: String? = null,
     @DrawableRes icon: Int = DefaultIconResource,
     contentPadding: PaddingValues = PaddingValues(),
+    accessibilityTouchEvent: KSuspendFunction2<OnActionCallback?, OnActionCallback?, Unit>? = null,
 ) {
     CircleButton(
-        modifier = modifier,
+       modifier = modifier,
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
         size = size,
         contentDescription = contentDescription,
         iconId = icon,
         contentPadding = contentPadding,
+        accessibilityTouchEvent = accessibilityTouchEvent,
     )
 }
 
@@ -145,7 +161,7 @@ fun ColorContrastButton(
     size: Dp = RegularButtonSize
 ) {
     CircleButton(
-        modifier = modifier,
+        modifier = modifier.clickable(onClick = onClick?: {}),
         onDownEvent = onClick,
         backgroundColor = secondaryColor,
         iconTint = primaryColor,

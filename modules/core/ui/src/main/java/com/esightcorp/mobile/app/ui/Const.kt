@@ -12,6 +12,7 @@ package com.esightcorp.mobile.app.ui
  * Keep screen information at least this amount of time (in milliseconds) to give user time to read.
  */
 const val UI_DELAY_TIMER = 2500L
+const val TOUCH_EVENT_DELAY = 250L
 const val WPA_MIN_PASSWORD_LENGTH = 8
 const val WPA_MAX_PASSWORD_LENGTH = 63
 

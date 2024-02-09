@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.R
@@ -35,6 +38,13 @@ import java.time.LocalDateTime
  */
 @Composable
 fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
+    val density = LocalDensity.current
+    val fixedFontScaleDensity = Density(
+        density = density.density,
+        fontScale = 1f //ignore the font scaling
+    )
+
+
     Box(modifier = modifier
         .fillMaxWidth()
         .wrapContentHeight()
@@ -43,35 +53,37 @@ fun PersonalGreeting(modifier: Modifier, connected: Boolean = false) {
             modifier = modifier
         ) {
             val (greeting, connectionStatus) = createRefs()
-            when (LocalDateTime.now().hour) {
-                in 0..12 -> {
-                    Header1Text(
-                        text = stringResource(R.string.kGreetingsTextMorning),
-                        modifier = Modifier.constrainAs(greeting) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }, color = MaterialTheme.colors.onSurface
-                    )
-                }
+            CompositionLocalProvider(LocalDensity provides fixedFontScaleDensity){
+                when (LocalDateTime.now().hour) {
+                    in 0..12 -> {
+                        Header1Text(
+                            text = stringResource(R.string.kGreetingsTextMorning),
+                            modifier = Modifier.constrainAs(greeting) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }, color = MaterialTheme.colors.onSurface
+                        )
+                    }
 
-                in 12..16 -> {
-                    Header1Text(
-                        text = stringResource(R.string.kGreetingsTextAfternoon),
-                        modifier = Modifier.constrainAs(greeting) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }, color = MaterialTheme.colors.onSurface
-                    )
-                }
+                    in 12..16 -> {
+                        Header1Text(
+                            text = stringResource(R.string.kGreetingsTextAfternoon),
+                            modifier = Modifier.constrainAs(greeting) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }, color = MaterialTheme.colors.onSurface
+                        )
+                    }
 
-                else -> {
-                    Header1Text(
-                        text = stringResource(R.string.kGreetingsTextEvening),
-                        modifier = Modifier.constrainAs(greeting) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }, color = MaterialTheme.colors.onSurface
-                    )
+                    else -> {
+                        Header1Text(
+                            text = stringResource(R.string.kGreetingsTextEvening),
+                            modifier = Modifier.constrainAs(greeting) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }, color = MaterialTheme.colors.onSurface
+                        )
+                    }
                 }
             }
             if (!connected) {

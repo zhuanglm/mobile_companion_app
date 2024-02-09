@@ -122,6 +122,13 @@ private fun HomeScreenBody(
     onNavigateToWifiFlow: OnNavigationCallback,
     onNavigateToEshare: OnNavigationCallback,
 ) {
+    val configuration = LocalConfiguration.current
+    val greetingTopMargin = if(configuration.fontScale > 1){
+        (32/configuration.fontScale).dp
+    } else {
+        32.dp
+    }
+
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (personalGreeting, deviceCard, appContainer) = createRefs()
         PersonalGreeting(
@@ -131,7 +138,7 @@ private fun HomeScreenBody(
                     traversalIndex = 0f
                 }
                 .constrainAs(personalGreeting) {
-                    top.linkTo(parent.top, margin = 32.dp)
+                    top.linkTo(parent.top, margin = greetingTopMargin)
                     start.linkTo(parent.start)
                 },
             connected = true,
@@ -204,6 +211,7 @@ private fun SquareTileCardLayout(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(25.dp),
     ) {
+
         itemsIndexed(cards) { _, card ->
             IconAndTextSquareButton(
                 text = stringResource(card.labelId),

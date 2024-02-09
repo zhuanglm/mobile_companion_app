@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -134,6 +135,7 @@ fun ButtonText(
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary,
     textAlign: TextAlign? = null,
+    onTextLayoutResult: (TextLayoutResult?) -> Unit = {Unit},
 ) {
     Text(
         text = text,
@@ -143,6 +145,7 @@ fun ButtonText(
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,
         textAlign = textAlign,
+        onTextLayout = onTextLayoutResult
     )
 }
 

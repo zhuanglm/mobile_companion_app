@@ -96,11 +96,10 @@ fun CompactDeviceCardBody(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(6.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ImageForDeviceCard(modifier = Modifier)
-        Spacer(modifier = Modifier.size(10.dp))
         ButtonText(text = stringResource(R.string.ego_model_name),
             modifier = Modifier
                 .clearAndSetSemantics { }
@@ -181,15 +180,15 @@ fun ImageForDeviceCard(
         painter = painterResource(id = R.drawable.glasses),
         contentDescription = "",
         modifier = modifier
-            .widthIn(50.dp, 177.dp)
-            .heightIn(25.dp, 70.dp)
+            .widthIn(177.dp, 177.dp)
+            .heightIn(100.dp, 100.dp)
             .semantics {
                 role = Role.Image
             }
     )
 }
 
-@Preview(widthDp = 600, heightDp = 480, showBackground = true)
+@Preview(widthDp = 320, heightDp = 480, showBackground = true)
 @Composable
 fun ConnectedDeviceCardPreview() {
     YellowDeviceCard{}

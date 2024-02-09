@@ -28,11 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.home.state.HomeUiState
 import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
 import com.esightcorp.mobile.app.ui.R
@@ -49,34 +51,40 @@ private const val TAG = "Home Screen"
 
 @Composable
 fun HomeFirstScreen(
-    navController: NavController,
-    vm: HomeViewModel = hiltViewModel()
+    navController: NavController, vm: HomeViewModel = hiltViewModel()
 ) {
     val homeUiState by vm.uiState.collectAsState()
 
     BackStackLogger(navController, TAG)
 
     BaseHomeScreen(
-        vm = vm,
         homeUiState = homeUiState,
         navController = navController,
         device = homeUiState.connectedDevice,
         modifier = Modifier,
         onSettingsButtonInvoked = vm::navigateToSettings,
-        onRemoteDeviceDisconnected = vm::onBleDisconnected
+        onRemoteDeviceDisconnected = vm::onBleDisconnected,
+        onBluetoothDisabled = vm::navigateToBluetoothDisabled,
+        onFeedbackButtonPressed = vm::showFeedbackPage,
+        onNavigateToWifiFlow = vm::navigateToWifiCredsOverBt,
+        onNavigateToEshare = vm::navigateToShareYourView,
     )
 }
 
 @Composable
 private fun BaseHomeScreen(
-    vm: HomeViewModel,
     homeUiState: HomeUiState,
     navController: NavController,
     modifier: Modifier = Modifier,
     device: String = "0123456",
     onSettingsButtonInvoked: OnNavigationCallback,
     onRemoteDeviceDisconnected: OnNavigationCallback,
-) {
+    onBluetoothDisabled: OnNavigationCallback,
+    onFeedbackButtonPressed: OnActionCallback,
+    onNavigateToWifiFlow: OnNavigationCallback,
+    onNavigateToEshare: OnNavigationCallback,
+
+    ) {
     if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
         Log.d(TAG, "BaseHomeScreen: Not connected but are Enabled")
         LaunchedEffect(Unit) {
@@ -84,7 +92,7 @@ private fun BaseHomeScreen(
         }
     } else if (!homeUiState.isBluetoothEnabled) {
         LaunchedEffect(Unit) {
-            vm.navigateToBluetoothDisabled(navController)
+            onBluetoothDisabled(navController)
         }
     } else {
         HomeBaseScreen(
@@ -93,10 +101,14 @@ private fun BaseHomeScreen(
             showSettingsButton = true,
             onBackButtonInvoked = { },
             onSettingsButtonInvoked = { onSettingsButtonInvoked.invoke(navController) },
-            bottomButton = { FeedbackButton(modifier, vm::showFeedbackPage) },
+            bottomButton = { FeedbackButton(modifier) { onFeedbackButtonPressed() } },
         ) {
             HomeScreenBody(
-                modifier = modifier, device = device, navController = navController, vm = vm
+                modifier = modifier,
+                device = device,
+                navController = navController,
+                onNavigateToWifiFlow = onNavigateToWifiFlow,
+                onNavigateToEshare = onNavigateToEshare,
             )
         }
     }
@@ -107,75 +119,82 @@ private fun HomeScreenBody(
     modifier: Modifier = Modifier,
     device: String = "0123456",
     navController: NavController,
-    vm: HomeViewModel
+    onNavigateToWifiFlow: OnNavigationCallback,
+    onNavigateToEshare: OnNavigationCallback,
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (personalGreeting, deviceCard, appContainer) = createRefs()
         PersonalGreeting(
-            modifier = modifier.semantics {
-                isTraversalGroup = true
-                traversalIndex = 0f
-            }.constrainAs(personalGreeting) {
-                top.linkTo(parent.top, margin = 32.dp)
-                start.linkTo(parent.start)
-            },
+            modifier = modifier
+                .semantics {
+                    isTraversalGroup = true
+                    traversalIndex = 0f
+                }
+                .constrainAs(personalGreeting) {
+                    top.linkTo(parent.top, margin = 32.dp)
+                    start.linkTo(parent.start)
+                },
             connected = true,
         )
         DeviceCard(
-            modifier = modifier.semantics {
-                isTraversalGroup = true
-                traversalIndex = 1f
-            }.constrainAs(deviceCard) {
-                top.linkTo(personalGreeting.bottom, margin = 25.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            },
+            modifier = modifier
+                .semantics {
+                    isTraversalGroup = true
+                    traversalIndex = 1f
+                }
+                .constrainAs(deviceCard) {
+                    top.linkTo(personalGreeting.bottom, margin = 25.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
             onClick = { },
             serialNumber = device.substringAfterLast('-'),
         )
 
         SquareTileCardLayout(
-            modifier = modifier.semantics {
-                isTraversalGroup = true
-                traversalIndex = 2f
-            }.constrainAs(appContainer) {
-                top.linkTo(deviceCard.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-                width = Dimension.fillToConstraints
-                height = Dimension.fillToConstraints
-            },
+            modifier = modifier
+                .semantics {
+                    isTraversalGroup = true
+                    traversalIndex = 2f
+                }
+                .constrainAs(appContainer) {
+                    top.linkTo(deviceCard.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                },
             navController = navController,
-            vm = vm,
+            onNavigateToEshare = onNavigateToEshare,
+            onNavigateToWifiFlow = onNavigateToWifiFlow,
         )
     }
 }
 
 private data class CardData(
-    @StringRes val labelId: Int,
-    @DrawableRes val iconResId: Int,
-    val onClick: OnActionCallback
+    @StringRes val labelId: Int, @DrawableRes val iconResId: Int, val onClick: OnActionCallback
 )
 
 @Composable
 private fun SquareTileCardLayout(
     modifier: Modifier = Modifier,
-    vm: HomeViewModel,
     navController: NavController,
+    onNavigateToWifiFlow: OnNavigationCallback,
+    onNavigateToEshare: OnNavigationCallback,
 ) {
     val cards = listOf(
-        CardData(R.string.kConnectWifiLabelText, R.drawable.round_wifi_24) {
-            vm.navigateToWifiCredsOverBt(navController)
+        CardData(
+            R.string.kConnectWifiLabelText, R.drawable.round_wifi_24
+        ) {
+        onNavigateToEshare(navController)
         },
 
         CardData(
-            R.string.kHomeRootViewConnectedeShareButtonText,
-            R.drawable.baseline_camera_alt_24
+            R.string.kHomeRootViewConnectedeShareButtonText, R.drawable.baseline_camera_alt_24
         ) {
-            vm.navigateToShareYourView(navController)
-        }
-    )
+            onNavigateToWifiFlow(navController)
+        })
 
     val configuration = LocalConfiguration.current
     val adaptiveCells = (configuration.fontScale * 150).dp
@@ -195,3 +214,22 @@ private fun SquareTileCardLayout(
         }
     }
 }
+
+fun previewUiState() = HomeUiState()
+
+@Preview(showBackground = true)
+@Composable
+fun BaseHomeScreenPreview() {
+    BaseHomeScreen(
+        homeUiState = previewUiState(),
+        navController = rememberNavController(),
+        onSettingsButtonInvoked = {Unit},
+        onRemoteDeviceDisconnected = {Unit},
+        onBluetoothDisabled = {Unit},
+        onFeedbackButtonPressed = {Unit},
+        onNavigateToWifiFlow = {Unit},
+        onNavigateToEshare = {Unit},
+    )
+}
+
+

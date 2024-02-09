@@ -106,7 +106,8 @@ private fun PermissionScreen(
     bottomButton = { },
 ) {
     Centered {
-        BigIcon(drawableId = R.drawable.warning)
+        BigIcon(drawableId = R.drawable.warning,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconExclamation))
 
         ItemSpacer(30.dp)
         Header1Text(

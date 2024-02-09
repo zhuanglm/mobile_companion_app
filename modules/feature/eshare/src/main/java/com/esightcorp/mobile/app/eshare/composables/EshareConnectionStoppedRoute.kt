@@ -105,7 +105,8 @@ internal fun EshareConnectionStoppedScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        BigIcon(drawableId = R.drawable.ic_settings_disconnected)
+        BigIcon(drawableId = R.drawable.ic_settings_disconnected,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconDisconnected))
 
         ItemSpacer(spacerSizingBetweenText)
         Header1Text(

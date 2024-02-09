@@ -25,6 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -109,25 +112,33 @@ private fun HomeScreenBody(
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (personalGreeting, deviceCard, appContainer) = createRefs()
         PersonalGreeting(
-            modifier = modifier.constrainAs(personalGreeting) {
+            modifier = modifier.semantics {
+                isTraversalGroup = true
+                traversalIndex = 0f
+            }.constrainAs(personalGreeting) {
                 top.linkTo(parent.top, margin = 32.dp)
                 start.linkTo(parent.start)
             },
             connected = true,
         )
         DeviceCard(
-            modifier = modifier.constrainAs(deviceCard) {
+            modifier = modifier.semantics {
+                isTraversalGroup = true
+                traversalIndex = 1f
+            }.constrainAs(deviceCard) {
                 top.linkTo(personalGreeting.bottom, margin = 25.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
             onClick = { },
-            deviceModel = device.substringBeforeLast('-'),
             serialNumber = device.substringAfterLast('-'),
         )
 
         SquareTileCardLayout(
-            modifier = modifier.constrainAs(appContainer) {
+            modifier = modifier.semantics {
+                isTraversalGroup = true
+                traversalIndex = 2f
+            }.constrainAs(appContainer) {
                 top.linkTo(deviceCard.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)

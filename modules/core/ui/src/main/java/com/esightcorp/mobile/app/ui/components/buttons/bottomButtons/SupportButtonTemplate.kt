@@ -24,6 +24,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
@@ -54,15 +57,23 @@ fun SupportButtonTemplate(
     onClick: OnActionCallback? = null,
     painter: Painter = painterResource(R.drawable.glasses),
     text: String = "Override me",
-    textColor: Color = MaterialTheme.colors.onSurface
+    textColor: Color = MaterialTheme.colors.onSurface,
+    description: String? = null
 ) {
     ExtendedFloatingActionButton(
         text = { BodyText(text = text, modifier = modifier, color = textColor) },
-        icon = { SupportButtonIcon(onClick = { }, modifier = modifier, painter = painter) },
+        icon = {
+            SupportButtonIcon(
+                onClick = { }, modifier = modifier.clearAndSetSemantics { }, painter = painter,
+                contentDescription = description
+            )
+        },
         onClick = { onClick?.invoke() },
         containerColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics{ contentDescription = description ?: "" },
         elevation = FloatingActionButtonDefaults.elevation(
             dimensionResource(R.dimen.zero),
             dimensionResource(R.dimen.zero),
@@ -102,6 +113,7 @@ private fun SupportButtonIcon(
     onClick: OnActionCallback? = null,
     modifier: Modifier,
     painter: Painter,
+    contentDescription: String?,
 ) {
     FilledIconButton(
         onClick = { onClick?.invoke() },
@@ -115,7 +127,7 @@ private fun SupportButtonIcon(
     ) {
         Icon(
             painter = painter,
-            contentDescription = stringResource(R.string.kFeedbackButtonText),
+            contentDescription = contentDescription,
             modifier = Modifier.size(dimensionResource(R.dimen.filled_icon_bottom_button_size))
         )
     }
@@ -127,7 +139,8 @@ fun SupportButtonIconPreview() {
     MaterialTheme {
         SupportButtonIcon(
             modifier = Modifier.padding(16.dp),
-            painter = painterResource(R.drawable.glasses)
+            painter = painterResource(R.drawable.glasses),
+            contentDescription = stringResource(id = R.string.kFeedbackButtonText)
         )
     }
 }

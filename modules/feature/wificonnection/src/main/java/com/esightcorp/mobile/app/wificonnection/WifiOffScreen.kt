@@ -95,7 +95,8 @@ internal fun WifiOffScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            BigIcon(drawableId = R.drawable.round_wifi_24)
+            BigIcon(drawableId = R.drawable.round_wifi_24,
+                contentDescription = stringResource(id = R.string.kAccessibilityIconWiFi))
 
             ItemSpacer(headerTopMargin)
             Header1Text(

@@ -22,6 +22,7 @@ fun HowToConnectButton(
     SupportButtonTemplate(
         onClick = onConnectClick,
         text = stringResource(id = R.string.kFooterButtonHowToConnectTitle),
+        description = stringResource(id = R.string.kFooterButtonHowToConnectTitle),
         painter = painterResource(
             id = R.drawable.round_question_mark_24
         ),

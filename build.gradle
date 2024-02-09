@@ -14,6 +14,7 @@ buildscript {
         espresso_core = "3.4.0"
         activity_compose = "1.5.1"
         compose_material = "1.4.3"
+        eshare_compose_material = "1.5.2"
         animations = "1.4.3"
         ui_tooling = "1.4.3"
         lifecycle_viewmodel_compose = "2.5.1"

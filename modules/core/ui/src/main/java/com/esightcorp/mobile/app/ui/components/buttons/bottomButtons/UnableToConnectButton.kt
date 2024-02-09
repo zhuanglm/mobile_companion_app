@@ -24,8 +24,9 @@ fun UnableToConnectButton(
     onClick: OnActionCallback
 ) {
     SupportButtonTemplate(
-        onClick = onClick,
+        onClick =  onClick ,
         text = stringResource(labelId),
+        description = stringResource(id = R.string.kFooterButtonStillUnableToConnectTitle),
         painter = painterResource(id = R.drawable.round_question_mark_24),
         modifier = modifier
     )

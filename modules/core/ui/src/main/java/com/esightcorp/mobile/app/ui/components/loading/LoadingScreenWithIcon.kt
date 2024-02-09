@@ -9,6 +9,7 @@
 package com.esightcorp.mobile.app.ui.components.loading
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -31,7 +32,7 @@ fun LoadingScreenWithIcon(
     loadingText: String = "Loading..."
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
-        ConstraintLayout (modifier = modifier.fillMaxSize()){
+        ConstraintLayout (modifier = modifier.fillMaxSize().padding(25.dp, 0.dp)){
             val (topAppBar, text, icon) = createRefs()
             ESightTopAppBar(
                 showBackButton = false,

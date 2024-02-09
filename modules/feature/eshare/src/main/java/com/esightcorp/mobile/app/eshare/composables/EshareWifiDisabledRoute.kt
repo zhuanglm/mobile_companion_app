@@ -33,7 +33,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspo
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -88,7 +88,7 @@ internal fun EshareWifiDisabledScreen(
         )
 
         ItemSpacer(30.dp)
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kWifiErrorWifiDisabledSubtitle),
             modifier = modifier,
         )

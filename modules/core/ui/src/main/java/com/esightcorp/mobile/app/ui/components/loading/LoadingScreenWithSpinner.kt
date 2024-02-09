@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
 import com.esightcorp.mobile.app.ui.components.buttons.CancelButton
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
@@ -42,7 +42,7 @@ fun LoadingScreenWithSpinner(
                     end.linkTo(parent.end)
                 }
             )
-            Subheader(
+            BoldSubheader(
                 text = loadingText,
                 modifier = modifier.constrainAs(text) {
                     top.linkTo(parent.top)

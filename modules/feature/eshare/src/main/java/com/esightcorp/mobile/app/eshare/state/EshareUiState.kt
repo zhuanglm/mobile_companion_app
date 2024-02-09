@@ -26,6 +26,7 @@ data class EshareConnectedUiState(
 data class EshareStoppedUiState(
     val titleId: Int = -1,
     val descriptionId: Int = -1,
+    val descriptionTwoId: Int = -1,
     val isDeviceConnected: Boolean = true,
 )
 

@@ -8,9 +8,14 @@
 
 package com.esightcorp.mobile.app.eshare.composables
 
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +23,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +41,8 @@ import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.SubHeader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
@@ -78,31 +86,52 @@ internal fun EshareConnectionStoppedScreen(
     bottomButton = { },
 ) {
     BackStackLogger(navController, TAG)
+    val spacerSizingBetweenText = 25.dp
+    val spacerSizingBottomButton = 50.dp
+
+    val configuration = LocalConfiguration.current
+    val density = LocalDensity.current
+    val screenHeightDp = (configuration.screenHeightDp * 0.8).dp
+    val minHeightPx = with(density) {screenHeightDp.toPx()}
+
+    Log.i(TAG, "EshareConnectionStoppedScreen: with density  ${minHeightPx.dp}")
+    Log.i(TAG, "EshareConnectionStoppedScreen: Without density $screenHeightDp")
+
 
     Column(
         modifier = modifier
-            .padding(vertical = 30.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .heightIn(screenHeightDp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         BigIcon(drawableId = R.drawable.ic_settings_disconnected,
             contentDescription = stringResource(id = R.string.kAccessibilityIconDisconnected))
 
-        ItemSpacer(30.dp)
+        ItemSpacer(spacerSizingBetweenText)
         Header1Text(
             text = stringResource(uiState.titleId),
             modifier = modifier,
             textAlign = TextAlign.Center
         )
 
-        ItemSpacer(30.dp)
-        Subheader(
+        ItemSpacer(spacerSizingBetweenText)
+        SubHeader(
             text = stringResource(uiState.descriptionId),
             modifier = modifier,
             textAlign = TextAlign.Center
         )
+        Log.i(TAG, "EshareConnectionStoppedScreen: ${uiState.descriptionTwoId}")
+        if(uiState.descriptionTwoId !=  -1){
+            ItemSpacer(spacerSizingBetweenText)
+            SubHeader(
+                text = stringResource(id = uiState.descriptionTwoId),
+                modifier = modifier,
+                textAlign = TextAlign.Center
+            )
+        }
 
-        ItemSpacer(60.dp)
+        ItemSpacer(spacerSizingBottomButton)
         TextRectangularButton(
             onClick = { onReturnPressed?.invoke(navController) },
             modifier = modifier,
@@ -118,8 +147,9 @@ internal fun ConnectionStoppedPreview() = MaterialTheme {
     EshareConnectionStoppedScreen(
         navController = rememberNavController(),
         uiState = EshareStoppedUiState(
-            titleId = R.string.kEshareErrorViewControllerConnectionStoppedTitle,
-            descriptionId = R.string.kEshareErrorViewControllerConnectionStoppedDescription
+            titleId = R.string.kEshareErrorViewControllerConnectionUnsuccessfulTitle,
+            descriptionId = R.string.kHotspotUnreachable,
+            descriptionTwoId = R.string.kEshareErrorViewControllerTryAgainLater
         ),
     )
 }

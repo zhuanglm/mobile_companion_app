@@ -40,7 +40,7 @@ import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
@@ -131,7 +131,7 @@ private fun HotspotSetupBody(
             },
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kHotspotTroubleshootingHowToConnectSubTitle),
             modifier = modifier.constrainAs(subtitle) {
                 top.linkTo(header.bottom, margin = 10.dp)

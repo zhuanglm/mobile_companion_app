@@ -25,7 +25,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
@@ -98,7 +98,7 @@ private fun AlreadyConnectedScreenBody(
             color = MaterialTheme.colors.onSurface
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
             modifier = modifier.constrainAs(helpText) {
                 top.linkTo(header2Text.bottom, margin = 20.dp)

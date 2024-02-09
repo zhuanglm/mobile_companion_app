@@ -33,7 +33,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToScanBu
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.rememberQrBitmapPainter
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.state.WifiQrCodeUiState
@@ -108,7 +108,7 @@ private fun WifiQrCodeScreenBody(
             },
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kQRViewScanWifiSubtitleText),
             modifier = modifier.constrainAs(subHeader) {
                 top.linkTo(header.bottom, margin = 20.dp)

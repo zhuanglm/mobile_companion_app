@@ -23,7 +23,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 
@@ -75,7 +75,7 @@ fun BigIconBase(
                 })
 
             // Set up the body text
-            Subheader(
+            BoldSubheader(
                 text = stringResource(id = R.string.kBTErrorBluetoothOffDescription),
                 modifier = modifier
                     .padding(

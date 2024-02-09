@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesFoundViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.Subheader
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
@@ -102,7 +102,7 @@ private fun NoDevicesFoundBody(
                 },
         )
 
-        Subheader(
+        BoldSubheader(
             text = stringResource(R.string.kTroubleShootingTryFollowingSteps),
             modifier = modifier
                 .constrainAs(subtitle) {

@@ -99,5 +99,17 @@ class NoDevicesConnectedViewModel @Inject constructor(
 
     fun navigateToSettings(nav: NavController) = nav.navigate(SettingsNavigation.IncomingRoute)
 
+
+    fun showExternalUrl(urlId: Int) =
+        with(application.applicationContext) { openExternalUrl(getString(urlId)) }
+
+    fun openTerms(){
+        showExternalUrl(R.string.url_esight_privacy_policy)
+    }
+
+    fun openPrivacyPolicy(){
+        showExternalUrl(R.string.url_esight_privacy_policy)
+    }
+
     //endregion
 }

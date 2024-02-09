@@ -65,8 +65,8 @@ fun NoDeviceConnectedRoute(
                     onScanESightPressed = vm::navigateToScanESight,
                     onSettingsButtonPressed = vm::navigateToSettings,
                     onFeedbackButtonPressed = vm::showFeedbackPage,
-                    onTermsAndConditionsPressed = { },
-                    onPrivacyPolicyPressed = { },
+                    onTermsAndConditionsPressed = vm::openTerms,
+                    onPrivacyPolicyPressed = vm::openPrivacyPolicy,
                     navController = navController
                 )
             }
@@ -102,8 +102,8 @@ private fun NoDeviceConnectedScreen(
     onScanESightPressed: OnNavigationCallback? = null,
     onSettingsButtonPressed: OnNavigationCallback? = null,
     onFeedbackButtonPressed: OnActionCallback? = null,
-    onTermsAndConditionsPressed: (Int) -> Unit,
-    onPrivacyPolicyPressed: (Int) -> Unit,
+    onTermsAndConditionsPressed: () -> Unit,
+    onPrivacyPolicyPressed: () -> Unit,
     navController: NavController,
 ) {
     BaseScreen(

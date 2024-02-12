@@ -32,7 +32,7 @@ fun BtSearchingRoute(
     vm: BtSearchingViewModel = hiltViewModel(),
 ) {
     val uiState by vm.uiState.collectAsState()
-    if (!uiState.isBtEnabled) {
+    if (uiState.isBtEnabled == true) {
         //TODO: check this again!!!
 //        NavigateBluetoothDisabled(navController = navController)
     } else {

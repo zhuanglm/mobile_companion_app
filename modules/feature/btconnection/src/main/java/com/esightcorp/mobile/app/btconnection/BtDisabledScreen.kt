@@ -45,17 +45,18 @@ import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
-fun BtDisabledScreen(
+fun BtDisabledRoute(
     navController: NavController,
     vm: BtDisabledViewModel = hiltViewModel(),
 ) {
-    Log.d(TAG, "BtDisabledScreen")
     val uiState by vm.uiState.collectAsState()
 
     when (uiState.isBtEnabled) {
         false -> {
-            BtDisabledScreenImpl(navController = navController,
-                onBtStateChanged = vm::updateBtEnabledState)
+            BtDisabledScreenImpl(
+                navController = navController,
+                onBtStateChanged = vm::updateBtEnabledState
+            )
         }
 
         true -> {
@@ -121,8 +122,10 @@ private fun BtDisabledBody(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BigIcon(drawableId = R.drawable.baseline_bluetooth_24,
-            contentDescription = stringResource(id = R.string.kAccessibilityIconBluetooth))
+        BigIcon(
+            drawableId = R.drawable.baseline_bluetooth_24,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconBluetooth)
+        )
         ItemSpacer(25.dp)
 
         // Set up the header text

@@ -213,7 +213,7 @@ internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
 internal fun EshareRemotePreview() = MaterialTheme {
     Surface {
         Row {
-            Spacer(modifier = Modifier.weight(3f))
+            Spacer(modifier = Modifier.weight(2f))
             EshareRemote(modifier = Modifier.weight(1f))
         }
     }

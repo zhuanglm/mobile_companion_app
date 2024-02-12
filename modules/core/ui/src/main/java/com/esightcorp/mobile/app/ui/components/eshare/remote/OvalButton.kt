@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -33,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.extensions.accessibilityClickOnEvent
 import com.esightcorp.mobile.app.ui.extensions.gestureHandler
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -62,8 +64,13 @@ fun OvalButton(
     val width = size * OblongWidthFactor // Calculating the width to maintain the oblong shape
     val ovalShape = GenericShape { it, _ -> addOval(Rect(Offset.Zero, it)) }
 
+    val coroutineScope = rememberCoroutineScope()
+
     ElevatedButton(
         modifier = modifier
+            .accessibilityClickOnEvent(coroutineScope,
+                onDownEvent = onDownEvent,
+                onUpEvent = onUpEvent)
             .width(width) // Setting the derived width
             .height(size) // Setting the provided height
             .clip(ovalShape)

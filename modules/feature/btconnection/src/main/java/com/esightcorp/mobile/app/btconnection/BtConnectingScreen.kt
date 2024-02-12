@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.state.BtConnectingUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectingViewModel
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
@@ -40,9 +41,7 @@ fun BtConnectingRoute(
             onDeviceConnectFailed = vm::navigateToUnableToConnectScreen,
         )
 
-        // TODO: check this again!!!
-        false -> Unit
-//            NavigateBluetoothDisabled(navController = navController)
+        false -> ExecuteOnce { vm.navigateToBtDisabledScreen(navController) }
     }
 }
 
@@ -78,6 +77,9 @@ private fun BtConnectingScreen(
 @Preview
 @Composable
 private fun BtConnectingScreenConnectingPreview() = MaterialTheme {
-    BtConnectingScreen(navController = rememberNavController(), uiState = BtConnectingUiState())
+    BtConnectingScreen(
+        navController = rememberNavController(),
+        uiState = BtConnectingUiState(),
+    )
 }
 //endregion

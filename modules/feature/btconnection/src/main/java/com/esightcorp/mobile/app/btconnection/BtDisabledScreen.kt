@@ -76,14 +76,16 @@ private fun BtDisabledScreenImpl(
     navController: NavController,
     onBtStateChanged: (Boolean) -> Unit,
 ) {
-    BtDisabledBody(modifier = modifier,
+    BtDisabledBody(
+        modifier = modifier,
         navController = navController,
         onReconnectCallback = { nav ->
             nav.navigate(target = BtConnectionNavigation.BtSearchingRoute, popCurrent = true)
         },
         onCancelCallback = { nav ->
             nav.navigate(target = BtConnectionNavigation.NoDeviceConnectedRoute, popCurrent = true)
-        })
+        },
+    )
 
     // If Bluetooth is not enabled, launch system dialog to enable Bluetooth
     val launcher = rememberLauncherForActivityResult(

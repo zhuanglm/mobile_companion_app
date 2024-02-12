@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,9 +31,10 @@ import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 
 @Composable
 fun BtDevicesRoute(
@@ -44,19 +44,22 @@ fun BtDevicesRoute(
     vm.getDeviceList()
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
-        //TODO: check this again!!!
-//        NavigateBluetoothDisabled(navController = navController)
-    } else if (uiState.listOfAvailableDevices.isEmpty()) {
-        LaunchedEffect(Unit) { vm.navigateToUnableToFindESight(navController) }
-    } else {
-        BtDevicesScreen(
-            navController = navController,
-            uiState = uiState,
-            onBackClicked = vm::navigateToNoDeviceConnectedScreen,
-            onDeviceSelected = vm::navigateToBtConnectingScreen,
-            onHelpClicked = vm::navigateToUnableToFindESight,
-        )
+        ExecuteOnce { vm.navigateToBtDisabledScreen(navController) }
+        return
     }
+
+    if (uiState.listOfAvailableDevices.isEmpty()) {
+        ExecuteOnce { vm.navigateToUnableToFindESight(navController) }
+        return
+    }
+
+    BtDevicesScreen(
+        navController = navController,
+        uiState = uiState,
+        onBackClicked = vm::navigateToNoDeviceConnectedScreen,
+        onDeviceSelected = vm::navigateToBtConnectingScreen,
+        onHelpClicked = vm::navigateToUnableToFindESight,
+    )
 }
 
 @Preview

@@ -95,7 +95,11 @@ fun CompactDeviceCardBody(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(6.dp),
+            .padding(6.dp)
+            .semantics {
+                //avoid talkBack read it as "double click to active"
+                contentDescription = if (isClickable) readLabel else ""
+            },
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

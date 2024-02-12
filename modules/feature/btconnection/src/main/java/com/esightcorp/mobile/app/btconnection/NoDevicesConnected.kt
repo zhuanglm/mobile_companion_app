@@ -26,6 +26,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.btconnection.repositories.BtUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesConnectedViewModel
 import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.buttons.AddDeviceButton
@@ -68,7 +69,18 @@ fun NoDeviceConnectedRoute(
     Log.d(TAG, "btPermissionState: ${btPermissionState.state}")
     when (btPermissionState.state) {
         PermissionState.GRANTED -> {
-            ExecuteOnce { vm.navigateToBtScanning(navController) }
+            val btHwState by vm.btUiState.collectAsState()
+            Log.d(TAG, "btStatus: ${btHwState.state}")
+
+            ExecuteOnce(key = btHwState.state) {
+                when (btHwState.state) {
+                    BtUiState.BtHwState.ENABLED -> vm.navigateToBtScanning(navController)
+
+                    BtUiState.BtHwState.DISABLED -> vm.navigateToBtDisabled(navController)
+
+                    else -> vm.checkBtHwState()
+                }
+            }
             return
         }
 
@@ -79,14 +91,6 @@ fun NoDeviceConnectedRoute(
 
         else -> Unit
     }
-
-//    when (uiState.bluetoothState) {
-//        BluetoothState.READY -> ExecuteOnce { vm.navigateToBtScanning(navController) }
-//
-//        BluetoothState.DISABLED -> ExecuteOnce { vm.navigateToBtDisabled(navController) }
-//
-//        else -> Unit
-//    }
 }
 
 //region Private implementation
@@ -102,7 +106,8 @@ private fun NoDeviceConnectedScreen(
     onPrivacyPolicyPressed: () -> Unit,
     navController: NavController,
 ) {
-    BaseScreen(modifier = modifier,
+    BaseScreen(
+        modifier = modifier,
         showBackButton = false,
         showSettingsButton = true,
         onSettingsButtonInvoked = { onSettingsButtonPressed?.invoke(navController) },
@@ -119,7 +124,8 @@ private fun NoDeviceConnectedScreen(
                 modifier = modifier,
                 textColor = MaterialTheme.colors.onSurface
             )
-        }) {
+        },
+    ) {
         NoDevicesBody(
             modifier = modifier,
             onScanESightPressed = onScanESightPressed,

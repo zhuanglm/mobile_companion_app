@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.btconnection.repositories.BtUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtPermissionViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ExecuteOnce
@@ -63,7 +64,15 @@ fun BtPermissionRoute(
     val permissionUiState by vm.permissionUiState.collectAsState()
     Log.w(TAG, "permissionUiState: ${permissionUiState.state}")
     if (permissionUiState.state == PermissionUiState.PermissionState.GRANTED) {
-        ExecuteOnce { vm.onPermissionGranted(navController) }
+        val btHwState by vm.btUiState.collectAsState()
+        Log.w(TAG, "btHwState: ${btHwState.state}")
+        ExecuteOnce(key = btHwState.state) {
+            when (btHwState.state) {
+                BtUiState.BtHwState.ENABLED -> vm.navigateToBtSearching(navController)
+                BtUiState.BtHwState.DISABLED -> vm.navigateToBtDisabled(navController)
+                else -> vm.checkBtHwState()
+            }
+        }
         return
     }
 }

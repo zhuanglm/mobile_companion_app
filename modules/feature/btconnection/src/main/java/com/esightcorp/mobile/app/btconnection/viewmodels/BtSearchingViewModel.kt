@@ -51,16 +51,16 @@ class BtSearchingViewModel @Inject constructor(
         }
 
         override fun onBtStateUpdate(enabled: Boolean) {
-            _uiState.update {
-                it.copy(isBtEnabled = enabled)
-            }
+            _uiState.update { it.copy(isBtEnabled = enabled) }
         }
     }
 
     init {
-        btConnectionRepository.registerListener(btRepositoryListener)
-        btConnectionRepository.setupBtModelListener()
-        btConnectionRepository.resetBtDeviceList()
+        with(btConnectionRepository) {
+            registerListener(btRepositoryListener)
+            setupBtModelListener()
+            resetBtDeviceList()
+        }
     }
 
     fun triggerScan() {
@@ -105,5 +105,9 @@ class BtSearchingViewModel @Inject constructor(
 
     fun onScanSuccess(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.ScanResultRoute)
+    }
+
+    fun navigateToBtDisabled(navController: NavController) = with(navController) {
+        navigate(target = BtConnectionNavigation.BtDisabledScreen)
     }
 }

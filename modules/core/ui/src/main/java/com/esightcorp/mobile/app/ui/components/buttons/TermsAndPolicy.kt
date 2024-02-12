@@ -21,20 +21,22 @@ import com.esightcorp.mobile.app.ui.components.text.ClickableBodyText
 
 @Composable
 fun TermsAndPolicy(
-    onTermsInvoked: (Int) -> Unit,
-    onPrivacyPolicyInvoked: (Int) -> Unit,
+    onTermsInvoked: () -> Unit,
+    onPrivacyPolicyInvoked: () -> Unit,
     modifier: Modifier,
     textColor: Color
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         ClickableBodyText(
-            text = "${stringResource(R.string.kTermsOfServiceAgreementPartOne)} ${stringResource(R.string.kTermsOfService)}",
+            text = stringResource(R.string.kTermsOfServiceAgreementPartOne) + " ",
+            clickableText = stringResource(id = R.string.kTermsOfService),
             modifier = modifier.fillMaxWidth(),
             onClick = onTermsInvoked,
             color = textColor
         )
         ClickableBodyText(
-            text = "${stringResource(R.string.kTermsOfServiceAgreementPartTwo)} ${stringResource(R.string.kDataPolicy)}",
+            text = stringResource(R.string.kTermsOfServiceAgreementPartTwo ) + " ",
+            clickableText = stringResource(id = R.string.kDataPolicy),
             modifier = modifier.fillMaxWidth(),
             onClick = onPrivacyPolicyInvoked,
             color = textColor
@@ -42,7 +44,7 @@ fun TermsAndPolicy(
     }
 }
 
-@Preview(locale = "es")
+@Preview(locale = "en")
 @Composable
 private fun TermsAndPolicyPreview() = MaterialTheme {
     TermsAndPolicy(

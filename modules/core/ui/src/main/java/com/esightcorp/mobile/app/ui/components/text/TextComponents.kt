@@ -15,10 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -112,14 +115,33 @@ fun FineText(
 @Composable
 fun ClickableBodyText(
     text: String,
+    clickableText: String = "",
+    clickableTextSuffix: String = ".",
+    url: String = "",
     modifier: Modifier,
-    onClick: (Int) -> Unit,
+    onClick: () -> Unit,
     color: Color = MaterialTheme.colors.onPrimary
 ) {
+
+    val annotatedString = AnnotatedString.Builder().apply {
+        append(text)
+        //start of clickable part
+        pushStringAnnotation(tag = "URL", annotation = url)
+        pushStyle(SpanStyle(color = color, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold))
+        append(clickableText)
+        pop() //end of style
+        pop() //end of annotation
+        append(clickableTextSuffix)
+    }.toAnnotatedString()
     ClickableText(
-        text = AnnotatedString(text),
+        text = annotatedString,
         modifier = modifier,
-        onClick = onClick,
+        onClick = { offset ->
+                  annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                      .firstOrNull()?.let { _ ->
+                          onClick()
+                      }
+        },
         style = TextStyle(
             color = color,
             fontFamily = FontFamily.SansSerif,
@@ -134,6 +156,7 @@ fun ButtonText(
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary,
     textAlign: TextAlign? = null,
+    onTextLayoutResult: (TextLayoutResult?) -> Unit = {Unit},
 ) {
     Text(
         text = text,
@@ -143,6 +166,7 @@ fun ButtonText(
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,
         textAlign = textAlign,
+        onTextLayout = onTextLayoutResult
     )
 }
 

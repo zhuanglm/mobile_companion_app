@@ -131,6 +131,7 @@ internal fun BtDevicesScreen(
                 },
             ) {
                 items(uiState.listOfAvailableDevices) { device ->
+
                     if (device.contains(stringResource(id = R.string.hyphen))) {
                         val serialNumber =
                             device.substringAfterLast(stringResource(id = R.string.hyphen))

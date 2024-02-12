@@ -43,7 +43,9 @@ fun NoDevicesFoundRoute(
 
     val btUiState by vm.uiState.collectAsState()
     when (btUiState.isBtEnabled) {
-        false -> NavigateBluetoothDisabled(navController = navController)
+        //TODO: check this again!!!
+        false -> Unit
+//            NavigateBluetoothDisabled(navController = navController)
 
         true -> {
             NoDevicesFoundScreen(

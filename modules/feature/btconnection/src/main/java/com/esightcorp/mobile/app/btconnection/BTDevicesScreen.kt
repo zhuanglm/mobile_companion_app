@@ -44,7 +44,8 @@ fun BtDevicesRoute(
     vm.getDeviceList()
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
+        //TODO: check this again!!!
+//        NavigateBluetoothDisabled(navController = navController)
     } else if (uiState.listOfAvailableDevices.isEmpty()) {
         LaunchedEffect(Unit) { vm.navigateToUnableToFindESight(navController) }
     } else {

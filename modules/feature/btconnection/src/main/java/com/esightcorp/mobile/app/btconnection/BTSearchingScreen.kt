@@ -33,7 +33,8 @@ fun BtSearchingRoute(
 ) {
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
+        //TODO: check this again!!!
+//        NavigateBluetoothDisabled(navController = navController)
     } else {
         BtSearchingScreen(
             modifier = Modifier,

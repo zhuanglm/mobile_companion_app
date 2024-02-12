@@ -40,7 +40,9 @@ fun BtConnectingRoute(
             onDeviceConnectFailed = vm::navigateToUnableToConnectScreen,
         )
 
-        false -> NavigateBluetoothDisabled(navController = navController)
+        // TODO: check this again!!!
+        false -> Unit
+//            NavigateBluetoothDisabled(navController = navController)
     }
 }
 

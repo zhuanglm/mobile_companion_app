@@ -45,7 +45,8 @@ fun UnableToConnectRoute(
             onConnectClicked = vm::showHowToConnectPage
         )
     } else {
-        NavigateBluetoothDisabled(navController = navController)
+        //TODO: check this again!!!
+//        NavigateBluetoothDisabled(navController = navController)
     }
 }
 
@@ -60,8 +61,10 @@ fun UnableToConnectScreenPreview() = MaterialTheme {
 }
 
 @Composable
-private fun UnableToConnectBody(modifier: Modifier,
-                                onTryAgainClicked: OnActionCallback) {
+private fun UnableToConnectBody(
+    modifier: Modifier,
+    onTryAgainClicked: OnActionCallback,
+) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (topBar, header, subtitle, help1, help2, button) = createRefs()
 
@@ -118,6 +121,7 @@ private fun UnableToConnectBody(modifier: Modifier,
     }
 
 }
+
 //region Internal implementation
 @Composable
 internal fun UnableToConnectScreen(

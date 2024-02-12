@@ -34,13 +34,9 @@ fun NoDeviceConnectedRoute(
     NoDeviceConnectedScreen(
         onScanESightPressed = vm::navigateToScanESight,
         onSettingsButtonPressed = vm::navigateToSettings,
-        onFeedbackButtonPressed = vm::showFeedbackPage,
-        onTermsAndConditionsPressed = {
-            //TODO: implement this!!!
-        },
-        onPrivacyPolicyPressed = {
-            //TODO: implement this!!!
-        },
+        onFeedbackButtonPressed = vm::gotoEsightFeedbackSite,
+        onTermsAndConditionsPressed = vm::gotoEsightPrivacyPolicySite,
+        onPrivacyPolicyPressed = vm::gotoEsightPrivacyPolicySite,
         navController = navController
     )
 }

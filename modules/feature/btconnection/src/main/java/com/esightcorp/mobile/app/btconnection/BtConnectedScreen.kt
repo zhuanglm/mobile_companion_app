@@ -33,7 +33,8 @@ fun BtConnectedRoute(
 ) {
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
+        //TODO: check this again!!!
+//        NavigateBluetoothDisabled(navController = navController)
     } else {
         BtConnectedScreen(
             navController = navController,

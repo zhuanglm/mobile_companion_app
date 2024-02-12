@@ -9,12 +9,14 @@
 package com.esightcorp.mobile.app.ui.components.loading
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -30,7 +32,7 @@ fun LoadingScreenWithSpinner(
     cancelButtonNeeded: Boolean = true,
     onCancelButtonClicked: OnActionCallback? = null,
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
+    Surface(modifier = modifier.fillMaxSize().padding(25.dp, 0.dp), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topAppBar, text, spinner, cancelButton) = createRefs()
             ESightTopAppBar(
@@ -50,6 +52,7 @@ fun LoadingScreenWithSpinner(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
+                textAlign = TextAlign.Center
             )
 
             CircularProgressIndicator(

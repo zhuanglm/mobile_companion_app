@@ -47,8 +47,20 @@ enum class EShareAction(private val iName: String) : IAction {
     }
 }
 
+enum class WifiAction(private val iName: String): IAction{
+    WifiConnectionStatus("com.esightcorp.wifi.ACTION_WIFI_CONNECTION_STATUS"),
+    ;
+
+    override fun actionName() = iName
+
+    companion object{
+        fun from(action: String?):WifiAction? = values().find { it.actionName() == action }
+    }
+}
+
 enum class ESightBleAction(private val iName: String) : IAction {
-    DataAvailable("com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE")
+    DataAvailable("com.esightcorp.bluetooth.le.ACTION_DATA_AVAILABLE"),
+    ErrorAction("com.esightcorp.wifi.ACTION_ERROR"),
 
     ;
 
@@ -79,6 +91,7 @@ fun String?.toIAction(): IAction? {
         EShareAction.from(this),
         ESightBleAction.from(this),
         HotspotAction.from(this),
+        WifiAction.from(this),
 
         //TODO: add newly defined IAction here ...
     ).forEach { actItem ->

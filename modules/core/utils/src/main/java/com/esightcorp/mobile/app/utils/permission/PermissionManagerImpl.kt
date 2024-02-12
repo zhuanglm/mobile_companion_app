@@ -38,6 +38,8 @@ class PermissionManagerImpl(
     private var permissionLauncher: PermissionLauncher? = null
     private var activity: Activity? = null
 
+    private var _isBackFromSettings = false
+
     override fun registerPermissionLauncher(launcher: PermissionLauncher, activity: Activity?) {
         permissionLauncher = launcher
         this.activity = activity
@@ -68,6 +70,10 @@ class PermissionManagerImpl(
                 updateUiState(PermissionState.SHOW_RATIONALE)
                 return
             }
+
+            // Back from Settings without any update
+            if (_isBackFromSettings)
+                return
         } ?: run {
             Log.e(_tag, "initPermissionCheck - Input activity is null, ignore rationale check!!!")
         }
@@ -102,6 +108,7 @@ class PermissionManagerImpl(
 
     override fun onAppSettingResult(result: ActivityResult) {
         Log.w(_tag, "->> onAppSettingResult - request latest permission state ...")
+        _isBackFromSettings = true
         initPermissionCheck()
     }
 

@@ -15,7 +15,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import java.nio.charset.StandardCharsets
@@ -503,7 +502,7 @@ class BleService : Service() {
         bleWorkerThread?.interrupt()
     }
 
-
+    @Suppress("Deprecation")
     private fun performBleWrite(operation: BleGattOperation){
         Log.i("BleService", "performBleWrite:\nCharacteristic ${operation.characteristic}\nData ${operation.data}")
         when(Build.VERSION.SDK_INT >= 33){
@@ -532,7 +531,6 @@ class BleService : Service() {
 
 
     @SuppressLint("MissingPermission", "NewApi")
-    @Suppress("Deprecation")
     private fun sendMessage(chType: ESightCharacteristic, payload: BluetoothPayload) {
         val data = payload.getByteArrayBlePayload()
         val characteristic: BluetoothGattCharacteristic? = chType.getCharacteristic(bluetoothGatt)

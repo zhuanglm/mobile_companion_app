@@ -194,13 +194,14 @@ private fun SquareTileCardLayout(
         CardData(
             R.string.kConnectWifiLabelText, R.drawable.round_wifi_24
         ) {
-        onNavigateToEshare(navController)
+            onNavigateToWifiFlow(navController)
         },
 
         CardData(
             R.string.kHomeRootViewConnectedeShareButtonText, R.drawable.baseline_camera_alt_24
         ) {
-            onNavigateToWifiFlow(navController)
+            onNavigateToEshare(navController)
+
         })
 
     val configuration = LocalConfiguration.current

@@ -26,11 +26,11 @@ class BleService : Service() {
     private val _tag = this.javaClass.simpleName
 
     private val binder = LocalBinder()
-    private val retryTimeout = 100L
+    private val bleWriteOperationDeque = LinkedBlockingDeque<BleGattOperation>()
+
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var connectionState = STATE_DISCONNECTED
-
     private var lastBroadcastTimeEshareError = 0L
     private var bleWorkerThread: Thread? = null
 
@@ -459,13 +459,17 @@ class BleService : Service() {
         }
     }
 
-    data class BleGattOperation(val data: ByteArray, val characteristic: BluetoothGattCharacteristic)
-    class BleBusyException(message:String): Exception(message)
-    private val bleWriteOperationDeque = LinkedBlockingDeque<BleGattOperation>()
-    private fun enqueueBleOperation(operation: BleGattOperation){
-        bleWriteOperationDeque.put(operation)
-    }
+    //region Retry mechanism for Writes
 
+    /**
+     * BleBusyException
+     * @param message The message that the exception should return
+     */
+    class BleBusyException(message:String): Exception(message)
+
+    /*
+     * The idea behind this is to use the FIFO method to maintain order for the BLE Write requests
+     */
     private fun bleWorkerWriteLogic(){
         while (!Thread.currentThread().isInterrupted){
             try {
@@ -474,7 +478,7 @@ class BleService : Service() {
                     Log.i("BleService", "bleWorkerWriteLogic: perform write with $operation")
                     performBleWrite(operation)
                 } catch (e: BleBusyException){
-                    // Re-enqueue at the front if BLE is busy
+                    // Re-enqueue at the front if BLE is busy. We want to be able to keep the right order
                     Log.e("BleService", "bleWorkerWriteLogic: ", e )
                     bleWriteOperationDeque.offerFirst(operation)
                 }
@@ -511,6 +515,7 @@ class BleService : Service() {
                 if (intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY){
                     throw BleBusyException("Write Request Busy. Please try again later")
                 }
+                decodeSendMessageResult(intResult)
             }
             false -> {
                 //write using SDK < 33
@@ -535,16 +540,9 @@ class BleService : Service() {
         if (characteristic != null){
             Log.i("BleService", "sendMessage: Enqueueing the operation")
             Log.i("BleService", "sendMessage: Is the thread alive? ${bleWorkerThread?.isAlive}")
-            enqueueBleOperation(BleGattOperation(data, characteristic))
-        }
-    }
+            bleWriteOperationDeque.offerLast(BleGattOperation(data, characteristic))
 
-    private fun retryOnWriteRequestBusy(chType: ESightCharacteristic, payload: BluetoothPayload) {
-        val handler = Handler(mainLooper)
-        handler.postDelayed({
-            sendMessage(chType, payload)
-        }, 100)
-        Log.d(_tag, "retryOnWriteRequestBusy: $payload")
+        }
     }
 
     private fun decodeSendMessageResult(result: Int): Boolean {
@@ -584,7 +582,7 @@ class BleService : Service() {
         }
         return false
     }
-
+    //endregion
     //endregion
 
     //region Broadcast utilities

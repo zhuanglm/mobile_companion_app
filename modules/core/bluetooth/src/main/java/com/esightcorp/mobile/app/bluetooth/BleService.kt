@@ -20,16 +20,19 @@ import android.os.IBinder
 import android.util.Log
 import java.nio.charset.StandardCharsets
 import java.util.*
+import java.util.concurrent.LinkedBlockingDeque
 
 class BleService : Service() {
     private val _tag = this.javaClass.simpleName
 
     private val binder = LocalBinder()
+    private val retryTimeout = 100L
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
     private var connectionState = STATE_DISCONNECTED
 
     private var lastBroadcastTimeEshareError = 0L
+    private var bleWorkerThread: Thread? = null
 
     //region Service implementation
 
@@ -46,6 +49,7 @@ class BleService : Service() {
             Log.e(_tag, "initialize: Unable to obtain a BluetoothAdapter.")
             return false
         }
+        startBleWorkerThread()
 
         return true
     }
@@ -448,40 +452,91 @@ class BleService : Service() {
 
     @SuppressLint("MissingPermission")
     private fun close() {
+        shutdownBleWorker()
         bluetoothGatt?.let { gatt ->
             gatt.close()
             bluetoothGatt = null
         }
     }
 
-    @SuppressLint("MissingPermission", "NewApi")
-    @Suppress("Deprecation")
-    private fun sendMessage(chType: ESightCharacteristic, payload: BluetoothPayload): Boolean {
-        var boolResult = false
+    data class BleGattOperation(val data: ByteArray, val characteristic: BluetoothGattCharacteristic)
+    class BleBusyException(message:String): Exception(message)
+    private val bleWriteOperationDeque = LinkedBlockingDeque<BleGattOperation>()
+    private fun enqueueBleOperation(operation: BleGattOperation){
+        bleWriteOperationDeque.put(operation)
+    }
 
-        val data = payload.getByteArrayBlePayload()
-        chType.getCharacteristic(bluetoothGatt)?.let { characteristic ->
-            when (Build.VERSION.SDK_INT >= 33) {
-                true -> {
-                    val intResult = bluetoothGatt!!.writeCharacteristic(
-                        characteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                    )
-                    boolResult = decodeSendMessageResult(intResult)
-                    if (intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY) {
-                        retryOnWriteRequestBusy(chType, payload)
-                    }
-                    Log.d(_tag, "sendMessage - intResult: $intResult")
+    private fun bleWorkerWriteLogic(){
+        while (!Thread.currentThread().isInterrupted){
+            try {
+                val operation = bleWriteOperationDeque.takeFirst()
+                try{
+                    Log.i("BleService", "bleWorkerWriteLogic: perform write with $operation")
+                    performBleWrite(operation)
+                } catch (e: BleBusyException){
+                    // Re-enqueue at the front if BLE is busy
+                    Log.e("BleService", "bleWorkerWriteLogic: ", e )
+                    bleWriteOperationDeque.offerFirst(operation)
                 }
-
-                false -> {
-                    characteristic.value = data
-                    boolResult = bluetoothGatt!!.writeCharacteristic(characteristic)
-                }
+            }catch (e: InterruptedException){
+                Thread.currentThread().interrupt()
             }
         }
-        Log.d(_tag, "sendMessage - result: $boolResult")
+    }
 
-        return boolResult
+    private fun startBleWorkerThread(){
+        if(bleWorkerThread == null || !bleWorkerThread!!.isAlive){
+            Log.i("BleService", "startBleWorkerThread: ")
+            bleWorkerThread = Thread(::bleWorkerWriteLogic)
+            bleWorkerThread?.start()
+        }else{
+            Log.e("BleService", "startBleWorkerThread: Already started!!!!!!!!!! " )
+        }
+
+    }
+    private fun shutdownBleWorker(){
+        Log.i("BleService", "shutdownBleWorker: ")
+        bleWorkerThread?.interrupt()
+    }
+
+
+    private fun performBleWrite(operation: BleGattOperation){
+        Log.i("BleService", "performBleWrite:\nCharacteristic ${operation.characteristic}\nData ${operation.data}")
+        when(Build.VERSION.SDK_INT >= 33){
+            true -> {
+                //write using SDK 33+
+                val intResult = bluetoothGatt!!.writeCharacteristic(
+                    operation.characteristic, operation.data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                )
+                if (intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY){
+                    throw BleBusyException("Write Request Busy. Please try again later")
+                }
+            }
+            false -> {
+                //write using SDK < 33
+                operation.characteristic.value = operation.data
+                val boolResult = bluetoothGatt!!.writeCharacteristic(operation.characteristic)
+                if(!boolResult){
+                    throw BleBusyException("Write Request Busy. Please try again later")
+                }
+            }
+
+        }
+    }
+
+
+
+    @SuppressLint("MissingPermission", "NewApi")
+    @Suppress("Deprecation")
+    private fun sendMessage(chType: ESightCharacteristic, payload: BluetoothPayload) {
+        val data = payload.getByteArrayBlePayload()
+        val characteristic: BluetoothGattCharacteristic? = chType.getCharacteristic(bluetoothGatt)
+
+        if (characteristic != null){
+            Log.i("BleService", "sendMessage: Enqueueing the operation")
+            Log.i("BleService", "sendMessage: Is the thread alive? ${bleWorkerThread?.isAlive}")
+            enqueueBleOperation(BleGattOperation(data, characteristic))
+        }
     }
 
     private fun retryOnWriteRequestBusy(chType: ESightCharacteristic, payload: BluetoothPayload) {

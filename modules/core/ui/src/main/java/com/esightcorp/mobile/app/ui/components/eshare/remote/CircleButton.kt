@@ -11,6 +11,7 @@ package com.esightcorp.mobile.app.ui.components.eshare.remote
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.extensions.accessibilityClickOnEvent
 import com.esightcorp.mobile.app.ui.extensions.gestureHandler
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -55,8 +58,13 @@ fun CircleButton(
     contentPadding: PaddingValues = PaddingValues(),
     border: BorderStroke? = null
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     ElevatedButton(
         modifier = modifier
+            .accessibilityClickOnEvent(coroutineScope,
+                onDownEvent = onDownEvent,
+                onUpEvent = onUpEvent)
             .size(size)
             .clip(CircleShape)
             .gestureHandler(onDownEvent, onUpEvent),
@@ -145,7 +153,7 @@ fun ColorContrastButton(
     size: Dp = RegularButtonSize
 ) {
     CircleButton(
-        modifier = modifier,
+        modifier = modifier.clickable(onClick = onClick?: {}),
         onDownEvent = onClick,
         backgroundColor = secondaryColor,
         iconTint = primaryColor,

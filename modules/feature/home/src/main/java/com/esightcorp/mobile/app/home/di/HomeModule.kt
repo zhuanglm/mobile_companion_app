@@ -10,7 +10,6 @@ package com.esightcorp.mobile.app.home.di
 
 import android.content.Context
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
-import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +22,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 object HomeModule {
     @ViewModelScoped
     @Provides
-    fun provideHomeRepository(@ApplicationContext context: Context): HomeRepository{
+    fun provideHomeRepository(@ApplicationContext context: Context): HomeRepository {
         return HomeRepository(context)
     }
 

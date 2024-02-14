@@ -32,7 +32,7 @@ android {
         viewBinding true
         compose true
     }
-    composeOptions{
+    composeOptions {
         kotlinCompilerExtensionVersion '1.3.0'
     }
     namespace 'com.esightcorp.mobile.app.home'
@@ -75,11 +75,13 @@ dependencies {
     implementation 'com.google.accompanist:accompanist-pager:0.20.2'
 
 
-
-
     implementation("androidx.navigation:navigation-compose:$nav")
-    implementation(project(":modules:feature:eshare"))
-    implementation(project(":modules:core:bluetooth"))
-    implementation(project(":modules:core:ui"))
+}
 
+// Module dependencies
+dependencies {
+    implementation project(":modules:feature:eshare")
+    implementation project(":modules:core:bluetooth")
+    implementation project(":modules:core:networking")
+    implementation project(":modules:core:ui")
 }

@@ -198,8 +198,7 @@ class WifiModel(
 
         isScanningStopped = !isScanStarted
 
-        if (isScanningStopped)
-            scanFailure()
+        if (isScanningStopped) scanFailure()
     }
 
     @SuppressLint("MissingPermission")
@@ -367,26 +366,34 @@ class WifiModel(
         return null
     }
 
-    private companion object {
+    companion object {
+        /**
+         * Permissions required for WiFi related feature
+         */
+        val locationPermissions = arrayListOf<String>().apply {
+            add(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+            add(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
         /*
         Pulled error codes from MAG. TODO: Create a library for the constants that we use, would be super useful.
          */
-        const val ERROR_PLATFORM = "ERROR_1"
-        const val ERROR_WIFI_NETWORK_NOT_FOUND = "ERROR_WIFI_NETWORK_NOT_FOUND"
-        const val ERROR_WIFI_DISABLED = "ERROR_WIFI_DISABLED"
-        const val ERROR_BLUETOOTH_DISABLED = "ERROR_BLUETOOTH_DISABLED"
-        const val ERROR_WIFI_WPA_LESS_THAN_8 = "ERROR_WIFI_WPA_LESS_THAN_8"
-        const val ERROR_WIFI_INVALID_PASSWORD = "ERROR_WIFI_INVALID_PASSWORD"
-        const val ERROR_WIFI_CONNECTION_TIMEOUT = "ERROR_WIFI_CONNECTION_TIMEOUT"
-        const val ERROR_TEST = "ERROR_TEST"
-        const val ERROR_NONE = "ERROR_NONE"
+        private const val ERROR_PLATFORM = "ERROR_1"
+        private const val ERROR_WIFI_NETWORK_NOT_FOUND = "ERROR_WIFI_NETWORK_NOT_FOUND"
+        private const val ERROR_WIFI_DISABLED = "ERROR_WIFI_DISABLED"
+        private const val ERROR_BLUETOOTH_DISABLED = "ERROR_BLUETOOTH_DISABLED"
+        private const val ERROR_WIFI_WPA_LESS_THAN_8 = "ERROR_WIFI_WPA_LESS_THAN_8"
+        private const val ERROR_WIFI_INVALID_PASSWORD = "ERROR_WIFI_INVALID_PASSWORD"
+        private const val ERROR_WIFI_CONNECTION_TIMEOUT = "ERROR_WIFI_CONNECTION_TIMEOUT"
+        private const val ERROR_TEST = "ERROR_TEST"
+        private const val ERROR_NONE = "ERROR_NONE"
     }
 }
 
 @Suppress("Deprecation")
 fun ScanResult.ssidName(): String? {
-    if (Build.VERSION.SDK_INT >= 33)
-        return wifiSsid?.toString()?.removePrefix("\"")?.removeSuffix("\"")
+    if (Build.VERSION.SDK_INT >= 33) return wifiSsid?.toString()?.removePrefix("\"")
+        ?.removeSuffix("\"")
 
     return SSID
 }

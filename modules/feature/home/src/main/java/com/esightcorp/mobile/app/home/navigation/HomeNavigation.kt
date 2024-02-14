@@ -12,12 +12,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.esightcorp.mobile.app.home.HomeFirstScreen
+import com.esightcorp.mobile.app.home.LocationPermissionRoute
 import com.esightcorp.mobile.app.ui.extensions.composable
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation.FirstScreenRoute
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation.IncomingRoute
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation.LocationPermissionRoute
 
 fun NavGraphBuilder.addHomeNavigation(navController: NavController) {
     navigation(startDestination = FirstScreenRoute.path, route = IncomingRoute.path) {
         composable(FirstScreenRoute) { HomeFirstScreen(navController) }
+
+        composable(LocationPermissionRoute) { LocationPermissionRoute(navController) }
     }
 }

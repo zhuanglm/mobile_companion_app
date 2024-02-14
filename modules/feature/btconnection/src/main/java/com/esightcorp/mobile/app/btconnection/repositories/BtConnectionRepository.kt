@@ -11,11 +11,12 @@ package com.esightcorp.mobile.app.btconnection.repositories
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
-import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 import com.esightcorp.mobile.app.utils.ScanningStatus
+import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class BtConnectionRepository @Inject constructor(
     private val _tag = this.javaClass.simpleName
 
     private val bluetoothModel: BluetoothModel
-    private lateinit var bluetoothConnectionRepositoryCallback: BluetoothConnectionRepositoryCallback
+    private var btRepoCallback: BluetoothConnectionRepositoryCallback? = null
 
     /**
      * Interface to receive callbacks from BluetoothModel
@@ -79,6 +80,16 @@ class BtConnectionRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
     }
 
+    val bluetoothPermissions = arrayListOf<String>().apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            add(android.Manifest.permission.BLUETOOTH_SCAN)
+            add(android.Manifest.permission.BLUETOOTH_CONNECT)
+        } else {
+            add(android.Manifest.permission.BLUETOOTH)
+            add(android.Manifest.permission.BLUETOOTH_ADMIN)
+        }
+    }
+
     fun checkBtEnabledStatus() {
         val btEnabled: Boolean
         with(bluetoothModel.bleManager) {
@@ -89,9 +100,7 @@ class BtConnectionRepository @Inject constructor(
                 resetConnectedDevice()
         }
 
-        if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
-            bluetoothConnectionRepositoryCallback.onBtStateUpdate(btEnabled)
-        }
+        btRepoCallback?.onBtStateUpdate(btEnabled)
     }
 
     @Synchronized
@@ -140,23 +149,29 @@ class BtConnectionRepository @Inject constructor(
                 when (checkIfEnabled()) {
                     true -> strippedList.add(bluetoothDevice.name)
                     false -> {
-                        bluetoothConnectionRepositoryCallback.onBtStateUpdate(false)
+                        btRepoCallback?.onBtStateUpdate(false)
                         return
                     }
                 }
             }
         }
 
-        bluetoothConnectionRepositoryCallback.deviceListReady(strippedList)
+        btRepoCallback?.deviceListReady(strippedList)
     }
 
     /**
-     * how we communicate between repo and viewmodel
+     * how we communicate between repo and ViewModel
      */
+    @Synchronized
     fun registerListener(listener: BluetoothConnectionRepositoryCallback) {
         Log.d(_tag, "registerListener: ")
-        this.bluetoothConnectionRepositoryCallback = listener
+        this.btRepoCallback = listener
         this.checkBtEnabledStatus()
+    }
+
+    @Synchronized
+    fun removeRepoListener() {
+        btRepoCallback = null
     }
 
     /**
@@ -183,17 +198,13 @@ class BtConnectionRepository @Inject constructor(
         if (isScanning == ScanningStatus.Success) {
             getMapOfDevices()
         }
-        if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
-            bluetoothConnectionRepositoryCallback.scanStatus(isScanning)
-        }
+        btRepoCallback?.scanStatus(isScanning)
     }
 
     @SuppressLint("MissingPermission")
     private fun updateDeviceConnectionStatus(device: BluetoothDevice?, connected: Boolean?) {
         Log.d(_tag, "onDeviceConnected: ${device?.name}, isConnected: $connected")
-        if (this::bluetoothConnectionRepositoryCallback.isInitialized) {
-            bluetoothConnectionRepositoryCallback.onDeviceConnected(device, connected)
-        }
+        btRepoCallback?.onDeviceConnected(device, connected)
     }
 
     fun resetBtDeviceList() {

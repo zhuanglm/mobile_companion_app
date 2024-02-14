@@ -12,10 +12,16 @@ import java.util.EnumSet
 
 
 data class HomeUiState(
-    val isBluetoothConnected: Boolean = true,
-    val isBluetoothEnabled: Boolean = true,
-    val connectedDevice: String = "Devicename"
-)
+    val bluetoothState: BluetoothState? = null,
+    val connectedDevice: String = "",
+) {
+    enum class BluetoothState {
+        ENABLED,
+        DISABLED,
+        CONNECTED,
+        DISCONNECTED,
+    }
+}
 
 data class HomePermissionUiState(
     val allPermissionsGranted: Boolean? = null,

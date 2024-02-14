@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.home.state.HomeUiState
+import com.esightcorp.mobile.app.home.state.HomeUiState.BluetoothState
 import com.esightcorp.mobile.app.home.viewmodels.HomeViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.DeviceCard
@@ -47,11 +48,10 @@ import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
-private const val TAG = "Home Screen"
-
 @Composable
 fun HomeFirstScreen(
-    navController: NavController, vm: HomeViewModel = hiltViewModel()
+    navController: NavController,
+    vm: HomeViewModel = hiltViewModel(),
 ) {
     val homeUiState by vm.uiState.collectAsState()
 
@@ -60,14 +60,14 @@ fun HomeFirstScreen(
     BaseHomeScreen(
         homeUiState = homeUiState,
         navController = navController,
-        device = homeUiState.connectedDevice,
         modifier = Modifier,
         onSettingsButtonInvoked = vm::navigateToSettings,
         onRemoteDeviceDisconnected = vm::onBleDisconnected,
         onBluetoothDisabled = vm::navigateToBluetoothDisabled,
-        onFeedbackButtonPressed = vm::showFeedbackPage,
+        onFeedbackButtonPressed = vm::gotoEsightFeedbackSite,
         onNavigateToWifiFlow = vm::navigateToWifiCredsOverBt,
         onNavigateToEshare = vm::navigateToShareYourView,
+        onNoDeviceConnected = vm::navigateToNoDeviceConnected,
     )
 }
 
@@ -76,55 +76,64 @@ private fun BaseHomeScreen(
     homeUiState: HomeUiState,
     navController: NavController,
     modifier: Modifier = Modifier,
-    device: String = "0123456",
+    onNoDeviceConnected: OnNavigationCallback,
     onSettingsButtonInvoked: OnNavigationCallback,
     onRemoteDeviceDisconnected: OnNavigationCallback,
     onBluetoothDisabled: OnNavigationCallback,
     onFeedbackButtonPressed: OnActionCallback,
     onNavigateToWifiFlow: OnNavigationCallback,
     onNavigateToEshare: OnNavigationCallback,
+) {
+    Log.w(TAG, "bluetoothState: ${homeUiState.bluetoothState}")
+    when (homeUiState.bluetoothState) {
+        null -> LaunchedEffect(Unit) { onNoDeviceConnected(navController) }
 
-    ) {
-    if (!homeUiState.isBluetoothConnected && homeUiState.isBluetoothEnabled) {
-        Log.d(TAG, "BaseHomeScreen: Not connected but are Enabled")
-        LaunchedEffect(Unit) {
+        BluetoothState.DISCONNECTED -> LaunchedEffect(Unit) {
             onRemoteDeviceDisconnected(navController)
         }
-    } else if (!homeUiState.isBluetoothEnabled) {
-        LaunchedEffect(Unit) {
+
+        BluetoothState.DISABLED -> LaunchedEffect(Unit) {
             onBluetoothDisabled(navController)
         }
-    } else {
-        HomeBaseScreen(
-            modifier = modifier,
-            showBackButton = false,
-            showSettingsButton = true,
-            onBackButtonInvoked = { },
-            onSettingsButtonInvoked = { onSettingsButtonInvoked.invoke(navController) },
-            bottomButton = { FeedbackButton(modifier) { onFeedbackButtonPressed() } },
-        ) {
-            HomeScreenBody(
+
+        BluetoothState.CONNECTED -> {
+            HomeBaseScreen(
                 modifier = modifier,
-                device = device,
-                navController = navController,
-                onNavigateToWifiFlow = onNavigateToWifiFlow,
-                onNavigateToEshare = onNavigateToEshare,
-            )
+                showBackButton = false,
+                showSettingsButton = true,
+                onBackButtonInvoked = { },
+                onSettingsButtonInvoked = { onSettingsButtonInvoked.invoke(navController) },
+                bottomButton = { FeedbackButton(modifier) { onFeedbackButtonPressed() } },
+            ) {
+                HomeScreenBody(
+                    modifier = modifier,
+                    device = homeUiState.connectedDevice,
+                    navController = navController,
+                    onNavigateToWifiFlow = onNavigateToWifiFlow,
+                    onNavigateToEshare = onNavigateToEshare,
+                )
+            }
         }
+
+        // TODO: is this correct???
+        BluetoothState.ENABLED -> Unit
     }
 }
+
+//region Private implementation
+private const val TAG = "Home Screen"
 
 @Composable
 private fun HomeScreenBody(
     modifier: Modifier = Modifier,
-    device: String = "0123456",
+    device: String,
     navController: NavController,
     onNavigateToWifiFlow: OnNavigationCallback,
     onNavigateToEshare: OnNavigationCallback,
 ) {
     val configuration = LocalConfiguration.current
-    val greetingTopMargin = if(configuration.fontScale > 1){
-        (32/configuration.fontScale).dp
+    val greetingTopMargin = if (configuration.fontScale > 1) {
+        (32 / configuration.fontScale).dp
     } else {
         32.dp
     }
@@ -180,7 +189,9 @@ private fun HomeScreenBody(
 }
 
 private data class CardData(
-    @StringRes val labelId: Int, @DrawableRes val iconResId: Int, val onClick: OnActionCallback
+    @StringRes val labelId: Int,
+    @DrawableRes val iconResId: Int,
+    val onClick: OnActionCallback,
 )
 
 @Composable
@@ -192,17 +203,20 @@ private fun SquareTileCardLayout(
 ) {
     val cards = listOf(
         CardData(
-            R.string.kConnectWifiLabelText, R.drawable.round_wifi_24
+            R.string.kConnectWifiLabelText,
+            R.drawable.round_wifi_24,
         ) {
             onNavigateToWifiFlow(navController)
         },
 
         CardData(
-            R.string.kHomeRootViewConnectedeShareButtonText, R.drawable.baseline_camera_alt_24
+            R.string.kHomeRootViewConnectedeShareButtonText,
+            R.drawable.baseline_camera_alt_24,
         ) {
             onNavigateToEshare(navController)
 
-        })
+        },
+    )
 
     val configuration = LocalConfiguration.current
     val adaptiveCells = (configuration.fontScale * 150).dp
@@ -224,21 +238,21 @@ private fun SquareTileCardLayout(
     }
 }
 
-fun previewUiState() = HomeUiState()
-
 @Preview(showBackground = true)
 @Composable
 fun BaseHomeScreenPreview() {
     BaseHomeScreen(
-        homeUiState = previewUiState(),
+        homeUiState = HomeUiState(
+            bluetoothState = BluetoothState.CONNECTED,
+            connectedDevice = "012345678",
+        ),
         navController = rememberNavController(),
-        onSettingsButtonInvoked = {Unit},
-        onRemoteDeviceDisconnected = {Unit},
-        onBluetoothDisabled = {Unit},
-        onFeedbackButtonPressed = {Unit},
-        onNavigateToWifiFlow = {Unit},
-        onNavigateToEshare = {Unit},
+        onSettingsButtonInvoked = { },
+        onRemoteDeviceDisconnected = { },
+        onBluetoothDisabled = { },
+        onFeedbackButtonPressed = { },
+        onNavigateToWifiFlow = { },
+        onNavigateToEshare = { },
+        onNoDeviceConnected = { },
     )
 }
-
-

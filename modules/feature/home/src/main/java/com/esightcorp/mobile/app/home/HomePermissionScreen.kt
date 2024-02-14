@@ -43,6 +43,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.util.EnumSet
 
+//TODO: restructure this!!!
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomePermissionScreen(

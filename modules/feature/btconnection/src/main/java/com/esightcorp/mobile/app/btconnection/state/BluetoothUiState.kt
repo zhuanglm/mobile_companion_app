@@ -10,15 +10,9 @@ package com.esightcorp.mobile.app.btconnection.state
 
 import com.esightcorp.mobile.app.utils.ScanningStatus
 
-data class BluetoothUiState(
-    val btConnectionStatus: Boolean = false,
-    val isBtEnabled: Boolean = false,
-    val connectedDevice: String = "",
-)
-
 data class BtSearchingUiState(
     val isScanning: ScanningStatus = ScanningStatus.Unknown,
-    val isBtEnabled: Boolean = false,
+    val isBtEnabled: Boolean? = null,
 )
 
 data class BtDevicesUiState(

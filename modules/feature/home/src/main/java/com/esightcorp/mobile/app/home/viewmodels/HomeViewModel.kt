@@ -10,17 +10,16 @@ package com.esightcorp.mobile.app.home.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.home.repositories.HomeRepository
 import com.esightcorp.mobile.app.home.repositories.HomeRepositoryListener
 import com.esightcorp.mobile.app.home.state.HomeUiState
-import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.openExternalUrl
+import com.esightcorp.mobile.app.home.state.HomeUiState.BluetoothState
+import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.EShareNavigation
-import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation.IncomingRoute
+import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.bluetooth.BleStateManagerImpl
 import com.esightcorp.mobile.app.utils.bluetooth.IBleStateManager
@@ -33,10 +32,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val application: Application,
+    application: Application,
     homeRepository: HomeRepository,
-) : AndroidViewModel(application),
+) : ESightBaseViewModel(application),
     IBleStateManager by BleStateManagerImpl() {
+
     private val _tag = this.javaClass.simpleName
 
     /**
@@ -47,18 +47,21 @@ class HomeViewModel @Inject constructor(
 
     private val listener = object : HomeRepositoryListener {
         override fun onBluetoothDisabled() {
-            updateBtEnabledState(false)
-            updateConnectedDevice("")
-            updateConnectedState(false)
+            _uiState.update {
+                it.copy(bluetoothState = BluetoothState.DISABLED)
+            }
         }
 
         override fun onBluetoothEnabled() {
-            updateBtEnabledState(true)
+            _uiState.update {
+                it.copy(bluetoothState = BluetoothState.ENABLED)
+            }
         }
 
         override fun onBluetoothDeviceDisconnected() {
-            updateConnectedDevice("")
-            updateConnectedState(false)
+            _uiState.update {
+                it.copy(bluetoothState = BluetoothState.DISCONNECTED)
+            }
         }
     }
 
@@ -66,42 +69,27 @@ class HomeViewModel @Inject constructor(
         with(homeRepository) {
             registerListener(listener)
 
-            when (val connectedDev = getConnectedDevice()) {
-                null -> updateConnectedState(false)
-                else -> updateConnectedDevice(connectedDev)
-            }
+            updateConnectedDevice(getConnectedDevice())
         }
     }
 
     private fun updateConnectedDevice(device: String?) {
         Log.d(_tag, "updateConnectedDevice: $device")
         device?.let {
-            _uiState.update { currentState ->
-                currentState.copy(connectedDevice = it, isBluetoothConnected = true)
+            _uiState.update {
+                it.copy(connectedDevice = device, bluetoothState = BluetoothState.CONNECTED)
             }
-        }
+        } ?: _uiState.update { it.copy(bluetoothState = null) }
     }
 
-    private fun updateConnectedState(status: Boolean) {
-        _uiState.update { state ->
-            state.copy(isBluetoothConnected = status)
-        }
-    }
-
-    private fun updateBtEnabledState(enabled: Boolean) {
-        _uiState.update { state ->
-            state.copy(isBluetoothEnabled = enabled)
-        }
-    }
-
-    fun navigateToWifiCredsOverBt(navController: NavController) {
-        navController.navigate(
+    fun navigateToWifiCredsOverBt(navController: NavController) = with(navController) {
+        navigate(
             target = WifiNavigation.ScanningRoute,
             param = WifiNavigation.ScanningRoute.PARAM_WIFI_CONNECTION
         )
     }
 
-    fun navigateToBluetoothStart(navController: NavController) = with(navController) {
+    fun navigateToNoDeviceConnected(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.IncomingRoute)
     }
 
@@ -109,13 +97,11 @@ class HomeViewModel @Inject constructor(
         navigate(BtConnectionNavigation.BtDisabledScreen)
     }
 
-    fun navigateToShareYourView(navController: NavController) {
-        navController.navigate(EShareNavigation.IncomingRoute)
+    fun navigateToShareYourView(navController: NavController) = with(navController) {
+        navigate(EShareNavigation.IncomingRoute)
     }
 
-    fun navigateToSettings(navController: NavController) = navController.navigate(IncomingRoute)
-
-    fun showFeedbackPage() = with(application.applicationContext) {
-        openExternalUrl(getString(R.string.url_esight_feedback))
+    fun navigateToSettings(navController: NavController) = with(navController) {
+        navigate(SettingsNavigation.IncomingRoute)
     }
 }

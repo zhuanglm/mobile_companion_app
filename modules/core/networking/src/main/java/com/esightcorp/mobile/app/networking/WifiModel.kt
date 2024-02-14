@@ -189,6 +189,7 @@ class WifiModel(
     }
 
     @Synchronized
+    @Suppress("Deprecation")
     fun startWifiScan() {
         Log.i(_tag, "startWifiScan - $this")
 
@@ -349,11 +350,11 @@ class WifiModel(
                     if (!addr.isLoopbackAddress) {
                         val sAddr = addr.hostAddress
                         // Check for IPv4 or IPv6 preference
-                        val isIPv4 = sAddr.indexOf(':') < 0
+                        val isIPv4 = sAddr?.let { it.indexOf(':') < 0 }
                         if (useIPv4) {
-                            if (isIPv4) return sAddr
+                            if (isIPv4 == true) return sAddr
                         } else {
-                            if (!isIPv4) {
+                            if (isIPv4 == false) {
                                 // Remove prefix for IPv6 address
                                 val delim = sAddr.indexOf('%')
                                 return if (delim < 0) sAddr else sAddr.substring(0, delim)

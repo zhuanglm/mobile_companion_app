@@ -13,6 +13,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import com.esightcorp.mobile.app.bluetooth.BluetoothModel
 import com.esightcorp.mobile.app.bluetooth.BluetoothModelListener
+import com.esightcorp.mobile.app.networking.WifiModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -42,6 +43,8 @@ class HomeRepository @Inject constructor(
             )
         }
     }
+
+    val locationPermissions = WifiModel.locationPermissions
 
     fun registerListener(listener: HomeRepositoryListener) {
         this.repoListener = listener

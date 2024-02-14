@@ -58,25 +58,26 @@ class DelegatorActivity : ComponentActivity() {
                     intent?.extractBooleanExtra(KEY_IS_ORIENTATION_CHANGING, false) ?: false
                 Log.w(_tag, "->> isOrientationChanging: $isOrientationChanging")
 
-                when {
-                    // API >= 30
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                        val latestExitReason =
-                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-                                .getHistoricalProcessExitReasons(context.packageName, 0, 0)
-                                .firstOrNull()
-                        Log.w(_tag, "latestExitReason: $latestExitReason")
+                when (isOrientationChanging) {
+                    true -> savedState
 
-                        when (latestExitReason?.reason) {
-                            ApplicationExitInfo.REASON_PERMISSION_CHANGE -> null
-                            else -> savedState
+                    else -> when {
+                        // API >= 30
+                        // TODO: do we still need this after moving permission check to using place???
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                            val latestExitReason =
+                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                                    .getHistoricalProcessExitReasons(context.packageName, 0, 0)
+                                    .firstOrNull()
+                            Log.w(_tag, "latestExitReason: $latestExitReason")
+
+                            when (latestExitReason?.reason) {
+                                ApplicationExitInfo.REASON_PERMISSION_CHANGE -> null
+                                else -> savedState
+                            }
                         }
-                    }
 
-                    // API < 30
-                    else -> when (isOrientationChanging) {
-                        true -> savedState
-
+                        // API < 30
                         //TODO: any better way to use the `savedState` instead of always null like this???
                         else -> null
                     }

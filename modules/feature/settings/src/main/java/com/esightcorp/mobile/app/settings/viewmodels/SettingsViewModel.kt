@@ -12,6 +12,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.repositories.BtConnectionRepository
+import com.esightcorp.mobile.app.networking.WifiModel
 import com.esightcorp.mobile.app.settings.repositories.BtConnectionManagerImpl
 import com.esightcorp.mobile.app.settings.repositories.IBtConnectionManager
 import com.esightcorp.mobile.app.settings.repositories.SettingsRepository
@@ -21,6 +22,8 @@ import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.utils.bluetooth.BleStateManagerImpl
 import com.esightcorp.mobile.app.utils.bluetooth.IBleStateManager
+import com.esightcorp.mobile.app.utils.permission.IPermissionManager
+import com.esightcorp.mobile.app.utils.permission.PermissionManagerImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +37,8 @@ class SettingsViewModel @Inject constructor(
     btConnRepo: BtConnectionRepository,
 ) : AndroidViewModel(application),
     IBleStateManager by BleStateManagerImpl(),
-    IBtConnectionManager by BtConnectionManagerImpl(btConnRepo) {
+    IBtConnectionManager by BtConnectionManagerImpl(btConnRepo),
+    IPermissionManager by PermissionManagerImpl(application, WifiModel.locationPermissions) {
 
     private val _settingsUiState = MutableStateFlow(SettingsUiState())
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState

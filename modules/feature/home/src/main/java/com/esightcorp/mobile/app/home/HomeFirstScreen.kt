@@ -128,21 +128,25 @@ private fun HomeScreenBody(
     } else {
         32.dp
     }
+    val shouldShowPersonalGreeting = configuration.fontScale <= 1.5f
+    Log.i(TAG, "HomeScreenBody: ${configuration.fontScale}")
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (personalGreeting, deviceCard, appContainer) = createRefs()
-        PersonalGreeting(
-            modifier = modifier
-                .semantics {
-                    isTraversalGroup = true
-                    traversalIndex = 0f
-                }
-                .constrainAs(personalGreeting) {
-                    top.linkTo(parent.top, margin = greetingTopMargin)
-                    start.linkTo(parent.start)
-                },
-            connected = true,
-        )
+        if(shouldShowPersonalGreeting){
+            PersonalGreeting(
+                modifier = modifier
+                    .semantics {
+                        isTraversalGroup = true
+                        traversalIndex = 0f
+                    }
+                    .constrainAs(personalGreeting) {
+                        top.linkTo(parent.top, margin = greetingTopMargin)
+                        start.linkTo(parent.start)
+                    },
+                connected = true,
+            )
+        }
         DeviceCard(
             modifier = modifier
                 .semantics {
@@ -150,7 +154,11 @@ private fun HomeScreenBody(
                     traversalIndex = 1f
                 }
                 .constrainAs(deviceCard) {
-                    top.linkTo(personalGreeting.bottom, margin = 25.dp)
+                    if (shouldShowPersonalGreeting) {
+                        top.linkTo(personalGreeting.bottom, margin = 25.dp)
+                    } else {
+                        top.linkTo(parent.top, margin = greetingTopMargin)
+                    }
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },

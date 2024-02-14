@@ -140,7 +140,7 @@ internal fun SettingsMyESight(
             vwModel?.initPermissionCheck()
         },
         modifier = modifier,
-        icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24),
+        iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_qr_40,
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kCreateWifiCodeButtonText)
     )
 
@@ -150,7 +150,7 @@ internal fun SettingsMyESight(
         LeadingIconTextButton(
             onClick = { vwModel.navigateToDisconnectConfirmation(navController) },
             modifier,
-            iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_disconnected_24,
+            iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_disconnected_40,
             text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewDisconnectButtonText),
         )
     }
@@ -217,7 +217,7 @@ internal fun SettingsHelp(
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_feedback) },
         modifier,
-        icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_chat_bubble_outline_24),
+        icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.ic_feedback_40),
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kFeedbackButtonText)
     )
 }
@@ -236,7 +236,7 @@ internal fun SettingsAbout(
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
         modifier = modifier,
-        iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_website_24,
+        iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_website_40,
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewVisitWebsiteButtonText)
     )
 
@@ -244,7 +244,7 @@ internal fun SettingsAbout(
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_privacy_policy) },
         modifier,
-        iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_privacy_24,
+        iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_privacy_40,
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kDataPolicy)
     )
 }

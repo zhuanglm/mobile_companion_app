@@ -27,6 +27,7 @@ import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.TrailingIconButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.wificonnection.state.WifiTypeUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiTypeViewModel
 
@@ -35,6 +36,7 @@ fun WifiTypeRoute(
     navController: NavController, vm: WifiTypeViewModel = hiltViewModel()
 ) {
     val wifiUiState by vm.uiState.collectAsState()
+    BackStackLogger(navController = navController)
 
     WifiTypeScreen(
         navController = navController,

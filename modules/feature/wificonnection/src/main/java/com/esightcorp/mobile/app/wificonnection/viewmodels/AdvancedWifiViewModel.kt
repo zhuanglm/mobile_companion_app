@@ -160,12 +160,12 @@ class AdvancedWifiViewModel @Inject constructor(
     fun onSecurityButtonPressed(navController: NavController) {
         //avoid to lost user input
         repository.setWifiNetwork(_uiState.value.ssid, _uiState.value.wifiType, _uiState.value.password)
-        navController.navigate(WifiNavigation.SelectNetworkSecurityRoute)
+        navController.navigate(WifiNavigation.SelectNetworkSecurityRoute, popCurrent = false)
     }
 
     private fun navigateToQrScreen(navController: NavController) {
         Log.i(_tag, "navigateToQrScreen: QR Route selected")
-        navController.navigate(WifiNavigation.WifiQRCodeRoute)
+        navController.navigate(WifiNavigation.WifiQRCodeRoute, popCurrent = false)
     }
 
     private fun sendWifiCredsViaBluetooth() {
@@ -175,7 +175,7 @@ class AdvancedWifiViewModel @Inject constructor(
 
     private fun navigateToConnectingScreen(navController: NavController) {
         Log.i(_tag, "navigateToConnectingScreen: Bluetooth route selected")
-        navController.navigate(WifiNavigation.ConnectingRoute)
+        navController.navigate(WifiNavigation.ConnectingRoute, popCurrent = false)
     }
 
     fun onFinishButtonPressed(navController: NavController) {

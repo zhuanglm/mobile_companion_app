@@ -136,11 +136,11 @@ class EnterPasswordViewModel @Inject constructor(
 
     private fun navigateToConnectingScreen(navController: NavController) {
         Log.i(_tag, "navigateToConnectingScreen: Bluetooth route selected")
-        navController.navigate(WifiNavigation.ConnectingRoute)
+        navController.navigate(WifiNavigation.ConnectingRoute, popCurrent = false)
     }
 
     private fun navigateToQrScreen(navController: NavController) {
         Log.i(_tag, "navigateToQrScreen: QR Route selected")
-        navController.navigate(WifiNavigation.WifiQRCodeRoute)
+        navController.navigate(WifiNavigation.WifiQRCodeRoute, popCurrent = false)
     }
 }

@@ -8,15 +8,24 @@
 
 package com.esightcorp.mobile.app.settings
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -26,17 +35,27 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.settings.viewmodels.SettingsViewModel
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.FineText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
+import com.esightcorp.mobile.app.utils.findActivity
+import com.esightcorp.mobile.app.utils.permission.PermissionUiState
 
 @Composable
-fun SettingsScreen(navController: NavController, vwModel: SettingsViewModel = hiltViewModel()) {
+fun SettingsScreen(
+    navController: NavController,
+    vwModel: SettingsViewModel = hiltViewModel(),
+) {
+    BackStackLogger(navController, TAG)
+
     val uiState = vwModel.settingsUiState.collectAsState().value
     if (uiState.connState?.isConnectionDropped == true) {
         LaunchedEffect(Unit) { vwModel.onBleDisconnected(navController) }
@@ -106,13 +125,19 @@ internal fun SettingsMyESight(
         MaterialTheme.colors.onSurface,
     )
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { vwModel?.onPermissionsUpdated(it) }
+    )
+    val context = LocalContext.current
+
+    ExecuteOnce { vwModel?.registerPermissionLauncher(permissionLauncher, context.findActivity()) }
+    var isWiFiQrFlow by rememberSaveable { mutableStateOf<Boolean?>(null) }
+
     LeadingIconTextButton(
         onClick = {
-            navController.navigate(
-                target = WifiNavigation.ScanningRoute,
-                param = WifiNavigation.ScanningRoute.PARAM_QR,
-                popUntil = WifiNavigation.IncomingRoute,
-            )
+            isWiFiQrFlow = true
+            vwModel?.initPermissionCheck()
         },
         modifier = modifier,
         icon = ImageVector.vectorResource(com.esightcorp.mobile.app.ui.R.drawable.round_qr_code_24),
@@ -129,6 +154,45 @@ internal fun SettingsMyESight(
             text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewDisconnectButtonText),
         )
     }
+
+    val permissionUiState = vwModel?.permissionUiState?.collectAsState()?.value
+    Log.i(
+        TAG,
+        "WiFi (Location) permission state: ${permissionUiState?.state}\nisWiFiQrFlow: $isWiFiQrFlow"
+    )
+
+    when (isWiFiQrFlow) {
+        true -> {
+            isWiFiQrFlow = null
+            when (permissionUiState?.state) {
+                PermissionUiState.PermissionState.GRANTED -> {
+                    //TODO: check Location service here!!!
+                    ExecuteOnce {
+                        navController.navigate(
+                            target = WifiNavigation.ScanningRoute,
+                            param = WifiNavigation.ScanningRoute.PARAM_QR,
+                            popUntil = WifiNavigation.IncomingRoute,
+                        )
+                    }
+                }
+
+                PermissionUiState.PermissionState.SHOW_RATIONALE -> {
+                    ExecuteOnce {
+                        navController.navigate(
+                            target = HomeNavigation.LocationPermissionRoute,
+                            popCurrent = false
+                        )
+                    }
+                }
+
+                else -> Unit
+            }
+        }
+
+        else -> Unit
+    }
+
+    DisposableEffect(Unit) { onDispose { vwModel?.cleanUp() } }
 }
 
 @Composable
@@ -194,4 +258,6 @@ internal fun SettingsVersion(modifier: Modifier = Modifier, version: String) = F
     textAlign = TextAlign.Center,
     color = MaterialTheme.colors.onSurface
 )
+
+private const val TAG = "SettingsScreen"
 //endregion

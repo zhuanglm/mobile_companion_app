@@ -17,6 +17,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.annotation.RequiresApi
 import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.LinkedBlockingDeque
@@ -502,6 +503,7 @@ class BleService : Service() {
         bleWorkerThread?.interrupt()
     }
 
+    @SuppressLint("MissingPermission", "NewApi")
     @Suppress("Deprecation")
     private fun performBleWrite(operation: BleGattOperation){
         Log.i("BleService", "performBleWrite:\nCharacteristic ${operation.characteristic}\nData ${operation.data}")

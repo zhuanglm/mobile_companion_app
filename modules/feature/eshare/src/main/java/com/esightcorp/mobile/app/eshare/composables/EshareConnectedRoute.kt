@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -317,18 +318,17 @@ internal fun TextureViewAndCancelButton(
             },
             modifier = modifier
         )
-
-        ColorContrastButton(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .offset(20.dp, 20.dp),
-            primaryColor = Color.White,
-            secondaryColor = Color.Red,
-            icon = R.drawable.close_eshare_button,
-            size = 40.dp,
-            contentDescription = stringResource(id = R.string.kAccessibilityButtonExit),
-            onClick = { onClick?.invoke(navController) },
-        )
+        Box(modifier = Modifier.align(Alignment.TopStart).offset(x = 20.dp, y = 20.dp)){
+            ColorContrastButton(
+                modifier = Modifier,
+                primaryColor = Color.White,
+                secondaryColor = Color.Red,
+                icon = R.drawable.close_eshare_button,
+                size = 40.dp,
+                contentDescription = stringResource(id = R.string.kAccessibilityButtonExit),
+                onClick = { onClick?.invoke(navController) },
+            )
+        }
     }
 }
 

@@ -28,9 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.text.ButtonText
 import com.esightcorp.mobile.app.ui.extensions.debugBorder
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -62,10 +64,12 @@ fun LeadingIconTextButton(
                         AppCompatResources.getDrawable(LocalContext.current, iconDrawableId)
                     ),
                     iconContextDescription,
+                    modifier = Modifier.size(dimensionResource(R.dimen.filled_icon_settings_button_size)),
                 )
             }
 
-            else -> Icon(icon, contentDescription = iconContextDescription)
+            else -> Icon(icon, contentDescription = iconContextDescription,
+                modifier = Modifier.size(dimensionResource(R.dimen.filled_icon_settings_button_size)),)
         }
         ButtonText(
             text = text, modifier = modifier

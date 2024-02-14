@@ -10,6 +10,7 @@ package com.esightcorp.mobile.app.wificonnection
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -33,7 +34,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.SubHeader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
@@ -88,10 +89,11 @@ internal fun WifiOffScreen(
         onBackButtonInvoked = { onDismissed?.invoke(navController) },
         onSettingsButtonInvoked = { },
         isBottomButtonNeeded = false,
+        isContentCentered = true,
         bottomButton = { },
     ) {
         Column(
-            modifier = modifier.padding(vertical = 30.dp),
+            modifier = modifier.fillMaxSize().padding(vertical = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -106,7 +108,7 @@ internal fun WifiOffScreen(
             )
 
             ItemSpacer(bodyTopMargin)
-            BoldSubheader(
+            SubHeader(
                 text = stringResource(R.string.kWifiErrorWifiDisabledSubtitle),
                 modifier = modifier,
                 textAlign = TextAlign.Center

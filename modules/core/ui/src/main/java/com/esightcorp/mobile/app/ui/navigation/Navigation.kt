@@ -104,5 +104,4 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
     object WifiQRCodeRoute : WifiNavigation("wifi_qrcode")
     object SelectNetworkSecurityRoute : WifiNavigation("select_network_security")
 
-    //TODO: migrate all other paths
 }

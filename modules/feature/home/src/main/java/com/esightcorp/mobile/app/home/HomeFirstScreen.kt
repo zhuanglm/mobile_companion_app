@@ -213,7 +213,8 @@ private fun SquareTileCardLayout(
         })
 
     val configuration = LocalConfiguration.current
-    val adaptiveCells = (configuration.fontScale * 150).dp
+    Log.i(TAG, "SquareTileCardLayout: with font scale ${((configuration.screenWidthDp-75)/2) * configuration.fontScale}")
+    val adaptiveCells = (((configuration.screenWidthDp-75)/2) * configuration.fontScale).dp
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(adaptiveCells),

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ LICENSE
   ~ Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
   ~ The software and information contained herein are proprietary to, and
@@ -9,7 +8,7 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:width="24dp"
-        android:height="24dp"
-        android:drawable="@drawable/ic_settings_privacy" />
+        android:width="40dp"
+        android:height="40dp"
+        android:drawable="@drawable/ic_qr" />
 </layer-list>

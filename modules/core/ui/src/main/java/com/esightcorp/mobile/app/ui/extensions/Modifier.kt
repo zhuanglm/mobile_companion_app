@@ -39,7 +39,7 @@ fun Modifier.debugBorder(color: Color = Color.Red) = this.border(width = 1.dp, c
 fun Modifier.gestureHandler(
     onGestureStarted: OnActionCallback? = null,
     onGestureCompleted: OnActionCallback? = null,
-) = pointerInput(onGestureStarted, onGestureCompleted) {
+) = this.then(pointerInput(onGestureStarted, onGestureCompleted) {
     awaitEachGesture {
         awaitFirstDown(false).also {
             onGestureStarted?.invoke()
@@ -50,7 +50,7 @@ fun Modifier.gestureHandler(
 
         onGestureCompleted?.invoke()
     }
-}
+})
 
 /**
  * Simulate tap down and up for TalkBack:

@@ -8,32 +8,63 @@
 
 package com.esightcorp.mobile.app.home
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.esightcorp.mobile.app.home.viewmodels.LocationServiceOffViewModel
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.PermissionScreen
+import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 
 @Composable
 fun LocationServiceOffRoute(
     navController: NavController,
-) = LocationServiceOffScreen(navController)
+    vm: LocationServiceOffViewModel = hiltViewModel(),
+) {
+    val locationSettingLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { vm.verifyLocationServiceState() },
+    )
+
+    LocationServiceOffScreen(
+        navController = navController,
+        onOkPressed = { vm.gotoSystemLocationSettings(locationSettingLauncher) },
+        onCancelPressed = vm::onDismiss,
+    )
+
+    val isLocationEnabled by vm.isLocationServiceEnabled.collectAsState()
+    Log.d(TAG, "->> isLocationEnabled: $isLocationEnabled")
+    when (isLocationEnabled) {
+        true -> ExecuteOnce { vm.onDismiss(navController) }
+        else -> Unit
+    }
+}
 
 //region Private implementation
+private const val TAG = "LocationServiceOffScreen"
 
-// TODO: using PermissionScreen as there is no string resource for this location service disabled use case
 @Composable
 private fun LocationServiceOffScreen(
     navController: NavController,
+    onCancelPressed: OnNavigationCallback? = null,
+    onOkPressed: OnNavigationCallback? = null,
 ) = PermissionScreen(
     navController = navController,
-    okLabelId = R.string.kRetryButtonTitle,
-    descriptionId = R.string.kPermissionLocation,
-    onCancelPressed = { it.popBackStack() },
-    onOpenAppSettingPressed = { it.popBackStack() },
+    titleId = R.string.kPermissionLocationServicesTitle,
+    descriptionId = R.string.kPermissionLocationServicesBody,
+    okLabelId = R.string.kSettingsViewTitleText,
+    onCancelPressed = onCancelPressed,
+    onOkPressed = onOkPressed,
 )
 
 @Preview

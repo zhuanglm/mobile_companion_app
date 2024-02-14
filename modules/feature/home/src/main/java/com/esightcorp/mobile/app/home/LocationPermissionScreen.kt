@@ -80,7 +80,7 @@ private fun LocationPermissionScreen(
     navController = navController,
     descriptionId = R.string.kPermissionLocation,
     onCancelPressed = onCancelPressed,
-    onOpenAppSettingPressed = onOpenAppSettingPressed
+    onOkPressed = onOpenAppSettingPressed
 )
 
 @Preview

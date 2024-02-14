@@ -32,10 +32,11 @@ import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 fun PermissionScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    @StringRes titleId: Int = R.string.kPermissionRequiredTitle,
     @StringRes descriptionId: Int = R.string.label_home_screen_request_permission_description,
     @StringRes okLabelId: Int = R.string.kPermissionOpenSettingsButton,
     onCancelPressed: OnNavigationCallback? = null,
-    onOpenAppSettingPressed: OnNavigationCallback? = null,
+    onOkPressed: OnNavigationCallback? = null,
 ) = BaseScreen(
     modifier = modifier,
     showBackButton = false,
@@ -51,8 +52,9 @@ fun PermissionScreen(
 
         ItemSpacer(30.dp)
         Header1Text(
-            text = stringResource(R.string.kPermissionRequiredTitle),
-            modifier = modifier
+            text = stringResource(titleId),
+            modifier = modifier,
+            textAlign = TextAlign.Center,
         )
         ItemSpacer(30.dp)
 
@@ -65,7 +67,7 @@ fun PermissionScreen(
         ItemSpacer(60.dp)
 
         TextRectangularButton(
-            onClick = { onOpenAppSettingPressed?.invoke(navController) },
+            onClick = { onOkPressed?.invoke(navController) },
             modifier = modifier,
             text = stringResource(okLabelId),
             textAlign = TextAlign.Center,

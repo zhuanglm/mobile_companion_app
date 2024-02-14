@@ -89,7 +89,7 @@ private fun BtPermissionScreen(
     navController = navController,
     descriptionId = R.string.kPermissionBluetooth,
     onCancelPressed = onCancelPressed,
-    onOpenAppSettingPressed = onOpenAppSettingPressed
+    onOkPressed = onOpenAppSettingPressed
 )
 
 @Preview

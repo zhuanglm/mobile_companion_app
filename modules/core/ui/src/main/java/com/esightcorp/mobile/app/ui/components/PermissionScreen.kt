@@ -24,8 +24,8 @@ import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.containers.Centered
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
-import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.SubHeader
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -33,6 +33,7 @@ fun PermissionScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     @StringRes descriptionId: Int = R.string.label_home_screen_request_permission_description,
+    @StringRes okLabelId: Int = R.string.kPermissionOpenSettingsButton,
     onCancelPressed: OnNavigationCallback? = null,
     onOpenAppSettingPressed: OnNavigationCallback? = null,
 ) = BaseScreen(
@@ -55,7 +56,7 @@ fun PermissionScreen(
         )
         ItemSpacer(30.dp)
 
-        BoldSubheader(
+        SubHeader(
             text = stringResource(descriptionId),
             modifier = modifier,
             textAlign = TextAlign.Center
@@ -66,7 +67,7 @@ fun PermissionScreen(
         TextRectangularButton(
             onClick = { onOpenAppSettingPressed?.invoke(navController) },
             modifier = modifier,
-            text = stringResource(R.string.kPermissionOpenSettingsButton),
+            text = stringResource(okLabelId),
             textAlign = TextAlign.Center,
         )
         ItemSpacer(30.dp)

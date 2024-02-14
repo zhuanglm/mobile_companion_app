@@ -19,10 +19,13 @@ import com.esightcorp.mobile.app.settings.repositories.SettingsRepository
 import com.esightcorp.mobile.app.settings.state.SettingsUiState
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
 import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.utils.bluetooth.BleStateManagerImpl
 import com.esightcorp.mobile.app.utils.bluetooth.IBleStateManager
+import com.esightcorp.mobile.app.utils.permission.ILocationServiceManager
 import com.esightcorp.mobile.app.utils.permission.IPermissionManager
+import com.esightcorp.mobile.app.utils.permission.LocationServiceManagerImpl
 import com.esightcorp.mobile.app.utils.permission.PermissionManagerImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,9 +39,11 @@ class SettingsViewModel @Inject constructor(
     settingsRepo: SettingsRepository,
     btConnRepo: BtConnectionRepository,
 ) : AndroidViewModel(application),
+
     IBleStateManager by BleStateManagerImpl(),
     IBtConnectionManager by BtConnectionManagerImpl(btConnRepo),
-    IPermissionManager by PermissionManagerImpl(application, WifiModel.locationPermissions) {
+    IPermissionManager by PermissionManagerImpl(application, WifiModel.locationPermissions),
+    ILocationServiceManager by LocationServiceManagerImpl(application) {
 
     private val _settingsUiState = MutableStateFlow(SettingsUiState())
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState
@@ -54,4 +59,8 @@ class SettingsViewModel @Inject constructor(
 
     fun showExternalUrl(urlId: Int) =
         with(application.applicationContext) { openExternalUrl(getString(urlId)) }
+
+    fun navigateToLocationServiceOff(navController: NavController) = with(navController) {
+        navigate(target = HomeNavigation.LocationServiceOffRoute, popCurrent = false)
+    }
 }

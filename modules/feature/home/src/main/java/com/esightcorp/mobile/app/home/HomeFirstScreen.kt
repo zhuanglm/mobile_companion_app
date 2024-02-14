@@ -131,17 +131,27 @@ private fun BaseHomeScreen(
 
             when (permissionUiState.state) {
                 PermissionUiState.PermissionState.GRANTED -> {
-                    //TODO: check for Location service
-                    when (selectedFeature) {
-                        FeatureType.FEATURE_ESHARE -> ExecuteOnce {
-                            vm.navigateToShareYourView(navController)
-                        }
+                    val isLocationServiceEnabled by vm.isLocationServiceEnabled.collectAsState()
+                    Log.i(TAG, "Location service enabled: $isLocationServiceEnabled")
 
-                        FeatureType.FEATURE_WIFI -> ExecuteOnce {
-                            vm.navigateToWifiCredsOverBt(navController)
-                        }
+                    ExecuteOnce(key = isLocationServiceEnabled) {
+                        when (isLocationServiceEnabled) {
+                            null -> vm.verifyLocationServiceState()
 
-                        else -> Unit
+                            true -> when (selectedFeature) {
+                                FeatureType.FEATURE_ESHARE -> vm.navigateToShareYourView(
+                                    navController
+                                )
+
+                                FeatureType.FEATURE_WIFI -> vm.navigateToWifiCredsOverBt(
+                                    navController
+                                )
+
+                                else -> Unit
+                            }
+
+                            false -> vm.navigateToLocationServiceOff(navController)
+                        }
                     }
                     return
                 }

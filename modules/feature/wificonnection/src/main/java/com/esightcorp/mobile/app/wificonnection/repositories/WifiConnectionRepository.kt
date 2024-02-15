@@ -189,8 +189,9 @@ class WifiConnectionRepository @Inject constructor(
         }
     }
 
-    fun unregisterListener(listener: WifiConnectionListener) {
+    fun unregisterWifiConnectionListener() {
         Log.e(_tag, "unregisterListener: ")
+        connectionListener = null
     }
 
     @Synchronized

@@ -30,7 +30,6 @@ import com.esightcorp.mobile.app.wificonnection.SearchingForNetworksRoute
 import com.esightcorp.mobile.app.wificonnection.SelectNetworkRoute
 import com.esightcorp.mobile.app.wificonnection.UnableToConnectRoute
 import com.esightcorp.mobile.app.wificonnection.WifiConnectingRoute
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.WifiOffRoute
 import com.esightcorp.mobile.app.wificonnection.WifiQRCodeRoute
 import com.esightcorp.mobile.app.wificonnection.WifiTypeRoute
@@ -66,14 +65,14 @@ fun NavGraphBuilder.addWifiConnectionNavigation(navController: NavController) {
 
         composable(WifiNavigation.AdvancedNetworkSettingsRoute) { AdvancedWifiRoute(navController) }
 
-        composable(WifiConnectionScreens.ConnectingRoute.route) {
+        composable(WifiNavigation.ConnectingRoute) {
             WifiConnectingRoute(navController = navController)
         }
 
-        composable(WifiConnectionScreens.SelectNetworkSecurityRoute.route) {
+        composable(WifiNavigation.SelectNetworkSecurityRoute) {
             WifiTypeRoute(navController = navController)
         }
-        composable(WifiConnectionScreens.WifiQRCodeRoute.route) {
+        composable(WifiNavigation.WifiQRCodeRoute) {
             WifiQRCodeRoute(navController = navController)
         }
     }

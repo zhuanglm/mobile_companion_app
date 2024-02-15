@@ -19,6 +19,7 @@ import android.os.Build
 import android.util.Log
 import com.esightcorp.mobile.app.bluetooth.BleAction
 import com.esightcorp.mobile.app.bluetooth.BleService
+import com.esightcorp.mobile.app.bluetooth.ESightBleAction
 import com.esightcorp.mobile.app.bluetooth.WifiConnectionStatus
 import com.esightcorp.mobile.app.bluetooth.addAction
 import com.esightcorp.mobile.app.networking.sockets.CreateSocketListener
@@ -80,7 +81,7 @@ class WifiModel(
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             when (intent.action) {
-                BleService.ACTION_DATA_AVAILABLE -> {
+                ESightBleAction.DataAvailable.actionName() -> {
                     when (intent.data.toString()) {
                         else -> {
                             Log.i(_tag, "onReceive: ${intent.data.toString()}")
@@ -169,7 +170,7 @@ class WifiModel(
         }
     }
     private val makeWifiBleIntentFilter = IntentFilter().apply {
-        addAction(BleService.ACTION_DATA_AVAILABLE)
+        addAction(ESightBleAction.DataAvailable.actionName())
         addAction(BleService.ACTION_WIFI_ERROR)
         addAction(BleService.ACTION_WIFI_CONNECTED)
         addAction(BleService.ACTION_ERROR)
@@ -188,6 +189,7 @@ class WifiModel(
     }
 
     @Synchronized
+    @Suppress("Deprecation")
     fun startWifiScan() {
         Log.i(_tag, "startWifiScan - $this")
 
@@ -347,11 +349,11 @@ class WifiModel(
                     if (!addr.isLoopbackAddress) {
                         val sAddr = addr.hostAddress
                         // Check for IPv4 or IPv6 preference
-                        val isIPv4 = sAddr.indexOf(':') < 0
+                        val isIPv4 = sAddr?.let { it.indexOf(':') < 0 }
                         if (useIPv4) {
-                            if (isIPv4) return sAddr
+                            if (isIPv4 == true) return sAddr
                         } else {
-                            if (!isIPv4) {
+                            if (isIPv4 == false) {
                                 // Remove prefix for IPv6 address
                                 val delim = sAddr.indexOf('%')
                                 return if (delim < 0) sAddr else sAddr.substring(0, delim)

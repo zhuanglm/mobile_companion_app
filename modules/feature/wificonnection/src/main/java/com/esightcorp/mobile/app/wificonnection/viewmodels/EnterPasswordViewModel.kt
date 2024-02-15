@@ -20,7 +20,6 @@ import com.esightcorp.mobile.app.ui.WPA_MIN_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.ScanningStatus
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiNetworkScanListener
 import com.esightcorp.mobile.app.wificonnection.state.WifiCredentialsUiState
@@ -137,11 +136,11 @@ class EnterPasswordViewModel @Inject constructor(
 
     private fun navigateToConnectingScreen(navController: NavController) {
         Log.i(_tag, "navigateToConnectingScreen: Bluetooth route selected")
-        navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
+        navController.navigate(WifiNavigation.ConnectingRoute, popCurrent = false)
     }
 
     private fun navigateToQrScreen(navController: NavController) {
         Log.i(_tag, "navigateToQrScreen: QR Route selected")
-        navController.navigate(WifiConnectionScreens.WifiQRCodeRoute.route)
+        navController.navigate(WifiNavigation.WifiQRCodeRoute, popCurrent = false)
     }
 }

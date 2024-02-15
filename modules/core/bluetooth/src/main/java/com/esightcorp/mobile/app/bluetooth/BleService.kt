@@ -348,7 +348,7 @@ class BleService : Service() {
                         "ERROR_ESHARE_DENIED" -> broadcastUpdate(EShareAction.UserDenied)
 
                         else -> {
-                            broadcastUpdate(ACTION_ERROR, incoming)
+                            broadcastUpdate(ESightBleAction.ErrorAction, incoming)
                         }
                     }
                 }
@@ -372,7 +372,7 @@ class BleService : Service() {
                 }
 
                 ESightCharacteristic.WIFI_CONNECTION_STATUS -> {
-                    broadcastUpdate(ACTION_WIFI_CONNECTION_STATUS, incoming)
+                    broadcastUpdate(WifiAction.WifiConnectionStatus, incoming)
                 }
 
                 else -> {

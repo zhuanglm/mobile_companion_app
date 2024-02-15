@@ -16,7 +16,8 @@ import com.esightcorp.mobile.app.networking.WifiType
 import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.WPA_MAX_PASSWORD_LENGTH
 import com.esightcorp.mobile.app.ui.WPA_MIN_PASSWORD_LENGTH
-import com.esightcorp.mobile.app.wificonnection.WifiConnectionScreens
+import com.esightcorp.mobile.app.ui.extensions.navigate
+import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionListener
 import com.esightcorp.mobile.app.wificonnection.repositories.WifiConnectionRepository
 import com.esightcorp.mobile.app.wificonnection.state.WifiAdvancedSettingsUiState
@@ -125,7 +126,7 @@ class AdvancedWifiViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        repository.unregisterListener(listener)
+        repository.unregisterWifiConnectionListener()
     }
 
     private fun isPasswordValid(ssid: String, password: String) : Boolean {
@@ -159,12 +160,12 @@ class AdvancedWifiViewModel @Inject constructor(
     fun onSecurityButtonPressed(navController: NavController) {
         //avoid to lost user input
         repository.setWifiNetwork(_uiState.value.ssid, _uiState.value.wifiType, _uiState.value.password)
-        navController.navigate(WifiConnectionScreens.SelectNetworkSecurityRoute.route)
+        navController.navigate(WifiNavigation.SelectNetworkSecurityRoute, popCurrent = false)
     }
 
     private fun navigateToQrScreen(navController: NavController) {
         Log.i(_tag, "navigateToQrScreen: QR Route selected")
-        navController.navigate(WifiConnectionScreens.WifiQRCodeRoute.route)
+        navController.navigate(WifiNavigation.WifiQRCodeRoute, popCurrent = false)
     }
 
     private fun sendWifiCredsViaBluetooth() {
@@ -174,7 +175,7 @@ class AdvancedWifiViewModel @Inject constructor(
 
     private fun navigateToConnectingScreen(navController: NavController) {
         Log.i(_tag, "navigateToConnectingScreen: Bluetooth route selected")
-        navController.navigate(WifiConnectionScreens.ConnectingRoute.route)
+        navController.navigate(WifiNavigation.ConnectingRoute, popCurrent = false)
     }
 
     fun onFinishButtonPressed(navController: NavController) {

@@ -44,8 +44,8 @@ class BtConnectedViewModel @Inject constructor(
         getBluetoothDevice()
     }
 
-    fun gotoNoDeviceConnectedScreen(navController: NavController) = with(navController) {
-        navigate(BtConnectionNavigation.NoDeviceConnectedRoute)
+    fun goToUnableToConnectScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.UnableToConnectRoute)
     }
 
     fun gotoBtDisabledScreen(navController: NavController) = with(navController) {

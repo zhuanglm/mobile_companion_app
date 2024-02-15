@@ -107,7 +107,7 @@ private fun NoNetworksFoundScreenBody(
             text = stringResource(id = R.string.kWifiTroubleshootingNoWifiTitle),
             modifier = modifier
                 .constrainAs(headerText) {
-                    top.linkTo(parent.bottom, margin = 8.dp)
+                    top.linkTo(parent.top, margin = 8.dp)
                     start.linkTo(parent.start)
                 },
         )

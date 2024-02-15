@@ -85,7 +85,7 @@ private fun ScreenBody(
     onTryAgain: OnNavigationCallback? = null,
 ) {
     ConstraintLayout {
-        val (headerText, header2Text, nhiOne, nhiTwo, nhiThree, helpText, button) = createRefs()
+        val (headerText, header2Text, nhiOne, nhiTwo, nhiThree, button) = createRefs()
 
         Header1Text(
             text = stringResource(R.string.kTroubleshootingUnableToConnectTitle),

@@ -39,7 +39,7 @@ fun BtConnectedRoute(
             navController = navController,
             deviceAddress = uiState.deviceAddress,
             deviceName = uiState.deviceName,
-            gotoNoDeviceConnectedScreen = vm::gotoNoDeviceConnectedScreen,
+            goToUnableToConnectScreen = vm::goToUnableToConnectScreen,
             gotoHomeScreen = { nav ->
                 vm.gotoMainScreen(nav = nav, popUntil = BtConnectionNavigation.IncomingRoute)
             },
@@ -56,7 +56,7 @@ private fun BtConnectedScreen(
     deviceAddress: String? = null,
     deviceName: String? = null,
     gotoHomeScreen: OnNavigationCallback? = null,
-    gotoNoDeviceConnectedScreen: OnNavigationCallback? = null,
+    goToUnableToConnectScreen: OnNavigationCallback? = null,
 ) {
     if (deviceName != null && deviceAddress != null) {
         val loadingText = stringResource(id = R.string.kBTPairingConnectedTitle)
@@ -67,13 +67,10 @@ private fun BtConnectedScreen(
 
             gotoHomeScreen?.invoke(navController)
         }
-    } else {
-        val loadingText = stringResource(id = R.string.something_went_wrong)
-        LoadingScreenWithIcon(modifier = modifier, loadingText = loadingText)
+    }
+    else {
         LaunchedEffect(Unit) {
-            delay(SCREEN_TIMEOUT)
-
-            gotoNoDeviceConnectedScreen?.invoke(navController)
+            goToUnableToConnectScreen?.invoke(navController)
         }
     }
 }

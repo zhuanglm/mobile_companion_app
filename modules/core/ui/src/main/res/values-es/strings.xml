@@ -28,9 +28,9 @@
     <string name="kTroubleshootingStep1">1</string>
     <string name="kWifiTroubleshootingHowToScanSecondText">Ve a Conectividad > Wifi.</string>
     <string name="kTroubleshootingStep2">2</string>
-    <string name="kWifiTroubleshootingHowToScanThirdText">Selecciona “Conectar con QR”.</string>
+    <string name="kWifiTroubleshootingHowToScanThirdText">Selecciona “Conectar con QR”</string>
     <string name="kTroubleshootingStep3">3</string>
-    <string name="kWifiTroubleshootingHowToScanFourthText">Escanea el código de la red wifi con tu eSight.</string>
+    <string name="kWifiTroubleshootingHowToScanFourthText">Escanea el código de la red wifi con tu eSight</string>
     <string name="kTroubleshootingStep4">4</string>
     <string name="kUnableToConnectFooterButtonText">¿No es posible realizar la conexión?</string>
     <string name="kTroubleshootingUnableToConnectTitle">No se puede realizar la conexión.</string>
@@ -54,7 +54,7 @@
     <string name="kHomeRootViewUnconnectedSubHeader">eSight no está conectado.</string>
     <string name="kHomeRootViewUnconnectedConnectButtonText">Conectar con eSight Go</string>
     <string name="kTermsOfServiceAgreementPartOne">Al continuar, aceptas nuestros</string>
-    <string name="kTermsOfService">términos.</string>
+    <string name="kTermsOfService">términos</string>
     <string name="kTermsOfServiceAgreementPartTwo">Conoce cómo utilizamos tus datos en nuestros</string>
     <string name="kBTErrorConnectionLostTitleText">Se perdió la conexión.</string>
     <string name="kBTErrorConnectionLostDescriptionText">Asegúrate de que tu eSight esté encendido y dentro del alcance.</string>
@@ -147,6 +147,5 @@
 
     <string name="kPermissionLocationServicesTitle">Servicios de Ubicación Requeridos</string>
     <string name="kPermissionLocationServicesBody">Para usar esta función, los servicios de ubicación deben estar activados.</string>
-
 
 </resources>

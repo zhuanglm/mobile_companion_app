@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,12 +30,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -179,27 +182,39 @@ private fun HomeScreenBody(
     device: String,
     onFeatureClicked: ((FeatureType) -> Unit),
 ) {
+    val density = LocalDensity.current
+    val fixedFontScaleDensity = Density(
+        density = density.density,
+        fontScale = 1f //ignore the font scaling
+    )
     val configuration = LocalConfiguration.current
     val greetingTopMargin = if (configuration.fontScale > 1) {
         (32 / configuration.fontScale).dp
     } else {
         32.dp
     }
+    val deviceCardTopMargin = if (configuration.fontScale > 1) {
+        (25 / configuration.fontScale).dp
+    } else {
+        25.dp
+    }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (personalGreeting, deviceCard, appContainer) = createRefs()
-        PersonalGreeting(
-            modifier = modifier
-                .semantics {
-                    isTraversalGroup = true
-                    traversalIndex = 0f
-                }
-                .constrainAs(personalGreeting) {
-                    top.linkTo(parent.top, margin = greetingTopMargin)
-                    start.linkTo(parent.start)
-                },
-            connected = true,
-        )
+        CompositionLocalProvider(LocalDensity provides fixedFontScaleDensity) {
+            PersonalGreeting(
+                modifier = modifier
+                    .semantics {
+                        isTraversalGroup = true
+                        traversalIndex = 0f
+                    }
+                    .constrainAs(personalGreeting) {
+                        top.linkTo(parent.top, margin = greetingTopMargin)
+                        start.linkTo(parent.start)
+                    },
+                connected = true,
+            )
+        }
         DeviceCard(
             modifier = modifier
                 .semantics {
@@ -207,7 +222,7 @@ private fun HomeScreenBody(
                     traversalIndex = 1f
                 }
                 .constrainAs(deviceCard) {
-                    top.linkTo(personalGreeting.bottom, margin = 25.dp)
+                    top.linkTo(personalGreeting.bottom, margin = deviceCardTopMargin)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
@@ -263,7 +278,11 @@ private fun SquareTileCardLayout(
     )
 
     val configuration = LocalConfiguration.current
-    val adaptiveCells = (configuration.fontScale * 150).dp
+    Log.i(
+        TAG,
+        "SquareTileCardLayout: with font scale ${((configuration.screenWidthDp - 75) / 2) * configuration.fontScale}"
+    )
+    val adaptiveCells = (((configuration.screenWidthDp - 75) / 2) * configuration.fontScale).dp
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(adaptiveCells),

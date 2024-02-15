@@ -55,6 +55,9 @@
     <string name="kPermissionRequiredBody">To unlock all the features of this app, please enable the necessary permissions.</string>
     <string name="kPermissionRequestButton">Request permissions</string>
     <string name="kPermissionOpenSettingsButton">Open app settings</string>
+
+    <string name="kPermissionLocationServicesTitle">Location Services Required</string>
+    <string name="kPermissionLocationServicesBody">To use this feature, location services must be enabled.</string>
     <!-- endregion -->
 
     <!-- region External URL -->

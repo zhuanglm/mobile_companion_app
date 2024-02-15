@@ -138,6 +138,7 @@ internal fun SettingsMyESight(
         onClick = {
             isWiFiQrFlow = true
             vwModel?.initPermissionCheck()
+            vwModel?.verifyLocationServiceState()
         },
         modifier = modifier,
         iconDrawableId = com.esightcorp.mobile.app.ui.R.drawable.ic_settings_qr_40,
@@ -163,16 +164,29 @@ internal fun SettingsMyESight(
 
     when (isWiFiQrFlow) {
         true -> {
-            isWiFiQrFlow = null
             when (permissionUiState?.state) {
                 PermissionUiState.PermissionState.GRANTED -> {
-                    //TODO: check Location service here!!!
-                    ExecuteOnce {
-                        navController.navigate(
-                            target = WifiNavigation.ScanningRoute,
-                            param = WifiNavigation.ScanningRoute.PARAM_QR,
-                            popUntil = WifiNavigation.IncomingRoute,
-                        )
+                    val isLocationServiceEnabled by vwModel.isLocationServiceEnabled.collectAsState()
+                    Log.i(TAG, "Location service enabled: $isLocationServiceEnabled")
+
+                    when (isLocationServiceEnabled) {
+                        true -> {
+                            ExecuteOnce {
+                                navController.navigate(
+                                    target = WifiNavigation.ScanningRoute,
+                                    param = WifiNavigation.ScanningRoute.PARAM_QR,
+                                    popUntil = WifiNavigation.IncomingRoute,
+                                )
+                            }
+                            isWiFiQrFlow = null
+                        }
+
+                        false -> {
+                            ExecuteOnce { vwModel.navigateToLocationServiceOff(navController) }
+                            isWiFiQrFlow = null
+                        }
+
+                        else -> Unit
                     }
                 }
 
@@ -183,6 +197,7 @@ internal fun SettingsMyESight(
                             popCurrent = false
                         )
                     }
+                    isWiFiQrFlow = null
                 }
 
                 else -> Unit

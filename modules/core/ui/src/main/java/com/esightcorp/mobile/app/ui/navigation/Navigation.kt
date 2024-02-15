@@ -26,6 +26,7 @@ sealed class HomeNavigation(override val path: String) : Navigation(path) {
 
     object FirstScreenRoute : HomeNavigation("home_first")
     object LocationPermissionRoute : HomeNavigation("home_location_permission")
+    object LocationServiceOffRoute : HomeNavigation("home_location_service_off")
 }
 
 sealed class SettingsNavigation(override val path: String) : Navigation(path) {

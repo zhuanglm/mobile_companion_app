@@ -24,7 +24,9 @@ import com.esightcorp.mobile.app.ui.navigation.SettingsNavigation
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
 import com.esightcorp.mobile.app.utils.bluetooth.BleStateManagerImpl
 import com.esightcorp.mobile.app.utils.bluetooth.IBleStateManager
+import com.esightcorp.mobile.app.utils.permission.ILocationServiceManager
 import com.esightcorp.mobile.app.utils.permission.IPermissionManager
+import com.esightcorp.mobile.app.utils.permission.LocationServiceManagerImpl
 import com.esightcorp.mobile.app.utils.permission.PermissionManagerImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +41,8 @@ class HomeViewModel @Inject constructor(
     homeRepository: HomeRepository,
 ) : ESightBaseViewModel(application),
     IBleStateManager by BleStateManagerImpl(),
-    IPermissionManager by PermissionManagerImpl(application, homeRepository.locationPermissions) {
+    IPermissionManager by PermissionManagerImpl(application, homeRepository.locationPermissions),
+    ILocationServiceManager by LocationServiceManagerImpl(application) {
 
     private val _tag = this.javaClass.simpleName
 
@@ -111,5 +114,9 @@ class HomeViewModel @Inject constructor(
 
     fun navigateToLocationPermission(navController: NavController) = with(navController) {
         navigate(HomeNavigation.LocationPermissionRoute)
+    }
+
+    fun navigateToLocationServiceOff(navController: NavController) = with(navController) {
+        navigate(HomeNavigation.LocationServiceOffRoute)
     }
 }

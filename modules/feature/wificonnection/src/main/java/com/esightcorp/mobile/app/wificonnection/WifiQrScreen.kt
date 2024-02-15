@@ -8,6 +8,10 @@
 
 package com.esightcorp.mobile.app.wificonnection
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.view.Window
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,11 +19,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,6 +75,21 @@ private fun WifiQrCodeScreen(
     onHowToScanClicked: OnNavigationCallback? = null,
     onReturnToHomeClicked: OnNavigationCallback? = null,
 ) {
+    val context = LocalContext.current
+    val activity = context.findActivity()
+    activity?.let { act ->
+        SetScreenBrightnessToMax(window = act.window)
+
+        DisposableEffect(Unit){
+            onDispose {
+                val layoutParams = act.window.attributes
+                layoutParams.screenBrightness = -1f //reset value
+                act.window.attributes = layoutParams
+            }
+        }
+    }
+
+
     BaseScreen(
         modifier = modifier,
         showBackButton = true,
@@ -146,6 +167,20 @@ private fun WifiQrCodeScreenBody(
             text = stringResource(id = R.string.kQRViewReturnHomeButtonText)
         )
     }
+}
+
+@Composable
+fun SetScreenBrightnessToMax(window: Window) {
+    val layoutParams = window.attributes
+    layoutParams.screenBrightness = 1f // 1f = 100%
+    window.attributes = layoutParams
+    
+}
+
+fun Context.findActivity(): Activity? = when(this){
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 @Preview

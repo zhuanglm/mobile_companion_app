@@ -11,6 +11,7 @@ package com.esightcorp.mobile.app.ui.components.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.navigation.NavController
+import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.openExternalUrl
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
@@ -32,6 +33,14 @@ open class ESightBaseViewModel @Inject constructor(
     }
 
     fun gotoEsightSupportSite() = with(application.applicationContext) {
-        openExternalUrl(getString(com.esightcorp.mobile.app.ui.R.string.url_esight_support))
+        openExternalUrl(getString(R.string.url_esight_support))
+    }
+
+    fun gotoEsightFeedbackSite() = with(application.applicationContext) {
+        openExternalUrl(getString(R.string.url_esight_feedback))
+    }
+
+    fun gotoEsightPrivacyPolicySite() = with(application.applicationContext) {
+        openExternalUrl(getString(R.string.url_esight_privacy_policy))
     }
 }

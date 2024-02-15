@@ -8,12 +8,8 @@
 
 package com.esightcorp.mobile.app.btconnection
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,9 +22,10 @@ import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
+import com.esightcorp.mobile.app.ui.components.containers.Centered
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.SubHeader
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
@@ -62,18 +59,16 @@ private fun BtConnectionLostScreen(
     modifier = Modifier,
     showBackButton = false,
     showSettingsButton = false,
+    isContentCentered = true,
     onSettingsButtonInvoked = { },
     bottomButton = { },
     bottomAlignedContent = { },
 ) {
-    Column(
-        modifier = modifier
-            .padding(vertical = 30.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        BigIcon(drawableId = R.drawable.ic_settings_disconnected,
-            contentDescription = stringResource(id = R.string.kAccessibilityIconDisconnected))
+    Centered {
+        BigIcon(
+            drawableId = R.drawable.ic_settings_disconnected,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconDisconnected)
+        )
 
         ItemSpacer(30.dp)
         Header1Text(
@@ -83,7 +78,7 @@ private fun BtConnectionLostScreen(
         )
 
         ItemSpacer(30.dp)
-        BoldSubheader(
+        SubHeader(
             text = stringResource(R.string.kBTErrorConnectionLostDescriptionText),
             modifier = modifier,
             textAlign = TextAlign.Center

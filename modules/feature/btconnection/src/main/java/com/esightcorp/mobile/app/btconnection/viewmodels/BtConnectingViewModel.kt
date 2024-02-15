@@ -69,6 +69,10 @@ class BtConnectingViewModel @Inject constructor(
         navController.navigate(BtConnectionNavigation.UnableToConnectRoute)
     }
 
+    fun navigateToBtDisabledScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.BtDisabledScreen)
+    }
+
     @SuppressLint("MissingPermission")
     private fun updateDeviceInfo(device: BluetoothDevice?, connected: Boolean?) {
         val updateAction = {

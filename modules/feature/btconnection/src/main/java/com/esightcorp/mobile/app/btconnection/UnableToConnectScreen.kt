@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.UnableToConnectViewModel
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
@@ -34,7 +35,8 @@ import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
 fun UnableToConnectRoute(
-    navController: NavController, vm: UnableToConnectViewModel = hiltViewModel()
+    navController: NavController,
+    vm: UnableToConnectViewModel = hiltViewModel(),
 ) {
     val btUiState by vm.uiState.collectAsState()
     vm.setNavController(navController)
@@ -45,7 +47,7 @@ fun UnableToConnectRoute(
             onConnectClicked = vm::showHowToConnectPage
         )
     } else {
-        NavigateBluetoothDisabled(navController = navController)
+        ExecuteOnce { vm.navigateToBtDisabledScreen(navController) }
     }
 }
 
@@ -60,8 +62,10 @@ fun UnableToConnectScreenPreview() = MaterialTheme {
 }
 
 @Composable
-private fun UnableToConnectBody(modifier: Modifier,
-                                onTryAgainClicked: OnActionCallback) {
+private fun UnableToConnectBody(
+    modifier: Modifier,
+    onTryAgainClicked: OnActionCallback,
+) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (topBar, header, subtitle, help1, help2, button) = createRefs()
 
@@ -118,6 +122,7 @@ private fun UnableToConnectBody(modifier: Modifier,
     }
 
 }
+
 //region Internal implementation
 @Composable
 internal fun UnableToConnectScreen(

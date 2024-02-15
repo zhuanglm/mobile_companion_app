@@ -31,7 +31,6 @@ class BtDevicesViewModel @Inject constructor(
     application: Application,
     private val btConnectionRepository: BtConnectionRepository
 ) : AndroidViewModel(application) {
-    private val _tag = this.javaClass.simpleName
 
     private var _uiState = MutableStateFlow(BtDevicesUiState())
     val uiState: StateFlow<BtDevicesUiState> = _uiState.asStateFlow()
@@ -78,5 +77,9 @@ class BtDevicesViewModel @Inject constructor(
 
     fun navigateToUnableToFindESight(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.NoDevicesFoundRoute)
+    }
+
+    fun navigateToBtDisabledScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.BtDisabledScreen)
     }
 }

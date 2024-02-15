@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtConnectedViewModel
 import com.esightcorp.mobile.app.ui.R
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithIcon
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
@@ -33,18 +34,19 @@ fun BtConnectedRoute(
 ) {
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
-    } else {
-        BtConnectedScreen(
-            navController = navController,
-            deviceAddress = uiState.deviceAddress,
-            deviceName = uiState.deviceName,
-            gotoNoDeviceConnectedScreen = vm::gotoNoDeviceConnectedScreen,
-            gotoHomeScreen = { nav ->
-                vm.gotoMainScreen(nav = nav, popUntil = BtConnectionNavigation.IncomingRoute)
-            },
-        )
+        ExecuteOnce { vm.gotoBtDisabledScreen(navController) }
+        return
     }
+
+    BtConnectedScreen(
+        navController = navController,
+        deviceAddress = uiState.deviceAddress,
+        deviceName = uiState.deviceName,
+        gotoNoDeviceConnectedScreen = vm::gotoNoDeviceConnectedScreen,
+        gotoHomeScreen = { nav ->
+            vm.gotoMainScreen(nav = nav, popUntil = BtConnectionNavigation.IncomingRoute)
+        },
+    )
 }
 
 //region Internal implementation

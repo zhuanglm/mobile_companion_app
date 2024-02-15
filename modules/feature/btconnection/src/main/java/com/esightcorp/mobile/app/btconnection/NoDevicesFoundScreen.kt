@@ -24,12 +24,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.NoDevicesFoundViewModel
 import com.esightcorp.mobile.app.ui.R
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
@@ -43,7 +44,7 @@ fun NoDevicesFoundRoute(
 
     val btUiState by vm.uiState.collectAsState()
     when (btUiState.isBtEnabled) {
-        false -> NavigateBluetoothDisabled(navController = navController)
+        false -> ExecuteOnce { vm.navigateToBtDisabledScreen(navController) }
 
         true -> {
             NoDevicesFoundScreen(

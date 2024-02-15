@@ -8,16 +8,11 @@
 
 package com.esightcorp.mobile.app.wificonnection
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -32,6 +27,7 @@ import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
+import com.esightcorp.mobile.app.ui.components.containers.Centered
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.SubHeader
@@ -92,13 +88,11 @@ internal fun WifiOffScreen(
         isContentCentered = true,
         bottomButton = { },
     ) {
-        Column(
-            modifier = modifier.fillMaxSize().padding(vertical = 30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            BigIcon(drawableId = R.drawable.round_wifi_24,
-                contentDescription = stringResource(id = R.string.kAccessibilityIconWiFi))
+        Centered {
+            BigIcon(
+                drawableId = R.drawable.round_wifi_24,
+                contentDescription = stringResource(id = R.string.kAccessibilityIconWiFi)
+            )
 
             ItemSpacer(headerTopMargin)
             Header1Text(

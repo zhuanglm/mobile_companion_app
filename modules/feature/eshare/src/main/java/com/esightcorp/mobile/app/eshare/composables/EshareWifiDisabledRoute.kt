@@ -8,15 +8,11 @@
 
 package com.esightcorp.mobile.app.eshare.composables
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,9 +27,10 @@ import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
+import com.esightcorp.mobile.app.ui.components.containers.Centered
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.SubHeader
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -68,17 +65,16 @@ internal fun EshareWifiDisabledScreen(
     modifier = modifier,
     showBackButton = true,
     showSettingsButton = false,
+    isContentCentered = true,
     onBackButtonInvoked = { onBackPressed?.invoke(navController) },
     onSettingsButtonInvoked = { },
     bottomButton = { SetupHotspotButton { onSetupHotspotPressed?.invoke(navController) } },
 ) {
-    Column(
-        modifier = modifier.padding(vertical = 30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        BigIcon(drawableId = R.drawable.round_wifi_24,
-            contentDescription = stringResource(id = R.string.kAccessibilityIconWiFi))
+    Centered {
+        BigIcon(
+            drawableId = R.drawable.round_wifi_24,
+            contentDescription = stringResource(id = R.string.kAccessibilityIconWiFi)
+        )
 
         ItemSpacer(30.dp)
         Header1Text(
@@ -88,9 +84,10 @@ internal fun EshareWifiDisabledScreen(
         )
 
         ItemSpacer(30.dp)
-        BoldSubheader(
+        SubHeader(
             text = stringResource(R.string.kWifiErrorWifiDisabledSubtitle),
             modifier = modifier,
+            textAlign = TextAlign.Center,
         )
 
         ItemSpacer(60.dp)

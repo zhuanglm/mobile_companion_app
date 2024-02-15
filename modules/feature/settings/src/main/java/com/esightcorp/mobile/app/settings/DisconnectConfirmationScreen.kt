@@ -8,21 +8,17 @@
 
 package com.esightcorp.mobile.app.settings
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +28,7 @@ import com.esightcorp.mobile.app.ui.components.ItemSpacer
 import com.esightcorp.mobile.app.ui.components.buttons.OutlinedTextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
+import com.esightcorp.mobile.app.ui.components.containers.Centered
 import com.esightcorp.mobile.app.ui.components.icons.BigIcon
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
@@ -90,16 +87,12 @@ internal fun DisconnectConfirmationScreen(
     modifier = modifier,
     showBackButton = false,
     showSettingsButton = false,
+    isContentCentered = true,
     onBackButtonInvoked = { },
     onSettingsButtonInvoked = { },
     bottomButton = { },
 ) {
-    Column(
-        modifier = modifier.padding(vertical = 30.dp),
-//            .debugBorder(Color.Red)
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
+    Centered {
         BigIcon(
             drawableId = R.drawable.warning,
             contentDescription = stringResource(id = R.string.kAccessibilityIconExclamation),

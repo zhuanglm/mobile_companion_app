@@ -15,7 +15,8 @@ import com.esightcorp.mobile.app.btconnection.BtConnectedRoute
 import com.esightcorp.mobile.app.btconnection.BtConnectingRoute
 import com.esightcorp.mobile.app.btconnection.BtConnectionLostRoute
 import com.esightcorp.mobile.app.btconnection.BtDevicesRoute
-import com.esightcorp.mobile.app.btconnection.BtDisabledScreen
+import com.esightcorp.mobile.app.btconnection.BtDisabledRoute
+import com.esightcorp.mobile.app.btconnection.BtPermissionRoute
 import com.esightcorp.mobile.app.btconnection.BtSearchingRoute
 import com.esightcorp.mobile.app.btconnection.NoDeviceConnectedRoute
 import com.esightcorp.mobile.app.btconnection.NoDevicesFoundRoute
@@ -24,6 +25,7 @@ import com.esightcorp.mobile.app.ui.extensions.composable
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectedRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtConnectingRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtDisabledScreen
+import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtPermissionRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.BtSearchingRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.DeviceDisconnectedRoute
 import com.esightcorp.mobile.app.ui.navigation.BtConnectionNavigation.IncomingRoute
@@ -39,13 +41,14 @@ fun NavGraphBuilder.addBtConnectionNavigation(navController: NavController) {
         composable(NoDeviceConnectedRoute) { NoDeviceConnectedRoute(navController) }
 
         composable(BtSearchingRoute) { BtSearchingRoute(navController) }
+        composable(BtPermissionRoute) { BtPermissionRoute(navController) }
         composable(ScanResultRoute) { BtDevicesRoute(navController) }
         composable(NoDevicesFoundRoute) { NoDevicesFoundRoute(navController) }
         composable(BtConnectingRoute) { BtConnectingRoute(navController) }
         composable(BtConnectedRoute) { BtConnectedRoute(navController) }
         composable(DeviceDisconnectedRoute) { BtConnectionLostRoute(navController) }
 
-        composable(BtDisabledScreen) { BtDisabledScreen(navController) }
+        composable(BtDisabledScreen) { BtDisabledRoute(navController) }
         composable(UnableToConnectRoute) { UnableToConnectRoute(navController) }
     }
 }

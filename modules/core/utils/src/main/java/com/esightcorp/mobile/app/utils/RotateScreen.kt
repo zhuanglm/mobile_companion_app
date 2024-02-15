@@ -6,11 +6,9 @@
  * preserve as trade secrets such software and information.
  */
 
-package com.esightcorp.mobile.app.ui.components.eshare
+package com.esightcorp.mobile.app.utils
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import com.esightcorp.mobile.app.ui.KEY_IS_ORIENTATION_CHANGING
 
 /**
@@ -34,10 +32,4 @@ fun rotateScreen(
     activity.intent?.putExtra(KEY_IS_ORIENTATION_CHANGING, true)
 
     onRotatedResult?.invoke(originalOrientation)
-}
-
-private fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
 }

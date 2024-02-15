@@ -9,8 +9,10 @@
 package com.esightcorp.mobile.app.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
@@ -38,6 +40,12 @@ fun Context.safeUnregisterReceiver(receiver: BroadcastReceiver) {
     } catch (ex: Throwable) {
         Log.w(tag, "Unregister receiver failed: ${ex.message}")
     }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 //endregion

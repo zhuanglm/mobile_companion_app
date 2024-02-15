@@ -6,17 +6,21 @@
  * preserve as trade secrets such software and information.
  */
 
-package com.esightcorp.mobile.app.home.state
+package com.esightcorp.mobile.app.btconnection.repositories
 
+import kotlinx.coroutines.flow.StateFlow
 
-data class HomeUiState(
-    val bluetoothState: BluetoothState? = null,
-    val connectedDevice: String = "",
+interface IBtHwStateManager {
+    val btUiState: StateFlow<BtUiState>
+
+    fun checkBtHwState()
+}
+
+data class BtUiState(
+    val state: BtHwState? = null
 ) {
-    enum class BluetoothState {
+    enum class BtHwState {
         ENABLED,
         DISABLED,
-        CONNECTED,
-        DISCONNECTED,
     }
 }

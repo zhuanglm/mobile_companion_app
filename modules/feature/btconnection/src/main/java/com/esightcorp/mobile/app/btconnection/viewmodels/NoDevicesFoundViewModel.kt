@@ -59,6 +59,10 @@ class NoDevicesFoundViewModel @Inject constructor(
     fun navigateToUnableToConnectScreen(navController: NavController) = with(navController) {
         navigate(BtConnectionNavigation.UnableToConnectRoute)
     }
+
+    fun navigateToBtDisabledScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.BtDisabledScreen)
+    }
     //endregion
 
 }

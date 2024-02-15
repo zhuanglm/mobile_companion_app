@@ -16,13 +16,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,9 +33,10 @@ import com.esightcorp.mobile.app.btconnection.state.BtDevicesUiState
 import com.esightcorp.mobile.app.btconnection.viewmodels.BtDevicesViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ESightTopAppBar
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.ExecuteOnce
 import com.esightcorp.mobile.app.ui.components.YellowDeviceCard
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.CantFindDeviceButton
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 
 @Composable
 fun BtDevicesRoute(
@@ -44,18 +46,22 @@ fun BtDevicesRoute(
     vm.getDeviceList()
     val uiState by vm.uiState.collectAsState()
     if (!uiState.isBtEnabled) {
-        NavigateBluetoothDisabled(navController = navController)
-    } else if (uiState.listOfAvailableDevices.isEmpty()) {
-        LaunchedEffect(Unit) { vm.navigateToUnableToFindESight(navController) }
-    } else {
-        BtDevicesScreen(
-            navController = navController,
-            uiState = uiState,
-            onBackClicked = vm::navigateToNoDeviceConnectedScreen,
-            onDeviceSelected = vm::navigateToBtConnectingScreen,
-            onHelpClicked = vm::navigateToUnableToFindESight,
-        )
+        ExecuteOnce { vm.navigateToBtDisabledScreen(navController) }
+        return
     }
+
+    if (uiState.listOfAvailableDevices.isEmpty()) {
+        ExecuteOnce { vm.navigateToUnableToFindESight(navController) }
+        return
+    }
+
+    BtDevicesScreen(
+        navController = navController,
+        uiState = uiState,
+        onBackClicked = vm::navigateToNoDeviceConnectedScreen,
+        onDeviceSelected = vm::navigateToBtConnectingScreen,
+        onHelpClicked = vm::navigateToUnableToFindESight,
+    )
 }
 
 @Preview
@@ -82,14 +88,17 @@ internal fun BtDevicesScreen(
     onDeviceSelected: (NavController, String) -> Unit,
     onHelpClicked: (NavController) -> Unit,
 ) {
+    val configuration = LocalConfiguration.current
+    val headerMargin = if(configuration.fontScale > 1){
+        (50/configuration.fontScale).dp
+    } else {
+        dimensionResource(id = R.dimen.bt_devices_header_margin)
+    }
+
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
         ConstraintLayout {
             val (topBar, header, deviceContainer, help) = createRefs()
 
-//            Log.w(
-//                TAG,
-//                "Back-stack:\n${navController.currentBackStack.collectAsState().value.toStringList()}"
-//            )
 
             ESightTopAppBar(
                 showBackButton = true,
@@ -107,7 +116,6 @@ internal fun BtDevicesScreen(
             Have to bring the margins in as vals since the margin function in .constrainAs
             does not accept a @Composable function, but does accept a value
              */
-            val headerMargin = dimensionResource(id = R.dimen.bt_devices_header_margin)
             val lazyColTopMargin = dimensionResource(id = R.dimen.lazy_col_top_margin)
 
             Header1Text(

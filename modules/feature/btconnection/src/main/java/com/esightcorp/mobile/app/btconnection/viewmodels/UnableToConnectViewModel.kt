@@ -70,4 +70,8 @@ class UnableToConnectViewModel @Inject constructor(
     fun showHowToConnectPage() = with(application.applicationContext) {
         openExternalUrl(getString(com.esightcorp.mobile.app.ui.R.string.url_esight_support))
     }
+
+    fun navigateToBtDisabledScreen(navController: NavController) = with(navController) {
+        navigate(BtConnectionNavigation.BtDisabledScreen)
+    }
 }

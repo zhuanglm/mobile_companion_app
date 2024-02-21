@@ -64,7 +64,9 @@ fun SupportButtonTemplate(
         text = { BodyText(text = text, modifier = modifier, color = textColor) },
         icon = {
             SupportButtonIcon(
-                onClick = { }, modifier = modifier.clearAndSetSemantics { }, painter = painter,
+                onClick = { onClick?.invoke() },
+                modifier = modifier.clearAndSetSemantics { },
+                painter = painter,
                 contentDescription = description
             )
         },
@@ -73,7 +75,7 @@ fun SupportButtonTemplate(
         contentColor = MaterialTheme.colors.onSurface,
         modifier = modifier
             .fillMaxWidth()
-            .semantics{ contentDescription = description ?: "" },
+            .semantics { contentDescription = description ?: "" },
         elevation = FloatingActionButtonDefaults.elevation(
             dimensionResource(R.dimen.zero),
             dimensionResource(R.dimen.zero),

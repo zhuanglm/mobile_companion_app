@@ -64,12 +64,22 @@ class EshareConnectedViewModel @Inject constructor(
     private var wasStoppedByMobile: Boolean = false
 
     init {
-        eShareRepository.setupEshareListener(this)
+        with(eShareRepository) {
+            init()
+            setupEshareListener(this@EshareConnectedViewModel)
+        }
 
         configureBtConnectionListener {
             // Callback when disconnection happen
             _uiState.update { it.copy(isDeviceConnected = false) }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        eShareRepository.cleanUp()
+        Log.d(_tag, "=>> ##### onCleared #####")
     }
 
     //region EshareRepositoryListener

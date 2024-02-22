@@ -48,15 +48,33 @@ class EshareRepository @Inject constructor(
 
     init {
         bluetoothModel = BluetoothModel(context)
+        wifiModel = WifiModel(context)
+
+        init()
+    }
+
+    //region Public interface
+
+    @Synchronized
+    fun init() {
         with(bluetoothModel.bleManager) {
             setEshareBluetoothListener(this@EshareRepository)
             setBluetoothConnectionListener(this@EshareRepository)
             hotspotListener = this@EshareRepository
         }
-        wifiModel = WifiModel(context)
+
+        wifiModel.init()
     }
 
-    //region Public interface
+    @Synchronized
+    fun cleanUp() {
+        with(bluetoothModel) {
+            unregisterEshareReceiver()
+            unregisterHotspotReceiver()
+        }
+
+        wifiModel.unRegisterReceivers()
+    }
 
     data class HotspotCredential(val ssid: String, val password: String)
 
@@ -116,7 +134,7 @@ class EshareRepository @Inject constructor(
             null -> null
             else -> HotspotCredential(
                 shortName,
-                HotspotCredentialGenerator.generateHotspotPassword()
+                HotspotCredentialGenerator.generateHotspotPassword(),
             )
         }
 

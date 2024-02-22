@@ -50,20 +50,20 @@ class EshareRepository @Inject constructor(
         bluetoothModel = BluetoothModel(context)
         wifiModel = WifiModel(context)
 
-        init()
+        initialize()
     }
 
     //region Public interface
 
     @Synchronized
-    fun init() {
+    fun initialize() {
         with(bluetoothModel.bleManager) {
             setEshareBluetoothListener(this@EshareRepository)
             setBluetoothConnectionListener(this@EshareRepository)
             hotspotListener = this@EshareRepository
         }
 
-        wifiModel.init()
+        wifiModel.initialize()
     }
 
     @Synchronized

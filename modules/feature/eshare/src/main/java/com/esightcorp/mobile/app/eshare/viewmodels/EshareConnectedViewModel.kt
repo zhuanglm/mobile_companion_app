@@ -65,7 +65,7 @@ class EshareConnectedViewModel @Inject constructor(
 
     init {
         with(eShareRepository) {
-            init()
+            initialize()
             setupEshareListener(this@EshareConnectedViewModel)
         }
 

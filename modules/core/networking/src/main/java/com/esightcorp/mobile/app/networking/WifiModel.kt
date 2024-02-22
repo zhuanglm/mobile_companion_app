@@ -184,11 +184,11 @@ class WifiModel(
     private var listener: WifiModelListener? = null
 
     init {
-        init()
+        initialize()
     }
 
     @Synchronized
-    fun init() {
+    fun initialize() {
         with(context) {
             safeRegisterReceiver(gattUpdateReceiver, makeWifiBleIntentFilter)
             safeRegisterReceiver(wifiStateChangeReceiver, wifiStateIntentFilter)

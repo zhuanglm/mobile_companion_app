@@ -8,6 +8,7 @@
 
 package com.esightcorp.mobile.app.btconnection
 
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -87,7 +88,10 @@ private fun BtPermissionScreen(
     onOpenAppSettingPressed: OnNavigationCallback? = null,
 ) = PermissionScreen(
     navController = navController,
-    descriptionId = R.string.kPermissionBluetooth,
+    descriptionId = when (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        true -> R.string.kPermissionBluetooth
+        else -> R.string.label_home_screen_request_permission_description
+    },
     onCancelPressed = onCancelPressed,
     onOkPressed = onOpenAppSettingPressed
 )

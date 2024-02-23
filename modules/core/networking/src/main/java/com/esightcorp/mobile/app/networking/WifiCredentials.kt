@@ -9,6 +9,7 @@
 package com.esightcorp.mobile.app.networking
 
 import android.net.wifi.ScanResult
+import android.text.TextUtils
 
 object WifiCredentials {
     private var password: String = ""
@@ -62,5 +63,14 @@ object WifiCredentials {
 
     fun setWifiType(type: WifiType) {
         this.wifiType = type
+    }
+
+    fun isValid(): Boolean {
+        val validSSID = !TextUtils.isEmpty(ssid)
+
+        return when (wifiType) {
+            WifiType.NONE -> validSSID
+            else -> validSSID && !TextUtils.isEmpty(password)
+        }
     }
 }

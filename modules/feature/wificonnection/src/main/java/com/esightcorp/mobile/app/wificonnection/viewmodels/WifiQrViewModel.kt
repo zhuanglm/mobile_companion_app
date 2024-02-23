@@ -48,9 +48,8 @@ class WifiQrViewModel @Inject constructor(
         navigate(target = WifiNavigation.HowToScanRoute, popCurrent = false)
     }
 
-    fun onGotoHomeScreen(navController: NavController) = with(navController) {
-        navigate(BtConnectionNavigation.IncomingRoute, popUntil = SettingsNavigation.IncomingRoute)
-    }
+    fun onGotoHomeScreen(navController: NavController) =
+        gotoMainScreen(navController, popUntil = SettingsNavigation.IncomingRoute)
 
     private fun setQrString(qrString: String?) {
         when (qrString) {

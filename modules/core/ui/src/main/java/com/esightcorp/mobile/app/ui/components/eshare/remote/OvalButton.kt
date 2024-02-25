@@ -44,7 +44,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
  * Represents an oblong button with a customizable icon.
  *
  * @param modifier Modifier to be applied to the button.
- * @param size Size of the oblong button. Width is derived from the height to maintain the oblong shape.
+ * @param ratio 1 / screen density
  * @param contentDescription Description of the icon for accessibility purposes.
  * @param backgroundColor Background color of the button.
  * @param iconTint Tint color of the icon.
@@ -52,15 +52,16 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 @Composable
 fun OvalButton(
     modifier: Modifier = Modifier,
+    ratio: Float = 1f,
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
-    size: Dp = DefaultOblongButtonHeight, // Height of the oblong button
     contentDescription: String? = null,
     @DrawableRes iconDrawableId: Int = DefaultIconResource,
     backgroundColor: Color = MaterialTheme.colors.secondary,
     iconTint: Color = Color.Black,
-    contentPadding: PaddingValues = PaddingValues(),
+    contentPadding: PaddingValues = PaddingValues(DefaultPadding),
 ) {
+    val size: Dp = DefaultOblongButtonHeight * ratio // Height of the oblong button
     val width = size * OblongWidthFactor // Calculating the width to maintain the oblong shape
     val ovalShape = GenericShape { it, _ -> addOval(Rect(Offset.Zero, it)) }
 
@@ -74,8 +75,11 @@ fun OvalButton(
             .width(width) // Setting the derived width
             .height(size) // Setting the provided height
             .clip(ovalShape)
+//            .size(size)
+//            .clip(CircleShape)
             .gestureHandler(onDownEvent, onUpEvent),
         shape = ovalShape,
+        //shape = CircleShape,
         onClick = { },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = DefaultElevation,
@@ -84,6 +88,7 @@ fun OvalButton(
             focusedElevation = FocusedElevation
         ),
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
+        contentPadding = contentPadding
     ) {
         Box(modifier = Modifier.padding(contentPadding)) {
             val iconSize = size * IconScalingFactor
@@ -107,9 +112,10 @@ internal fun OblongButtonPreview() = Surface {
 
 
 // Additional constants
-private val DefaultOblongButtonHeight = 50.dp
+private val DefaultOblongButtonHeight = 88.dp
 private const val OblongWidthFactor = 1.6f // Adjust this factor to change the oblong shape
 private val DefaultIconResource = R.drawable.round_question_mark_24
+private val DefaultPadding = 0.dp
 private val DefaultElevation = 2.dp
 private val PressedElevation = 4.dp
 private val DisabledElevation = 1.dp

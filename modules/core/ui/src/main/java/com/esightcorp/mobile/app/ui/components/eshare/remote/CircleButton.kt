@@ -96,34 +96,12 @@ fun CircleButton(
 }
 
 /**
- * Represents a smaller variant of the [CircleButton].
- */
-@Composable
-fun TinyCircleButton(
-    modifier: Modifier = Modifier,
-    onDownEvent: OnActionCallback? = null,
-    onUpEvent: OnActionCallback? = null,
-    @DrawableRes icon: Int = DefaultIconResource,
-    contentPadding: PaddingValues = PaddingValues(),
-    contentDescription: String? = null,
-) {
-    CircleButton(
-        onDownEvent = onDownEvent,
-        onUpEvent = onUpEvent,
-        size = TinyButtonSize,
-        contentDescription = contentDescription,
-        modifier = modifier,
-        iconId = icon,
-        contentPadding = contentPadding,
-    )
-}
-
-/**
  * Represents a regular-sized variant of the [CircleButton].
  */
 @Composable
 fun RegularCircleButton(
     modifier: Modifier = Modifier,
+    ratio: Float = 1f,
     onDownEvent: OnActionCallback? = null,
     onUpEvent: OnActionCallback? = null,
     size: Dp = RegularButtonSize,
@@ -135,7 +113,7 @@ fun RegularCircleButton(
         modifier = modifier,
         onDownEvent = onDownEvent,
         onUpEvent = onUpEvent,
-        size = size,
+        size = size * ratio,
         contentDescription = contentDescription,
         iconId = icon,
         contentPadding = contentPadding,
@@ -173,13 +151,13 @@ internal fun ColorContrastPreview() {
     }
 }
 
-@Preview
-@Composable
-internal fun TinyCircleButtonPreview() {
-    Surface {
-        TinyCircleButton()
-    }
-}
+//@Preview
+//@Composable
+//internal fun TinyCircleButtonPreview() {
+//    Surface {
+//        TinyCircleButton()
+//    }
+//}
 
 @Preview
 @Composable
@@ -190,7 +168,7 @@ internal fun RegularCircleButtonPreview() {
 }
 
 // Constants for externalized values
-private val DefaultButtonSize = 25.dp
+val DefaultButtonSize = 25.dp
 private val DefaultIconResource = R.drawable.round_question_mark_24
 private val DefaultElevation = 2.dp
 private val PressedElevation = 4.dp
@@ -198,5 +176,6 @@ private val DisabledElevation = 1.dp
 private val FocusedElevation = 3.dp
 private val DefaultPadding = 0.dp
 private const val IconScalingFactor = 0.7f
-private val TinyButtonSize = 40.dp
-private val RegularButtonSize = 75.dp
+val TinyButtonSize = 80.dp
+val RegularButtonSize = 75.dp
+val UpDownButtonSize = 120.dp

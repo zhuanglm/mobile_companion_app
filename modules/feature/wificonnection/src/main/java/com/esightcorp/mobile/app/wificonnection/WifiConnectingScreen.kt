@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
+import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.state.WifiConnectingUiState
 import com.esightcorp.mobile.app.wificonnection.viewmodels.WifiConnectingViewModel
@@ -34,6 +35,8 @@ fun WifiConnectingRoute(
     navController: NavController,
     vm: WifiConnectingViewModel = hiltViewModel(),
 ) {
+    BackStackLogger(navController, TAG)
+
     val isConnected by vm.connectionStateFlow().collectAsState()
     if (isConnected == false) {
         LaunchedEffect(Unit) { vm.onBleDisconnected(navController) }

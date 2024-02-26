@@ -100,8 +100,6 @@ sealed class WifiNavigation(override val path: String) : Navigation(path) {
 
     object AdvancedNetworkSettingsRoute : WifiNavigation("advanced_network_settings")
 
-
-
     object ConnectingRoute : WifiNavigation("connecting")
 
     object WifiQRCodeRoute : WifiNavigation("wifi_qrcode")

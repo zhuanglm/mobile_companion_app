@@ -56,7 +56,12 @@ class WifiQrViewModel @Inject constructor(
             null -> Log.e(_tag, "QrString is null! Wifi was not selected properly!", Exception())
 
             else -> {
-                Log.i(_tag, "setQrString: $qrString")
+                // Remove the password before printing to debug logcat
+                val logQrString = qrString.replace(
+                    Regex(";P:(.*?);"),
+                    ";P:...;"
+                )
+                Log.i(_tag, "setQrString: $logQrString")
                 _uiState.update { it.copy(qrString = qrString) }
             }
         }

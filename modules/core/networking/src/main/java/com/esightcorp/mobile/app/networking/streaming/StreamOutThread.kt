@@ -82,7 +82,7 @@ class StreamOutThread(
     }
 
     companion object {
-        private const val TIMEOUT = 10000L
+        private const val TIMEOUT = 100000L
         private const val BUFFER_SIZE = 1024 * 2
     }
 }

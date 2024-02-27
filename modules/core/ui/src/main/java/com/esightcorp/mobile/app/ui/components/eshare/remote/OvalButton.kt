@@ -75,11 +75,8 @@ fun OvalButton(
             .width(width) // Setting the derived width
             .height(size) // Setting the provided height
             .clip(ovalShape)
-//            .size(size)
-//            .clip(CircleShape)
             .gestureHandler(onDownEvent, onUpEvent),
         shape = ovalShape,
-        //shape = CircleShape,
         onClick = { },
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = DefaultElevation,
@@ -112,7 +109,7 @@ internal fun OblongButtonPreview() = Surface {
 
 
 // Additional constants
-private val DefaultOblongButtonHeight = 88.dp
+private val DefaultOblongButtonHeight = 50.dp
 private const val OblongWidthFactor = 1.6f // Adjust this factor to change the oblong shape
 private val DefaultIconResource = R.drawable.round_question_mark_24
 private val DefaultPadding = 0.dp

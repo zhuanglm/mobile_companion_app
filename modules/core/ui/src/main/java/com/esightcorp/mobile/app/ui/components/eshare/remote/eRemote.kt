@@ -27,7 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,7 +56,8 @@ fun EshareRemote(
     onMenuButtonPressedEventUp: OnActionCallback? = null,
     onMenuButtonPressedEventDown: OnActionCallback? = null,
 ) {
-    val ratio = 1 / LocalDensity.current.density
+    val configuration = LocalConfiguration.current
+    val ratio: Float = configuration.screenHeightDp / DefaultScreenHeight
 
     Surface(
         modifier = modifier
@@ -77,32 +78,17 @@ fun EshareRemote(
                 modifier = Modifier.fillMaxWidth(0.8f),
             ) {
                 //row for little round buttons
-//                TinyCircleButton(
-//                    ratio = ratio,
-//                    onDownEvent = onFinderButtonPressedEventDown,
-//                    onUpEvent = onFinderButtonPressedEventUp,
-//                    icon = R.drawable.finder_icon,
-//                    contentPadding = PaddingValues(10.dp),
-//                    contentDescription = stringResource(id = R.string.kAccessibilityButtonFinder),
-//                )
+
                 RegularCircleButton(
                     ratio = ratio,
                     size = TinyButtonSize,
+                    //size = with(LocalDensity.current) { 15.dp.toPx() }.dp,
                     contentDescription = stringResource(id = R.string.kAccessibilityButtonFinder),
                     onUpEvent = onFinderButtonPressedEventUp,
                     onDownEvent = onFinderButtonPressedEventDown,
                     icon = R.drawable.finder_icon,
                     contentPadding = PaddingValues(3.dp),
                 )
-
-//                TinyCircleButton(
-//                    modifier = Modifier.clearAndSetSemantics {  },
-//                    ratio,
-//                    onDownEvent = onBluetoothButtonPressedEventDown,
-//                    onUpEvent = onBluetoothButtonPressedEventUp,
-//                    icon = R.drawable.baseline_bluetooth_24,
-//                    contentPadding = PaddingValues(10.dp),
-//                )
 
                 RegularCircleButton(
                     ratio = ratio,
@@ -237,12 +223,13 @@ internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
 }
 
 @Preview(name = "landscape", widthDp = 800, heightDp = 360)
+@Preview(name = "pixel4", widthDp = 854, heightDp = 462)
 @Composable
 internal fun EshareRemotePreview() = MaterialTheme {
     Surface {
         Row {
             Spacer(modifier = Modifier.weight(2f))
-            EshareRemote(modifier = Modifier.weight(1f),)
+            EshareRemote(modifier = Modifier.weight(1f))
         }
     }
 }

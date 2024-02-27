@@ -87,6 +87,10 @@ class BtConnectionRepository @Inject constructor(
         } else {
             add(android.Manifest.permission.BLUETOOTH)
             add(android.Manifest.permission.BLUETOOTH_ADMIN)
+
+            // Extra permissions required for BT feature
+            add(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+            add(android.Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 

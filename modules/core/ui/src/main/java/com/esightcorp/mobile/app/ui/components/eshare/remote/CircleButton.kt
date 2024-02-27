@@ -151,14 +151,6 @@ internal fun ColorContrastPreview() {
     }
 }
 
-//@Preview
-//@Composable
-//internal fun TinyCircleButtonPreview() {
-//    Surface {
-//        TinyCircleButton()
-//    }
-//}
-
 @Preview
 @Composable
 internal fun RegularCircleButtonPreview() {
@@ -179,4 +171,4 @@ private const val IconScalingFactor = 0.7f
 val TinyButtonSize = 48.dp
 val RegularButtonSize = 75.dp
 val UpDownButtonSize = 70.dp
-val DefaultScreenHeight = 360f
+const val DefaultScreenHeight = 360f

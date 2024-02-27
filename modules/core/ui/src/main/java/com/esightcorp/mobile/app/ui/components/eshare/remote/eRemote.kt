@@ -78,11 +78,9 @@ fun EshareRemote(
                 modifier = Modifier.fillMaxWidth(0.8f),
             ) {
                 //row for little round buttons
-
                 RegularCircleButton(
                     ratio = ratio,
                     size = TinyButtonSize,
-                    //size = with(LocalDensity.current) { 15.dp.toPx() }.dp,
                     contentDescription = stringResource(id = R.string.kAccessibilityButtonFinder),
                     onUpEvent = onFinderButtonPressedEventUp,
                     onDownEvent = onFinderButtonPressedEventDown,
@@ -223,7 +221,6 @@ internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
 }
 
 @Preview(name = "landscape", widthDp = 800, heightDp = 360)
-@Preview(name = "pixel4", widthDp = 854, heightDp = 462)
 @Composable
 internal fun EshareRemotePreview() = MaterialTheme {
     Surface {

@@ -44,7 +44,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
  * Represents an oblong button with a customizable icon.
  *
  * @param modifier Modifier to be applied to the button.
- * @param ratio 1 / screen density
+ * @param ratio screen width change rate.
  * @param contentDescription Description of the icon for accessibility purposes.
  * @param backgroundColor Background color of the button.
  * @param iconTint Tint color of the icon.

@@ -22,6 +22,7 @@ import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.UnableToCon
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.extensions.narratorSkip
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
@@ -74,6 +75,8 @@ private fun HowToScanScreen(
         NumberedHelpItem(
             number = 2,
             text = stringResource(R.string.kWifiTroubleshootingHowToScanSecondText),
+            semanticsContent = stringResource(R.string.kWifiTroubleshootingHowToScanSecondText)
+                .narratorSkip(">"),
             modifier = modifier.padding(bottom = 20.dp)
         )
 

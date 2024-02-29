@@ -14,6 +14,7 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.util.Log
 import com.esightcorp.mobile.app.utils.bluetooth.BleConnectionStatus
+import java.util.concurrent.ConcurrentHashMap
 
 @SuppressLint("MissingPermission")
 object eSightBleManager {
@@ -25,7 +26,12 @@ object eSightBleManager {
     private var bleService: BleService? = null
     private var bleConnectionStatus: BleConnectionStatus = BleConnectionStatus.Unknown
     private var connectedDevice: BluetoothDevice? = null
-    private var bleDeviceList: MutableList<BluetoothDevice> = mutableListOf()
+
+    /**
+     * The Bluetooth scan result map: SerialNo -> device object
+     */
+    private val bleScanResult: ConcurrentHashMap<String, BluetoothDevice> = ConcurrentHashMap()
+
     private var modelListener: BluetoothModelListener? = null
     private var eshareBluetoothListener: EshareBluetoothModelListener? = null
     private var btConnectionListener: BluetoothConnectionListener? = null
@@ -82,10 +88,26 @@ object eSightBleManager {
         do {
             if (!device.name.contains(DEVICE_NAME_CRITERION)) break
 
-            if (bleDeviceList.find { it.address == device.address } != null) break
+            Log.i(_tag, "Found device: ${device.name} - $device")
 
-            added = bleDeviceList.add(device)
-            Log.d(_tag, "addToBleDeviceList: ${device.name} ($device) --> $added")
+            val snValue = device.name.replaceFirst("$DEVICE_NAME_CRITERION-", "")
+            if (snValue.isEmpty()) {
+                Log.e(_tag, "Unable to parse device SN for ${device.name}")
+                break
+            }
+
+            // Check if the same MAC address already existed
+            when (bleScanResult[snValue]?.address?.equals(device.address)) {
+                // Same SN & MAC -> ignored
+                true -> Unit
+
+                else -> {
+                    bleScanResult[snValue] = device
+                    added = true
+
+                    Log.d(_tag, "Device list updated: ${device.name} ($device)")
+                }
+            }
         } while (false)
 
         return added
@@ -93,7 +115,7 @@ object eSightBleManager {
 
     @SuppressLint("MissingPermission")
     fun getBleDeviceList(): MutableList<BluetoothDevice> {
-        return this.bleDeviceList
+        return bleScanResult.values.toMutableList()
     }
 
     /*
@@ -116,7 +138,7 @@ object eSightBleManager {
 
     @Synchronized
     fun resetDeviceList() {
-        this.bleDeviceList = mutableListOf()
+        bleScanResult.clear()
     }
 
     @Synchronized

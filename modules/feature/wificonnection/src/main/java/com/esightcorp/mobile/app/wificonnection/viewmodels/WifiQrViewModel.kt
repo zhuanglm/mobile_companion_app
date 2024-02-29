@@ -48,16 +48,20 @@ class WifiQrViewModel @Inject constructor(
         navigate(target = WifiNavigation.HowToScanRoute, popCurrent = false)
     }
 
-    fun onGotoHomeScreen(navController: NavController) = with(navController) {
-        navigate(BtConnectionNavigation.IncomingRoute, popUntil = SettingsNavigation.IncomingRoute)
-    }
+    fun onGotoHomeScreen(navController: NavController) =
+        gotoMainScreen(navController, popUntil = SettingsNavigation.IncomingRoute)
 
     private fun setQrString(qrString: String?) {
         when (qrString) {
             null -> Log.e(_tag, "QrString is null! Wifi was not selected properly!", Exception())
 
             else -> {
-                Log.i(_tag, "setQrString: $qrString")
+                // Remove the password before printing to debug logcat
+                val logQrString = qrString.replace(
+                    Regex(";P:(.*?);"),
+                    ";P:...;"
+                )
+                Log.i(_tag, "setQrString: $logQrString")
                 _uiState.update { it.copy(qrString = qrString) }
             }
         }

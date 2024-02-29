@@ -10,7 +10,6 @@ package com.esightcorp.mobile.app.wificonnection.viewmodels
 
 import android.app.Application
 import androidx.navigation.NavController
-import com.esightcorp.mobile.app.networking.storage.WifiCache
 import com.esightcorp.mobile.app.ui.components.viewmodel.ESightBaseViewModel
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
@@ -25,16 +24,20 @@ class UnableToConnectViewModel @Inject constructor(
     private val wifiRepo: WifiConnectionRepository,
 ) : ESightBaseViewModel(application) {
 
-    fun onTryAgain(navController: NavController) = navController.navigate(
-        target = WifiNavigation.ScanningRoute,
-        param = when (wifiRepo.wifiFlow) {
-            WifiCache.WifiFlow.QrFlow -> WifiNavigation.ScanningRoute.PARAM_QR
-            else -> WifiNavigation.ScanningRoute.PARAM_BLUETOOTH
-        }
-    )
+    fun onTryAgain(navController: NavController) {
+        with(wifiRepo) {
+            if (!wifiCredentials.isValid()) return
 
-    fun onBackPressed(navController: NavController) = when (wifiRepo.wifiFlow) {
-        WifiCache.WifiFlow.QrFlow -> navController.popBackStack()
-        else -> gotoMainScreen(nav = navController, popUntil = WifiNavigation.IncomingRoute)
+            // Resend wifi credential
+            wifiRepo.sendWifiCreds(
+                wifiCredentials.getPassword(),
+                wifiCredentials.getWifiType().typeString
+            )
+
+            // Then navigate to Wifi-Connecting
+            navController.navigate(target = WifiNavigation.ConnectingRoute)
+        }
     }
+
+    fun onBackPressed(navController: NavController) = navController.popBackStack()
 }

@@ -87,7 +87,6 @@ class EnterPasswordViewModel @Inject constructor(
     }
 
     fun updatePassword(password: String) {
-        Log.d(_tag, "updatePassword: $password")
         _uiState.update { state ->
             state.copy(
                 password = password,

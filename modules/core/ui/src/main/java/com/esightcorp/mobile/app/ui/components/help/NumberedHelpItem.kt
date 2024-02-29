@@ -9,7 +9,11 @@
 package com.esightcorp.mobile.app.ui.components.help
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,29 +29,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.esightcorp.mobile.app.ui.components.text.WrappableButtonText
 
-fun Modifier.badgeLayout() =
-    layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
+fun Modifier.badgeLayout() = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
 
-        // based on the expectation of only one line of text
-        val minPadding = placeable.height / 4
+    // based on the expectation of only one line of text
+    val minPadding = placeable.height / 4
 
-        val width = maxOf(placeable.width + minPadding, placeable.height)
-        layout(width, placeable.height) {
-            placeable.place((width - placeable.width) / 2, 0)
-        }
+    val width = maxOf(placeable.width + minPadding, placeable.height)
+    layout(width, placeable.height) {
+        placeable.place((width - placeable.width) / 2, 0)
     }
+}
+
 @Composable
 fun HelpItemNumber(
     modifier: Modifier = Modifier,
     number: Int = 1,
-    color: Color = MaterialTheme.colors.onPrimary
+    color: Color = MaterialTheme.colors.onPrimary,
 ) {
-    Box(contentAlignment = Alignment.Center,
-        modifier = modifier.padding(8.dp)) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.padding(8.dp),
+    ) {
         Text(
             text = number.toString(),
-            modifier = modifier.background(MaterialTheme.colors.primary, shape = CircleShape).badgeLayout(),
+            modifier = modifier
+                .background(MaterialTheme.colors.primary, shape = CircleShape)
+                .badgeLayout(),
             fontWeight = FontWeight.ExtraBold,
             fontSize = 30.sp,
             fontFamily = FontFamily.SansSerif,
@@ -59,12 +67,14 @@ fun HelpItemNumber(
 @Composable
 fun HelpItemText(
     text: String = "This is a test",
+    semanticsContent: String? = null,
     color: Color = MaterialTheme.colors.secondary,
 ) {
     WrappableButtonText(
         text = text,
+        semanticsContent = semanticsContent,
         modifier = Modifier,
-        color = color
+        color = color,
     )
 }
 
@@ -74,6 +84,7 @@ fun NumberedHelpItem(
     modifier: Modifier = Modifier,
     number: Int = 1,
     text: String = "This is a test",
+    semanticsContent: String? = null,
     textColor: Color = MaterialTheme.colors.onSurface,
     numberColor: Color = MaterialTheme.colors.onPrimary
 ) {
@@ -90,12 +101,8 @@ fun NumberedHelpItem(
         )
         HelpItemText(
             text = text,
+            semanticsContent = semanticsContent,
             color = textColor,
         )
     }
 }
-
-
-
-
-

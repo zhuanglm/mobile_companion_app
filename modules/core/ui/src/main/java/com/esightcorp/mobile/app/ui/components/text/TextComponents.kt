@@ -14,6 +14,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -129,7 +130,13 @@ fun ClickableBodyText(
         append(text)
         //start of clickable part
         pushStringAnnotation(tag = "URL", annotation = url)
-        pushStyle(SpanStyle(color = color, textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold))
+        pushStyle(
+            SpanStyle(
+                color = color,
+                textDecoration = TextDecoration.Underline,
+                fontWeight = FontWeight.Bold,
+            )
+        )
         append(clickableText)
         pop() //end of style
         pop() //end of annotation
@@ -138,16 +145,16 @@ fun ClickableBodyText(
     ClickableText(
         text = annotatedString,
         modifier = modifier.semantics {
-              onClick(){
-                  onClick()
-                  true
-              }
+            onClick {
+                onClick()
+                true
+            }
         },
         onClick = { offset ->
-                  annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                      .firstOrNull()?.let { _ ->
-                          onClick()
-                      }
+            annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                .firstOrNull()?.let { _ ->
+                    onClick()
+                }
         },
         style = TextStyle(
             color = color,
@@ -163,7 +170,7 @@ fun ButtonText(
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary,
     textAlign: TextAlign? = null,
-    onTextLayoutResult: (TextLayoutResult?) -> Unit = {Unit},
+    onTextLayoutResult: (TextLayoutResult?) -> Unit = { },
 ) {
     Text(
         text = text,
@@ -180,13 +187,17 @@ fun ButtonText(
 @Composable
 fun WrappableButtonText(
     text: String,
+    semanticsContent: String? = null,
     modifier: Modifier,
     color: Color = MaterialTheme.colors.onPrimary
 ) {
     Text(
         text = text,
         color = color,
-        modifier = modifier,
+        modifier = when (semanticsContent) {
+            null -> modifier
+            else -> modifier.semantics { contentDescription = semanticsContent }
+        },
         fontWeight = FontWeight.Bold,
         fontSize = 25.sp,
         fontFamily = FontFamily.SansSerif,

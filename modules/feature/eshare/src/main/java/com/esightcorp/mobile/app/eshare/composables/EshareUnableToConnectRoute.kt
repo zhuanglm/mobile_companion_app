@@ -32,8 +32,8 @@ import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
-import com.esightcorp.mobile.app.ui.components.text.BodyText
 import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.FineText
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
@@ -80,7 +80,7 @@ private fun EshareUnableToConnectScreen(
         onSettingsButtonInvoked = { },
         bottomButton = { SetupHotspotButton { onSetupHotspotPressed?.invoke(navController) } },
         bottomAlignedContent = {
-            BodyText(
+            FineText(
                 text = stringResource(R.string.kEshareTroubleshootingUnableToConnectDescriptionText),
                 modifier = modifier.padding(top = 5.dp, bottom = 5.dp),
                 MaterialTheme.colors.onSurface,

@@ -409,7 +409,7 @@ class WifiModel(
 
 @Suppress("Deprecation")
 fun ScanResult.ssidName(): String? {
-    if (Build.VERSION.SDK_INT >= 33) return wifiSsid?.toString()?.removePrefix("\"")
+    if (Build.VERSION.SDK_INT >= 33) return SSID?.removePrefix("\"")
         ?.removeSuffix("\"")
 
     return SSID

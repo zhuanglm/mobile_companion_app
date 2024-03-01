@@ -24,13 +24,13 @@ import androidx.navigation.NavController
 import com.esightcorp.mobile.app.btconnection.viewmodels.UnableToConnectViewModel
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.ExecuteOnce
-import com.esightcorp.mobile.app.ui.components.text.BodyText
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
-import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
 import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
+import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.FineText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 
 @Composable
@@ -145,13 +145,12 @@ internal fun UnableToConnectScreen(
         },
 
         bottomAlignedContent = {
-            BodyText(
+            FineText(
                 text = stringResource(R.string.kBTTroubleshootingUnableToConnectDescriptionText),
                 modifier,
                 MaterialTheme.colors.onSurface,
             )
         }
-
     ) {
         UnableToConnectBody(
             modifier = modifier,

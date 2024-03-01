@@ -27,9 +27,9 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.SetupHotspotButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
-import com.esightcorp.mobile.app.ui.components.text.BodyText
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.FineText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
 @Composable
@@ -68,7 +68,7 @@ private fun EshareSetupWifiScreen(
     onSettingsButtonInvoked = { },
     bottomButton = { SetupHotspotButton { onSetupHotspotPressed?.invoke(navController) } },
     bottomAlignedContent = {
-        BodyText(
+        FineText(
             text = stringResource(R.string.kEshareViewControllerWifiNotConnectedFooterText),
             modifier,
             MaterialTheme.colors.onSurface,

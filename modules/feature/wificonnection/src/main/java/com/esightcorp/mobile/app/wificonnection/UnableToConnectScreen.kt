@@ -23,9 +23,9 @@ import com.esightcorp.mobile.app.ui.components.buttons.TextRectangularButton
 import com.esightcorp.mobile.app.ui.components.buttons.bottomButtons.HowToConnectButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
 import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
-import com.esightcorp.mobile.app.ui.components.text.BodyText
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.FineText
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 import com.esightcorp.mobile.app.wificonnection.viewmodels.UnableToConnectViewModel
@@ -64,7 +64,7 @@ internal fun UnableToConnectScreen(
         )
     },
     bottomAlignedContent = {
-        BodyText(
+        FineText(
             modifier = modifier,
             text = stringResource(R.string.kWifiTroubleshootingUnableToConnectFooter),
             color = MaterialTheme.colors.onSurface,
@@ -146,7 +146,7 @@ private fun ScreenBody(
     }
 }
 
-@Preview(locale = "es")
+@Preview(locale = "en")
 @Composable
 private fun UnableToConnectScreenPreview() = MaterialTheme {
     UnableToConnectScreen(

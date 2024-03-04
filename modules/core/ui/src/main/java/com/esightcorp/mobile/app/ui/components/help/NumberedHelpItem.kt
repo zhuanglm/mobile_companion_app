@@ -42,7 +42,7 @@ fun Modifier.badgeLayout() = layout { measurable, constraints ->
 }
 
 @Composable
-fun HelpItemNumber(
+private fun HelpItemNumber(
     modifier: Modifier = Modifier,
     number: Int = 1,
     color: Color = MaterialTheme.colors.onPrimary,
@@ -57,7 +57,7 @@ fun HelpItemNumber(
                 .background(MaterialTheme.colors.primary, shape = CircleShape)
                 .badgeLayout(),
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 30.sp,
+            fontSize = 25.sp,
             fontFamily = FontFamily.SansSerif,
             color = color,
         )

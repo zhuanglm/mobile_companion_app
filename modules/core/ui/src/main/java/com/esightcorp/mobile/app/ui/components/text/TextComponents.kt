@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -56,6 +57,7 @@ fun BoldSubheader(
     SubHeader(
         text = text,
         modifier = modifier,
+        fontSize = 20.sp,
         color = color,
         textAlign = textAlign,
         fontWeight = FontWeight.Bold
@@ -66,6 +68,7 @@ fun BoldSubheader(
 fun SubHeader(
     text: String,
     modifier: Modifier,
+    fontSize: TextUnit = 25.sp,
     color: Color = MaterialTheme.colors.onSurface,
     textAlign: TextAlign? = TextAlign.Start,
     fontWeight: FontWeight? = null
@@ -74,7 +77,7 @@ fun SubHeader(
         text = text,
         modifier = modifier,
         fontWeight = fontWeight,
-        fontSize = 25.sp,
+        fontSize = fontSize,
         fontFamily = FontFamily.SansSerif,
         textAlign = textAlign,
         color = color

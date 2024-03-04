@@ -23,9 +23,9 @@ import androidx.navigation.compose.rememberNavController
 import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.buttons.LeadingIconTextButton
 import com.esightcorp.mobile.app.ui.components.containers.BaseScreen
-import com.esightcorp.mobile.app.ui.components.text.BodyText
-import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.components.text.Header1Text
+import com.esightcorp.mobile.app.ui.components.text.SubHeader
 import com.esightcorp.mobile.app.ui.extensions.navigate
 import com.esightcorp.mobile.app.ui.navigation.HomeNavigation
 import com.esightcorp.mobile.app.ui.navigation.WifiNavigation
@@ -89,7 +89,7 @@ private fun AlreadyConnectedScreenBody(
             },
         )
 
-        BodyText(
+        BoldSubheader(
             text = stringResource(id = R.string.kWifiAlreadyConnectedSubtitle),
             modifier = modifier.constrainAs(header2Text) {
                 top.linkTo(headerText.bottom, margin = 8.dp)
@@ -98,7 +98,7 @@ private fun AlreadyConnectedScreenBody(
             color = MaterialTheme.colors.onSurface
         )
 
-        BoldSubheader(
+        SubHeader(
             text = stringResource(id = R.string.kWifiAlreadyConnectedDescription),
             modifier = modifier.constrainAs(helpText) {
                 top.linkTo(header2Text.bottom, margin = 20.dp)

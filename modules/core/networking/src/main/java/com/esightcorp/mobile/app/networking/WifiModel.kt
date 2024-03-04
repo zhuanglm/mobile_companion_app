@@ -15,10 +15,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
-import android.net.wifi.WifiSsid
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.esightcorp.mobile.app.bluetooth.BleAction
 import com.esightcorp.mobile.app.bluetooth.BleService
 import com.esightcorp.mobile.app.bluetooth.ESightBleAction
@@ -409,21 +407,16 @@ class WifiModel(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun WifiSsid.toNonNullString(): String? {
-    for (element in bytes) {
-        if (element != 0.toByte()) {
-            return this.toString()
-        }
-    }
-
-    return null
-}
-
 @Suppress("Deprecation")
 fun ScanResult.ssidName(): String? {
-    if (Build.VERSION.SDK_INT >= 33) return wifiSsid?.toNonNullString()?.removePrefix("\"")
-        ?.removeSuffix("\"")
-
+    if (Build.VERSION.SDK_INT >= 33) {
+        wifiSsid?.let {
+            for (element in it.bytes) {
+                if (element != 0.toByte()) {
+                    return it.toString().removePrefix("\"").removeSuffix("\"")
+                }
+            }
+        }
+    }
     return SSID
 }

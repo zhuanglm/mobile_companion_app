@@ -8,7 +8,6 @@
 
 package com.esightcorp.mobile.app.wificonnection
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -37,7 +36,6 @@ fun EnterPasswordRoute(
     navController: NavController,
     viewModel: EnterPasswordViewModel = hiltViewModel()
 ) {
-    Log.d(TAG, "EnterPasswordRoute:")
     val wifiUiState by viewModel.uiState.collectAsState()
     var buttonText = stringResource(R.string.kWifiViewConnectButtonText)
     val isConnected by viewModel.connectionStateFlow().collectAsState()
@@ -46,7 +44,7 @@ fun EnterPasswordRoute(
         return
     }
 
-    if(wifiUiState.wifiFlow == WifiCache.WifiFlow.QrFlow)
+    if (wifiUiState.wifiFlow == WifiCache.WifiFlow.QrFlow)
         buttonText = stringResource(R.string.kCreateWifiCodeButtonText)
 
     EnterPasswordScreen(
@@ -56,16 +54,7 @@ fun EnterPasswordRoute(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun EnterPasswordScreenPreview() = MaterialTheme {
-    EnterPasswordScreen(navController = rememberNavController(),
-        buttonText = "connect & create")
-}
-
 //region Private implementation
-private const val TAG = "WifiCredentialsRoute"
-
 @Composable
 internal fun EnterPasswordScreen(
     modifier: Modifier = Modifier,
@@ -86,8 +75,6 @@ private fun PasswordField(
     vwModel: EnterPasswordViewModel? = null,
     buttonText: String
 ) {
-
-
     BaseScreen(
         modifier = modifier,
         showBackButton = true,
@@ -154,6 +141,15 @@ private fun PasswordBody(
             enabled = wifiUiState?.isPasswordValid ?: false
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EnterPasswordScreenPreview() = MaterialTheme {
+    EnterPasswordScreen(
+        navController = rememberNavController(),
+        buttonText = "connect & create"
+    )
 }
 
 //endregion

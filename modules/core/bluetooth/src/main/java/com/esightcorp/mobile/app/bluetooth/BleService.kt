@@ -101,7 +101,12 @@ class BleService : Service() {
     }
 
     fun sendWifiCreds(ssid: String, pwd: String, type: String) {
-        Log.i(_tag, "sendWifiCreds: SSID = $ssid, Password = $pwd, Wifi Type is $type")
+        Log.i(
+            _tag,
+            "sendWifiCreds: SSID = $ssid, Password = ${
+                pwd.toCharArray().map { '*' }
+            }, Wifi Type is $type"
+        )
         sendMessage(
             ESightCharacteristic.WIFI_INFO, BluetoothPayload.Builder(
                 BluetoothPayload.BleCodes.WIFI_CREDS,
@@ -124,7 +129,7 @@ class BleService : Service() {
     fun readWifiConnectionStatus() = readCharacteristic(ESightCharacteristic.WIFI_CONNECTION_STATUS)
 
     fun startHotspot(ssid: String, password: String) {
-        Log.i(_tag, "startHotspot: SSID = $ssid, Password = $password")
+        Log.i(_tag, "startHotspot: SSID = $ssid, Password = ${password.toCharArray().map { '*' }}")
         sendMessage(
             ESightCharacteristic.HOTSPOT, BluetoothPayload.Builder(
                 BluetoothPayload.BleCodes.HOTSPOT_CREDS, hotspotSsid = ssid, hotspotPwd = password,
@@ -465,71 +470,77 @@ class BleService : Service() {
      * BleBusyException
      * @param message The message that the exception should return
      */
-    class BleBusyException(message:String): Exception(message)
+    class BleBusyException(message: String) : Exception(message)
 
     /*
      * The idea behind this is to use the FIFO method to maintain order for the BLE Write requests
      */
-    private fun bleWorkerWriteLogic(){
-        while (!Thread.currentThread().isInterrupted){
+    private fun bleWorkerWriteLogic() {
+        while (!Thread.currentThread().isInterrupted) {
             try {
                 val operation = bleWriteOperationDeque.takeFirst()
-                try{
+                try {
                     Log.i("BleService", "bleWorkerWriteLogic: perform write with $operation")
                     performBleWrite(operation)
-                } catch (e: BleBusyException){
+                } catch (e: BleBusyException) {
                     // Re-enqueue at the front if BLE is busy. We want to be able to keep the right order
-                    Log.e("BleService", "bleWorkerWriteLogic: ", e )
+                    Log.e("BleService", "bleWorkerWriteLogic: ", e)
                     bleWriteOperationDeque.offerFirst(operation)
                 }
-            }catch (e: InterruptedException){
+            } catch (e: InterruptedException) {
                 Thread.currentThread().interrupt()
             }
         }
     }
 
-    private fun startBleWorkerThread(){
-        if(bleWorkerThread == null || !bleWorkerThread!!.isAlive){
+    private fun startBleWorkerThread() {
+        if (bleWorkerThread == null || !bleWorkerThread!!.isAlive) {
             Log.i("BleService", "startBleWorkerThread: ")
             bleWorkerThread = Thread(::bleWorkerWriteLogic)
             bleWorkerThread?.start()
-        }else{
-            Log.e("BleService", "startBleWorkerThread: Already started!!!!!!!!!! " )
+        } else {
+            Log.e("BleService", "startBleWorkerThread: Already started!!!!!!!!!! ")
         }
 
     }
-    private fun shutdownBleWorker(){
+
+    private fun shutdownBleWorker() {
         Log.i("BleService", "shutdownBleWorker: ")
         bleWorkerThread?.interrupt()
     }
 
     @SuppressLint("MissingPermission", "NewApi")
     @Suppress("Deprecation")
-    private fun performBleWrite(operation: BleGattOperation){
-        Log.i("BleService", "performBleWrite:\nCharacteristic ${operation.characteristic}\nData ${operation.data}")
-        when(Build.VERSION.SDK_INT >= 33){
+    private fun performBleWrite(operation: BleGattOperation) {
+        Log.i(
+            "BleService",
+            "performBleWrite:\nCharacteristic ${operation.characteristic}\nData ${operation.data}"
+        )
+        when (Build.VERSION.SDK_INT >= 33) {
             true -> {
                 //write using SDK 33+
                 val intResult = bluetoothGatt!!.writeCharacteristic(
-                    operation.characteristic, operation.data, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                    operation.characteristic,
+                    operation.data,
+                    BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                 )
-                if (intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY){
+                if (intResult == BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY) {
                     throw BleBusyException("Write Request Busy. Please try again later")
                 }
                 decodeSendMessageResult(intResult)
             }
+
             false -> {
                 //write using SDK < 33
                 operation.characteristic.value = operation.data
                 val boolResult = bluetoothGatt!!.writeCharacteristic(operation.characteristic)
-                if(!boolResult){
+                if (!boolResult) {
                     throw BleBusyException("Write Request Busy. Please try again later")
                 }
             }
 
         }
     }
-
 
 
     @SuppressLint("MissingPermission", "NewApi")
@@ -537,7 +548,7 @@ class BleService : Service() {
         val data = payload.getByteArrayBlePayload()
         val characteristic: BluetoothGattCharacteristic? = chType.getCharacteristic(bluetoothGatt)
 
-        if (characteristic != null){
+        if (characteristic != null) {
             Log.i("BleService", "sendMessage: Enqueueing the operation")
             Log.i("BleService", "sendMessage: Is the thread alive? ${bleWorkerThread?.isAlive}")
             bleWriteOperationDeque.offerLast(BleGattOperation(data, characteristic))

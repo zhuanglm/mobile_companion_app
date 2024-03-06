@@ -135,7 +135,15 @@ class BluetoothPayload private constructor(
             }
         }
 
-        Log.d(_tag, "getByteArrayBlePayload: \nSize: ${byteArray.size}\nPayload: ${String(byteArray, StandardCharsets.UTF_8)}")
+        // Remove the password (if any) in payload for logcat debugging
+        val payloadLog = String(byteArray, StandardCharsets.UTF_8).replace(
+            Regex("\"$pwd\":\"([^\",]*?)\""),
+            "\"$pwd\":\"...\""
+        )
+        Log.d(
+            _tag,
+            "getByteArrayBlePayload: \nSize: ${byteArray.size}\nPayload: $payloadLog"
+        )
 
         return byteArray
     }

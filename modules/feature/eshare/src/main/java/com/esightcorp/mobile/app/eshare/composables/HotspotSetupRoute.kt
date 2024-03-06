@@ -41,6 +41,7 @@ import com.esightcorp.mobile.app.ui.components.help.NumberedHelpItem
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.components.text.Header1Text
 import com.esightcorp.mobile.app.ui.components.text.BoldSubheader
+import com.esightcorp.mobile.app.ui.extensions.narratorSkip
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
 import com.esightcorp.mobile.app.ui.navigation.OnNavigationCallback
 
@@ -147,6 +148,8 @@ private fun HotspotSetupBody(
             NumberedHelpItem(
                 number = 1,
                 text = stringResource(R.string.kHotspotTroubleshootingOpenSetting),
+                semanticsContent = stringResource(R.string.kHotspotTroubleshootingOpenSetting)
+                    .narratorSkip(">"),
             )
             ItemSpacer()
 
@@ -154,7 +157,7 @@ private fun HotspotSetupBody(
                 number = 2,
                 text = stringResource(
                     R.string.kHotspotTroubleshootingConnectToeSight
-                ) +" "+uiState.hotspotCredential!!.ssid + " " +stringResource(id = R.string.kHotspotTroubleshootingNetwork),
+                ) + " " + uiState.hotspotCredential!!.ssid + " " + stringResource(id = R.string.kHotspotTroubleshootingNetwork),
             )
             ItemSpacer()
 

@@ -62,7 +62,6 @@ private fun BtConnectionLostScreen(
     isContentCentered = true,
     onSettingsButtonInvoked = { },
     bottomButton = { },
-    bottomAlignedContent = { },
 ) {
     Centered {
         BigIcon(

@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -56,6 +57,9 @@ fun EshareRemote(
     onMenuButtonPressedEventUp: OnActionCallback? = null,
     onMenuButtonPressedEventDown: OnActionCallback? = null,
 ) {
+    val configuration = LocalConfiguration.current
+    val ratio: Float = configuration.screenHeightDp / DefaultScreenHeight
+
     Surface(
         modifier = modifier
             .fillMaxHeight()
@@ -75,20 +79,24 @@ fun EshareRemote(
                 modifier = Modifier.fillMaxWidth(0.8f),
             ) {
                 //row for little round buttons
-                TinyCircleButton(
-                    onDownEvent = onFinderButtonPressedEventDown,
-                    onUpEvent = onFinderButtonPressedEventUp,
-                    icon = R.drawable.finder_icon,
-                    contentPadding = PaddingValues(10.dp),
+                RegularCircleButton(
+                    ratio = ratio,
+                    size = TinyButtonSize,
                     contentDescription = stringResource(id = R.string.kAccessibilityButtonFinder),
+                    onUpEvent = onFinderButtonPressedEventUp,
+                    onDownEvent = onFinderButtonPressedEventDown,
+                    icon = R.drawable.finder_icon,
+                    contentPadding = PaddingValues(3.dp),
                 )
 
-                TinyCircleButton(
+                RegularCircleButton(
                     modifier = Modifier.clearAndSetSemantics {  },
-                    onDownEvent = onBluetoothButtonPressedEventDown,
+                    ratio = ratio,
+                    size = TinyButtonSize,
                     onUpEvent = onBluetoothButtonPressedEventUp,
+                    onDownEvent = onBluetoothButtonPressedEventDown,
                     icon = R.drawable.baseline_bluetooth_24,
-                    contentPadding = PaddingValues(10.dp),
+                    contentPadding = PaddingValues(3.dp),
                 )
             }
             //endregion
@@ -99,10 +107,11 @@ fun EshareRemote(
                 verticalAlignment = Alignment.CenterVertically
             ) {//row for the mode button
                 OvalButton(
+                    ratio = ratio,
                     onDownEvent = onModeButtonPressedEventDown,
                     onUpEvent = onModeButtonPressedEventUp,
                     iconDrawableId = R.drawable.remote_button_home,
-                    contentPadding = PaddingValues(1.dp),
+                    contentPadding = PaddingValues(3.dp),
                     contentDescription = stringResource(id = R.string.kAccessibilityButtonMode)
                 )
             }
@@ -110,6 +119,7 @@ fun EshareRemote(
 
             //region Row 3
             VolumeRockerAndUpDownButtons(
+                ratio,
                 onUpButtonPressedEventUp = onUpButtonPressedEventUp,
                 onUpButtonPressedEventDown = onUpButtonPressedEventDown,
                 onDownButtonPressedEventUp = onDownButtonPressedEventUp,
@@ -124,10 +134,11 @@ fun EshareRemote(
             //region Row 4
             Row {//row for menu button
                 OvalButton(
+                    ratio = ratio,
                     onDownEvent = onMenuButtonPressedEventDown,
                     onUpEvent = onMenuButtonPressedEventUp,
                     iconDrawableId = R.drawable.menu_button,
-                    contentPadding = PaddingValues(1.dp),
+                    contentPadding = PaddingValues(3.dp),
                     contentDescription = stringResource(id = R.string.kAccessibilityButtonMenu)
                 )
             }
@@ -138,7 +149,7 @@ fun EshareRemote(
 
 @Composable
 fun VolumeRockerAndUpDownButtons(
-    size: Dp = 70.dp,
+    ratio: Float = 1f,
     onUpButtonPressedEventUp: OnActionCallback? = null,
     onUpButtonPressedEventDown: OnActionCallback? = null,
     onDownButtonPressedEventDown: OnActionCallback? = null,
@@ -148,9 +159,10 @@ fun VolumeRockerAndUpDownButtons(
     onVolumeUpButtonPressedEventUp: OnActionCallback? = null,
     onVolumeUpButtonPressedEventDown: OnActionCallback? = null,
 ) {
-    val circleButtonSpacerSize = size.times(0.5f)
-    val betweenColumnSpacerSize = size.times(0.3f)
-    val rockerButtonSize = size.times(1f)
+    val size: Dp = UpDownButtonSize
+    val circleButtonSpacerSize = size.times(ratio * 0.5f)
+    val betweenColumnSpacerSize = size.times(ratio * 0.3f)
+    val rockerButtonSize = size.times(ratio * 1f)
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -163,6 +175,7 @@ fun VolumeRockerAndUpDownButtons(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             RegularCircleButton(
+                ratio = ratio,
                 size = size,
                 contentDescription = stringResource(id = R.string.kAccessibilityButtonUp),
                 onUpEvent = onUpButtonPressedEventUp,
@@ -172,6 +185,7 @@ fun VolumeRockerAndUpDownButtons(
             )
             Spacer(modifier = Modifier.height(circleButtonSpacerSize))
             RegularCircleButton(
+                ratio = ratio,
                 size = size,
                 contentDescription = stringResource(id = R.string.kAccessibilityButtonDown),
                 onUpEvent = onDownButtonPressedEventUp,
@@ -205,7 +219,7 @@ fun VolumeRockerAndUpDownButtons(
 @Preview
 @Composable
 internal fun VolumeRockerAndUpDownButtonsPreview() = Surface {
-    VolumeRockerAndUpDownButtons(size = 100.dp)
+    VolumeRockerAndUpDownButtons()
 }
 
 @Preview(name = "landscape", widthDp = 800, heightDp = 360)

@@ -39,6 +39,9 @@
     <string name="kAccessibilityIconExclamation">Exclamation icon</string>
     <string name="kAccessibilityIconQRImage">WiFi QR code</string>
     <string name="kAccessibilityIconeSightLogo">eSight logo</string>
+    <string name="kAccessibilityIconPasswordVisible">Password Visible</string>
+    <string name="kAccessibilityIconPasswordNotVisible">Password not Visible</string>
+    <string name="kAccessibilityIconCheck">Checkmark</string>
     <!--endregion-->
 
     <string name="kHotspotUnreachable">Your eSight device is currently unreachable via hotspot</string>

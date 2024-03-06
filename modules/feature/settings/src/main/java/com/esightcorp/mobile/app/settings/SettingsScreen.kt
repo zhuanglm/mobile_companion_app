@@ -13,7 +13,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -31,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -96,7 +96,7 @@ internal fun SettingsScreenBody(
 
         val spacer = dimensionResource(R.dimen.settings_section_spacer)
 
-        ItemSpacer(spacer)
+        ItemSpacer(8.dp)
         SettingsMyESight(modifier, navController, vwModel)
 
         ItemSpacer(spacer)
@@ -107,7 +107,7 @@ internal fun SettingsScreenBody(
 
         val uiState = vwModel?.settingsUiState?.collectAsState()?.value
         uiState?.appVersion?.let {
-            ItemSpacer(spacer)
+            ItemSpacer(41.dp)
             SettingsVersion(modifier, it)
         }
     }
@@ -121,7 +121,7 @@ internal fun SettingsMyESight(
 ) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewMyeSightSubTitleText),
-        modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
+        modifier,
         MaterialTheme.colors.onSurface,
     )
 
@@ -133,6 +133,9 @@ internal fun SettingsMyESight(
 
     ExecuteOnce { vwModel?.registerPermissionLauncher(permissionLauncher, context.findActivity()) }
     var isWiFiQrFlow by rememberSaveable { mutableStateOf<Boolean?>(null) }
+
+    val spacer = dimensionResource(R.dimen.settings_section_spacer)
+    ItemSpacer(spacer)
 
     LeadingIconTextButton(
         onClick = {
@@ -147,7 +150,7 @@ internal fun SettingsMyESight(
 
     val settingState = vwModel?.settingsUiState?.collectAsState()?.value
     if (settingState?.connState?.isConnected == true) {
-        ItemSpacer()
+        ItemSpacer(spacer)
         LeadingIconTextButton(
             onClick = { vwModel.navigateToDisconnectConfirmation(navController) },
             modifier,
@@ -217,9 +220,12 @@ internal fun SettingsHelp(
 ) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewHelpSubTitleText),
-        modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
+        modifier,
         MaterialTheme.colors.onSurface,
     )
+
+    val spacer = dimensionResource(R.dimen.settings_section_spacer)
+    ItemSpacer(spacer)
 
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
@@ -228,7 +234,7 @@ internal fun SettingsHelp(
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewTutorialButtonText)
     )
 
-    ItemSpacer()
+    ItemSpacer(spacer)
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_feedback) },
         modifier,
@@ -244,9 +250,12 @@ internal fun SettingsAbout(
 ) = Column {
     BodyText(
         stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewAbouteSightSubTitleText),
-        modifier.padding(vertical = dimensionResource(R.dimen.settings_subtitle_padding)),
+        modifier,
         MaterialTheme.colors.onSurface,
     )
+
+    val spacer = dimensionResource(R.dimen.settings_section_spacer)
+    ItemSpacer(spacer)
 
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_home) },
@@ -255,7 +264,7 @@ internal fun SettingsAbout(
         text = stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewVisitWebsiteButtonText)
     )
 
-    ItemSpacer()
+    ItemSpacer(spacer)
     LeadingIconTextButton(
         onClick = { onLinkButtonClicked.invoke(com.esightcorp.mobile.app.ui.R.string.url_esight_privacy_policy) },
         modifier,

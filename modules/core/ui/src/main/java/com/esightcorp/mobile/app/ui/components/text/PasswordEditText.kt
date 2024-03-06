@@ -13,6 +13,7 @@ import androidx.compose.material3.Shapes
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -50,12 +51,12 @@ fun PasswordEditText(
                 if (passwordVisibility) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_visibility_24),
-                        contentDescription = "Password visibility toggle - On"
+                        contentDescription = stringResource(id = R.string.kAccessibilityIconPasswordVisible)
                     )
                 } else {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_visibility_off_24),
-                        contentDescription = "Password visibility toggle - Off"
+                        contentDescription = stringResource(id = R.string.kAccessibilityIconPasswordNotVisible)
                     )
                 }
 

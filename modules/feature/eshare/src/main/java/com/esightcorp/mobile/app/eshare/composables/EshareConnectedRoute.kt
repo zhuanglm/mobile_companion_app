@@ -14,13 +14,10 @@ import android.util.Log
 import android.view.TextureView
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -48,6 +45,7 @@ import com.esightcorp.mobile.app.ui.R
 import com.esightcorp.mobile.app.ui.components.eshare.AutoFitTextureView
 import com.esightcorp.mobile.app.ui.components.eshare.remote.ColorContrastButton
 import com.esightcorp.mobile.app.ui.components.eshare.remote.EshareRemote
+import com.esightcorp.mobile.app.ui.components.eshare.remote.TinyButtonSize
 import com.esightcorp.mobile.app.ui.components.loading.LoadingScreenWithSpinner
 import com.esightcorp.mobile.app.ui.extensions.BackStackLogger
 import com.esightcorp.mobile.app.ui.navigation.OnActionCallback
@@ -324,7 +322,7 @@ internal fun TextureViewAndCancelButton(
                 primaryColor = Color.White,
                 secondaryColor = Color.Red,
                 icon = R.drawable.close_eshare_button,
-                size = 40.dp,
+                size = TinyButtonSize,
                 contentDescription = stringResource(id = R.string.kAccessibilityButtonExit),
                 onClick = { onClick?.invoke(navController) },
             )

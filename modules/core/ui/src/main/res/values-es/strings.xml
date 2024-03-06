@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ /**LICENSE Copyright (C) 2009-2024 by Gentex Technology Canada. All Rights
-  ~ Reserved.The software and information contained herein are proprietary to, and
-  ~ comprise valuable trade secrets of, Gentex Technology Canada, which intends to
-  ~ preserve as trade secrets such software and information.*/
+  ~ LICENSE
+  ~ Copyright (C) 2009-2024 by eSight by Gentex Corporation. All Rights Reserved.
+  ~ The software and information contained herein are proprietary to, and
+  ~ comprise valuable trade secrets of, eSight by Gentex Corporation, which intends to
+  ~ preserve as trade secrets such software and information.
   -->
 
 <resources>
@@ -147,5 +148,8 @@
 
     <string name="kPermissionLocationServicesTitle">Servicios de Ubicación Requeridos</string>
     <string name="kPermissionLocationServicesBody">Para usar esta función, los servicios de ubicación deben estar activados.</string>
+    <string name="kAccessibilityIconPasswordVisible">Contraseña visible</string>
+    <string name="kAccessibilityIconPasswordNotVisible">Contraseña no visible</string>
+    <string name="kAccessibilityIconCheck">marca de verificación</string>
 
 </resources>

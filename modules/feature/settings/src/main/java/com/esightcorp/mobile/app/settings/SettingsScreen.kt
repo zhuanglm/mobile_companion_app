@@ -88,6 +88,9 @@ internal fun SettingsScreenBody(
     onSettingsButtonInvoked = { },
     bottomButton = { },
 ) {
+    // back to settings is 43, appbar is 64, back button is 40, spacer = 43 - 12
+    ItemSpacer(31.dp)
+
     Column {
         Header1Text(
             stringResource(com.esightcorp.mobile.app.ui.R.string.kSettingsViewTitleText),

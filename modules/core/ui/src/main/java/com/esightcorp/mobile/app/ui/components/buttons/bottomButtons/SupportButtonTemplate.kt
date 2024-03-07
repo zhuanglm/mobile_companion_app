@@ -75,6 +75,7 @@ fun SupportButtonTemplate(
         contentColor = MaterialTheme.colors.onSurface,
         modifier = modifier
             .fillMaxWidth()
+            .padding(0.dp, 10.dp)
             .semantics { contentDescription = description ?: "" },
         elevation = FloatingActionButtonDefaults.elevation(
             dimensionResource(R.dimen.zero),

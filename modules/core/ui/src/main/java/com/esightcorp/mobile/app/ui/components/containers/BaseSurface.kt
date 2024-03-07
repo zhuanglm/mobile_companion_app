@@ -95,7 +95,7 @@ fun BaseScreen(
         },
     ) { innerPadding ->
         var contentModifier = Modifier
-            .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding() + 35.dp)
+            .padding(25.dp, 0.dp, 25.dp, innerPadding.calculateBottomPadding())
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
         if (isContentCentered)

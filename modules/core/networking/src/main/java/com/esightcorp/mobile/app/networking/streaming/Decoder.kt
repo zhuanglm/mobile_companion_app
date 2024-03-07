@@ -21,8 +21,8 @@ abstract class Decoder (
         const val TAG = "Decoder"
         const val mMime = "video/avc"
         val mAccessUnit = byteArrayOf(0x00, 0x00, 0x00, 0x01)
-        const val mWidth = 1920
-        const val mHeight = 1080
+        const val mWidth = 640
+        const val mHeight = 480
     }
 
     protected abstract var mDecoder: MediaCodec?

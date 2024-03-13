@@ -100,6 +100,7 @@ play {
 dependencies {
 
     implementation "androidx.core:core-ktx:$core_ktx"
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"

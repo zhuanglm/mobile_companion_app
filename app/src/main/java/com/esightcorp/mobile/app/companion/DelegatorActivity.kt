@@ -23,6 +23,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.esightcorp.mobile.app.companion.navigation.toplevel.TopLevelNavigation
 import com.esightcorp.mobile.app.ui.KEY_IS_ORIENTATION_CHANGING
 import com.esightcorp.mobile.app.ui.components.theme.Mobile_companion_appTheme
@@ -39,6 +40,8 @@ class DelegatorActivity : ComponentActivity() {
 //        Log.w(_tag, "onCreate - updated intent: $intent")
 
         super.onCreate(processedBundle)
+
+        installSplashScreen()
 
         setContent {
             CompanionApp()

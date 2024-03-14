@@ -12,7 +12,6 @@ import android.app.ActivityManager
 import android.app.ApplicationExitInfo
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -64,25 +63,17 @@ class DelegatorActivity : ComponentActivity() {
                 when (isOrientationChanging) {
                     true -> savedState
 
-                    else -> when {
-                        // API >= 30
-                        // TODO: do we still need this after moving permission check to using place???
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                            val latestExitReason =
-                                (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-                                    .getHistoricalProcessExitReasons(context.packageName, 0, 0)
-                                    .firstOrNull()
-                            Log.w(_tag, "latestExitReason: $latestExitReason")
+                    else -> {
+                        val latestExitReason =
+                            (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                                .getHistoricalProcessExitReasons(context.packageName, 0, 0)
+                                .firstOrNull()
+                        Log.w(_tag, "latestExitReason: $latestExitReason")
 
-                            when (latestExitReason?.reason) {
-                                ApplicationExitInfo.REASON_PERMISSION_CHANGE -> null
-                                else -> savedState
-                            }
+                        when (latestExitReason?.reason) {
+                            ApplicationExitInfo.REASON_PERMISSION_CHANGE -> null
+                            else -> savedState
                         }
-
-                        // API < 30
-                        //TODO: any better way to use the `savedState` instead of always null like this???
-                        else -> null
                     }
                 }
             }

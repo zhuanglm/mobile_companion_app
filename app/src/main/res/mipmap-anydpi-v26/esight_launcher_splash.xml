@@ -11,7 +11,7 @@
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <foreground>
         <inset
-            android:drawable="@drawable/esight_logo_288"
-            android:inset="35%" />
+            android:drawable="@drawable/esight_logo_128"
+            android:inset="30%" />
     </foreground>
 </adaptive-icon>
